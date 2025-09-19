@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 | 윈도우 커널 1-day 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .prose {
+            color: #d1d5db; /* gray-300 */
+        }
+        .prose h2 {
+            color: #ffffff;
+            border-bottom: 1px solid #4b5563; /* gray-600 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose h3 {
+            color: #f3f4f6; /* gray-100 */
+        }
+        .prose a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        .prose a:hover {
+            color: #d1d5db;
+        }
+        .prose strong {
+            color: #ffffff;
+        }
+        .prose code {
+            color: #f9fafb; /* gray-50 */
+            background-color: #374151; /* gray-700 */
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 6px;
+        }
+        .prose pre {
+            background-color: #1f2937; /* gray-800 */
+            border: 1px solid #4b5563; /* gray-600 */
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-black text-white selection:bg-white selection:text-black">
+
+    <div class="container mx-auto max-w-4xl px-6 py-16 md:py-24">
+
+        <header class="mb-12">
+            <!-- 뒤로가기 링크 -->
+            <a href="./index.html" class="text-gray-400 hover:text-white transition-colors duration-200 mb-8 block">&larr; 전체 포트폴리오 보기</a>
+            
+            <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4">
+                윈도우 커널 1-day 취약점 분석 및 익스플로잇
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400">
+                CVE-2024-35250(KernelStreaming) 취약점 분석 및 권한 상승(LPE) 익스플로잇 개발 프로젝트
+            </p>
+        </header>
+
+        <main>
+            <!-- 프로젝트 개요 정보 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 border-y border-gray-700 py-6">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">기간</h3>
+                    <p class="text-lg font-medium">2025.06. - 2025.08.</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">역할</h3>
+                    <p class="text-lg font-medium">취약점 분석 및 익스플로잇 개발</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">기술 스택</h3>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">Windows Kernel</span>
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">C/C++</span>
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">IDA Pro</span>
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">WinDbg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 프로젝트 대표 이미지 -->
+            <img src="https://placehold.co/1200x675/111827/4D5562?text=Kernel+Debugging+Process" alt="Project Thumbnail" class="w-full h-auto rounded-lg mb-12 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/1200x675/111827/4D5562?text=Image+Not+Found';">
+
+
+            <!-- 프로젝트 상세 내용 -->
+            <article class="prose prose-lg max-w-none">
+                <h2>프로젝트 배경</h2>
+                <p>
+                    화이트햇스쿨 3기 과정의 3개월 프로젝트로, 실제 버그 바운티 시나리오에 대비하기 위해 1-day 취약점을 선정하여 분석하고 익스플로잇 코드를 개발하는 것을 목표로 했습니다. 팀원들과 협력하여 취약점의 근본 원인을 파악하고, 이를 통해 시스템 권한을 상승시키는 전체 과정을 성공적으로 구현하며 시스템 보안에 대한 깊이 있는 이해를 얻고자 했습니다.
+                </p>
+                <br>
+                <h2>주요 과정 및 기술적 도전</h2>
+                <p>
+                    프로젝트는 <strong>취약점 선정, 환경 구축, 패치 비교(Patch Diffing), 루트커즈 분석(RCA), 익스플로잇 개발</strong>의 5단계로 진행되었습니다. 제가 핵심적으로 담당했던 부분은 루트커즈 분석과 익스플로잇 개발이었습니다.
+                </p>
+                <h3>1. 루트커즈 분석 (Root Cause Analysis)</h3>
+                <p>
+                    선정한 <code>CVE-2024-35250</code> 취약점은 Windows Kernel Streaming 드라이버(<code>ks.sys</code>)에 존재하는 Use-After-Free(UAF) 버그였습니다. 패치 비교를 통해 취약점이 존재하는 코드 영역을 특정했고, WinDbg를 이용해 커널 디버깅 환경에서 해당 코드의 실행 흐름을 추적했습니다. 이 과정에서 특정 IOCTL 요청을 보냈을 때 객체가 해제된 후에도 참조가 남아있는 것을 확인했으며, 이것이 취약점의 근본 원인임을 밝혀냈습니다.
+                </p>
+                <h3>2. 익스플로잇 개발</h3>
+                <p>
+                    분석된 취약점을 트리거하여 시스템 권한을 상승시키는 PoC(Proof of Concept) 코드를 C++로 작성했습니다. UAF를 이용해 해제된 메모리 영역을 제어 가능한 데이터로 덮어쓰고(Heap Spraying), 조작된 객체를 통해 임의의 코드를 실행(Arbitrary Code Execution)하는 전략을 사용했습니다. 커널 메모리 보호 기법(KASLR)을 우회하고 안정적인 익스플로잇을 만드는 과정이 가장 큰 기술적 도전이었습니다.
+                </p>
+                <br>
+                <h2>성과 및 배운 점</h2>
+                <p>
+                    최종적으로 <code>CVE-2024-35250</code> 취약점을 성공적으로 재현하고, 로컬 권한 상승(LPE)을 통해 관리자(SYSTEM) 권한을 획득하는 풀 익스플로잇 코드를 완성했습니다.
+                </p>
+                <ul>
+                    <li><strong>Windows 커널 내부 동작 방식</strong>과 메모리 관리 기법에 대한 실질적인 이해를 높일 수 있었습니다.</li>
+                    <li>IDA Pro, WinDbg와 같은 <strong>리버싱 및 디버깅 도구</strong> 사용에 대한 숙련도를 향상시켰습니다.</li>
+                    <li>팀원들과의 협업을 통해 복잡한 기술적 문제를 해결하는 <strong>문제 해결 능력과 소통 능력</strong>을 길렀습니다.</li>
+                </ul>
+
+                <!-- 관련 링크 -->
+                <div class="mt-12 not-prose">
+                     <a href="https://github.com/SEORY0" target="_blank" class="inline-block bg-white text-black font-bold py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                        GitHub에서 코드 보기
+                     </a>
+                </div>
+            </article>
+        </main>
+        
+        <!-- 푸터 섹션 -->
+        <footer class="text-center text-gray-500 mt-20 pt-8 border-t border-gray-800">
+            <p>&copy; 2025. Seokjun Ryu. All rights reserved.</p>
+            <p class="mt-2">
+                <a href="mailto:r.sjun3@gmail.com" class="hover:text-white">Email</a> &bull;
+                <a href="https://github.com/SEORY0" target="_blank" class="hover:text-white">GitHub</a> &bull;
+                <a href="https://www.instagram.com/r.sjun/" target="_blank" class="hover:text-white">Blog</a>
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
