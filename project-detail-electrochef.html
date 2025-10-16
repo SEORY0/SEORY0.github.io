@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 | ElectroChef</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .prose { color: #d1d5db; }
+        .prose h2 { color: #ffffff; border-bottom: 1px solid #4b5563; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1rem; }
+        .prose h3 { color: #f3f4f6; margin-top: 2rem; margin-bottom: 1rem;}
+        .prose a { color: #ffffff; text-decoration: underline; }
+        .prose a:hover { color: #d1d5db; }
+        .prose strong { color: #ffffff; }
+    </style>
+</head>
+<body class="bg-black text-white selection:bg-white selection:text-black">
+
+    <div class="container mx-auto max-w-4xl px-6 py-16 md:py-24">
+
+        <header class="mb-12">
+            <!-- 뒤로가기 링크 -->
+            <a href="./index.html" class="text-gray-400 hover:text-white transition-colors duration-200 mb-8 block">&larr; 전체 포트폴리오 보기</a>
+            
+            <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4">
+                ElectroChef
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400">
+                전자공학 학부생을 위한 웹 기반 계산 도구
+            </p>
+        </header>
+
+        <main>
+            <!-- 프로젝트 개요 정보 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 border-y border-gray-700 py-6">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">기간</h3>
+                    <p class="text-lg font-medium">2025.09. - 2025.10.</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">역할</h3>
+                    <p class="text-lg font-medium">개인 프로젝트 (기획, 개발, 디자인)</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">기술 스택</h3>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">HTML</span>
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">TailwindCSS</span>
+                        <span class="bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+            
+            <img src="https://placehold.co/1200x675/111827/4D5562?text=ElectroChef+Interface" alt="ElectroChef Project Thumbnail" class="w-full h-auto rounded-lg mb-12 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/1200x675/111827/4D5562?text=Image+Not+Found';">
+
+            <!-- 프로젝트 상세 내용 -->
+            <article class="prose prose-lg max-w-none">
+                <h2>프로젝트 배경</h2>
+                <p>
+                    <strong>ElectroChef</strong>는 GCHQ의 <a href="https://gchq.github.io/CyberChef/" target="_blank">CyberChef</a>에서 영감을 받아 시작된 개인 프로젝트입니다. CyberChef가 보안 분야의 데이터 변환 및 분석 작업을 웹에서 편리하게 수행하도록 돕는 것처럼, 전자공학 분야에서 자주 사용되는 복잡한 계산들을 웹 브라우저에서 손쉽게 처리할 수 있는 도구를 만들고 싶었습니다. 전공 과제를 하거나 시험공부를 할 때마다 매번 공학용 계산기를 찾거나 복잡한 수식을 다시 유도해야 했던 불편함을 해결하고자 했습니다.
+                </p>
+
+                <h2>주요 기능</h2>
+                <p>
+                    ElectroChef는 전자공학 학부 과정에서 가장 빈번하게 사용되는 핵심 변환 기능들을 제공하여 학습과 과제 해결의 효율을 높입니다.
+                </p>
+                <ul>
+                    <li><strong>실시간 각도 변환:</strong> 라디안(Radian) 값을 입력하면 즉시 도(Degree) 값으로, 도 값을 입력하면 라디안 값으로 실시간 변환됩니다.</li>
+                    <li><strong>페이저(Phasor) 변환:</strong> 회로이론의 교류(AC) 해석에 필수적인 페이저 변환을 지원합니다. 직교좌표 형식(a + jb)을 극좌표 형식(r∠θ°)으로, 또는 그 반대로 변환하는 기능을 제공하여 복소수 계산의 편의성을 크게 높였습니다.</li>
+                </ul>
+
+                <h2>성과 및 배운 점</h2>
+                <p>
+                    이 프로젝트를 통해 바닐라 JavaScript와 TailwindCSS만으로 사용자 인터랙션을 구현하고 깔끔한 UI를 구성하는 경험을 할 수 있었습니다. 특히, 사용자의 입력을 실시간으로 감지하여 결과를 즉시 업데이트하는 로직을 구현하며 JavaScript의 이벤트 처리와 DOM 조작에 대한 이해를 심화시킬 수 있었습니다. 향후 스미스 차트(Smith Chart) 계산, 임피던스(Impedance) 변환 등 더 다양한 기능을 추가하여 발전시켜 나갈 계획입니다.
+                </p>
+
+                <!-- 관련 링크 -->
+                <div class="mt-12 not-prose">
+                     <a href="./electrochef.html" target="_blank" class="inline-block bg-white text-black font-bold py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                        ElectroChef 실행하기 &rarr;
+                     </a>
+                </div>
+            </article>
+        </main>
+        
+        <footer class="text-center text-gray-500 mt-20 pt-8 border-t border-gray-800">
+            <p>&copy; 2025. Seokjun Ryu. All rights reserved.</p>
+            <p class="mt-2">
+                <a href="mailto:r.sjun3@gmail.com" class="hover:text-white">Email</a> &bull;
+                <a href="https://github.com/SEORY0" target="_blank" class="hover:text-white">GitHub</a> &bull;
+                <a href="https://www.instagram.com/r.sjun/" target="_blank" class="hover:text-white">Blog</a>
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
