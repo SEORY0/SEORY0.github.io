@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better than very</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .font-serif {
+            font-family: 'EB Garamond', serif;
+        }
+        
+        .dark {
+            color-scheme: dark;
+        }
+        
+        input::placeholder {
+            color: #A8A29D;
+            opacity: 1;
+        }
+        
+        input:focus {
+            border-color: #A8A29D;
+            outline: none;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Lucide React icons as inline SVG components
+        const Moon = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        );
+
+        const Sun = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        );
+
+        const RefreshCw = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        );
+
+        const Search = ({ className }) => (
+            <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+        );
+
+        const Gift = ({ className, style }) => (
+            <svg className={className} style={style} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect x="2" y="7" width="20" height="5"></rect>
+                <line x1="12" y1="22" x2="12" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
+        );
+
+        // Custom hook for theme management
+        const useTheme = () => {
+            const [isDark, setIsDark] = useState(true);
+
+            useEffect(() => {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    setIsDark(false);
+                }
+            }, []);
+
+            useEffect(() => {
+                document.documentElement.classList.toggle('dark', isDark);
+            }, [isDark]);
+
+            return { isDark, setIsDark };
+        };
+
+        // Typewriter animation component
+        const TypewriterText = ({ text, className = "" }) => {
+            const [displayText, setDisplayText] = useState('');
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            useEffect(() => {
+                if (currentIndex < text.length) {
+                    const timeout = setTimeout(() => {
+                        setDisplayText(prev => prev + text[currentIndex]);
+                        setCurrentIndex(prev => prev + 1);
+                    }, 50);
+
+                    return () => clearTimeout(timeout);
+                }
+            }, [currentIndex, text]);
+
+            useEffect(() => {
+                setDisplayText('');
+                setCurrentIndex(0);
+            }, [text]);
+
+            return <span className={className}>{displayText}</span>;
+        };
+
+        // Pepero Day Gift Card Component
+        const PeperoGiftCard = ({ isDark, onClose }) => {
+            const [copied, setCopied] = useState(false);
+            const giftCode = 'X8MX6VXLDQ';
+
+            const copyToClipboard = () => {
+                navigator.clipboard.writeText(giftCode);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
+                    <div 
+                        className="relative max-w-lg w-full rounded-2xl shadow-2xl p-6 sm:p-8 animate-fadeIn max-h-[90vh] overflow-y-auto"
+                        style={{ backgroundColor: isDark ? '#292524' : '#FFFFFF' }}
+                    >
+                        <button
+                            onClick={onClose}
+                            className="absolute top-4 right-4 text-2xl opacity-50 hover:opacity-100 transition-opacity z-10"
+                            style={{ color: isDark ? '#ffffff' : '#1B1917' }}
+                        >
+                            ×
+                        </button>
+                        
+                        <div className="flex flex-col items-center space-y-5">
+                            {/* Title */}
+                            <div className="flex items-center gap-2">
+                                <Gift className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#EF4444' }} />
+                                <h2 className="text-2xl sm:text-3xl font-serif" style={{ color: isDark ? '#ffffff' : '#1B1917' }}>
+                                    행복한 빼빼로 데이!
+                                </h2>
+                            </div>
+                            
+                            {/* Pepero Gift Card Image */}
+                            <div 
+                                className="w-full rounded-xl overflow-hidden shadow-lg"
+                                style={{ backgroundColor: isDark ? '#1B1917' : '#F5F5F4' }}
+                            >
+                                <div className="aspect-[3/2] flex items-center justify-center p-4 sm:p-8">
+                                    <svg viewBox="0 0 300 200" className="w-full h-full">
+                                        <rect width="300" height="200" rx="10" fill="#FFD700" />
+                                        <rect x="10" y="10" width="280" height="180" rx="5" fill="none" stroke="#FFA500" strokeWidth="2" strokeDasharray="5,5" />
+                                        
+                                        <g transform="translate(150, 100)">
+                                            <rect x="-3" y="-60" width="6" height="80" fill="#8B4513" rx="3" />
+                                            <rect x="-4" y="-60" width="8" height="50" fill="#D2691E" rx="4" />
+                                            <rect x="-23" y="-55" width="6" height="75" fill="#8B4513" rx="3" transform="rotate(-15 -20 -17.5)" />
+                                            <rect x="-24" y="-55" width="8" height="45" fill="#D2691E" rx="4" transform="rotate(-15 -20 -32.5)" />
+                                            <rect x="17" y="-55" width="6" height="75" fill="#8B4513" rx="3" transform="rotate(15 20 -17.5)" />
+                                            <rect x="16" y="-55" width="8" height="45" fill="#D2691E" rx="4" transform="rotate(15 20 -32.5)" />
+                                        </g>
+                                        
+                                        <text x="150" y="40" textAnchor="middle" fill="#8B4513" fontSize="24" fontWeight="bold" fontFamily="'EB Garamond', serif">
+                                            PEPERO
+                                        </text>
+                                        <text x="150" y="170" textAnchor="middle" fill="#8B4513" fontSize="16" fontFamily="'EB Garamond', serif">
+                                            Gift Card
+                                        </text>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            {/* Gift Details */}
+                            <div 
+                                className="w-full space-y-3 text-sm sm:text-base font-serif"
+                                style={{ color: isDark ? '#E7E5E4' : '#292524' }}
+                            >
+                                {/* Gift Code */}
+                                <div className="flex items-center justify-between gap-3 p-3 rounded-lg" style={{ backgroundColor: isDark ? '#1B1917' : '#F5F5F4' }}>
+                                    <div className="flex-1">
+                                        <div className="text-xs opacity-60 mb-1">선물코드</div>
+                                        <div className="text-lg sm:text-xl font-semibold tracking-wider">{giftCode}</div>
+                                    </div>
+                                    <button
+                                        onClick={copyToClipboard}
+                                        className="px-3 py-2 rounded-lg transition-all text-xs sm:text-sm font-serif"
+                                        style={{ 
+                                            backgroundColor: copied ? '#10B981' : (isDark ? '#292524' : '#E7E5E4'),
+                                            color: copied ? '#ffffff' : (isDark ? '#ffffff' : '#1B1917')
+                                        }}
+                                    >
+                                        {copied ? '복사완료!' : '복사'}
+                                    </button>
+                                </div>
+                                
+                                {/* Gift Name */}
+                                <div className="p-3 rounded-lg" style={{ backgroundColor: isDark ? '#1B1917' : '#F5F5F4' }}>
+                                    <div className="text-xs opacity-60 mb-1">선물명</div>
+                                    <div className="leading-relaxed">카페 아메리카노 T + 진한 가나슈 9 레이어 케이크</div>
+                                </div>
+                                
+                                {/* Expiration Date */}
+                                <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: isDark ? '#1B1917' : '#F5F5F4' }}>
+                                    <div className="flex-1">
+                                        <div className="text-xs opacity-60 mb-1">코드등록 유효기간</div>
+                                        <div>2025.11.16</div>
+                                    </div>
+                                </div>
+                                
+                                {/* Registration Method */}
+                                <div className="p-3 rounded-lg" style={{ backgroundColor: isDark ? '#1B1917' : '#F5F5F4' }}>
+                                    <div className="text-xs opacity-60 mb-1">코드등록 방법</div>
+                                    <div className="leading-relaxed text-xs sm:text-sm">
+                                        카카오톡 &gt; 선물하기 &gt; 선물함 &gt; 선물코드 등록
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Action Button */}
+                            <a
+                                href="https://kko.kakao.com/6TBisVh-hp"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full py-3 px-6 rounded-lg text-center font-serif transition-all text-sm sm:text-base"
+                                style={{ 
+                                    backgroundColor: '#FEE500',
+                                    color: '#000000'
+                                }}
+                            >
+                                카카오톡에서 선물받기
+                            </a>
+                            
+                            {/* Footer Message */}
+                            <p 
+                                className="text-center text-xs sm:text-sm font-serif leading-relaxed pt-2"
+                                style={{ color: '#A8A29D' }}
+                            >
+                                특별한 날을 발견하셨네요!<br />
+                                달콤한 빼빼로 데이 되세요 🎉
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [adjective, setAdjective] = useState('');
+            const [suggestion, setSuggestion] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [fade, setFade] = useState(false);
+            const [previousSuggestions, setPreviousSuggestions] = useState([]);
+            const [error, setError] = useState(false);
+            const [showPeperoGift, setShowPeperoGift] = useState(false);
+            const { isDark, setIsDark } = useTheme();
+
+            const checkPeperoDay = (text) => {
+                const normalized = text.toLowerCase().replace(/\s+/g, '');
+                return normalized === '행복한빼빼로데이' || normalized === '빼빼로데이';
+            };
+
+            // Internal dictionary of "very + adjective" replacements
+            const wordDictionary = {
+                'happy': ['joyful', 'delighted', 'ecstatic', 'jubilant', 'elated'],
+                'sad': ['sorrowful', 'melancholy', 'dejected', 'despondent', 'heartbroken'],
+                'angry': ['furious', 'enraged', 'irate', 'livid', 'incensed'],
+                'tired': ['exhausted', 'fatigued', 'depleted', 'drained', 'weary'],
+                'good': ['excellent', 'superb', 'outstanding', 'exceptional', 'remarkable'],
+                'bad': ['terrible', 'awful', 'dreadful', 'atrocious', 'abysmal'],
+                'big': ['enormous', 'massive', 'gigantic', 'colossal', 'immense'],
+                'small': ['tiny', 'minuscule', 'microscopic', 'diminutive', 'petite'],
+                'fast': ['rapid', 'swift', 'speedy', 'hasty', 'expeditious'],
+                'slow': ['sluggish', 'leisurely', 'gradual', 'unhurried', 'languid'],
+                'hot': ['scorching', 'sweltering', 'blistering', 'sizzling', 'torrid'],
+                'cold': ['freezing', 'frigid', 'icy', 'glacial', 'arctic'],
+                'easy': ['effortless', 'simple', 'straightforward', 'uncomplicated', 'elementary'],
+                'hard': ['difficult', 'arduous', 'challenging', 'demanding', 'strenuous'],
+                'smart': ['intelligent', 'brilliant', 'genius', 'astute', 'clever'],
+                'stupid': ['foolish', 'idiotic', 'absurd', 'ridiculous', 'senseless'],
+                'pretty': ['beautiful', 'gorgeous', 'stunning', 'exquisite', 'lovely'],
+                'ugly': ['hideous', 'grotesque', 'repulsive', 'unsightly', 'ghastly'],
+                'funny': ['hilarious', 'amusing', 'comical', 'entertaining', 'witty'],
+                'boring': ['tedious', 'monotonous', 'dull', 'tiresome', 'dreary'],
+                'interesting': ['fascinating', 'captivating', 'intriguing', 'compelling', 'absorbing'],
+                'scary': ['terrifying', 'frightening', 'horrifying', 'petrifying', 'chilling'],
+                'nice': ['pleasant', 'delightful', 'charming', 'agreeable', 'lovely'],
+                'mean': ['cruel', 'malicious', 'vicious', 'nasty', 'spiteful'],
+                'rich': ['wealthy', 'affluent', 'prosperous', 'opulent', 'luxurious'],
+                'poor': ['destitute', 'impoverished', 'penniless', 'indigent', 'needy'],
+                'strong': ['powerful', 'mighty', 'robust', 'vigorous', 'sturdy'],
+                'weak': ['feeble', 'frail', 'fragile', 'delicate', 'powerless'],
+                'loud': ['deafening', 'thunderous', 'booming', 'roaring', 'resounding'],
+                'quiet': ['silent', 'hushed', 'muted', 'soundless', 'noiseless'],
+                'clean': ['spotless', 'immaculate', 'pristine', 'sterile', 'hygienic'],
+                'dirty': ['filthy', 'grimy', 'squalid', 'soiled', 'contaminated'],
+                'new': ['brand-new', 'fresh', 'novel', 'innovative', 'modern'],
+                'old': ['ancient', 'antique', 'archaic', 'aged', 'venerable'],
+                'young': ['youthful', 'juvenile', 'adolescent', 'immature', 'childlike'],
+                'important': ['crucial', 'vital', 'essential', 'critical', 'significant'],
+                'different': ['distinct', 'unique', 'diverse', 'disparate', 'dissimilar'],
+                'similar': ['identical', 'alike', 'comparable', 'equivalent', 'analogous'],
+                'beautiful': ['stunning', 'magnificent', 'breathtaking', 'radiant', 'splendid'],
+                'strange': ['bizarre', 'peculiar', 'odd', 'unusual', 'eccentric'],
+                'expensive': ['costly', 'pricey', 'exorbitant', 'steep', 'premium'],
+                'cheap': ['inexpensive', 'economical', 'affordable', 'budget-friendly', 'low-cost'],
+                'hungry': ['starving', 'ravenous', 'famished', 'voracious', 'insatiable'],
+                'thirsty': ['parched', 'dehydrated', 'dry', 'arid', 'desiccated'],
+                'full': ['stuffed', 'satiated', 'replete', 'gorged', 'sated'],
+                'empty': ['vacant', 'hollow', 'void', 'barren', 'desolate'],
+                'wet': ['soaked', 'drenched', 'saturated', 'waterlogged', 'sodden'],
+                'dry': ['arid', 'parched', 'dehydrated', 'desiccated', 'withered'],
+                'bright': ['brilliant', 'radiant', 'luminous', 'dazzling', 'gleaming'],
+                'dark': ['pitch-black', 'murky', 'shadowy', 'dim', 'gloomy'],
+                'late': ['overdue', 'belated', 'tardy', 'delayed', 'unpunctual'],
+                'early': ['premature', 'untimely', 'advanced', 'preceding', 'ahead'],
+                'close': ['near', 'adjacent', 'proximate', 'neighboring', 'intimate'],
+                'far': ['distant', 'remote', 'faraway', 'removed', 'isolated'],
+                'high': ['elevated', 'lofty', 'towering', 'soaring', 'supreme'],
+                'low': ['minimal', 'modest', 'reduced', 'diminished', 'inferior'],
+                'wide': ['broad', 'expansive', 'extensive', 'vast', 'spacious'],
+                'narrow': ['slim', 'slender', 'thin', 'tight', 'confined'],
+                'thick': ['dense', 'solid', 'substantial', 'heavy', 'concentrated'],
+                'thin': ['slender', 'slim', 'lean', 'skinny', 'gaunt'],
+                'long': ['lengthy', 'extended', 'prolonged', 'protracted', 'endless'],
+                'short': ['brief', 'concise', 'compact', 'abbreviated', 'fleeting'],
+                'deep': ['profound', 'bottomless', 'abyssal', 'cavernous', 'unfathomable'],
+                'shallow': ['superficial', 'surface-level', 'trivial', 'cursory', 'skin-deep'],
+                'smooth': ['sleek', 'polished', 'glossy', 'silky', 'even'],
+                'rough': ['coarse', 'jagged', 'uneven', 'rugged', 'harsh'],
+                'soft': ['tender', 'gentle', 'delicate', 'plush', 'velvety'],
+                'calm': ['serene', 'tranquil', 'peaceful', 'placid', 'composed'],
+                'busy': ['hectic', 'frantic', 'frenzied', 'chaotic', 'overwhelming'],
+                'lazy': ['idle', 'indolent', 'sluggish', 'lethargic', 'slothful'],
+                'active': ['energetic', 'dynamic', 'vigorous', 'lively', 'animated'],
+                'careful': ['cautious', 'meticulous', 'thorough', 'vigilant', 'prudent'],
+                'careless': ['reckless', 'negligent', 'thoughtless', 'heedless', 'sloppy'],
+                'honest': ['truthful', 'sincere', 'genuine', 'candid', 'forthright'],
+                'brave': ['courageous', 'fearless', 'valiant', 'heroic', 'bold'],
+                'afraid': ['terrified', 'petrified', 'frightened', 'alarmed', 'panicked'],
+                'confident': ['assured', 'self-assured', 'certain', 'poised', 'secure'],
+                'nervous': ['anxious', 'apprehensive', 'jittery', 'uneasy', 'agitated'],
+                'proud': ['dignified', 'honored', 'distinguished', 'noble', 'majestic'],
+                'ashamed': ['mortified', 'humiliated', 'embarrassed', 'disgraced', 'abashed'],
+                'surprised': ['astonished', 'amazed', 'astounded', 'stunned', 'shocked'],
+                'excited': ['thrilled', 'exhilarated', 'enthusiastic', 'animated', 'eager'],
+                'worried': ['anxious', 'concerned', 'troubled', 'distressed', 'apprehensive'],
+                'lonely': ['isolated', 'solitary', 'desolate', 'forsaken', 'abandoned'],
+                'popular': ['renowned', 'celebrated', 'famous', 'well-known', 'acclaimed'],
+                'rare': ['scarce', 'uncommon', 'exceptional', 'unique', 'extraordinary'],
+                'common': ['ordinary', 'typical', 'standard', 'conventional', 'ubiquitous'],
+                'simple': ['basic', 'elementary', 'straightforward', 'uncomplicated', 'plain'],
+                'complex': ['complicated', 'intricate', 'elaborate', 'convoluted', 'sophisticated'],
+                'clear': ['transparent', 'evident', 'obvious', 'apparent', 'lucid'],
+                'confused': ['bewildered', 'perplexed', 'baffled', 'puzzled', 'disoriented'],
+                'certain': ['definite', 'absolute', 'sure', 'positive', 'unquestionable'],
+                'doubtful': ['uncertain', 'skeptical', 'dubious', 'questionable', 'ambiguous'],
+                'perfect': ['flawless', 'impeccable', 'ideal', 'faultless', 'pristine'],
+                'terrible': ['horrific', 'dreadful', 'appalling', 'horrendous', 'ghastly'],
+                'wonderful': ['marvelous', 'magnificent', 'splendid', 'fantastic', 'glorious'],
+                'serious': ['grave', 'solemn', 'severe', 'critical', 'earnest'],
+                'friendly': ['amiable', 'cordial', 'warm', 'affable', 'genial'],
+                'rude': ['impolite', 'discourteous', 'disrespectful', 'insolent', 'crude'],
+                'polite': ['courteous', 'respectful', 'civil', 'gracious', 'well-mannered'],
+                'kind': ['compassionate', 'benevolent', 'generous', 'considerate', 'tender'],
+                'cruel': ['brutal', 'savage', 'ruthless', 'merciless', 'heartless'],
+                'gentle': ['tender', 'mild', 'soft', 'delicate', 'soothing'],
+                'harsh': ['severe', 'stern', 'strict', 'rigid', 'unforgiving'],
+                'fair': ['just', 'equitable', 'impartial', 'unbiased', 'reasonable'],
+                'unfair': ['unjust', 'inequitable', 'biased', 'prejudiced', 'discriminatory']
+            };
+
+            const getSuggestion = async (refresh = false) => {
+                if (!adjective.trim() || isLoading) return;
+
+                // Check for Pepero Day easter egg
+                if (checkPeperoDay(adjective)) {
+                    setShowPeperoGift(true);
+                    return;
+                }
+
+                setIsLoading(true);
+                setFade(true);
+                setError(false);
+
+                // Simulate API delay for realistic feel
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                try {
+                    const normalizedAdjective = adjective.toLowerCase().trim();
+                    const suggestions = wordDictionary[normalizedAdjective];
+
+                    if (suggestions && suggestions.length > 0) {
+                        // Filter out previously suggested words if refresh is true
+                        let availableSuggestions = suggestions;
+                        if (refresh && previousSuggestions.length > 0) {
+                            availableSuggestions = suggestions.filter(
+                                word => !previousSuggestions.includes(word)
+                            );
+                            
+                            // If all suggestions have been used, reset and start over
+                            if (availableSuggestions.length === 0) {
+                                availableSuggestions = suggestions;
+                                setPreviousSuggestions([]);
+                            }
+                        }
+
+                        // Pick a random suggestion from available ones
+                        const randomIndex = Math.floor(Math.random() * availableSuggestions.length);
+                        const selectedWord = availableSuggestions[randomIndex];
+                        
+                        setSuggestion(selectedWord);
+                        setPreviousSuggestions(prev => [...prev, selectedWord]);
+                    } else {
+                        // If word not in dictionary, show error
+                        setError(true);
+                        setSuggestion('');
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestion:', error);
+                    setError(true);
+                    setSuggestion('');
+                } finally {
+                    setIsLoading(false);
+                    setFade(false);
+                }
+            };
+
+            const handleInputChange = (e) => {
+                setAdjective(e.target.value);
+                setSuggestion('');
+                setPreviousSuggestions([]);
+                setError(false);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter') {
+                    getSuggestion();
+                }
+            };
+
+            const handleRefresh = () => {
+                if (suggestion && !isLoading) {
+                    getSuggestion(true);
+                }
+            };
+
+            return (
+                <div 
+                    className="min-h-screen transition-colors duration-300"
+                    style={{ 
+                        backgroundColor: isDark ? '#1B1917' : '#FAFAF9',
+                        color: isDark ? '#ffffff' : '#1B1917'
+                    }}
+                >
+                    {/* Header */}
+                    <header className="absolute top-0 left-0 right-0 flex justify-between items-center p-6">
+                        <h1 
+                            className="text-2xl font-serif italic font-light"
+                            style={{ color: '#A8A29D' }}
+                        >
+                            Better than very
+                        </h1>
+                        <button
+                            onClick={() => setIsDark(!isDark)}
+                            className={`p-2 rounded-full transition-colors ${
+                                isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                            }`}
+                            aria-label="Toggle theme"
+                        >
+                            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
+                    </header>
+
+                    {/* Main content - centered on page */}
+                    <main className="min-h-screen flex items-center justify-center">
+                        <div className="w-full max-w-2xl px-6 space-y-8">
+                            {/* Input section */}
+                            <div 
+                                className={`flex flex-col items-center gap-3 transition-transform duration-500 ease-out ${
+                                    suggestion || error ? '-translate-y-4' : 'translate-y-0'
+                                }`}
+                            >
+                                <div className="flex items-baseline gap-4 text-4xl font-serif">
+                                    <span>Very</span>
+                                    <div className="relative flex items-baseline gap-2">
+                                        <input
+                                            type="text"
+                                            value={adjective}
+                                            onChange={handleInputChange}
+                                            onKeyPress={handleKeyPress}
+                                            onBlur={() => adjective && !suggestion && getSuggestion()}
+                                            placeholder="happy"
+                                            className="border-b transition-colors duration-300 bg-transparent outline-none text-center text-4xl font-serif pb-3"
+                                            style={{
+                                                borderColor: '#A8A29D',
+                                                color: isDark ? '#ffffff' : '#1B1917',
+                                                width: '16rem',
+                                                borderBottomWidth: '1px'
+                                            }}
+                                        />
+                                        <button
+                                            onClick={() => adjective && getSuggestion()}
+                                            className={`p-2 transition-colors relative top-1 ${!adjective ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            style={{
+                                                color: '#A8A29D'
+                                            }}
+                                            disabled={!adjective}
+                                            aria-label="Search for alternative"
+                                        >
+                                            <Search className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {/* Easter egg hint */}
+                                <div 
+                                    className="text-sm font-serif italic opacity-60 mt-2"
+                                    style={{ color: '#A8A29D' }}
+                                >
+                                    "행복한 빼빼로 데이"를 입력하면 기분 좋은 일이 있을지도?
+                                </div>
+                            </div>
+
+                            {/* Result section */}
+                            {suggestion && (
+                                <div 
+                                    className={`transition-opacity duration-300 ${
+                                        fade ? 'opacity-0' : 'opacity-100'
+                                    }`}
+                                >
+                                    <div className="flex flex-col items-center">
+                                        <div className="flex items-center gap-3">
+                                            <div className="text-6xl font-serif">
+                                                "<TypewriterText text={suggestion} />"
+                                            </div>
+                                            <button
+                                                onClick={handleRefresh}
+                                                disabled={isLoading}
+                                                className={`p-2 rounded-full transition-all duration-300 ${
+                                                    isDark 
+                                                        ? 'hover:bg-gray-800 disabled:opacity-50' 
+                                                        : 'hover:bg-gray-100 disabled:opacity-50'
+                                                } ${isLoading ? 'animate-spin' : ''}`}
+                                                aria-label="Get another suggestion"
+                                            >
+                                                <RefreshCw className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Error state */}
+                            {error && (
+                                <div 
+                                    className="flex justify-center animate-shake"
+                                >
+                                    <div 
+                                        className="text-2xl font-serif"
+                                        style={{ color: '#EF4444' }}
+                                    >
+                                        Let's try again
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </main>
+
+                    {/* Pepero Day Gift Modal */}
+                    {showPeperoGift && (
+                        <PeperoGiftCard 
+                            isDark={isDark} 
+                            onClose={() => {
+                                setShowPeperoGift(false);
+                                setAdjective('');
+                            }} 
+                        />
+                    )}
+
+                    {/* Footer */}
+                    <footer className="absolute bottom-0 left-0 right-0 p-4 text-center">
+                        <p 
+                            className="text-xs font-serif"
+                            style={{ color: '#A8A29D' }}
+                        >
+                            © 2025 SEORY0
+                        </p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
