@@ -1,0 +1,11 @@
+links:
+- title: Writing
+  url: /
+- title: About
+  url: /about
+- title: Search
+  url: /search
+- title: Tags
+  url: /tags
+- title: Rss
+  url: /atom.xml
