@@ -1,0 +1,45 @@
+---
+layout: default
+title: Writing
+permalink: /writing/
+---
+
+<div class="section-bar">
+  <span>Writing</span>
+  <span class="num">Grid</span>
+</div>
+
+<div class="article-grid">
+  {% for post in site.posts %}
+    <article class="article-card">
+      <a href="{{ post.url | relative_url }}">
+        <div class="thumbnail" 
+             style="background-image: url('{{ post.image | default: 'https://via.placeholder.com/500x500/333333/ffffff?text=HACK' }}');">
+        </div>
+        <div class="info">
+          <div class="tags">
+            {% for tag in post.tags limit:2 %}
+              <span>#{{ tag }}</span>
+            {% endfor %}
+          </div>
+          <h3 class="title">{{ post.title }}</h3>
+          <div class="meta">{{ post.date | date: "%Y. %m. %d" }}</div>
+        </div>
+      </a>
+    </article>
+  {% endfor %}
+</div>
+
+{% if paginator.total_pages > 1 %}
+<div class="pagination-container">
+  <div class="pagination">
+    {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | relative_url }}">← PREV</a>
+    {% endif %}
+    <span>Page {{ paginator.page }}</span>
+    {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | relative_url }}">NEXT →</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
