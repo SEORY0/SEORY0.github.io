@@ -1,45 +1,223 @@
 ---
 layout: default
-title: Writing
+title: Writings
 permalink: /writing/
 ---
 
-<div class="section-bar">
-  <span>Writing</span>
-  <span class="num">Grid</span>
-</div>
-
-<div class="article-grid">
-  {% for post in site.posts %}
-    <article class="article-card">
-      <a href="{{ post.url | relative_url }}">
-        <div class="thumbnail" 
-             style="background-image: url('{{ post.image | default: 'https://via.placeholder.com/500x500/333333/ffffff?text=HACK' }}');">
-        </div>
-        <div class="info">
-          <div class="tags">
-            {% for tag in post.tags limit:2 %}
-              <span>#{{ tag }}</span>
+<section class="writings-header">
+  <div class="container">
+    <h2>
+      Writings<br>
+      <em>Stories. Updates. Perspectives.</em>
+    </h2>
+    
+    <div class="control-bar">
+      
+      <div class="mai-dropdown" id="topic-dropdown">
+        <button class="dropdown-trigger">
+          <span>Topics</span>
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor">
+            <path d="M1 1L6 6L11 1" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu">
+          <ul>
+            <li class="dropdown-item active" data-value="all" data-type="filter">
+              <span class="checkbox"></span>
+              <span class="text">All</span>
+            </li>
+            {% assign tags = site.tags | sort %}
+            {% for tag in tags %}
+            <li class="dropdown-item" data-value="{{ tag[0] | slugify }}" data-type="filter">
+              <span class="checkbox"></span>
+              <span class="text">{{ tag[0] }}</span>
+            </li>
             {% endfor %}
-          </div>
-          <h3 class="title">{{ post.title }}</h3>
-          <div class="meta">{{ post.date | date: "%Y. %m. %d" }}</div>
+          </ul>
         </div>
-      </a>
-    </article>
-  {% endfor %}
-</div>
+      </div>
 
-{% if paginator.total_pages > 1 %}
-<div class="pagination-container">
-  <div class="pagination">
-    {% if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | relative_url }}">← PREV</a>
-    {% endif %}
-    <span>Page {{ paginator.page }}</span>
-    {% if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | relative_url }}">NEXT →</a>
-    {% endif %}
+      <div class="mai-dropdown" id="sort-dropdown">
+        <button class="dropdown-trigger">
+          <span>Sort</span>
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor">
+            <path d="M1 1L6 6L11 1" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu">
+          <ul>
+            <li class="dropdown-item active" data-value="newest" data-type="sort">
+              <span class="checkbox"></span>
+              <span class="text">Newest First</span>
+            </li>
+            <li class="dropdown-item" data-value="oldest" data-type="sort">
+              <span class="checkbox"></span>
+              <span class="text">Oldest First</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
-{% endif %}
+</section>
+
+<section class="container writings-wrapper">
+  <div class="writings-list" id="posts-container">
+    {% for post in site.posts %}
+      <article class="news-card" data-date="{{ post.date | date: '%s' }}" data-tags="{{ post.tags | join: ' ' | downcase }}">
+        <a href="{{ post.url | relative_url }}" class="card-link" style="display: flex; width: 100%; align-items: center; gap: 60px;">
+          <div class="card-image">
+            <div class="image-wrapper">
+              <img src="{{ post.image | default: '/assets/images/default.jpg' | relative_url }}" alt="{{ post.title }}">
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div class="meta-top">
+              <span class="category">
+                {% if post.tags.size > 0 %}{{ post.tags[0] }}{% else %}Article{% endif %}
+              </span>
+              <span class="date">{{ post.date | date: "%B %d, %Y" }}</span>
+            </div>
+            
+            <h3>{{ post.title }}</h3>
+            
+            <p class="excerpt">{{ post.content | strip_html | truncatewords: 30 }}</p>
+            
+            <div class="read-more" style="display: flex; align-items: center; gap: 10px; font-weight: 700; opacity: 0.6;">
+              <span>Read Story</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+
+  <div class="load-more-container" style="text-align: center; margin-top: 60px;">
+    <button id="load-more-btn" class="btn-load-more" style="padding: 15px 40px; background: var(--btn-bg); color: var(--mai-brown); border: none; border-radius: 50px; font-weight: 600; cursor: pointer;">Load More</button>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  /* Variables */
+  var container = document.getElementById('posts-container');
+  var cards = Array.from(document.querySelectorAll('.news-card'));
+  var loadMoreBtn = document.getElementById('load-more-btn');
+  var dropdowns = document.querySelectorAll('.mai-dropdown');
+  
+  var visibleCount = 6; /* Initially show 6 */
+  var increment = 6;    /* Show 6 more on click */
+  var currentFilter = 'all';
+
+  /* 1. Initial Display Logic */
+  function updateDisplay() {
+    var shown = 0;
+    var totalMatches = 0;
+    
+    cards.forEach(function(card) {
+      var tags = card.getAttribute('data-tags');
+      var match = currentFilter === 'all' || tags.indexOf(currentFilter) !== -1;
+      
+      if (match) {
+        totalMatches++;
+        if (shown < visibleCount) {
+          card.style.display = 'flex';
+          /* Small delay for animation effect */
+          setTimeout(function() { card.style.opacity = '1'; }, 50);
+          shown++;
+        } else {
+          card.style.display = 'none';
+          card.style.opacity = '0';
+        }
+      } else {
+        card.style.display = 'none';
+        card.style.opacity = '0';
+      }
+    });
+
+    /* Toggle Load More Button */
+    if (loadMoreBtn) {
+      if (shown >= totalMatches) {
+        loadMoreBtn.style.display = 'none';
+      } else {
+        loadMoreBtn.style.display = 'inline-block';
+      }
+    }
+  }
+
+  /* Initial run */
+  updateDisplay();
+
+  /* Load More Event */
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function() {
+      visibleCount += increment;
+      updateDisplay();
+    });
+  }
+
+  /* 2. Dropdown UI Logic */
+  dropdowns.forEach(function(dropdown) {
+    var trigger = dropdown.querySelector('.dropdown-trigger');
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      /* Close other dropdowns */
+      dropdowns.forEach(function(d) { 
+        if (d !== dropdown) d.classList.remove('open'); 
+      });
+      dropdown.classList.toggle('open');
+    });
+  });
+
+  /* Close when clicking outside */
+  document.addEventListener('click', function() {
+    dropdowns.forEach(function(d) { d.classList.remove('open'); });
+  });
+
+  /* 3. Filter & Sort Logic */
+  var items = document.querySelectorAll('.dropdown-item');
+
+  items.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var type = this.getAttribute('data-type');
+      var value = this.getAttribute('data-value');
+      var parentList = this.closest('ul');
+      
+      /* UI Active Toggle */
+      var siblings = parentList.querySelectorAll('.dropdown-item');
+      for (var i = 0; i < siblings.length; i++) {
+        siblings[i].classList.remove('active');
+      }
+      this.classList.add('active');
+
+      if (type === 'filter') {
+        /* Filtering */
+        currentFilter = value;
+        visibleCount = 6; /* Reset count on filter change */
+        updateDisplay();
+        
+      } else if (type === 'sort') {
+        /* Sorting */
+        var visibleCards = Array.from(container.querySelectorAll('.news-card'));
+        
+        visibleCards.sort(function(a, b) {
+          var dateA = parseInt(a.getAttribute('data-date'));
+          var dateB = parseInt(b.getAttribute('data-date'));
+          return value === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+
+        /* Re-append to DOM */
+        visibleCards.forEach(function(card) { container.appendChild(card); });
+        
+        /* Update display to refresh view */
+        updateDisplay();
+      }
+    });
+  });
+});
+</script>

@@ -2,11 +2,132 @@
 layout: default
 ---
 
-<section class="post">
-  <h2>{{ page.title }}</h2>
-  {{ content }}
-  <span class="meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time> &middot; {% for tag in page.tags %}
-    <a href="/tag/{{tag}}">{{tag}}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+<section class="post-header-section">
+  <div class="container">
+    <div class="post-header-grid">
+      
+      <div class="header-image">
+        <img src="{{ post.image | default: '/assets/images/default.jpg' | relative_url }}" alt="{{ post.title }}">
+      </div>
+
+      <div class="header-info">
+        <div class="meta">
+          <span class="tags">
+            {% for tag in page.tags %}
+              {{ tag }}{% unless forloop.last %}, {% endunless %}
+            {% endfor %}
+          </span>
+          <span class="divider">|</span>
+          <span class="date">{{ page.date | date: "%B %d, %Y" }}</span>
+        </div>
+
+        <h1 class="post-title">{{ page.title }}</h1>
+        
+        <p class="post-description">
+          {{ page.description | default: page.excerpt | strip_html | truncate: 160 }}
+        </p>
+
+        <div class="author-info">
+            <span>By <strong>SEORY0</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
+<section class="container post-body-section">
+  <div class="post-grid">
+    
+    <article class="post-content" id="article-content">
+      {{ content }}
+    </article>
 
+    <aside class="post-sidebar">
+      <div class="sticky-toc">
+        <h3>In this Article</h3>
+        <ul id="toc-list">
+          </ul>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var content = document.getElementById('article-content');
+  var tocList = document.getElementById('toc-list');
+  var headings = content.querySelectorAll('h2, h3');
+
+  /* If no headings, hide sidebar */
+  if (headings.length === 0) {
+    var sidebar = document.querySelector('.post-sidebar');
+    if(sidebar) sidebar.style.display = 'none';
+    content.style.width = '100%';
+    return;
+  }
+
+  var tocLinks = [];
+
+  headings.forEach(function(heading, index) {
+    /* Assign ID if missing */
+    if (!heading.id) {
+      heading.id = 'heading-' + index;
+    }
+
+    var li = document.createElement('li');
+    li.className = heading.tagName.toLowerCase(); 
+    
+    var a = document.createElement('a');
+    a.href = '#' + heading.id;
+    a.textContent = heading.textContent;
+    
+    /* Smooth Scroll with Offset */
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('href').substring(1);
+      var targetElement = document.getElementById(targetId);
+      
+      if(targetElement) {
+        var headerOffset = 100;
+        var elementPosition = targetElement.getBoundingClientRect().top;
+        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    });
+
+    li.appendChild(a);
+    tocList.appendChild(li);
+    tocLinks.push(a);
+  });
+
+  /* Robust Scroll Spy Logic */
+  function onScroll() {
+    var scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+    var headerOffset = 150; /* Highlight trigger point offset */
+    var current = "";
+
+    headings.forEach(function(heading) {
+      if ((heading.offsetTop - headerOffset) <= scrollPos) {
+        current = heading.id;
+      }
+    });
+
+    tocLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', onScroll);
+  /* Initial check */
+  onScroll();
+});
+</script>
