@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apin - RISC-V Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CSS Variables based on _main.scss --- */
+        :root {
+            /* Light Mode Defaults */
+            --mai-bg: #FEF9ED;
+            --mai-brown: #5D524B;
+            --mai-card-bg: #FBF4E5;
+            --mai-white: #FFFFFF;
+            --mai-gray: #888888;
+            --mai-border: rgba(93, 82, 75, 0.15);
+            --shadow-color: rgba(93, 82, 75, 0.08);
+            
+            --btn-bg: #F7ECD9;
+            --btn-text: #5D524B;
+            --accent-color: #A67C52;
+            --accent-bg: #4A3B32;
+
+            /* Visualizer Specific Colors (Adapted for Warm Theme) */
+            --c-opcode: #c0392b; /* Muted Red */
+            --c-rd: #d35400;     /* Pumpkin */
+            --c-rs1: #b7791f;    /* Warm Amber */
+            --c-rs2: #27ae60;    /* Muted Green */
+            --c-imm: #2980b9;    /* Muted Blue */
+            --c-func: #8e44ad;   /* Muted Purple */
+            --c-func7: #c2185b;  /* Muted Pink */
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --mai-bg: #121212;
+                --mai-brown: #E0D6CC;
+                --mai-card-bg: #1E1E1E;
+                --mai-white: #2C2C2C;
+                --mai-gray: #AAAAAA;
+                --mai-border: rgba(255, 255, 255, 0.15);
+                --shadow-color: rgba(0, 0, 0, 0.5);
+                
+                --btn-bg: #333333;
+                --btn-text: #FFFFFF;
+                --accent-color: #C8A075;
+                
+                /* Adjust Visualize colors for dark mode visibility */
+                --c-opcode: #ff6b6b;
+                --c-rd: #ff9f43;
+                --c-rs1: #feca57;
+                --c-rs2: #54a0ff;
+                --c-imm: #48dbfb;
+                --c-func: #a55eea;
+                --c-func7: #ff9ff3;
+            }
+        }
+
+        /* --- 2. Base Reset & Typography --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s ease; }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: var(--mai-bg);
+            color: var(--mai-brown);
+            line-height: 1.6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- 3. Hero Section (Title) --- */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 400;
+            margin-bottom: 10px;
+            color: var(--mai-brown);
+            line-height: 1.1;
+        }
+        
+        h1 em {
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            font-weight: 600;
+            color: var(--mai-brown);
+        }
+
+        /* --- 4. Card Styles --- */
+        .mai-card {
+            background-color: var(--mai-white);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            border: 1px solid var(--mai-border);
+            margin-bottom: 40px;
+        }
+
+        /* --- 5. Input Form --- */
+        .form-group { margin-bottom: 24px; }
+        
+        label {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 8px;
+            color: var(--mai-brown);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--mai-bg); /* Cream bg inside white card */
+            border: 1px solid var(--mai-border);
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--mai-brown);
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+            background-color: var(--mai-card-bg);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 20px;
+        }
+        .input-row > div { flex: 1; }
+
+        .helper-text {
+            font-size: 13px;
+            color: var(--mai-gray);
+            margin-top: 6px;
+        }
+
+        button.action-btn {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--mai-brown);
+            color: var(--mai-bg); /* Inverted for high contrast action */
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 10px;
+        }
+
+        button.action-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        /* --- 6. Result Section --- */
+        .result-section {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .result-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--mai-border);
+            padding-bottom: 15px;
+            color: var(--mai-brown);
+        }
+        
+        .type-badge {
+            display: inline-block;
+            vertical-align: middle;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            background-color: var(--btn-bg);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-content {
+            font-size: 16px;
+        }
+        
+        .step-content p { margin-bottom: 12px; }
+
+        .mono {
+            font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+            background: var(--mai-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        /* --- 7. Tables --- */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border: 1px solid var(--mai-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: var(--mai-bg);
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--mai-border);
+            color: var(--mai-brown);
+        }
+
+        td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid var(--mai-border);
+            font-size: 14px;
+            color: var(--mai-brown);
+        }
+        
+        tr:last-child td { border-bottom: none; }
+
+        /* --- 8. Bit Coloring --- */
+        .bit-opcode { color: var(--c-opcode); font-weight: 700; }
+        .bit-rd { color: var(--c-rd); font-weight: 700; }
+        .bit-rs1 { color: var(--c-rs1); font-weight: 700; }
+        .bit-rs2 { color: var(--c-rs2); font-weight: 700; }
+        .bit-imm { color: var(--c-imm); font-weight: 700; }
+        .bit-func { color: var(--c-func); font-weight: 700; }
+        .bit-func7 { color: var(--c-func7); font-weight: 700; }
+
+        /* --- 9. Animations & Mobile --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 42px; }
+            .mai-card { padding: 25px; }
+            .input-row { flex-direction: column; gap: 0; }
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="hero fade-in-up">
+        <h1>Apin</h1>
+        <p class="subtitle">RISC-V Assembly parsing in a Nutshell</p>
+    </header>
+
+    <div class="mai-card fade-in-up" style="animation-delay: 0.1s;">
+        <div class="form-group">
+            <label>Instruction (Assembly)</label>
+            <input type="text" id="instrInput" value="sw t0, 8(sp)" placeholder="e.g., add t0, t1, t2">
+            <div class="helper-text">Supports R, I, S, B, U, J Types (Case Insensitive)</div>
+        </div>
+        
+        <div class="input-row">
+            <div class="form-group">
+                <label>Current PC (Hex)</label>
+                <input type="text" id="pcInput" value="100">
+                <div class="helper-text">For Branch/Jump Offset</div>
+            </div>
+            <div class="form-group">
+                <label>Target Label (Hex)</label>
+                <input type="text" id="targetInput" value="100">
+                <div class="helper-text">Target Address</div>
+            </div>
+        </div>
+        
+        <button class="action-btn" onclick="analyze()">Analyze Instruction</button>
+    </div>
+
+    <div id="resultContainer"></div>
+</div>
+
+<script>
+    // --- 1. Data Definitions ---
+
+    const regMap = {
+        'zero': 0, 'ra': 1, 'sp': 2, 'gp': 3, 'tp': 4,
+        't0': 5, 't1': 6, 't2': 7,
+        's0': 8, 'fp': 8,
+        's1': 9,
+        'a0': 10, 'a1': 11, 'a2': 12, 'a3': 13, 'a4': 14, 'a5': 15, 'a6': 16, 'a7': 17,
+        's2': 18, 's3': 19, 's4': 20, 's5': 21, 's6': 22, 's7': 23, 's8': 24, 's9': 25, 's10': 26, 's11': 27,
+        't3': 28, 't4': 29, 't5': 30, 't6': 31
+    };
+
+    const instructions = {
+        // R-Type
+        'add':  { type: 'R', opcode: '0110011', funct3: '000', funct7: '0000000' },
+        'sub':  { type: 'R', opcode: '0110011', funct3: '000', funct7: '0100000' },
+        'sll':  { type: 'R', opcode: '0110011', funct3: '001', funct7: '0000000' },
+        'slt':  { type: 'R', opcode: '0110011', funct3: '010', funct7: '0000000' },
+        'sltu': { type: 'R', opcode: '0110011', funct3: '011', funct7: '0000000' },
+        'xor':  { type: 'R', opcode: '0110011', funct3: '100', funct7: '0000000' },
+        'srl':  { type: 'R', opcode: '0110011', funct3: '101', funct7: '0000000' },
+        'sra':  { type: 'R', opcode: '0110011', funct3: '101', funct7: '0100000' },
+        'or':   { type: 'R', opcode: '0110011', funct3: '110', funct7: '0000000' },
+        'and':  { type: 'R', opcode: '0110011', funct3: '111', funct7: '0000000' },
+
+        // I-Type
+        'addi': { type: 'I', opcode: '0010011', funct3: '000' },
+        'slti': { type: 'I', opcode: '0010011', funct3: '010' },
+        'sltiu':{ type: 'I', opcode: '0010011', funct3: '011' },
+        'xori': { type: 'I', opcode: '0010011', funct3: '100' },
+        'ori':  { type: 'I', opcode: '0010011', funct3: '110' },
+        'andi': { type: 'I', opcode: '0010011', funct3: '111' },
+        'slli': { type: 'I_SH', opcode: '0010011', funct3: '001', funct7: '0000000' },
+        'srli': { type: 'I_SH', opcode: '0010011', funct3: '101', funct7: '0000000' },
+        'srai': { type: 'I_SH', opcode: '0010011', funct3: '101', funct7: '0100000' },
+        'jalr': { type: 'I_JUMP', opcode: '1100111', funct3: '000' },
+
+        // Loads
+        'lb':   { type: 'I_LOAD', opcode: '0000011', funct3: '000' },
+        'lh':   { type: 'I_LOAD', opcode: '0000011', funct3: '001' },
+        'lw':   { type: 'I_LOAD', opcode: '0000011', funct3: '010' },
+        'lbu':  { type: 'I_LOAD', opcode: '0000011', funct3: '100' },
+        'lhu':  { type: 'I_LOAD', opcode: '0000011', funct3: '101' },
+
+        // Stores
+        'sb':   { type: 'S', opcode: '0100011', funct3: '000' },
+        'sh':   { type: 'S', opcode: '0100011', funct3: '001' },
+        'sw':   { type: 'S', opcode: '0100011', funct3: '010' },
+
+        // Branches
+        'beq':  { type: 'B', opcode: '1100011', funct3: '000' },
+        'bne':  { type: 'B', opcode: '1100011', funct3: '001' },
+        'blt':  { type: 'B', opcode: '1100011', funct3: '100' },
+        'bge':  { type: 'B', opcode: '1100011', funct3: '101' },
+        'bltu': { type: 'B', opcode: '1100011', funct3: '110' },
+        'bgeu': { type: 'B', opcode: '1100011', funct3: '111' },
+
+        // U-Type
+        'lui':  { type: 'U', opcode: '0110111' },
+        'auipc':{ type: 'U', opcode: '0010111' },
+
+        // J-Type
+        'jal':  { type: 'J', opcode: '1101111' }
+    };
+
+    // --- 2. Helper Functions ---
+
+    function toBin(num, len) {
+        if (num < 0) num = (1n << BigInt(len)) + BigInt(num);
+        return BigInt(num).toString(2).padStart(len, '0');
+    }
+
+    function getReg(str) {
+        if (!str) return 0;
+        str = str.replace(',', '').trim().toLowerCase();
+        if (regMap[str] !== undefined) return regMap[str];
+        if (str.startsWith('x')) return parseInt(str.substring(1));
+        return 0;
+    }
+
+    function parseImm(str) {
+        if (!str) return 0;
+        str = str.replace(',', '').trim();
+        if (str.toLowerCase().startsWith('0x')) return parseInt(str, 16);
+        return parseInt(str);
+    }
+
+    function hexToInt(hex) {
+        return parseInt(hex.replace(/^0x/i, ''), 16);
+    }
+
+    // --- 3. Main Analysis Logic ---
+
+    function analyze() {
+        const inputStr = document.getElementById('instrInput').value.trim();
+        const currentPC = hexToInt(document.getElementById('pcInput').value);
+        const targetPC = hexToInt(document.getElementById('targetInput').value);
+        const container = document.getElementById('resultContainer');
+        
+        container.innerHTML = '';
+        container.style.display = 'block';
+
+        const spaceIdx = inputStr.indexOf(' ');
+        const mnemonic = spaceIdx === -1 ? inputStr : inputStr.substring(0, spaceIdx).toLowerCase();
+        const argsStr = spaceIdx === -1 ? '' : inputStr.substring(spaceIdx + 1);
+        
+        const info = instructions[mnemonic];
+        if (!info) {
+            container.innerHTML = `<div class="mai-card" style="color:var(--c-opcode); text-align:center;">Unknown Instruction: '${mnemonic}'</div>`;
+            return;
+        }
+
+        let rd=0, rs1=0, rs2=0, imm=0;
+        let immStr = ""; 
+        let parts = argsStr.split(',').map(s => s.trim());
+        let calcNote = "";
+
+        // Parsing logic per Type
+        if (info.type === 'R') {
+            rd = getReg(parts[0]); rs1 = getReg(parts[1]); rs2 = getReg(parts[2]);
+        } 
+        else if (info.type === 'I' || info.type === 'I_SH') {
+            rd = getReg(parts[0]); rs1 = getReg(parts[1]); imm = parseImm(parts[2]); immStr = parts[2];
+        } 
+        else if (info.type === 'I_LOAD' || info.type === 'I_JUMP') {
+            rd = getReg(parts[0]);
+            const right = parts[1]; 
+            const pOpen = right.indexOf('('); const pClose = right.indexOf(')');
+            imm = parseImm(right.substring(0, pOpen));
+            rs1 = getReg(right.substring(pOpen + 1, pClose));
+            immStr = `${imm}`;
+        }
+        else if (info.type === 'S') {
+            rs2 = getReg(parts[0]);
+            const right = parts[1];
+            const pOpen = right.indexOf('('); const pClose = right.indexOf(')');
+            imm = parseImm(right.substring(0, pOpen));
+            rs1 = getReg(right.substring(pOpen + 1, pClose));
+            immStr = `${imm}`;
+        }
+        else if (info.type === 'B') {
+            rs1 = getReg(parts[0]); rs2 = getReg(parts[1]);
+            const offset = targetPC - currentPC;
+            imm = offset; immStr = `Target(${targetPC}) - PC(${currentPC}) = ${offset}`;
+            calcNote = "LSB(0) dropped, 2-byte aligned";
+        }
+        else if (info.type === 'U') {
+            rd = getReg(parts[0]); imm = parseImm(parts[1]); immStr = parts[1];
+        }
+        else if (info.type === 'J') {
+            rd = getReg(parts[0]);
+            const offset = targetPC - currentPC;
+            imm = offset; immStr = `Target(${targetPC}) - PC(${currentPC}) = ${offset}`;
+            calcNote = "LSB(0) dropped";
+        }
+
+        // --- Binary Encoding ---
+        let binaryHtml = '';
+        let bin32 = '';
+        
+        const binOp = info.opcode;
+        const binRd = toBin(rd, 5);
+        const binRs1 = toBin(rs1, 5);
+        const binRs2 = toBin(rs2, 5);
+        const binF3 = info.funct3;
+        
+        if (info.type === 'R') {
+            const binF7 = info.funct7;
+            bin32 = `${binF7}${binRs2}${binRs1}${binF3}${binRd}${binOp}`;
+            binaryHtml = renderTable(
+                ['funct7 (7)', 'rs2 (5)', 'rs1 (5)', 'funct3 (3)', 'rd (5)', 'opcode (7)'],
+                [binF7, binRs2, binRs1, binF3, binRd, binOp],
+                ['bit-func7', 'bit-rs2', 'bit-rs1', 'bit-func', 'bit-rd', 'bit-opcode']
+            );
+        }
+        else if (info.type.startsWith('I')) {
+            let binImm12;
+            if (info.type === 'I_SH') {
+                 const shamt = toBin(imm, 5); const f7 = info.funct7;
+                 binImm12 = f7 + shamt;
+            } else {
+                 binImm12 = toBin(imm, 12);
+            }
+            bin32 = `${binImm12}${binRs1}${binF3}${binRd}${binOp}`;
+            binaryHtml = renderTable(
+                ['imm[11:0] (12)', 'rs1 (5)', 'funct3 (3)', 'rd (5)', 'opcode (7)'],
+                [binImm12, binRs1, binF3, binRd, binOp],
+                ['bit-imm', 'bit-rs1', 'bit-func', 'bit-rd', 'bit-opcode']
+            );
+        }
+        else if (info.type === 'S') {
+            const binImmFull = toBin(imm, 12);
+            const imm11_5 = binImmFull.substring(0, 7); const imm4_0 = binImmFull.substring(7, 12);
+            bin32 = `${imm11_5}${binRs2}${binRs1}${binF3}${imm4_0}${binOp}`;
+            binaryHtml = renderTable(
+                ['imm[11:5] (7)', 'rs2 (5)', 'rs1 (5)', 'funct3 (3)', 'imm[4:0] (5)', 'opcode (7)'],
+                [imm11_5, binRs2, binRs1, binF3, imm4_0, binOp],
+                ['bit-imm', 'bit-rs2', 'bit-rs1', 'bit-func', 'bit-imm', 'bit-opcode']
+            );
+        }
+        else if (info.type === 'B') {
+            const binImmFull = toBin(imm, 13);
+            const core = binImmFull.substring(0, 12);
+            const b12 = core[0]; const b11 = core[1];
+            const b10_5 = core.substring(2, 8); const b4_1 = core.substring(8, 12);
+            const upper = b12 + b10_5; const lower = b4_1 + b11;
+            bin32 = `${upper}${binRs2}${binRs1}${binF3}${lower}${binOp}`;
+            binaryHtml = renderTable(
+                ['imm[12|10:5]', 'rs2', 'rs1', 'funct3', 'imm[4:1|11]', 'opcode'],
+                [upper, binRs2, binRs1, binF3, lower, binOp],
+                ['bit-imm', 'bit-rs2', 'bit-rs1', 'bit-func', 'bit-imm', 'bit-opcode']
+            );
+        }
+        else if (info.type === 'U') {
+            const binImm20 = toBin(imm, 20);
+            bin32 = `${binImm20}${binRd}${binOp}`;
+            binaryHtml = renderTable(
+                ['imm[31:12] (20)', 'rd (5)', 'opcode (7)'],
+                [binImm20, binRd, binOp],
+                ['bit-imm', 'bit-rd', 'bit-opcode']
+            );
+        }
+        else if (info.type === 'J') {
+            const binImmFull = toBin(imm, 21);
+            const core = binImmFull.substring(0, 20);
+            const b20 = core[0]; const b19_12 = core.substring(1, 9);
+            const b11 = core[9]; const b10_1 = core.substring(10, 20);
+            const scrambled = b20 + b10_1 + b11 + b19_12;
+            bin32 = `${scrambled}${binRd}${binOp}`;
+            binaryHtml = renderTable(
+                ['imm[20|10:1|11|19:12]', 'rd', 'opcode'],
+                [scrambled, binRd, binOp],
+                ['bit-imm', 'bit-rd', 'bit-opcode']
+            );
+        }
+
+        const hexVal = BigInt('0b' + bin32).toString(16).toUpperCase().padStart(8, '0');
+
+        // --- Render Results in Card Layout ---
+        let html = `
+        <div class="mai-card result-section">
+            <h2 class="result-header">1. Analysis <span class="type-badge">${info.type.split('_')[0]}-Type</span></h2>
+            <div class="step-content">
+                <p><strong>Opcode:</strong> <span class="bit-opcode">${info.opcode}</span></p>
+                <p><strong>Registers:</strong> rd=${rd}(${toBin(rd,5)}), rs1=${rs1}(${toBin(rs1,5)}), rs2=${rs2}(${toBin(rs2,5)})</p>
+                <p><strong>Immediate:</strong> ${imm} (Hex: 0x${Math.abs(imm).toString(16).toUpperCase()})</p>
+                <p class="mono" style="font-size:0.9em; opacity:0.8;">Calc: ${immStr} ${calcNote ? `(${calcNote})` : ''}</p>
+            </div>
+        </div>
+        
+        <div class="mai-card result-section" style="animation-delay: 0.1s;">
+            <h2 class="result-header">2. Encoding Visualization</h2>
+            ${binaryHtml}
+        </div>
+
+        <div class="mai-card result-section" style="animation-delay: 0.2s; border-color: var(--accent-color);">
+            <h2 class="result-header" style="color:var(--accent-color); border-color:var(--accent-color);">3. Machine Code</h2>
+            <table>
+                <tr>
+                    <th style="color:var(--accent-color);">Hexadecimal</th>
+                    <td style="font-weight:bold; font-size:1.5em; color:var(--accent-color);">0x${hexVal}</td>
+                </tr>
+                <tr>
+                    <th>Binary (32-bit)</th>
+                    <td class="mono" style="word-break: break-all;">${bin32.replace(/(.{4})/g, '$1 ')}</td>
+                </tr>
+            </table>
+        </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function renderTable(headers, values, classes) {
+        let h = '<thead><tr>';
+        headers.forEach(hdr => h += `<th>${hdr}</th>`);
+        h += '</tr></thead><tbody><tr>';
+        values.forEach((val, idx) => {
+            h += `<td class="${classes[idx]} mono" style="font-size:1.1em">${val}</td>`;
+        });
+        h += '</tr></tbody>';
+        return `<table>${h}</table>`;
+    }
+</script>
+
+</body>
+</html>

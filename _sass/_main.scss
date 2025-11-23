@@ -467,3 +467,90 @@ app-header {
 [data-theme="dark"] .search-overlay {
     background-color: rgba(18, 18, 18, 0.98);
 }
+
+/* --- 404 Page Styles (MAI Theme) --- */
+.error-page {
+  min-height: 80vh; /* 화면 중앙 배치 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 80px; /* 헤더 높이 고려 */
+  position: relative;
+  overflow: hidden;
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 거대한 배경 숫자 */
+  .error-code {
+    font-family: $font-serif;
+    font-size: 20vw; /* 화면 너비에 비례해 커짐 */
+    font-weight: 700;
+    line-height: 0.8;
+    color: var(--mai-brown);
+    opacity: 0.05; /* 아주 연하게 */
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .error-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .error-title {
+    font-family: $font-serif;
+    font-size: 54px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--mai-brown);
+    margin-bottom: 20px;
+  }
+
+  .error-desc {
+    font-family: $font-sans;
+    font-size: 18px;
+    color: var(--mai-brown);
+    opacity: 0.8;
+    max-width: 500px;
+    margin: 0 auto 50px;
+    line-height: 1.6;
+  }
+
+  .btn-home {
+    display: inline-block;
+    padding: 15px 40px;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid var(--mai-border);
+
+    &:hover {
+      background-color: var(--mai-brown);
+      color: var(--mai-bg);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px var(--shadow-color);
+    }
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .error-page {
+    .error-code { font-size: 150px; }
+    .error-title { font-size: 40px; }
+    .error-desc { font-size: 16px; padding: 0 20px; }
+  }
+}

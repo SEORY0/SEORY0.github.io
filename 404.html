@@ -1,11 +1,19 @@
 ---
-layout: page
+layout: default
 title: "404: Page not found"
-permalink: 404.html
+permalink: /404.html
 ---
 
-
-
-Sorry, we've misplaced that URL or it's pointing to something that doesn't exist. 
-
-
+<section class="error-page">
+  <div class="container">
+    <h1 class="error-code">404</h1>
+    
+    <div class="error-content">
+      <h2 class="error-title">Page Not Found</h2>
+      <p class="error-desc">
+        Sorry, we've misplaced that URL or it's pointing to something that doesn't exist.
+      </p>
+      <a href="{{ '/' | relative_url }}" class="btn-home">Back to Home</a>
+    </div>
+  </div>
+</section>
