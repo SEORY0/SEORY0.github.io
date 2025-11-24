@@ -1,0 +1,98 @@
+---
+layout: default
+title: Projects
+permalink: /projects/
+---
+
+<section class="circuit-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <h2>Tech Stack<br><em>Circuitry.</em></h2>
+      <p>
+        Scroll to generate magnetic flux & induce current.<br>
+        Click components to filter projects.
+      </p>
+    </div>
+    
+    <div class="circuit-container" id="circuit-container">
+      <canvas id="circuit-canvas"></canvas>
+      <button id="reset-filter" class="reset-btn">Cut Power (Reset)</button>
+    </div>
+  </div>
+</section>
+
+<section class="container projects-wrapper" id="main-projects">
+  <div class="section-label">
+    <h3>01. Main Projects</h3>
+    <span class="line"></span>
+  </div>
+
+  <div class="project-grid">
+    <article class="project-card" data-tech="c-cpp kernel windbg">
+      <div class="card-image">
+        <img src="/assets/images/default.jpg" alt="Kernel Exploit">
+      </div>
+      <div class="card-info">
+        <h4>Windows Kernel Exploit Analysis</h4>
+        <p>HEVD 드라이버의 Stack Overflow 취약점을 분석하고, 임의 코드 실행(RCE)까지 도달하는 익스플로잇을 작성했습니다.</p>
+        <div class="tech-tags">
+          <span>C/C++</span><span>Kernel</span><span>WinDbg</span>
+        </div>
+        <a href="#" class="link-arrow">View Details ↗</a>
+      </div>
+    </article>
+
+    <article class="project-card" data-tech="python reversing ida">
+      <div class="card-image">
+        <img src="https://source.unsplash.com/random/800x600?hacker&sig=2" alt="Malware Analysis">
+      </div>
+      <div class="card-info">
+        <h4>Advanced Malware Analysis</h4>
+        <p>최신 랜섬웨어 샘플을 역공학하여 암호화 루틴을 분석하고, 복호화 툴 제작 가능성을 검토했습니다.</p>
+        <div class="tech-tags">
+          <span>Python</span><span>Reversing</span><span>IDA</span>
+        </div>
+        <a href="#" class="link-arrow">View Details ↗</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="container projects-wrapper" id="toy-projects">
+  <div class="section-label">
+    <h3>02. Toy Projects</h3>
+    <span class="line"></span>
+  </div>
+
+  <div class="project-grid">
+    <article class="project-card" data-tech="python automation">
+      <div class="card-image">
+        <img src="https://source.unsplash.com/random/800x600?robot&sig=3" alt="Discord Bot">
+      </div>
+      <div class="card-info">
+        <h4>CTF Notification Bot</h4>
+        <p>주요 CTF 대회 일정을 크롤링하여 디스코드 채널에 자동으로 알림을 보내주는 봇입니다.</p>
+        <div class="tech-tags">
+          <span>Python</span><span>Automation</span>
+        </div>
+        <a href="#" class="link-arrow">View GitHub ↗</a>
+      </div>
+    </article>
+    
+    <article class="project-card" data-tech="c-cpp game">
+      <div class="card-image">
+        <img src="https://source.unsplash.com/random/800x600?game&sig=4" alt="Retro Game">
+      </div>
+      <div class="card-info">
+        <h4>Console Snake Game</h4>
+        <p>C++로 구현한 콘솔 기반의 스네이크 게임입니다. 메모리 직접 접근을 통해 렌더링 속도를 최적화했습니다.</p>
+        <div class="tech-tags">
+          <span>C/C++</span><span>Game</span>
+        </div>
+        <a href="#" class="link-arrow">View GitHub ↗</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<script src="{{ '/assets/js/circuit.js' | relative_url }}"></script>
