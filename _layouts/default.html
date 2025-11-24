@@ -5,16 +5,18 @@ layout: compress
 <!DOCTYPE html>
 <html lang="en">
   {% include head.html %}
-  <body class="layout-{{ page.layout }}">
+  <body>
+    {% if page.url == "/" %}
+    <div id="wave-container" aria-hidden="true"></div>
+    <script src="{{ '/assets/js/wave.js' | relative_url }}"></script>
+    {% endif %}
     
     <app-header>
       <div class="main-nav-container">
         <header>
           <div class="nav-left">
             <button id="search-trigger" aria-label="Search" style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:0; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--mai-brown);">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px; height:16px;">
-                <path d="M17 17L13.1 13.1M13.1 13.1C14.4 11.8 15.2 10.1 15.2 8.1C15.2 4.2 12 1 8.1 1C4.2 1 1 4.2 1 8.1C1 12 4.2 15.2 8.1 15.2C10.1 15.2 11.8 14.4 13.1 13.1Z" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               <span>Search</span>
             </button>
           </div>
@@ -57,88 +59,13 @@ layout: compress
         <span class="label">Dark Mode</span>
     </div>
 
-    <script src="{{ '/assets/js/search-script.min.js' | relative_url }}"></script>
-    
-    <script>
-      (function() {
-        /* --- Search Logic --- */
-        var searchTrigger = document.getElementById('search-trigger');
-        var searchOverlay = document.getElementById('search-overlay');
-        var searchClose = document.getElementById('search-close');
-        var searchInput = document.getElementById('search-input');
-
-        if (searchTrigger && searchOverlay) {
-          searchTrigger.addEventListener('click', function() {
-            searchOverlay.classList.add('active');
-            setTimeout(function() { 
-                if(searchInput) searchInput.focus(); 
-            }, 100);
-            document.body.style.overflow = 'hidden';
-          });
-
-          if (searchClose) {
-            searchClose.addEventListener('click', function() {
-              searchOverlay.classList.remove('active');
-              document.body.style.overflow = '';
-            });
-          }
-
-          document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
-              searchOverlay.classList.remove('active');
-              document.body.style.overflow = '';
-            }
-          });
-        }
-
-        /* Initialize SimpleJekyllSearch */
-        if (document.getElementById('search-input')) {
-          SimpleJekyllSearch({
-            searchInput: document.getElementById('search-input'),
-            resultsContainer: document.getElementById('results-container'),
-            json: '{{ "/assets/js/search.json" | relative_url }}',
-            searchResultTemplate: '<li><a href="{url}"><span class="title">{title}</span><span class="date">{date}</span></a></li>',
-            noResultsText: '<li class="no-results">No results found</li>',
-            limit: 10,
-            fuzzy: false
-          });
-        }
-
-        /* --- Dark Mode Logic --- */
-        var toggleBtn = document.getElementById('theme-toggle-btn');
-        var indicator = document.getElementById('theme-indicator');
-        var htmlElement = document.documentElement;
-        
-        var currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-          htmlElement.setAttribute('data-theme', 'dark');
-          if(indicator) indicator.textContent = "On";
-        }
-
-        if (toggleBtn) {
-          toggleBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            var hasDark = htmlElement.getAttribute('data-theme') === 'dark';
-            
-            if (hasDark) {
-              htmlElement.removeAttribute('data-theme');
-              localStorage.setItem('theme', 'light');
-              if(indicator) indicator.textContent = "Off";
-            } else {
-              htmlElement.setAttribute('data-theme', 'dark');
-              localStorage.setItem('theme', 'dark');
-              if(indicator) indicator.textContent = "On";
-            }
-          });
-        }
-      })();
-    </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
+    
+    <script src="{{ '/assets/js/search-script.min.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/dark-mode.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/search-logic.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/interaction.js' | relative_url }}"></script>
     
   </body>

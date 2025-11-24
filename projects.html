@@ -30,13 +30,13 @@ permalink: /projects/
   <div class="project-grid">
     <article class="project-card" data-tech="c-cpp kernel windbg">
       <div class="card-image">
-        <img src="/assets/images/default.jpg" alt="Kernel Exploit">
+        <img src="{{ '/assets/images/TM_WindowsEx.png' | relative_url }}" alt="Kernel Exploit">
       </div>
       <div class="card-info">
-        <h4>Windows Kernel Exploit Analysis</h4>
-        <p>HEVD 드라이버의 Stack Overflow 취약점을 분석하고, 임의 코드 실행(RCE)까지 도달하는 익스플로잇을 작성했습니다.</p>
+        <h4>버그 헌팅에 대비하기 위한 Windows Kernel 1-day</h4>
+        <p>화이트햇스쿨 3기 프로젝트로, Windows Kernel Streaming 권한 상승 취약점인 CVE-2024-35250의 루트커즈를 중점적으로 분석하여 익스플로잇에 기여했습니다.</p>
         <div class="tech-tags">
-          <span>C/C++</span><span>Kernel</span><span>WinDbg</span>
+          <span>1-day Analysis</span><span>Windows</span><span>C/C++</span><span>Kernel</span><span>WinDbg</span>
         </div>
         <a href="#" class="link-arrow">View Details ↗</a>
       </div>
@@ -44,15 +44,15 @@ permalink: /projects/
 
     <article class="project-card" data-tech="python reversing ida">
       <div class="card-image">
-        <img src="https://source.unsplash.com/random/800x600?hacker&sig=2" alt="Malware Analysis">
+        <img src="{{ '/assets/images/TM_CVEAnalyzer.png' | relative_url }}" alt="Malware Analysis">
       </div>
       <div class="card-info">
-        <h4>Advanced Malware Analysis</h4>
-        <p>최신 랜섬웨어 샘플을 역공학하여 암호화 루틴을 분석하고, 복호화 툴 제작 가능성을 검토했습니다.</p>
+        <h4>CVE-Analyzer: AI 기반 CVE 자동 분석 및 실행 환경 구축 프레임워크</h4>
+        <p>CVE-Analyzer는 최신 웹 취약점(CVE)에 대한 정보를 수집하고, 관련 PoC(Proof-of-Concept) 코드를 탐색하여 실행 가능한 격리 환경(Dockerfile)을 동적으로 생성하는 자동화 프레임워크입니다. LLM(Large Language Model)을 MCP(Mission Critical Prompt) 서버로 활용하여 전체 분석, 의사결정, 보고서 생성 과정을 자동화합니다.</p>
         <div class="tech-tags">
-          <span>Python</span><span>Reversing</span><span>IDA</span>
+          <span>Python</span><span>pwn</span><span>IDA</span>
         </div>
-        <a href="#" class="link-arrow">View Details ↗</a>
+        <a href="https://seory0.github.io/projects/Apin.html" class="link-arrow">View Details ↗</a>
       </div>
     </article>
   </div>
@@ -67,29 +67,29 @@ permalink: /projects/
   <div class="project-grid">
     <article class="project-card" data-tech="python automation">
       <div class="card-image">
-        <img src="https://source.unsplash.com/random/800x600?robot&sig=3" alt="Discord Bot">
+        <img src="{{ '/assets/images/Tm_Apin.png' | relative_url }}" alt="Discord Bot">
       </div>
       <div class="card-info">
-        <h4>CTF Notification Bot</h4>
-        <p>주요 CTF 대회 일정을 크롤링하여 디스코드 채널에 자동으로 알림을 보내주는 봇입니다.</p>
+        <h4>Apin: RISC-V Assembly parsing in a Nutshell</h4>
+        <p>RISC-V 어셈블리어를 이진수와 16진수로 변환합니다! 컴퓨터 구조 과제를 하다가 고안했습니다. :></p>
         <div class="tech-tags">
-          <span>Python</span><span>Automation</span>
+          <span>Javascript</span><span>Computer Architecture</span>
         </div>
-        <a href="#" class="link-arrow">View GitHub ↗</a>
+        <a href="https://seory0.github.io/projects/Apin.html" class="link-arrow">View ↗</a>
       </div>
     </article>
     
     <article class="project-card" data-tech="c-cpp game">
       <div class="card-image">
-        <img src="https://source.unsplash.com/random/800x600?game&sig=4" alt="Retro Game">
+        <img src="{{ '/assets/images/TM_3Dwave.png' | relative_url }}" alt="Retro Game">
       </div>
       <div class="card-info">
-        <h4>Console Snake Game</h4>
-        <p>C++로 구현한 콘솔 기반의 스네이크 게임입니다. 메모리 직접 접근을 통해 렌더링 속도를 최적화했습니다.</p>
+        <h4>3D ASCII FIELD</h4>
+        <p>HTML5 Canvas 기반의 Wave 인터렉션입니다. 3D 그래픽스 라이브러리를 쓰지 않고 자바스크립트만으로 3D를 구현했습니다.</p>
         <div class="tech-tags">
-          <span>C/C++</span><span>Game</span>
+          <span>HTML5 Canvas</span><span>Javascript</span>
         </div>
-        <a href="#" class="link-arrow">View GitHub ↗</a>
+        <a href="https://seory0.github.io/projects/3Dwave.html" class="link-arrow">View ↗</a>
       </div>
     </article>
   </div>

@@ -137,3 +137,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+
+/* --- Interactive Background Logic (Fixed) --- */
+document.addEventListener("DOMContentLoaded", function() {
+  const bg = document.getElementById('interactive-background');
+
+  if (bg) {
+    window.addEventListener('mousemove', function(e) {
+      const x = e.clientX;
+      const y = e.clientY;
+      
+      // CSS 변수에 마우스 좌표 실시간 전달
+      bg.style.setProperty('--x', x + 'px');
+      bg.style.setProperty('--y', y + 'px');
+    });
+  }
+});

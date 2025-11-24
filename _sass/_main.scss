@@ -124,26 +124,126 @@ app-header {
   width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 60px 20px 0;
 }
 
+/* --- 명함 컨테이너 (Glassmorphism 적용) --- */
 .mai-business-card {
-  display: flex; width: 100%; max-width: 1000px; height: 420px;
-  background-color: var(--mai-white); border-radius: 24px;
-  box-shadow: 0 20px 60px var(--shadow-color); overflow: hidden; border: 1px solid var(--mai-border);
-  margin-top: 0;
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  height: 420px;
+  
+  /* 전체 배경은 투명하게 처리 (내부에서 색상 지정) */
+  background-color: transparent; 
+  border-radius: 24px;
+  
+  /* 그림자는 유지하되 조금 더 은은하게 */
+  box-shadow: 0 20px 60px rgba(93, 82, 75, 0.1);
+  overflow: hidden;
+  border: 1px solid var(--mai-border);
+  margin-top: -30px;
 
+  /* --- [왼쪽: Glassmorphism 적용] --- */
   .card-left {
-    flex: 1.1; background-color: var(--mai-card-bg); display: flex; align-items: center; justify-content: center; padding: 40px;
-    h2 { font-family: $font-serif; font-size: 54px; line-height: 1.1; color: var(--mai-brown); font-weight: 400; margin: 0; em { font-style: italic; opacity: 0.6; } span { display: block; margin-top: 8px; font-size: 0.65em; font-family: $font-sans; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; } }
+    flex: 1.1;
+    
+    /* 반투명한 살구색 배경 (RGB값: 251, 244, 229) */
+    background-color: rgba(251, 244, 229, 0.15); 
+    
+    /* 핵심: 뒤쪽 파도가 흐릿하게 비치는 효과 */
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(10px);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    
+    /* 오른쪽 영역과의 경계선 (선택사항) */
+    border-right: 1px solid rgba(93, 82, 75, 0.05);
+    
+    h2 {
+      font-family: $font-serif;
+      font-size: 54px;
+      line-height: 1.1;
+      color: var(--mai-brown);
+      font-weight: 400;
+      margin: 0;
+      
+      em {
+        font-style: italic;
+        color: rgba(93, 82, 75, 0.7);
+      }
+      
+      span {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.65em; 
+        font-family: $font-sans;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
+    }
   }
 
+  /* --- [오른쪽: 불투명 유지] --- */
   .card-right {
-    flex: 1; background-color: var(--mai-white); padding: 45px 40px; display: flex; flex-direction: column; justify-content: space-between;
+    flex: 1;
+    background-color: var(--mai-white); /* 흰색 불투명 */
+    padding: 45px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
     .profile-info {
       .job-title { display: inline-block; font-family: $font-sans; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin-bottom: 10px; border-bottom: 1px solid var(--mai-border); padding-bottom: 4px; }
       .name { font-family: $font-serif; font-size: 40px; font-weight: 600; color: var(--mai-brown); margin-top: 0; margin-bottom: 6px; line-height: 1.2; .ko { font-family: $font-kr; font-size: 0.55em; font-weight: 400; margin-left: 8px; opacity: 0.7; } }
       .affiliation { font-family: $font-sans; font-size: 16px; opacity: 0.8; font-weight: 400; margin: 0; }
     }
-    .contact-info ul { margin: 0; padding: 0; li { display: flex; align-items: center; margin-bottom: 8px; font-family: $font-sans; font-size: 15px; color: var(--mai-brown); .label { width: 70px; font-weight: 700; opacity: 0.5; font-size: 13px; } a, span { font-weight: 500; position: relative; } a::after { content: ''; position: absolute; left: 0; bottom: -2px; width: 0; height: 1px; background-color: var(--mai-brown); transition: width 0.3s; } a:hover { color: var(--accent-color); } a:hover::after { width: 100%; background-color: var(--accent-color); } } }
+
+    .contact-info ul {
+      margin: 0; padding: 0;
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-family: $font-sans;
+        font-size: 15px;
+        color: var(--mai-brown);
+        
+        .label {
+          width: 70px;
+          font-weight: 700;
+          opacity: 0.5;
+          font-size: 13px;
+        }
+        
+        a, span {
+          font-weight: 500;
+          position: relative;
+        }
+        
+        a::after {
+          content: '';
+          position: absolute; left: 0; bottom: -2px; width: 0; height: 1px;
+          background-color: var(--mai-brown);
+          transition: width 0.3s;
+        }
+        a:hover::after { width: 100%; }
+      }
+    }
   }
+}
+
+/* 다크모드에서의 Glassmorphism 대응 */
+[data-theme="dark"] .mai-business-card {
+    .card-left {
+        background-color: rgba(30, 30, 30, 0.3); /* 어두운 반투명 */
+        h2, span, em { color: #E0D6CC; }
+    }
+    .card-right {
+        background-color: #2C2C2C; /* 오른쪽은 불투명 유지 */
+    }
 }
 
 
@@ -302,10 +402,92 @@ app-header {
 
 /* --- 9. Projects Section --- */
 .projects-section { padding-top: 120px; }
-.projects-section .project-item {
-    display: flex; padding: 40px 0; border-bottom: 1px solid var(--mai-border);
-    .project-left { width: 40%; display: flex; gap: 20px; .project-number { background: var(--mai-card-bg); padding: 5px 10px; border-radius: 8px; font-weight: 600; color: var(--mai-brown); } .project-title { font-family: $font-serif; font-size: 28px; color: var(--mai-brown); } }
-    .project-right { width: 60%; .project-desc { margin-bottom: 15px; color: var(--mai-brown); } .project-link { font-weight: 600; text-decoration: underline; color: var(--mai-brown); &:hover { color: var(--accent-color); } } }
+
+/* 공통 카드 스타일 */
+.project-card {
+    background-color: var(--mai-white);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--mai-border);
+    transition: transform 0.3s;
+    
+    &:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 15px 30px var(--shadow-color); 
+    }
+
+    .card-image {
+        overflow: hidden;
+        img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            mix-blend-mode: var(--img-blend); 
+            transition: transform 0.5s; 
+        }
+    }
+    &:hover .card-image img { transform: scale(1.05); }
+
+    .card-info {
+        padding: 30px;
+        h4 { 
+            font-family: $font-serif; line-height: 1.2; color: var(--mai-brown); margin-bottom: 10px; 
+        }
+        p { 
+            opacity: 0.8; line-height: 1.6; color: var(--mai-brown); margin-bottom: 20px; 
+        }
+        .tech-tags {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+            span { 
+                font-size: 12px; font-weight: 600; 
+                background: var(--mai-card-bg); color: var(--mai-brown); 
+                padding: 4px 10px; border-radius: 12px; 
+            }
+        }
+        .link-arrow { 
+            font-weight: 600; font-size: 15px; color: var(--accent-color); 
+        }
+    }
+}
+
+/* [Main Projects] - 크고 강조된 스타일 (2열) */
+#main-projects .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+
+    .project-card {
+        .card-image { height: 280px; } /* 이미지 높이 넉넉하게 */
+        .card-info h4 { font-size: 28px; }
+        .card-info p { font-size: 16px; }
+    }
+}
+
+/* [Toy Projects] - 작고 컴팩트한 스타일 (3열) */
+#toy-projects .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+
+    .project-card {
+        border-radius: 20px; /* 모서리 살짝 줄임 */
+        
+        .card-image { height: 180px; } /* 이미지 높이 축소 */
+        
+        .card-info {
+            padding: 20px; /* 패딩 축소 */
+            h4 { font-size: 20px; font-weight: 600; margin-bottom: 8px; } /* 제목 축소 */
+            p { font-size: 14px; margin-bottom: 15px; line-height: 1.5; } /* 본문 축소 */
+            .tech-tags { margin-bottom: 15px; }
+            .link-arrow { font-size: 13px; }
+        }
+    }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 900px) {
+    #main-projects .project-grid,
+    #toy-projects .project-grid {
+        grid-template-columns: 1fr; /* 모바일에서는 모두 1열 */
+    }
 }
 
 
@@ -683,4 +865,73 @@ app-header {
 [data-theme="dark"] {
   .circuit-section h2 { color: var(--mai-brown); }
   /* 캔버스 내부는 JS에서 색상을 처리하지만, 배경은 CSS 변수 따름 */
+}
+/* --- 5. Interactive Background (Light Mode 가시성 강화) --- */
+#interactive-background {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
+  background-color: var(--mai-bg);
+  
+  /* [Light Mode] 진하고 선명한 오렌지/골드 빛 */
+  background-image: radial-gradient(
+    circle 1400px at var(--x, 50%) var(--y, 50%), 
+    rgba(255, 130, 0, 0.3) 0%,     /* 중심: 아주 진한 오렌지 (30% 불투명도) */
+    rgba(255, 180, 80, 0.15) 30%,  /* 중간: 선명한 골드 */
+    rgba(255, 220, 150, 0.05) 60%, /* 외곽: 부드러운 살구색 */
+    transparent 80%
+  );
+  
+  /* 노이즈 텍스처 */
+  &::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+}
+
+/* [Dark Mode] 은은한 브론즈 빛 */
+[data-theme="dark"] #interactive-background {
+  background-image: radial-gradient(
+    circle 1000px at var(--x, 50%) var(--y, 50%), 
+    rgba(200, 120, 60, 0.3) 0%, 
+    rgba(160, 100, 60, 0.15) 40%,
+    transparent 80%
+  );
+}
+
+  /* --- Wave Background Styles (ASCII Art) --- */
+#wave-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1; /* 콘텐츠 뒤로 */
+  
+  /* 배경색 (테마 변수 사용) */
+  background-color: var(--mai-bg);
+  
+  /* 파도 글자색 (테마 변수 + 투명도) */
+  color: var(--mai-brown);
+  opacity: 0.4; /* 은은하게 배경으로 깔림 */
+  /* [추가] 글씨를 굵게 해서 더 잘 보이게 */
+  //font-weight: 700;
+  
+  /* 폰트 설정 (고정폭 필수) */
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 14px;
+  white-space: pre; /* 줄바꿈 유지 */
+  overflow: hidden;
+  pointer-events: none; /* 마우스 통과 */
+  
+  /* 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* 다크모드 시 투명도 조정 (조금 더 선명하게) */
+[data-theme="dark"] #wave-container {
+  opacity: 0.25;
 }

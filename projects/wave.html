@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Wave Interaction</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0d0d0d; /* 깊은 바다색/검정 */
+            color: #00ff41; /* 해커 터미널 그린 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', Courier, monospace; /* 고정폭 글꼴 필수 */
+            user-select: none; /* 드래그 방지 */
+        }
+
+        #wave-container {
+            white-space: pre; /* 공백과 줄바꿈 유지 */
+            font-size: 14px;
+            line-height: 14px;
+            text-align: center;
+            pointer-events: none; /* 마우스 이벤트가 body로 통과되도록 */
+        }
+
+        .instruction {
+            position: absolute;
+            top: 20px;
+            color: #555;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instruction">
+        MOUSE Y: Amplitude (높이) | MOUSE X: Frequency (빈도)<br>
+        Move your mouse to disturb the water.
+    </div>
+    <div id="wave-container"></div>
+
+    <script>
+        const container = document.getElementById('wave-container');
+        
+        // 설정 값
+        const rows = 30;       // 세로 줄 수
+        const cols = 80;       // 가로 글자 수
+        let charArray = [];    // 화면에 뿌려질 글자들의 배열
+        
+        // 파도 물리 변수
+        let offset = 0;        // 시간 흐름(애니메이션 프레임)
+        let speed = 0.1;       // 파도 속도
+        let frequency = 0.1;   // 파장 (마우스 X로 제어)
+        let amplitude = 5;     // 진폭 (마우스 Y로 제어)
+
+        // 아스키 문자 세트 (밀도에 따라 다르게 표현)
+        // 깊은 곳 -> 얕은 곳 순서
+        const chars = " .:-=+*#%@"; 
+
+        // 1. 초기화: 2차원 배열처럼 생각하지만, 렌더링은 문자열로 함
+        function init() {
+            window.addEventListener('mousemove', onMouseMove);
+            animate();
+        }
+
+        // 2. 마우스 인터랙션: 마우스 위치에 따라 파도 모양 변경
+        function onMouseMove(e) {
+            // 화면 가로 위치 -> 파도의 빈도(조밀함) 조절
+            // 0.05 ~ 0.3 사이의 값으로 매핑
+            frequency = 0.05 + (e.clientX / window.innerWidth) * 0.2;
+
+            // 화면 세로 위치 -> 파도의 높이(진폭) 조절
+            // 0 ~ rows/2 사이의 값으로 매핑
+            amplitude = (e.clientY / window.innerHeight) * (rows / 2.5);
+        }
+
+        // 3. 애니메이션 루프
+        function animate() {
+            let output = "";
+            offset += speed; // 시간 흐름
+
+            // 각 줄(Row) 생성
+            for (let y = 0; y < rows; y++) {
+                let line = "";
+                
+                // 각 칸(Col) 생성
+                for (let x = 0; x < cols; x++) {
+                    // 사인파 계산: y = A * sin(Bx + C)
+                    // 중심선(rows/2)을 기준으로 파동을 만듦
+                    const waveHeight = Math.sin(x * frequency + offset) * amplitude;
+                    
+                    // 현재 y좌표가 파도 라인 근처인지 확인
+                    const centerY = rows / 2;
+                    const distance = y - (centerY + waveHeight);
+
+                    // 거리에 따라 문자 결정 (파도 표면 표현)
+                    let charIndex = 0;
+                    
+                    // 파도 위쪽(공기)은 빈칸, 파도 표면과 아래는 문자로 채움
+                    if (distance < 0) {
+                        // 공기 (Empty)
+                        charIndex = 0;
+                    } else if (distance < 2) {
+                        // 표면 (거품/빛 반사)
+                        charIndex = Math.floor(Math.random() * 3) + 2; // .: 등의 문자
+                    } else {
+                        // 깊은 물 (밀도 높음)
+                        // 깊이에 따라 인덱스를 높여 어두운 문자 사용
+                        charIndex = Math.min(chars.length - 1, Math.floor(distance / 2) + 3);
+                    }
+
+                    line += chars[charIndex] || " ";
+                }
+                output += line + "\n";
+            }
+
+            container.textContent = output;
+            requestAnimationFrame(animate);
+        }
+
+        init();
+    </script>
+</body>
+</html>

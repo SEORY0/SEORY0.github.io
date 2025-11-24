@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D ASCII Wave Field</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111; /* 배경: 아주 어두운 회색 */
+            color: #eee;
+            font-family: 'Courier New', monospace;
+        }
+        canvas {
+            display: block;
+        }
+        .ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui">
+        <strong>3D ASCII FIELD</strong><br>
+        Mouse X: Rotate Camera<br>
+        Mouse Y: Wave Amplitude
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        
+        // 설정값
+        const particleGap = 25;    // 점 사이의 간격 (작을수록 촘촘함)
+        const rows = 50;           // 앞뒤 깊이 줄 수
+        const cols = 50;           // 좌우 너비 줄 수
+        
+        // 파동 변수
+        let frame = 0;
+        let mouseX = 0; 
+        let mouseY = 0;
+
+        // 타겟 값 (부드러운 움직임을 위한 보간용)
+        let targetRotateY = 0;
+        let targetAmp = 30;
+
+        // 파티클 배열 생성
+        // 각 파티클은 {x, y, z} (3D 좌표)를 가짐
+        const particles = [];
+        
+        // 초기화: 그리드 형태로 점들을 배치 (중심점 0,0,0 기준)
+        for (let ix = 0; ix < cols; ix++) {
+            for (let iz = 0; iz < rows; iz++) {
+                particles.push({
+                    // x: 좌우, y: 높이(나중에 계산), z: 깊이
+                    ix: ix - cols / 2, 
+                    iz: iz - rows / 2,
+                    x: 0, y: 0, z: 0 
+                });
+            }
+        }
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 마우스 이벤트
+        window.addEventListener('mousemove', (e) => {
+            // 마우스 X: 카메라 회전 각도 (-PI ~ PI)
+            mouseX = (e.clientX / width - 0.5) * 2; 
+            // 마우스 Y: 파도 높이 (0 ~ 100)
+            mouseY = (e.clientY / height) * 80;
+        });
+
+        // 3D 투영 함수 (3D 좌표 -> 2D 화면 좌표)
+        function project(x, y, z) {
+            const fov = 300; // 시야각(Field of View) 거리가 멀수록 왜곡이 적음
+            const cameraZ = 400; // 카메라가 물체에서 얼마나 떨어져 있는지
+            
+            // 원근법 공식: scale = fov / (fov + z + cameraZ)
+            // z가 클수록(멀수록) scale이 작아짐 -> 점이 모임
+            const scale = fov / (fov + z + cameraZ); 
+            
+            const screenX = x * scale + width / 2;
+            const screenY = y * scale + height / 2;
+            
+            return { x: screenX, y: screenY, scale: scale };
+        }
+
+        function animate() {
+            // 화면 지우기 (투명도 조절로 잔상 효과 가능)
+            ctx.fillStyle = '#111'; 
+            ctx.fillRect(0, 0, width, height);
+
+            frame += 0.05; // 시간 흐름
+
+            // 부드러운 마우스 반응 (Lerp: Linear Interpolation)
+            targetRotateY += (mouseX - targetRotateY) * 0.05;
+            targetAmp += (mouseY - targetAmp) * 0.05;
+
+            ctx.fillStyle = '#ffffff'; // 점 색상 (흰색)
+            
+            // 파티클 그리기
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+
+                // 1. 파도 높이(Y) 계산
+                // x와 z 좌표를 모두 사용하여 대각선으로 흐르는 물결 생성
+                const distance = Math.sqrt(p.ix * p.ix + p.iz * p.iz);
+                p.y = Math.sin(distance * 0.3 - frame) * targetAmp 
+                      + Math.sin(p.ix * 0.5 + frame) * (targetAmp * 0.5);
+
+
+                // 2. 회전 (Rotation Matrix)
+                // Y축 회전 (카메라가 빙글 도는 효과)
+                const cos = Math.cos(targetRotateY);
+                const sin = Math.sin(targetRotateY);
+                
+                // 회전된 좌표 계산
+                const rx = p.ix * particleGap * cos - p.iz * particleGap * sin;
+                const rz = p.ix * particleGap * sin + p.iz * particleGap * cos;
+                
+                // X축 회전 (약간 위에서 아래로 내려다보는 각도 고정)
+                const tiltAngle = 0.4; // 약 20도 기울기
+                const ry = p.y * Math.cos(tiltAngle) - rz * Math.sin(tiltAngle);
+                const rz_tilted = p.y * Math.sin(tiltAngle) + rz * Math.cos(tiltAngle);
+
+
+                // 3. 2D 투영
+                const proj = project(rx, ry, rz_tilted);
+
+                // 카메라 뒤에 있는 점은 그리지 않음
+                if (proj.scale < 0) continue; 
+
+                // 4. 그리기 (아스키 문자 '·' 또는 '+' 사용)
+                // 거리(scale)에 따라 투명도와 크기 조절 (멀리 있는 건 흐릿하게)
+                const alpha = Math.max(0.1, proj.scale); 
+                
+                ctx.globalAlpha = alpha; 
+                ctx.font = `${12 * proj.scale}px monospace`; // 거리 비례 폰트 크기
+                
+                // 점 찍기 (원하는 문자로 변경 가능: '.', '*', '+')
+                ctx.fillText('·', proj.x, proj.y);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
