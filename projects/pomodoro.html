@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-work: #1a1814;
+            --bg-break: #141a18;
+            --accent-work: #e85d45;
+            --accent-break: #45c9a8;
+            --text-primary: #f5f2eb;
+            --text-muted: #8a857a;
+            --ring-bg: rgba(255, 255, 255, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-work);
+            color: var(--text-primary);
+            transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        body.break-mode {
+            background: var(--bg-break);
+        }
+
+        body.break-mode .accent {
+            color: var(--accent-break);
+        }
+
+        body.break-mode .timer-ring {
+            stroke: var(--accent-break);
+        }
+
+        body.break-mode .btn-primary {
+            background: var(--accent-break);
+        }
+
+        body.break-mode .btn-primary:hover {
+            background: #3ab896;
+        }
+
+        body.break-mode .mode-btn.active {
+            color: var(--accent-break);
+            border-color: var(--accent-break);
+        }
+
+        body.break-mode .time-preset.active {
+            background: var(--accent-break);
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .logo {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* Time Presets */
+        .time-presets {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .time-preset {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--ring-bg);
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-preset::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .time-preset:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .time-preset:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .time-preset:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .time-preset.active {
+            background: var(--accent-work);
+            border-color: var(--accent-work);
+            color: var(--bg-work);
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(232, 93, 69, 0.3);
+        }
+
+        .time-preset.active:hover {
+            transform: scale(1.1);
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .mode-btn {
+            padding: 0.6rem 1.2rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: currentColor;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .mode-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .mode-btn:hover::after {
+            width: 60%;
+        }
+
+        .mode-btn:active {
+            transform: scale(0.97);
+        }
+
+        .mode-btn.active {
+            color: var(--accent-work);
+            border-color: var(--accent-work);
+        }
+
+        .mode-btn.active::after {
+            width: 0;
+        }
+
+        .timer-wrapper {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .timer-bg {
+            fill: none;
+            stroke: var(--ring-bg);
+            stroke-width: 3;
+        }
+
+        .timer-ring {
+            fill: none;
+            stroke: var(--accent-work);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 942;
+            stroke-dashoffset: 0;
+            transition: stroke 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke-dashoffset 0.5s linear;
+        }
+
+        .timer-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .time-display {
+            font-family: 'DM Mono', monospace;
+            font-size: 4.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+        }
+
+        .accent {
+            color: var(--accent-work);
+            transition: color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent-work);
+            color: var(--bg-work);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #d44d35;
+            transform: scale(1.08);
+            box-shadow: 0 8px 30px rgba(232, 93, 69, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        /* Play/Pause icon animation */
+        .btn-primary svg {
+            width: 28px;
+            height: 28px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-primary:active svg {
+            transform: scale(0.9);
+        }
+
+        .play-icon, .pause-icon {
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .play-icon.hiding {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        .pause-icon.hiding {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        .btn-secondary {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--ring-bg);
+            color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.92);
+        }
+
+        /* Rotation animation for reset button */
+        .btn-secondary#resetBtn:active svg {
+            animation: spin 0.5s ease;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        /* Skip button animation */
+        .btn-secondary#skipBtn:active svg {
+            animation: skipPulse 0.3s ease;
+        }
+
+        @keyframes skipPulse {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(4px); }
+            100% { transform: translateX(0); }
+        }
+
+        .btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .btn-primary svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .sessions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .session-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ring-bg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .session-dot.completed {
+            background: var(--accent-work);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(232, 93, 69, 0.5);
+        }
+
+        body.break-mode .session-dot.completed {
+            background: var(--accent-break);
+            box-shadow: 0 0 10px rgba(69, 201, 168, 0.5);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* Pulse animation when timer completes */
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.02); }
+        }
+
+        .timer-content.pulse {
+            animation: pulse 0.5s ease-in-out 3;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header {
+            animation: fadeIn 0.8s ease-out 0.1s both;
+        }
+
+        .timer-wrapper {
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .controls {
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        /* Time change animation */
+        @keyframes numberPop {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .timer-content.time-change {
+            animation: numberPop 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">pomodoro</div>
+            
+            <div class="time-presets" id="timePresets">
+                <button class="time-preset" data-time="15">15</button>
+                <button class="time-preset active" data-time="25">25</button>
+                <button class="time-preset" data-time="30">30</button>
+                <button class="time-preset" data-time="45">45</button>
+                <button class="time-preset" data-time="60">60</button>
+            </div>
+
+            <div class="mode-switcher">
+                <button class="mode-btn active" data-mode="work">Focus</button>
+                <button class="mode-btn" data-mode="shortBreak" data-time="5">Short Break</button>
+                <button class="mode-btn" data-mode="longBreak" data-time="15">Long Break</button>
+            </div>
+        </div>
+
+        <div class="timer-wrapper">
+            <svg class="timer-svg" viewBox="0 0 320 320">
+                <circle class="timer-bg" cx="160" cy="160" r="150"></circle>
+                <circle class="timer-ring" cx="160" cy="160" r="150"></circle>
+            </svg>
+            <div class="timer-content">
+                <div class="time-display">25<span class="accent">:</span>00</div>
+                <div class="session-label">Focus Time</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-secondary" id="resetBtn" title="Reset (R)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+            </button>
+            <button class="btn btn-primary" id="playPauseBtn" title="Start (Space)">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6,4 20,12 6,20"/>
+                </svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+            </button>
+            <button class="btn btn-secondary" id="skipBtn" title="Skip (S)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5,4 15,12 5,20" fill="currentColor"/>
+                    <line x1="19" y1="5" x2="19" y2="19"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="sessions">
+            <div class="session-dot"></div>
+            <div class="session-dot"></div>
+            <div class="session-dot"></div>
+            <div class="session-dot"></div>
+        </div>
+    </div>
+
+    <div class="footer">Stay focused · Stay creative - Ryu</div>
+
+    <script>
+        let workTime = 25;
+        const MODES = {
+            work: { time: workTime, label: 'Focus Time' },
+            shortBreak: { time: 5, label: 'Short Break' },
+            longBreak: { time: 15, label: 'Long Break' }
+        };
+
+        let currentMode = 'work';
+        let timeLeft = MODES.work.time * 60;
+        let totalTime = MODES.work.time * 60;
+        let isRunning = false;
+        let interval = null;
+        let completedSessions = 0;
+
+        const timeDisplay = document.querySelector('.time-display');
+        const sessionLabel = document.querySelector('.session-label');
+        const timerRing = document.querySelector('.timer-ring');
+        const timerContent = document.querySelector('.timer-content');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const playIcon = document.querySelector('.play-icon');
+        const pauseIcon = document.querySelector('.pause-icon');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const sessionDots = document.querySelectorAll('.session-dot');
+        const timePresets = document.querySelectorAll('.time-preset');
+        const timePresetsContainer = document.getElementById('timePresets');
+        const body = document.body;
+
+        const circumference = 2 * Math.PI * 150;
+        timerRing.style.strokeDasharray = circumference;
+
+        // Ripple effect function
+        function createRipple(event, element) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
+            
+            element.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}<span class="accent">:</span>${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateDisplay() {
+            timeDisplay.innerHTML = formatTime(timeLeft);
+            const progress = (totalTime - timeLeft) / totalTime;
+            timerRing.style.strokeDashoffset = circumference * progress;
+            document.title = `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')} - Pomodoro`;
+        }
+
+        function setWorkTime(minutes) {
+            workTime = minutes;
+            MODES.work.time = minutes;
+            
+            timePresets.forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.time) === minutes);
+            });
+
+            if (currentMode === 'work') {
+                timeLeft = minutes * 60;
+                totalTime = minutes * 60;
+                
+                // Add time change animation
+                timerContent.classList.add('time-change');
+                setTimeout(() => timerContent.classList.remove('time-change'), 300);
+                
+                if (isRunning) {
+                    pauseTimer();
+                }
+                updateDisplay();
+            }
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            timeLeft = MODES[mode].time * 60;
+            totalTime = MODES[mode].time * 60;
+            sessionLabel.textContent = MODES[mode].label;
+            
+            modeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+
+            // Show/hide time presets based on mode
+            if (mode === 'work') {
+                body.classList.remove('break-mode');
+                timePresetsContainer.style.opacity = '1';
+                timePresetsContainer.style.pointerEvents = 'auto';
+            } else {
+                body.classList.add('break-mode');
+                timePresetsContainer.style.opacity = '0.3';
+                timePresetsContainer.style.pointerEvents = 'none';
+            }
+
+            // Add time change animation
+            timerContent.classList.add('time-change');
+            setTimeout(() => timerContent.classList.remove('time-change'), 300);
+
+            if (isRunning) {
+                pauseTimer();
+            }
+            
+            updateDisplay();
+        }
+
+        function startTimer() {
+            isRunning = true;
+            
+            // Animate icon transition
+            playIcon.classList.add('hiding');
+            setTimeout(() => {
+                playIcon.style.display = 'none';
+                playIcon.classList.remove('hiding');
+                pauseIcon.style.display = 'block';
+            }, 200);
+            
+            interval = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                
+                if (timeLeft <= 0) {
+                    completeSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            
+            // Animate icon transition
+            pauseIcon.classList.add('hiding');
+            setTimeout(() => {
+                pauseIcon.style.display = 'none';
+                pauseIcon.classList.remove('hiding');
+                playIcon.style.display = 'block';
+            }, 200);
+            
+            clearInterval(interval);
+        }
+
+        function completeSession() {
+            pauseTimer();
+            timerContent.classList.add('pulse');
+            setTimeout(() => timerContent.classList.remove('pulse'), 1500);
+
+            playNotificationSound();
+
+            if (currentMode === 'work') {
+                completedSessions++;
+                updateSessionDots();
+                
+                if (completedSessions >= 4) {
+                    completedSessions = 0;
+                    updateSessionDots();
+                    setMode('longBreak');
+                } else {
+                    setMode('shortBreak');
+                }
+            } else {
+                setMode('work');
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = MODES[currentMode].time * 60;
+            totalTime = MODES[currentMode].time * 60;
+            
+            // Add time change animation
+            timerContent.classList.add('time-change');
+            setTimeout(() => timerContent.classList.remove('time-change'), 300);
+            
+            updateDisplay();
+        }
+
+        function skipSession() {
+            completeSession();
+        }
+
+        function updateSessionDots() {
+            sessionDots.forEach((dot, index) => {
+                const wasCompleted = dot.classList.contains('completed');
+                const isNowCompleted = index < completedSessions;
+                
+                if (!wasCompleted && isNowCompleted) {
+                    // Add staggered animation for newly completed dots
+                    setTimeout(() => {
+                        dot.classList.add('completed');
+                    }, index * 100);
+                } else {
+                    dot.classList.toggle('completed', isNowCompleted);
+                }
+            });
+        }
+
+        function playNotificationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(587.33, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+
+            setTimeout(() => {
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.setValueAtTime(880, audioContext.currentTime);
+                osc2.type = 'sine';
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                osc2.start(audioContext.currentTime);
+                osc2.stop(audioContext.currentTime + 0.5);
+            }, 200);
+        }
+
+        // Event Listeners
+        playPauseBtn.addEventListener('click', (e) => {
+            createRipple(e, playPauseBtn);
+            if (isRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        });
+
+        resetBtn.addEventListener('click', (e) => {
+            createRipple(e, resetBtn);
+            resetTimer();
+        });
+
+        skipBtn.addEventListener('click', (e) => {
+            createRipple(e, skipBtn);
+            skipSession();
+        });
+
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                createRipple(e, btn);
+                setMode(btn.dataset.mode);
+            });
+        });
+
+        timePresets.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                createRipple(e, btn);
+                setWorkTime(parseInt(btn.dataset.time));
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                playPauseBtn.click();
+            } else if (e.code === 'KeyR') {
+                resetBtn.click();
+            } else if (e.code === 'KeyS') {
+                skipBtn.click();
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
