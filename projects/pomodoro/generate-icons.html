@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+</head>
+<body>
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <canvas id="canvas512" width="512" height="512"></canvas>
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 배경
+            ctx.fillStyle = '#1a1814';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 원형 프로그레스 배경
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size * 0.35;
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = size * 0.02;
+            ctx.stroke();
+            
+            // 액센트 원 (75% 진행)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI / 2, Math.PI);
+            ctx.strokeStyle = '#e85d45';
+            ctx.lineWidth = size * 0.02;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            // 중앙 텍스트
+            ctx.fillStyle = '#f5f2eb';
+            ctx.font = `300 ${size * 0.18}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('25', centerX, centerY);
+        }
+        
+        drawIcon(document.getElementById('canvas192'), 192);
+        drawIcon(document.getElementById('canvas512'), 512);
+        
+        // 다운로드 링크 생성
+        ['192', '512'].forEach(s => {
+            const canvas = document.getElementById('canvas' + s);
+            const link = document.createElement('a');
+            link.download = 'icon-' + s + '.png';
+            link.href = canvas.toDataURL();
+            link.textContent = 'Download ' + s + 'px';
+            document.body.appendChild(link);
+            document.body.appendChild(document.createElement('br'));
+        });
+    </script>
+</body>
+</html>
