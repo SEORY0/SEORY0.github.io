@@ -5,7 +5,7 @@ layout: compress
 <!DOCTYPE html>
 <html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
 {% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Writings rootpage-Writings skin-vector-2022 action-view">
+<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Photos rootpage-Photos skin-vector-2022 action-view">
 
 <div class="vector-header-container">
   <header class="vector-header mw-header">
@@ -35,9 +35,9 @@ layout: compress
                         <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
                         <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
                         <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item selected"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
                         <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
+                        <li class="mw-list-item selected"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -56,7 +56,7 @@ layout: compress
                 <div class="vector-menu vector-menu-tabs mw-portlet">
                   <div class="vector-menu-content">
                     <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Writings</span></a></li>
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Gallery</span></a></li>
                       <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
                     </ul>
                   </div>
@@ -68,8 +68,8 @@ layout: compress
                 <div class="vector-menu vector-menu-tabs mw-portlet">
                   <div class="vector-menu-content">
                     <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>View</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Edit</span></a></li>
                       <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
                     </ul>
                   </div>
@@ -80,7 +80,7 @@ layout: compress
         </div>
 
         <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">Index of Writings</h1>
+          <h1 id="firstHeading" class="firstHeading mw-first-heading">Gallery:Photos</h1>
         </header>
 
         <div id="bodyContent" class="vector-body">
@@ -90,28 +90,40 @@ layout: compress
           <div id="mw-content-text" class="mw-body-content">
             <div class="mw-parser-output">
                 
-                <p>This is a chronological log of articles, technical notes, and write-ups.</p>
+                <p>A collection of snapshots from conferences, CTFs, and life.</p>
 
-                <h2 id="2025">2025</h2>
-                <div class="mw-heading-line"></div>
-                <ul class="recent-list">
-                    {% for post in site.posts %}
-                        {% assign current_year = post.date | date: "%Y" %}
-                        {% if current_year == "2025" %}
-                        <li>
-                            <span class="date">{{ post.date | date: "%Y-%m-%d" }}</span>
-                            <a href="{{ post.url | relative_url }}"><b>{{ post.title }}</b></a>
-                            <span class="meta">({{ post.categories | join: ', ' }})</span>
-                            <span class="diff">(+{{ post.content | size }} bytes)</span>
-                        </li>
-                        {% endif %}
-                    {% endfor %}
-                    <li><span class="date">2025-01-20</span> <a href="#">Setup Jekyll Wiki Theme</a> <span class="meta">(Meta)</span> <span class="diff">(+1,024)</span></li>
-                </ul>
+                <div class="gallery-grid">
+                    {% if site.photos.size > 0 %}
+                        {% for photo in site.photos %}
+                        <div class="gallery-item">
+                            <a href="{{ photo.url | relative_url }}" class="thumb-link">
+                                <div class="thumb">
+                                    <img src="{{ photo.image | default: 'https://via.placeholder.com/300x200?text=No+Image' | relative_url }}" alt="{{ photo.title }}">
+                                </div>
+                            </a>
+                            <div class="gallery-info">
+                                <div class="caption">
+                                    <b>{{ photo.title }}</b>
+                                    <p>{{ photo.caption | truncate: 50 }}</p>
+                                </div>
+                                <div class="meta">
+                                    <span class="date">{{ photo.date | date: "%Y-%m-%d" }}</span>
+                                    {% if photo.location %}
+                                    <span class="location">@ {{ photo.location }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No photos uploaded yet.</p>
+                    {% endif %}
+                </div>
 
-                <h2 id="Archive">Archive</h2>
-                <div class="mw-heading-line"></div>
-                <p><i>Older entries are archived in the <a href="#">database dump</a>.</i></p>
+                <div class="mw-heading-line" style="margin-top: 40px;"></div>
+                <p style="font-size: 0.9em; color: var(--color-subtle);">
+                    Files are available under licenses specified on their description page. All structured data from the file namespace is available under the <a href="#">Creative Commons CC0 License</a>.
+                </p>
 
             </div>
           </div>
@@ -120,19 +132,19 @@ layout: compress
     </div>
 
     <div class="vector-column-end">
-        <div class="vector-sticky-pinned-container">
-          <nav class="vector-appearance-landmark" aria-label="Appearance">
-              <div id="vector-appearance" class="vector-appearance">
-                  <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
-                  <div class="vector-menu-content">
-                      <div class="theme-toggle-wrapper">
-                          <label class="toggle-switch"><input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span></label>
-                          <span id="theme-status-text">Light</span>
-                      </div>
-                  </div>
-              </div>
-          </nav>
-        </div>
+      <div class="vector-sticky-pinned-container">
+        <nav class="vector-appearance-landmark" aria-label="Appearance">
+            <div id="vector-appearance" class="vector-appearance">
+                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
+                <div class="vector-menu-content">
+                    <div class="theme-toggle-wrapper">
+                        <label class="toggle-switch"><input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span></label>
+                        <span id="theme-status-text">Light</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+      </div>
     </div>
   </div>
 </div>

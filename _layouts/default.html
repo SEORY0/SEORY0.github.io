@@ -1,72 +1,8 @@
----
-layout: compress
----
-
 <!DOCTYPE html>
-<html lang="en">
-  {% include head.html %}
-  <body>
-    {% if page.url == "/" %}
-    <div id="wave-container" aria-hidden="true"></div>
-    <script src="{{ '/assets/js/wave.js' | relative_url }}"></script>
-    {% endif %}
-    
-    <app-header>
-      <div class="main-nav-container">
-        <header>
-          <div class="nav-left">
-            <button id="search-trigger" aria-label="Search" style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:0; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--mai-brown);">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <span>Search</span>
-            </button>
-          </div>
+<html lang="ko">
+{% include head.html %}
 
-          <div class="nav-center">
-            <a href="{{ '/' | relative_url }}" aria-label="Home">
-              <span style="font-family: 'Inter', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.5px; color: var(--mai-brown);">
-                SEORY0
-              </span>
-            </a>
-          </div>
-
-          <div class="nav-right">
-            <nav>
-              <ul>
-                <li><a href="{{ '/about/' | relative_url }}">About</a></li>
-                <li><a href="{{ '/writing/' | relative_url }}">Writings</a></li>
-                <li><a href="{{ '/projects/' | relative_url }}">Projects</a></li>
-              </ul>
-            </nav>
-          </div>
-        </header>
-      </div>
-    </app-header>
-
-    <div id="search-overlay" class="search-overlay">
-        <button id="search-close" aria-label="Close Search">✕</button>
-        <div class="search-content">
-            <input type="text" id="search-input" placeholder="Type to search..." autocomplete="off">
-            <ul id="results-container"></ul>
-        </div>
-    </div>
-
-    <main id="main-content">
-        {{ content }}
-    </main>
-
-    <div id="theme-toggle-btn" role="button" aria-label="Toggle Dark Mode">
-        <div id="theme-indicator">Off</div>
-        <span class="label">Dark Mode</span>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
-    
-    <script src="{{ '/assets/js/search-script.min.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/dark-mode.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/search-logic.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/interaction.js' | relative_url }}"></script>
-    
-  </body>
+<body>
+    {{ content }}
+</body>
 </html>

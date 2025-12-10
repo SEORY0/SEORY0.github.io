@@ -1,98 +1,190 @@
 ---
-layout: default
-title: Projects
-permalink: /projects/
+layout: compress
 ---
 
-<section class="circuit-section">
-  <div class="container">
-    <div class="section-header text-center">
-      <h2>Tech Stack<br><em>Circuitry.</em></h2>
-      <p>
-        Scroll to generate magnetic flux & induce current.<br>
-        Click components to filter projects.
-      </p>
+<!DOCTYPE html>
+<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
+{% include head.html %}
+<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Projects rootpage-Projects skin-vector-2022 action-view">
+
+<div class="vector-header-container">
+  <header class="vector-header mw-header">
+    <div class="vector-header-start">
+        <a href="{{ '/' | relative_url }}" class="mw-logo">
+            <div class="mw-logo-icon"></div>
+            <span class="mw-logo-container">
+                <strong class="mw-logo-wordmark">SEORY0</strong>
+                <span class="mw-logo-tagline">The Free Portfolio</span>
+            </span>
+        </a>
     </div>
-    
-    <div class="circuit-container" id="circuit-container">
-      <canvas id="circuit-canvas"></canvas>
-      <button id="reset-filter" class="reset-btn">Cut Power (Reset)</button>
+    <div class="vector-header-end">
+        <div id="p-search" role="search" class="vector-search-box-vue vector-search-box-collapses vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
+            <form action="#" id="searchform" class="cdx-search-input cdx-search-input--has-end-button">
+                <div class="cdx-search-input__input-wrapper">
+                    <div class="cdx-text-input cdx-text-input--has-start-icon">
+                        <input class="cdx-text-input__input mw-searchInput" type="search" name="search" placeholder="Search SEORY0" aria-label="Search SEORY0">
+                        <span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+                    </div>
+                </div>
+                <button class="cdx-button cdx-search-input__end-button">Search</button>
+            </form>
+        </div>
+        <nav class="vector-user-links" aria-label="Personal tools">
+            <div class="vector-user-links-main">
+                <div id="p-vector-user-menu-overflow" class="vector-menu mw-portlet">
+                    <div class="vector-menu-content"><ul class="vector-menu-content-list"><li class="mw-list-item"><a href="#"><span>Log in</span></a></li></ul></div>
+                </div>
+            </div>
+        </nav>
+    </div>
+  </header>
+</div>
+
+<div class="mw-page-container">
+  <div class="mw-page-container-inner">
+    <div class="vector-column-start">
+      <div class="vector-main-menu-container">
+        <div id="mw-navigation">
+          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
+            <div class="vector-menu mw-portlet" id="p-navigation">
+                <div class="vector-menu-heading">Navigation</div>
+                <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
+                        <li class="mw-list-item selected"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="mw-content-container">
+      <main id="content" class="mw-body" role="main">
+        <div class="vector-page-toolbar">
+          <div class="vector-page-toolbar-container">
+            <div id="left-navigation">
+              <nav aria-label="Namespaces">
+                <div class="vector-menu vector-menu-tabs mw-portlet">
+                  <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Project Page</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div id="right-navigation">
+              <nav aria-label="Views">
+                <div class="vector-menu vector-menu-tabs mw-portlet">
+                  <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <header class="mw-body-header">
+          <h1 id="firstHeading" class="firstHeading mw-first-heading">List of Projects</h1>
+        </header>
+
+        <div id="bodyContent" class="vector-body">
+          <div id="siteSub" class="noprint">From WikiPort, the free portfolio</div>
+          <div id="contentSub"></div>
+          
+          <div id="mw-content-text" class="mw-body-content">
+            <div class="mw-parser-output">
+                
+                <p>This page lists the <b>research projects</b>, <b>tools</b>, and <b>exploits</b> developed by User:SEORY0.</p>
+
+                <div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">
+                    <div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>
+                    <ul>
+                        <li class="toclevel-1"><a href="#Major_Projects"><span class="tocnumber">1</span> <span class="toctext">Major Projects</span></a></li>
+                        <li class="toclevel-1"><a href="#Toy_Projects"><span class="tocnumber">2</span> <span class="toctext">Toy Projects</span></a></li>
+                    </ul>
+                </div>
+
+                <h2 id="Major_Projects">Major Projects</h2>
+                <div class="mw-heading-line"></div>
+                
+                <div class="clean-box">
+                    <h3><a href="#">Windows Kernel HEVD Exploit</a></h3>
+                    <p><b>Status:</b> <span style="color: green;">Active</span> | <b>Language:</b> C, Assembly</p>
+                    <p>Analysis and exploitation of the HackSys Extreme Vulnerable Driver (HEVD). Focused on Stack Overflow, Type Confusion, and UAF on Windows 10/11.</p>
+                    <div class="code-block">
+                        > git clone https://github.com/SEORY0/hevd-exploit <br>
+                        > Analyzed 5 distinct vulnerability classes.
+                    </div>
+                </div>
+
+                <div class="clean-box">
+                    <h3><a href="#">Automated CVE Analyzer</a></h3>
+                    <p><b>Status:</b> <span style="color: orange;">Maintenance</span> | <b>Language:</b> Python, LLM</p>
+                    <p>A framework utilizing LLMs to automatically categorize and summarize daily CVE feeds from NVD.</p>
+                </div>
+
+                <h2 id="Toy_Projects">Toy Projects</h2>
+                <div class="mw-heading-line"></div>
+                <ul class="wiki-list">
+                    <li><b>Simple Shellcode Generator</b>: A customized shellcode generator for CTF challenges.</li>
+                    <li><b>Network Packet Sniffer</b>: Basic raw socket implementation in C++.</li>
+                    <li><b>WikiPort Theme</b>: This Jekyll theme inspired by Wiktionary.</li>
+                </ul>
+
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="vector-column-end">
+      <div class="vector-sticky-pinned-container">
+        <nav class="vector-appearance-landmark" aria-label="Appearance">
+            <div id="vector-appearance" class="vector-appearance">
+                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
+                <div class="vector-menu-content">
+                    <div class="theme-toggle-wrapper">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span>
+                        </label>
+                        <span id="theme-status-text">Light</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="container projects-wrapper" id="main-projects">
-  <div class="section-label">
-    <h3>01. Main Projects</h3>
-    <span class="line"></span>
-  </div>
+<footer id="footer" class="mw-footer">
+  <ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul>
+</footer>
 
-  <div class="project-grid">
-    <article class="project-card" data-tech="c-cpp kernel windbg">
-      <div class="card-image">
-        <img src="{{ '/assets/images/TM_WindowsEx.png' | relative_url }}" alt="Kernel Exploit">
-      </div>
-      <div class="card-info">
-        <h4>버그 헌팅에 대비하기 위한 Windows Kernel 1-day</h4>
-        <p>화이트햇스쿨 3기 프로젝트로, Windows Kernel Streaming 권한 상승 취약점인 CVE-2024-35250의 루트커즈를 중점적으로 분석하여 익스플로잇에 기여했습니다.</p>
-        <div class="tech-tags">
-          <span>1-day Analysis</span><span>Windows</span><span>C/C++</span><span>Kernel</span><span>WinDbg</span>
-        </div>
-        <a href="#" class="link-arrow">View Details ↗</a>
-      </div>
-    </article>
-
-    <article class="project-card" data-tech="python reversing ida">
-      <div class="card-image">
-        <img src="{{ '/assets/images/TM_CVEAnalyzer.png' | relative_url }}" alt="Malware Analysis">
-      </div>
-      <div class="card-info">
-        <h4>CVE-Analyzer: AI 기반 CVE 자동 분석 및 실행 환경 구축 프레임워크</h4>
-        <p>CVE-Analyzer는 최신 웹 취약점(CVE)에 대한 정보를 수집하고, 관련 PoC(Proof-of-Concept) 코드를 탐색하여 실행 가능한 격리 환경(Dockerfile)을 동적으로 생성하는 자동화 프레임워크입니다. LLM(Large Language Model)을 MCP(Mission Critical Prompt) 서버로 활용하여 전체 분석, 의사결정, 보고서 생성 과정을 자동화합니다.</p>
-        <div class="tech-tags">
-          <span>Python</span><span>pwn</span><span>IDA</span>
-        </div>
-        <a href="https://seory0.github.io/projects/Apin.html" class="link-arrow">View Details ↗</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<section class="container projects-wrapper" id="toy-projects">
-  <div class="section-label">
-    <h3>02. Toy Projects</h3>
-    <span class="line"></span>
-  </div>
-
-  <div class="project-grid">
-    <article class="project-card" data-tech="python automation">
-      <div class="card-image">
-        <img src="{{ '/assets/images/Tm_Apin.png' | relative_url }}" alt="Discord Bot">
-      </div>
-      <div class="card-info">
-        <h4>Apin: RISC-V Assembly parsing in a Nutshell</h4>
-        <p>RISC-V 어셈블리어를 이진수와 16진수로 변환합니다! 컴퓨터 구조 과제를 하다가 고안했습니다. :></p>
-        <div class="tech-tags">
-          <span>Javascript</span><span>Computer Architecture</span>
-        </div>
-        <a href="https://seory0.github.io/projects/Apin.html" class="link-arrow">View ↗</a>
-      </div>
-    </article>
-    
-    <article class="project-card" data-tech="c-cpp game">
-      <div class="card-image">
-        <img src="{{ '/assets/images/TM_3Dwave.png' | relative_url }}" alt="Retro Game">
-      </div>
-      <div class="card-info">
-        <h4>3D ASCII FIELD</h4>
-        <p>HTML5 Canvas 기반의 Wave 인터렉션입니다. 3D 그래픽스 라이브러리를 쓰지 않고 자바스크립트만으로 3D를 구현했습니다.</p>
-        <div class="tech-tags">
-          <span>HTML5 Canvas</span><span>Javascript</span>
-        </div>
-        <a href="https://seory0.github.io/projects/3Dwave.html" class="link-arrow">View ↗</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<script src="{{ '/assets/js/circuit.js' | relative_url }}"></script>
+<script>
+    const checkbox = document.getElementById('theme-toggle-checkbox');
+    const statusText = document.getElementById('theme-status-text');
+    const body = document.body;
+    function updateLabel(isDark) { statusText.textContent = isDark ? "Dark" : "Light"; }
+    if (localStorage.getItem('theme') === 'dark') { body.classList.add('skin-theme-clientpref-night'); checkbox.checked = true; updateLabel(true); } else { updateLabel(false); }
+    checkbox.addEventListener('change', () => {
+        if (checkbox.checked) { body.classList.add('skin-theme-clientpref-night'); localStorage.setItem('theme', 'dark'); updateLabel(true); } 
+        else { body.classList.remove('skin-theme-clientpref-night'); localStorage.setItem('theme', 'light'); updateLabel(false); }
+    });
+</script>
+</body>
+</html>

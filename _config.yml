@@ -41,6 +41,12 @@ collections:
   posts:
     output: true
     permalink: /:year/:month/:day/:slug
+  books:
+    output: true
+    permalink: /books/:slug/
+  photos:
+    output: true
+    permalink: /photos/:slug/
   
 defaults:
   -
