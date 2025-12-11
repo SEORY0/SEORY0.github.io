@@ -2,7 +2,7 @@
 layout: page
 title: "Clean Code"
 author: "Robert C. Martin"
-cover: "/assets/images/clean_code.jpg"  # 책 표지 이미지 경로
+cover: "/assets/images/books/clean_code.jpg"  # 책 표지 이미지 경로
 summary: "코드는 짐작 가능해야 한다. 깨끗한 코드는 읽는 즐거움을 준다."
 status: "reading"  # reading(읽는 중) 또는 read(완독)
 date: 2025-01-20
