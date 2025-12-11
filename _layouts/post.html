@@ -1,133 +1,199 @@
 ---
-layout: default
+layout: compress
 ---
 
-<section class="post-header-section">
-  <div class="container">
-    <div class="post-header-grid">
-      
-      <div class="header-image">
-        <img src="{{ post.image | default: '/assets/images/default.jpg' | relative_url }}" alt="{{ post.title }}">
-      </div>
+<!DOCTYPE html>
+<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
+{% include head.html %}
+<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Post rootpage-Post skin-vector-2022 action-view">
 
-      <div class="header-info">
-        <div class="meta">
-          <span class="tags">
-            {% for tag in page.tags %}
-              {{ tag }}{% unless forloop.last %}, {% endunless %}
-            {% endfor %}
-          </span>
-          <span class="divider">|</span>
-          <span class="date">{{ page.date | date: "%B %d, %Y" }}</span>
+<div class="vector-header-container">
+  <header class="vector-header mw-header">
+    <div class="vector-header-start">
+        <a href="{{ '/' | relative_url }}" class="mw-logo">
+            <div class="mw-logo-icon"></div>
+            <span class="mw-logo-container"><strong class="mw-logo-wordmark">SEORY0</strong><span class="mw-logo-tagline">The Free Portfolio</span></span>
+        </a>
+    </div>
+    <div class="vector-header-end">
+        <div id="p-search" role="search" class="vector-search-box-vue vector-search-box-collapses vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
+            <form action="#" id="searchform" class="cdx-search-input cdx-search-input--has-end-button">
+                <div class="cdx-search-input__input-wrapper">
+                    <div class="cdx-text-input cdx-text-input--has-start-icon">
+                        <input class="cdx-text-input__input mw-searchInput" type="search" name="search" placeholder="Search SEORY0" aria-label="Search SEORY0">
+                        <span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+                    </div>
+                </div>
+                <button class="cdx-button cdx-search-input__end-button">Search</button>
+            </form>
         </div>
+        <nav class="vector-user-links" aria-label="Personal tools">
+            <div class="vector-user-links-main">
+                <div id="p-vector-user-menu-overflow" class="vector-menu mw-portlet">
+                    <div class="vector-menu-content"><ul class="vector-menu-content-list"><li class="mw-list-item"><a href="#"><span>Log in</span></a></li></ul></div>
+                </div>
+            </div>
+        </nav>
+    </div>
+  </header>
+</div>
 
-        <h1 class="post-title">{{ page.title }}</h1>
+<div class="mw-page-container">
+  <div class="mw-page-container-inner">
+    
+    <div class="vector-column-start">
+      <div class="vector-main-menu-container">
+        <div id="mw-navigation">
+          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
+            <div class="vector-menu mw-portlet" id="p-navigation">
+                <div class="vector-menu-heading">Navigation</div>
+                <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
+                        <li class="mw-list-item selected"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
+                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="vector-menu mw-portlet" id="p-interaction">
+                <div class="vector-menu-heading">Connect</div>
+                <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                        <li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li>
+                        <li class="mw-list-item"><a href="mailto:r.sjun3@gmail.com"><span>Email</span></a></li>
+                    </ul>
+                </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="mw-content-container">
+      <main id="content" class="mw-body" role="main">
         
-        <p class="post-description">
-          {{ page.description | default: page.excerpt | strip_html | truncate: 160 }}
-        </p>
-
-        <div class="author-info">
-            <span>By <strong>SEORY0</strong></span>
+        <div class="vector-page-toolbar">
+          <div class="vector-page-toolbar-container">
+            <div id="left-navigation">
+              <nav aria-label="Namespaces">
+                <div class="vector-menu vector-menu-tabs mw-portlet">
+                  <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Article</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div id="right-navigation">
+              <nav aria-label="Views">
+                <div class="vector-menu vector-menu-tabs mw-portlet">
+                  <div class="vector-menu-content">
+                    <ul class="vector-menu-content-list">
+                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
+                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
         </div>
-      </div>
 
+        <header class="mw-body-header">
+          <h1 id="firstHeading" class="firstHeading mw-first-heading">{{ page.title }}</h1>
+        </header>
+
+        <div id="bodyContent" class="vector-body">
+          <div id="siteSub" class="noprint">From WikiPort, the free portfolio</div>
+          <div id="contentSub"></div>
+          
+          <div id="mw-content-text" class="mw-body-content">
+            <div class="mw-parser-output">
+                
+                <table class="infobox" style="width: 22em;">
+                    <tbody>
+                        <tr>
+                            <th colspan="2" class="infobox-header" style="background-color: var(--box-header-bg);">Meta Information</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date</th>
+                            <td>{{ page.date | date: "%Y-%m-%d" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Author</th>
+                            <td>User:SEORY0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Category</th>
+                            <td>{{ page.categories | join: ', ' }}</td>
+                        </tr>
+                        {% if page.tags %}
+                        <tr>
+                            <th scope="row">Tags</th>
+                            <td>
+                                {% for tag in page.tags %}
+                                <span class="tag-label">{{ tag }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <div class="post-content">
+                    {{ content }}
+                </div>
+
+                <div id="catlinks" class="catlinks" data-mw="interface">
+                    <div id="mw-normal-catlinks" class="mw-normal-catlinks">
+                        <a href="#" title="Special:Categories">Categories</a>: 
+                        <ul>
+                            {% for cat in page.categories %}
+                            <li><a href="#">{{ cat }}</a></li>
+                            {% endfor %}
+                            <li><a href="#">Writings</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="vector-column-end">
+      <div class="vector-sticky-pinned-container">
+        <nav class="vector-appearance-landmark" aria-label="Appearance">
+            <div id="vector-appearance" class="vector-appearance">
+                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
+                <div class="vector-menu-content">
+                    <div class="theme-toggle-wrapper">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span>
+                        </label>
+                        <span id="theme-status-text">Light</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="container post-body-section">
-  <div class="post-grid">
-    
-    <article class="post-content" id="article-content">
-      {{ content }}
-    </article>
-
-    <aside class="post-sidebar">
-      <div class="sticky-toc">
-        <h3>In this Article</h3>
-        <ul id="toc-list">
-          </ul>
-      </div>
-    </aside>
-
-  </div>
-</section>
-
+<footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  var content = document.getElementById('article-content');
-  var tocList = document.getElementById('toc-list');
-  var headings = content.querySelectorAll('h2, h3');
-
-  /* If no headings, hide sidebar */
-  if (headings.length === 0) {
-    var sidebar = document.querySelector('.post-sidebar');
-    if(sidebar) sidebar.style.display = 'none';
-    content.style.width = '100%';
-    return;
-  }
-
-  var tocLinks = [];
-
-  headings.forEach(function(heading, index) {
-    /* Assign ID if missing */
-    if (!heading.id) {
-      heading.id = 'heading-' + index;
-    }
-
-    var li = document.createElement('li');
-    li.className = heading.tagName.toLowerCase(); 
-    
-    var a = document.createElement('a');
-    a.href = '#' + heading.id;
-    a.textContent = heading.textContent;
-    
-    /* Smooth Scroll with Offset */
-    a.addEventListener('click', function(e) {
-      e.preventDefault();
-      var targetId = this.getAttribute('href').substring(1);
-      var targetElement = document.getElementById(targetId);
-      
-      if(targetElement) {
-        var headerOffset = 100;
-        var elementPosition = targetElement.getBoundingClientRect().top;
-        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
-    });
-
-    li.appendChild(a);
-    tocList.appendChild(li);
-    tocLinks.push(a);
-  });
-
-  /* Robust Scroll Spy Logic */
-  function onScroll() {
-    var scrollPos = window.pageYOffset || document.documentElement.scrollTop;
-    var headerOffset = 150; /* Highlight trigger point offset */
-    var current = "";
-
-    headings.forEach(function(heading) {
-      if ((heading.offsetTop - headerOffset) <= scrollPos) {
-        current = heading.id;
-      }
-    });
-
-    tocLinks.forEach(function(link) {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === '#' + current) {
-        link.classList.add('active');
-      }
-    });
-  }
-
-  window.addEventListener('scroll', onScroll);
-  /* Initial check */
-  onScroll();
-});
+    const checkbox = document.getElementById('theme-toggle-checkbox'); const statusText = document.getElementById('theme-status-text'); const body = document.body;
+    function updateLabel(isDark) { statusText.textContent = isDark ? "Dark" : "Light"; }
+    if (localStorage.getItem('theme') === 'dark') { body.classList.add('skin-theme-clientpref-night'); checkbox.checked = true; updateLabel(true); } else { updateLabel(false); }
+    checkbox.addEventListener('change', () => { if (checkbox.checked) { body.classList.add('skin-theme-clientpref-night'); localStorage.setItem('theme', 'dark'); updateLabel(true); } else { body.classList.remove('skin-theme-clientpref-night'); localStorage.setItem('theme', 'light'); updateLabel(false); } });
 </script>
+</body>
+</html>

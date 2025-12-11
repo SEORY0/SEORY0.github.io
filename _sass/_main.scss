@@ -1,7 +1,8 @@
 @charset "utf-8";
 
 /* 1. Fonts: JetBrains Mono (Global) */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
 
 /* 2. Variables */
 :root {
@@ -15,7 +16,8 @@
   --border-color-base: #c8ccd1;
   --border-color-subtle: #e1e1e1;
   
-  --font-family-base: 'JetBrains Mono', monospace; /* 메인 폰트 변경 */
+  --font-family-base: 'JetBrains Mono', 'Noto Sans KR', monospace, sans-serif;
+  --font-family-serif: 'Linux Biolinum', 'Georgia', 'Noto Sans KR', serif; /* 제목용 예비 */
   
   --sidebar-width: 16em;
   
@@ -53,6 +55,7 @@ body {
   font-family: var(--font-family-base); /* JetBrains Mono 적용 */
   font-size: 0.9rem; /* 폰트 크기 조정 */
   line-height: 1.6;
+  word-break: keep-all;
 }
 
 a { text-decoration: none; color: var(--color-progressive); }
@@ -611,6 +614,114 @@ ul { list-style: none; padding: 0; margin: 0; }
       padding-top: 6px;
       display: flex;
       justify-content: space-between;
+    }
+  }
+}
+
+/* --- Post Detail Styles --- */
+
+/* 1. Post Content Typography */
+.post-content {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-top: 20px;
+
+  /* 문단 간격 */
+  p { margin-bottom: 1.2em; }
+
+  /* 제목 스타일 (위키 섹션 느낌) */
+  h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-color-base);
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    padding-bottom: 0.3em;
+    font-family: var(--font-family-serif);
+  }
+  h3 {
+    font-size: 1.2em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+  }
+
+  /* 목록 스타일 */
+  ul, ol { margin-left: 2em; margin-bottom: 1em; }
+  ul { list-style: disc; }
+  ol { list-style: decimal; }
+  li { margin-bottom: 0.3em; }
+
+  /* 인용문 (터미널 경고창 느낌 or 위키 노트) */
+  blockquote {
+    border-left: 4px solid var(--color-progressive);
+    background-color: var(--background-color-interactive-subtle);
+    padding: 10px 15px;
+    margin: 1.5em 0;
+    color: var(--color-subtle);
+    font-style: italic;
+  }
+
+  /* 코드 블록 (JetBrains 스타일) */
+  pre {
+    background-color: #2b2b2b; /* 다크 그레이 */
+    color: #a9b7c6; /* 코드 기본색 */
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    border: 1px solid var(--border-color-base);
+    margin-bottom: 1.5em;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background-color: var(--code-bg);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  
+  /* 이미지 */
+  img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color-subtle);
+    border-radius: 2px;
+    margin: 1em 0;
+  }
+}
+
+/* 2. Infobox Tags */
+.tag-label {
+  display: inline-block;
+  background-color: var(--background-color-interactive);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border-color-subtle);
+}
+
+/* 3. Category Links (Bottom) */
+#catlinks {
+  border: 1px solid var(--border-color-base);
+  background-color: var(--box-bg);
+  padding: 10px;
+  margin-top: 40px;
+  clear: both;
+  
+  .mw-normal-catlinks {
+    display: flex; align-items: center;
+    ul { 
+      display: inline; list-style: none; margin: 0; padding: 0; 
+      li { 
+        display: inline-block; 
+        border-left: 1px solid var(--color-subtle); 
+        padding: 0 0.5em; 
+        margin-left: 0.5em;
+        &:first-child { border-left: none; margin-left: 0; }
+      }
     }
   }
 }
