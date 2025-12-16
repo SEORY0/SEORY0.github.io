@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "유년기의 끝"
-author: "아서 C. 클라크"
+author: "Arthur C. Clarke"
 cover: "/assets/images/books/childhood_end.jpg"  # 책 표지 이미지 경로
 summary: "우리는 해석자이자 수호자들이오."
 status: "read"  # reading(읽는 중) 또는 read(완독)
