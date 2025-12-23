@@ -22,6 +22,13 @@ layout: compress
     <div class="vector-header-end">
         {% include search-bar.html %}
     </div>
+    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open Navigation">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <div id="mobile-overlay" class="mobile-overlay"></div>
   </header>
 </div>
 
@@ -114,9 +121,9 @@ layout: compress
           
           <div id="mw-content-text" class="mw-body-content">
             
-            <div class="main-hero-banner">
+            <!--<div class="main-hero-banner">
               {% include ascii_banner.html %}
-            </div>
+            </div>-->
             <div class="main-page-top-header">
                 <div class="welcome-inner">
                     <h2>Software<a href="{{ '/about/' | relative_url }}">@everywhere</a></h2>
@@ -252,6 +259,7 @@ layout: compress
 </footer>
 
 <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/moblie-nav.js' | relative_url }}"></script>
 
 <script>
     const checkbox = document.getElementById('theme-toggle-checkbox');
