@@ -1,0 +1,13 @@
+<div id="p-search" role="search" class="vector-search-box-vue vector-search-box-collapses vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
+    <form action="#" id="searchForm" class="cdx-search-input cdx-search-input--has-end-button" onsubmit="handleSearch(event)">
+        <div class="cdx-search-input__input-wrapper">
+            <div class="cdx-text-input cdx-text-input--has-start-icon">
+                <input id="searchInput" class="cdx-text-input__input mw-searchInput" type="search" name="search" placeholder="Search Writings" aria-label="Search SEORY0">
+                <span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+            </div>
+        </div>
+        <button type="button" id="searchBtn" class="cdx-button cdx-search-input__end-button" onclick="executeSearch()">Search</button>
+    </form>
+    
+    <div id="searchResults" class="search-results-container"></div>
+</div>

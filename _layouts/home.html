@@ -20,22 +20,7 @@ layout: compress
     </div>
 
     <div class="vector-header-end">
-        <div id="p-search" role="search" class="vector-search-box-vue vector-search-box-collapses vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
-            <form action="#" id="searchform" class="cdx-search-input cdx-search-input--has-end-button">
-                <div class="cdx-search-input__input-wrapper">
-                    <div class="cdx-text-input cdx-text-input--has-start-icon">
-                        <input class="cdx-text-input__input mw-searchInput" type="search" name="search" placeholder="Search SEORY0" aria-label="Search SEORY0">
-                        <span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
-                    </div>
-                </div>
-                <button class="cdx-button cdx-search-input__end-button">Search</button>
-            </form>
-        </div>
-
-        <nav class="vector-user-links" aria-label="Personal tools">
-            <div class="vector-user-links-main">
-                </div>
-        </nav>
+        {% include search-bar.html %}
     </div>
   </header>
 </div>
@@ -152,7 +137,7 @@ layout: compress
                 <div class="grid-col left">
                     <div class="clean-box">
                         <h3>Recent CTFs</h3>
-                        <p><b>0CTF</b> <i>12th</i>: Fermion</p>
+                        <p><b>Tencent 0CTF</b> <i>12th</i>: Fermion</p>
                         <p><b>Cykor CTF</b> <i>8th</i>: Fermion</p>
                         <p><b>LakeCTF Quals '25-'26</b> <i>20th</i>: Fermion</p>
                         <p><b>HSpace Club League 25</b> <i>5th</i>: ASC</p>
@@ -265,6 +250,8 @@ layout: compress
       <li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li>
     </ul>
 </footer>
+
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 
 <script>
     const checkbox = document.getElementById('theme-toggle-checkbox');

@@ -19,24 +19,7 @@ layout: compress
         </a>
     </div>
     <div class="vector-header-end">
-        <div id="p-search" role="search" class="vector-search-box-vue vector-search-box-collapses vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
-            <form action="#" id="searchform" class="cdx-search-input cdx-search-input--has-end-button">
-                <div class="cdx-search-input__input-wrapper">
-                    <div class="cdx-text-input cdx-text-input--has-start-icon">
-                        <input class="cdx-text-input__input mw-searchInput" type="search" name="search" placeholder="Search SEORY0" aria-label="Search SEORY0">
-                        <span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
-                    </div>
-                </div>
-                <button class="cdx-button cdx-search-input__end-button">Search</button>
-            </form>
-        </div>
-        <nav class="vector-user-links" aria-label="Personal tools">
-            <div class="vector-user-links-main">
-                <div id="p-vector-user-menu-overflow" class="vector-menu mw-portlet">
-                    <div class="vector-menu-content"><ul class="vector-menu-content-list"><li class="mw-list-item"><a href="#"><span>Log in</span></a></li></ul></div>
-                </div>
-            </div>
-        </nav>
+        {% include search-bar.html %}
     </div>
   </header>
 </div>
@@ -182,6 +165,7 @@ layout: compress
 <footer id="footer" class="mw-footer">
   <ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul>
 </footer>
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 
 <script>
     const checkbox = document.getElementById('theme-toggle-checkbox');
