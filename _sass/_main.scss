@@ -611,7 +611,8 @@ ul { list-style: none; padding: 0; margin: 0; }
     text-align: center;
     .book-cover { margin-bottom: 15px; }
   }
-}/* -------------------------------------------------------------------------- */
+}
+/* -------------------------------------------------------------------------- */
 /* [Mobile Breakpoint] 1000px 이하에서 디자인 변경                          */
 /* -------------------------------------------------------------------------- */
 @media (max-width: 1000px) {
@@ -643,25 +644,24 @@ ul { list-style: none; padding: 0; margin: 0; }
     justify-content: flex-start !important; 
   }
 
-  /* ★ 핵심 수정: 로고 뿐만 아니라 로고를 감싸는 부모(.vector-header-start)도 함께 타겟팅 ★ */
+  /* ★ 로고와 그 부모 요소가 오른쪽 여백을 밀어내도록 설정 ★ */
   .vector-header-start,
   .mw-logo {
     display: flex;
     align-items: center;
     gap: 8px;
     
-    /* "내 오른쪽의 모든 빈 공간을 여백으로 써라" -> 나머지를 오른쪽 끝으로 밀어버림 */
+    /* 오른쪽 공간을 여백으로 채워서 나머지를 오른쪽 끝으로 밈 */
     margin-right: auto !important; 
     
     flex-shrink: 0; 
 
-    /* 로고 이미지 스타일 */
     .mw-logo-icon { width: 32px; height: 32px; }
     .mw-logo-wordmark { font-size: 1.2em; white-space: nowrap; }
     .mw-logo-tagline { display: none; } 
   }
 
-  /* 혹시 모를 Search/Button을 감싸는 오른쪽 그룹이 있다면 flex 적용 */
+  /* 오른쪽 그룹 (혹시 모를 래퍼 대응) */
   .vector-header-end {
     display: flex !important;
     align-items: center;
@@ -670,7 +670,6 @@ ul { list-style: none; padding: 0; margin: 0; }
 
   /* [검색창] */
   .vector-search-box {
-    /* 로고가 이미 밀어줬으므로 auto 제거 */
     margin-left: 0 !important; 
     margin-right: 0 !important; 
     
@@ -697,7 +696,7 @@ ul { list-style: none; padding: 0; margin: 0; }
   /* [햄버거 버튼] */
   .mobile-menu-btn {
     display: flex !important;
-    margin-left: 8px; /* 검색창과 간격 */
+    margin-left: 8px; 
   }
 
 
@@ -737,6 +736,12 @@ ul { list-style: none; padding: 0; margin: 0; }
     flex-direction: column; 
     text-align: center;
     .book-cover { margin-bottom: 15px; }
+  }
+
+  /* ---------------- [Mobile Floating Toggle Button] ---------------- */
+  /* ★ 이 부분이 지워져서 버튼이 안 보였던 것입니다. 다시 추가! ★ */
+  .mobile-theme-toggle {
+    display: flex !important; /* 강제 표시 */
   }
 }
 
@@ -842,4 +847,51 @@ pre::-webkit-scrollbar-track { background-color: transparent; }
 :global(html.dark) p > code {
   background-color: rgba(110, 118, 129, 0.4);
   color: #e6edf3;
+}
+
+/* ========================================================================== */
+/* [Mobile Floating Toggle] Bottom-Left Dark Mode Button                    */
+/* ========================================================================== */
+.mobile-theme-toggle {
+  display: none; /* PC에선 숨김 */
+  position: fixed;
+  bottom: 30px; 
+  left: 25px;
+  z-index: 2000; /* 맨 위로 올림 */
+  
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  
+  background-color: var(--box-bg);
+  border: 1px solid var(--border-color-base);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: var(--color-base);
+  
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background-color 0.3s;
+
+  &:active { transform: scale(0.92); }
+  
+  svg { position: absolute; transition: opacity 0.3s, transform 0.3s; }
+  
+  /* 라이트 모드 */
+  .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+  .icon-sun  { opacity: 0; transform: rotate(90deg) scale(0.5); }
+}
+
+/* 다크 모드 상태 */
+html.skin-theme-clientpref-night .mobile-theme-toggle,
+body.skin-theme-clientpref-night .mobile-theme-toggle,
+html.dark .mobile-theme-toggle,
+body.dark .mobile-theme-toggle {
+  background-color: #2d333b;
+  border-color: #444c56;
+  color: #e6edf3;
+
+  .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+  .icon-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
 }
