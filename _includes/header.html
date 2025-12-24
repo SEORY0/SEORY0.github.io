@@ -1,0 +1,24 @@
+<div class="vector-header-container">
+  <header class="vector-header mw-header">
+    <div class="vector-header-start">
+        <a href="{{ '/' | relative_url }}" class="mw-logo">
+            <div class="mw-logo-icon"></div>
+            <span class="mw-logo-container">
+                <strong class="mw-logo-wordmark">SEORY0</strong>
+                <span class="mw-logo-tagline">Seokjun RYU</span>
+            </span>
+        </a>
+    </div>
+
+    <div class="vector-header-end">
+        {% include search-bar.html %}
+    </div>
+    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open Navigation">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <div id="mobile-overlay" class="mobile-overlay"></div>
+  </header>
+</div>

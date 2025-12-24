@@ -1,9 +1,17 @@
+---
+layout: compress  
+---
 <!DOCTYPE html>
-<html lang="ko">
-{% include head.html %}
-
+<html lang="en">
+<head>
+    </head>
 <body>
-    {{ content }}
-</body>
+    {% include header.html %}
 
+    <div class="mw-page-container">
+        {{ content }}
+    </div>
+
+    {% include scripts.html %}
+</body>
 </html>

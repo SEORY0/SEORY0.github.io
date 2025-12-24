@@ -732,11 +732,32 @@ ul { list-style: none; padding: 0; margin: 0; }
     }
   }
 
+  /* ---------------- [Book Card Fix] ---------------- */
   .book-card {
+    /* 세로 배치 */
     flex-direction: column; 
-    text-align: center;
-    .book-cover { margin-bottom: 15px; }
+    
+    /* ★ 핵심: 아이템(이미지, 텍스트)을 가로축 가운데로 정렬 ★ */
+    align-items: center; 
+    
+    /* 텍스트 내용 가운데 정렬 */
+    text-align: center; 
+    
+    .book-cover { 
+      /* 이미지와 텍스트 사이 간격 */
+      margin-bottom: 15px;
+      
+      /* 혹시 모를 마진 초기화 */
+      margin-right: 0; 
+      margin-left: 0;
+    }
+
+    .book-info {
+      /* 텍스트 박스가 꽉 차게 */
+      width: 100%;
+    }
   }
+
 
   /* ---------------- [Mobile Floating Toggle Button] ---------------- */
   /* ★ 이 부분이 지워져서 버튼이 안 보였던 것입니다. 다시 추가! ★ */

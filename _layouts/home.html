@@ -7,30 +7,7 @@ layout: compress
 {% include head.html %}
 <body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Wiktionary_Main_Page rootpage-Wiktionary_Main_Page skin-vector-2022 action-view">
 
-<div class="vector-header-container">
-  <header class="vector-header mw-header">
-    <div class="vector-header-start">
-        <a href="{{ '/' | relative_url }}" class="mw-logo">
-            <div class="mw-logo-icon"></div>
-            <span class="mw-logo-container">
-                <strong class="mw-logo-wordmark">SEORY0</strong>
-                <span class="mw-logo-tagline">Seokjun RYU</span>
-            </span>
-        </a>
-    </div>
-
-    <div class="vector-header-end">
-        {% include search-bar.html %}
-    </div>
-    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open Navigation">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-
-    <div id="mobile-overlay" class="mobile-overlay"></div>
-  </header>
-</div>
+{% include header.html %}
 
 <div class="mw-page-container">
   <div class="mw-page-container-inner">
@@ -258,26 +235,7 @@ layout: compress
     </ul>
 </footer>
 
-<button id="mobile-theme-toggle" class="mobile-theme-toggle" aria-label="Toggle Dark Mode">
-    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>
-    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"></circle>
-        <line x1="12" y1="1" x2="12" y2="3"></line>
-        <line x1="12" y1="21" x2="12" y2="23"></line>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-        <line x1="1" y1="12" x2="3" y2="12"></line>
-        <line x1="21" y1="12" x2="23" y2="12"></line>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
-</button>
-
-<script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-<script src="{{ '/assets/js/moblie-nav.js' | relative_url }}"></script>
+{% include scripts.html %}
 
 </body>
 </html>
