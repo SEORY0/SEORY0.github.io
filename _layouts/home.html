@@ -258,72 +258,6 @@ layout: compress
     </ul>
 </footer>
 
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-<script src="{{ '/assets/js/moblie-nav.js' | relative_url }}"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. 요소 선택
-    const checkbox = document.getElementById('theme-toggle-checkbox'); // 데스크탑 토글
-    const mobileToggle = document.getElementById('mobile-theme-toggle'); // [NEW] 모바일 토글
-    const statusText = document.getElementById('theme-status-text');
-    const body = document.body;
-
-    // 2. 테마 변경 실행 함수 (통합 관리)
-    function applyTheme(isDark) {
-        if (isDark) {
-            // 다크모드 적용
-            body.classList.add('skin-theme-clientpref-night');
-            localStorage.setItem('theme', 'dark');
-            if (statusText) statusText.textContent = "Dark";
-            if (checkbox) checkbox.checked = true;
-        } else {
-            // 라이트모드 적용
-            body.classList.remove('skin-theme-clientpref-night');
-            localStorage.setItem('theme', 'light');
-            if (statusText) statusText.textContent = "Light";
-            if (checkbox) checkbox.checked = false;
-        }
-        
-        // 배너 이미지 업데이트 (기존 로직)
-        const bannerImg = document.querySelector('.main-hero-banner img');
-        if (bannerImg) {
-            if (isDark) {
-                bannerImg.style.setProperty('filter', 'none', 'important');
-            } else {
-                bannerImg.style.setProperty('filter', 'invert(100%) hue-rotate(180deg)', 'important');
-            }
-        }
-    }
-
-    // 3. 초기 상태 확인
-    const savedTheme = localStorage.getItem('theme');
-    // 저장된 값이 'dark' 이거나 (없는데 시스템이 다크모드일 때 X -> 사용자가 명시한 값만 따름)
-    // 혹은 원하신다면 시스템 설정을 따르는 로직을 넣어도 됩니다. 지금은 기존 유지.
-    if (savedTheme === 'dark') {
-        applyTheme(true);
-    } else {
-        applyTheme(false);
-    }
-
-    // 4. 이벤트 리스너: 데스크탑 토글
-    if (checkbox) {
-        checkbox.addEventListener('change', () => {
-            applyTheme(checkbox.checked);
-        });
-    }
-
-    // 5. [NEW] 이벤트 리스너: 모바일 원형 버튼 토글
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', () => {
-            // 현재 클래스가 있는지 확인해서 반대로 토글
-            const isDarkNow = body.classList.contains('skin-theme-clientpref-night');
-            applyTheme(!isDarkNow);
-        });
-    }
-});
-</script>
-
 <button id="mobile-theme-toggle" class="mobile-theme-toggle" aria-label="Toggle Dark Mode">
     <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
@@ -340,6 +274,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
     </svg>
 </button>
+
+<script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/moblie-nav.js' | relative_url }}"></script>
 
 </body>
 </html>
