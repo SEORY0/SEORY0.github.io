@@ -398,184 +398,307 @@ ul { list-style: none; padding: 0; margin: 0; }
   .book-card { flex-direction: column; align-items: center; text-align: center; .book-cover { width: 120px; margin-bottom: 10px; } }
 }
 
-/* --- Main Hero Banner (MediaWiki/LESS Standard) --- */
+/* --- Main Hero Banner (Fixed Version) --- */
 .main-hero-banner {
-  /* [1] 기본 레이아웃 */
   width: 100%;
   height: 350px;
   margin-bottom: 30px;
   border-radius: 6px;
   border: 1px solid var(--border-color-subtle);
+  
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  
-  /* [2] 라이트 모드 (기본값) */
-  background-color: #ffffff;
+
+  /* [1] 기본 상태 (라이트 모드) */
+  background-color: #ffffff; 
   border-color: #e0e0e0;
   transition: background-color 0.3s ease;
 
-  pre {
-    all: unset;
+  img.ascii-img {
     display: block;
-    font-family: 'JetBrains Mono', 'Consolas', monospace !important;
-    white-space: pre !important;
-    font-size: 4px !important;
-    line-height: 1.1 !important;
-    text-align: center;
-    margin: 0; padding: 0; border: none; background: transparent;
-    color: #ffffff; 
-    filter: invert(100%) hue-rotate(220deg) saturate(200%);  /* 270deg로 변경 */
-    font-weight: 900 !important;
-    transition: filter 2s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    
+    /* 라이트모드: 검은 배경 이미지를 하얗게 반전 */
+    filter: invert(100%) hue-rotate(180deg);
+    
+    transition: filter 0.3s ease;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+  }
+
+  /* [2] 다크 모드 감지 (강력한 수정) */
+  /* html 태그 OR body 태그 어디에 클래스가 붙어도 작동하도록 모두 명시 */
+  html.skin-theme-clientpref-night &,
+  body.skin-theme-clientpref-night &,
+  html.dark &,
+  body.dark & {
+    
+    background-color: #000000 !important;
+    border-color: var(--border-color-subtle) !important;
+
+    img.ascii-img {
+      /* 다크모드: 반전 끄기 (원본 검은 배경 이미지 노출) */
+      filter: none !important;
+    }
   }
 }
 
-/* [3] 다크 모드 - 별도 블록으로 분리 */
-.skin-theme-clientpref-night .main-hero-banner {
-  background-color: var(--background-color-base) !important;  /* #0d1117 */
-  border-color: var(--border-color-subtle) !important;
+/* ========================================================================== */
+/* [Mobile Responsive] Header Redesign & Slide-Down Menu                    */
+/* ========================================================================== */
 
-  pre {
-    filter: none !important;
-    font-weight: bold !important;
-  }
-}
-
-/* --- Responsive & Mobile Navigation System --- */
-
-/* 1. 햄버거 버튼 스타일 (기본적으로 숨김) */
+/* 1. 햄버거 버튼 기본 스타일 (PC에서는 숨김) */
 .mobile-menu-btn {
-  display: none; /* PC에서는 안 보임 */
+  display: none; /* 기본값: 숨김 */
   flex-direction: column;
   justify-content: space-around;
-  width: 30px;
-  height: 24px;
+  width: 28px;  /* 버튼 크기 약간 축소 */
+  height: 22px;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-left: 15px; /* 검색창과의 간격 */
-  z-index: 2000; /* 메뉴보다 위에 있어야 함 */
+  margin-left: 12px;
+  z-index: 2000; 
 
   .bar {
     width: 100%;
-    height: 3px;
+    height: 2.5px; /* 두께 조정 */
     background-color: var(--color-base);
-    border-radius: 3px;
+    border-radius: 2px;
     transition: all 0.3s ease;
   }
 
-  /* 햄버거 버튼 클릭 시 X로 변하는 애니메이션 (선택 사항) */
+  /* 활성화(X자) 애니메이션 */
   &.active {
-    .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+    .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
     .bar:nth-child(2) { opacity: 0; }
-    .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+    .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
   }
 }
 
-/* 2. 모바일 배경 오버레이 (뒷배경 어둡게) */
+/* 2. 오버레이 (뒷배경 어둡게) */
 .mobile-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1005; /* 네비게이션 바로 아래 */
+  z-index: 1005; 
   opacity: 0;
   transition: opacity 0.3s ease;
-  
-  &.visible {
-    display: block;
-    opacity: 1;
-  }
+  &.visible { display: block; opacity: 1; }
 }
 
-/* 3. 반응형 미디어 쿼리 (1000px 이하) */
+
+/* -------------------------------------------------------------------------- */
+/* [Mobile Breakpoint] 1000px 이하에서 디자인 변경                          */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 1000px) {
-  
-  /* [레이아웃] 그리드를 1단으로 변경 */
+
+  /* ---------------- [Layout Fixes] ---------------- */
   .mw-page-container-inner {
-    display: block; /* Grid 해제 */
+    display: block; /* Grid 해제 -> 1단 구성 */
     padding: 15px;
   }
+  
+  /* 사이드바, 오른쪽 컬럼 숨김 (메뉴 열릴 때만 보임) */
+  .vector-column-end { display: none; }
+  
+  /* 메인 컨텐츠 1단 */
+  .main-page-body-grid { grid-template-columns: 1fr; }
 
-  /* [헤더] 검색창 너비 조정 및 햄버거 버튼 표시 */
+
+  /* ---------------- [Header Redesign] ---------------- */
+  
+  /* 1. 헤더 높이 줄이기 (4.5rem -> 3.5rem) */
   .vector-header-container {
-      padding: 0 10px;
+    height: 3.5rem; 
+    padding: 0 12px;
   }
   
+  .vector-header {
+    padding: 0; /* 내부 패딩 제거 */
+    gap: 10px;
+  }
+
+  /* 2. 로고 크기 축소 */
+  .mw-logo {
+    gap: 8px;
+    .mw-logo-icon { width: 32px; height: 32px; } /* 아이콘 축소 */
+    .mw-logo-wordmark { font-size: 1.2em; }        /* 텍스트 축소 */
+    .mw-logo-tagline { display: none; }            /* 태그라인 숨김 (공간 확보) */
+  }
+
+  /* 3. 검색창 크기 최적화 */
+  .vector-search-box {
+    input {
+      /* 고정 너비 대신 화면 비율로 설정하거나 작게 줄임 */
+      width: 140px !important; 
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+    button {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+  }
+
+  /* 4. 햄버거 버튼 강제 표시 (버그 해결 핵심) */
   .mobile-menu-btn {
-    display: flex; /* 모바일에서만 보임 */
+    display: flex !important;
   }
 
-  /* 검색창이 모바일에서 너무 길지 않게 */
-  .vector-search-box input {
-      width: 150px !important; 
-  }
 
-  /* [사이드바 - 왼쪽 네비게이션] 모바일 슬라이드 메뉴로 변신 */
+  /* ---------------- [Slide-Down Menu Animation] ---------------- */
+  
   .vector-column-start {
-    display: block !important; /* 기존 none 제거 */
+    display: block !important;
+    
+    /* 위치 및 크기 설정 */
     position: fixed;
-    top: 0;
-    left: -280px; /* 화면 밖으로 숨김 */
-    width: 260px;
-    height: 100vh;
+    top: 3.5rem; /* 헤더 높이(3.5rem) 바로 아래에서 시작 */
+    left: 0;
+    width: 100%; /* 화면 전체 너비 */
+    height: auto;
+    max-height: 0; /* 처음엔 높이가 0 (숨김) */
+    
+    /* 디자인 */
     background-color: var(--background-color-base);
-    border-right: 1px solid var(--border-color-base);
-    z-index: 1010; /* 최상단 레벨 */
-    overflow-y: auto;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-    padding: 20px;
+    border-bottom: 1px solid var(--border-color-base);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    /* 애니메이션 설정 */
+    overflow: hidden; /* 내용이 넘치면 숨김 */
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* 부드러운 슬라이드 */
+    z-index: 1010;
+    padding: 0; /* 닫혀있을 땐 패딩 0 */
 
-    /* 메뉴가 열렸을 때 */
-    &.menu-open {
-      left: 0; /* 화면 안으로 들어옴 */
-    }
-
-    /* 내부 스타일 조정 */
+    /* 내부 스크롤 (메뉴가 너무 길 경우) */
     .vector-main-menu-container {
-        position: static; /* sticky 해제 */
-        max-height: none;
+      position: static;
+      max-height: 60vh; /* 화면 높이의 60%까지만 차지 */
+      overflow-y: auto;
+      padding: 20px; /* 메뉴 열렸을 때 내부 여백 */
+    }
+
+    /* ★ 메뉴 열림 상태 (.menu-open) */
+    &.menu-open {
+      max-height: 80vh; /* 높이가 늘어나면서 슬라이드 다운 효과 */
+      border-bottom: 1px solid var(--border-color-base);
     }
   }
 
-  /* [오른쪽 컬럼] Appearance 등은 모바일에서 숨김 (필요시 하단 배치) */
-  .vector-column-end {
-    display: none; 
-  }
-  
-  /* [메인 컨텐츠] */
-  .main-page-body-grid {
-      grid-template-columns: 1fr; /* 2단 -> 1단 */
-  }
-  
-  /* 책 리스트 등 내부 요소 반응형 */
+  /* 책 리스트 등 모바일 레이아웃 조정 */
   .book-card {
-      flex-direction: column; 
-      text-align: center;
-      .book-cover { margin-bottom: 15px; }
+    flex-direction: column; 
+    text-align: center;
+    .book-cover { margin-bottom: 15px; }
   }
 }
+/* --- Clean Wiki Style Code Block (Final Fix) --- */
 
-/* --- Performance Fix: Hide Heavy Elements --- */
+/* 1. 인라인 코드 (문장 중간에 `code` 이렇게 쓰는 것) */
+p > code, li > code, td > code, span > code {
+  background-color: rgba(175, 184, 193, 0.2);
+  color: var(--color-base);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  font-weight: 500;
+}
 
-/* 모바일 메뉴가 열려있을 때 (.mobile-menu-active) */
-body.mobile-menu-active {
+/* 2. 코드 블럭 컨테이너 (최외곽 박스 하나만 스타일링) */
+/* Jekyll(Rouge)은 보통 div.highlighter-rouge 안에 figure.highlight를 만듭니다. */
+/* 중첩을 막기 위해 가장 바깥쪽 컨테이너만 디자인합니다. */
+div.highlighter-rouge, 
+div.language-plaintext,
+div.language-c,
+div.language-cpp,
+div.language-python,
+div.language-javascript {
+  margin: 24px 0;
+  border-radius: 6px;
+  background-color: #f6f8fa; /* 라이트 모드 배경 */
+  border: 1px solid #d0d7de; 
+  box-shadow: none; 
+}
+
+/* 3. 내부 중첩 박스 스타일 초기화 (중요: 여기서 이중 박스를 없앱니다) */
+div.highlighter-rouge figure.highlight,
+div.highlighter-rouge pre.highlight {
+  background: transparent !important; /* 배경 투명하게 */
+  border: none !important;            /* 테두리 없애기 */
+  margin: 0 !important;               /* 여백 없애기 */
+  padding: 0 !important;              /* 패딩 없애기 */
+  box-shadow: none !important;
+}
+
+/* 4. 실제 코드 영역 (Pre) 스타일링 */
+/* 여기에만 패딩과 스크롤을 줍니다. */
+pre {
+  position: relative;
+  margin: 0;
+  padding: 16px; /* 코드와 박스 사이의 간격 */
+  overflow-x: auto; /* 가로 스크롤 */
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.6;
   
-  /* 아스키 아트 배너 숨기기 */
-  .main-hero-banner {
-    /* visibility: hidden은 요소를 화면 렌더링 파이프라인에서 제외시킵니다.
-       opacity: 0만 쓰면 투명할 뿐 여전히 계산하므로 렉이 걸립니다.
-       따라서 visibility를 꼭 써야 합니다.
-    */
-    visibility: hidden; 
-    opacity: 0;
-    transition: visibility 0s linear 0.3s, opacity 0.3s ease; /* 닫힐 때 부드럽게 */
-  }
+  /* 기본 글자색 (하이라이팅 안 된 부분) */
+  color: #1f2328; 
+  background-color: transparent; /* 투명 (부모 색 따름) */
+}
 
-  /* (선택사항) 만약 다른 무거운 요소가 있다면 여기서 같이 숨기세요 */
-  /* 예: .featured-card { visibility: hidden; } */
+/* 5. 코드 태그 초기화 */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+}
+
+/* 6. 스크롤바 커스텀 */
+pre::-webkit-scrollbar { height: 6px; }
+pre::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0, 0.2);
+  border-radius: 3px;
+}
+pre::-webkit-scrollbar-track { background-color: transparent; }
+
+
+/* ================================================================= */
+/* [다크 모드 대응]                                                  */
+/* ================================================================= */
+
+:global(html.skin-theme-clientpref-night) div.highlighter-rouge,
+:global(html.dark) div.highlighter-rouge,
+:global(html.skin-theme-clientpref-night) div[class^="language-"],
+:global(html.dark) div[class^="language-"] {
+  background-color: #161b22; /* 짙은 배경 */
+  border-color: #30363d;
+}
+
+:global(html.skin-theme-clientpref-night) pre,
+:global(html.dark) pre {
+  color: #e6edf3; /* 기본 글자색: 밝은 회색 */
+}
+
+/* 다크모드 스크롤바 */
+:global(html.skin-theme-clientpref-night) pre::-webkit-scrollbar-thumb,
+:global(html.dark) pre::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255, 0.2);
+}
+
+/* 다크모드 인라인 코드 */
+:global(html.skin-theme-clientpref-night) p > code,
+:global(html.dark) p > code {
+  background-color: rgba(110, 118, 129, 0.4);
+  color: #e6edf3;
 }
