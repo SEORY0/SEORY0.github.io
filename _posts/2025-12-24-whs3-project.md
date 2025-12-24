@@ -1,6 +1,6 @@
 ---
 layout: post
-title: CVE-2024-35250, Windows Kernel Streaming LPE Analysis
+title: Windows Kernel Streaming Driver LPE Analysis (CVE-2024-35250)
 description: Enable syntax highlighting in your site
 summary: Enable syntax highlighting in your site.
 comments: true
@@ -796,7 +796,7 @@ CVE-2024-35250은 Windows 커널 스트리밍 드라이버(ks.sys)의 `Unseriali
 
 ### 5.2 기술적 성과
 
-본 분석에서는 다음과 같은 기술적 성과를 달성했다:
+본 분석에서는 다음과 같은 기술적 성과를 달성했다.
 
 1. **Root Cause 분석**: 커널 스트리밍 아키텍처의 IRP 처리 흐름을 추적하여 취약점의 근본 원인을 정확히 식별
 2. **kCFG 우회 가젯 발굴**: 기존에 알려진 RTL_BITMAP 기반 방식 외에, `DbgkpTriageDumpRestoreState`와 `ExpProfileDelete` 함수를 활용한 새로운 Arbitrary Write Primitive 구성
@@ -804,7 +804,7 @@ CVE-2024-35250은 Windows 커널 스트리밍 드라이버(ks.sys)의 `Unseriali
 
 ### 5.3 배운 점
 
-이번 분석을 통해 Windows 커널 보안에 대한 깊은 이해를 얻을 수 있었다:
+이번 분석을 통해 다음과 같은 Windows 커널 보안에 대한 깊은 이해를 얻을 수 있었다.
 
 - **신뢰 경계의 중요성**: 커널 코드에서 사용자 데이터를 다룰 때는 항상 데이터의 출처를 고려하여 적절한 검증을 수행해야 한다
 - **RequestorMode의 의미**: 이 필드는 IRP 생성자의 모드를 나타내지만, 포함된 데이터의 신뢰도와는 별개임을 이해해야 한다
