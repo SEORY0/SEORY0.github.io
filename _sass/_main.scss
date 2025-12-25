@@ -492,7 +492,9 @@ ul { list-style: none; padding: 0; margin: 0; }
   /* 1. 레이아웃 초기화 */
   .mw-page-container-inner {
     display: block; 
-    padding: 15px;
+    padding: 0 15px;
+    max-width: 100vw;      /* 화면 너비 초과 방지 */
+    overflow-x: hidden;
   }
   
   .vector-column-end { display: none; }
@@ -573,6 +575,90 @@ ul { list-style: none; padding: 0; margin: 0; }
     margin-left: 8px; /* 검색창과 간격 */
   }
 
+   /* 4. [중요] 인포박스(Infobox) 반응형 강제 적용 */
+  /* HTML에 인라인 스타일(width: 22em)이 있어서 !important로 덮어씌워야 함 */
+  table.infobox {
+    width: 100% !important; /* 강제 100% */
+    float: none !important; /* 오른쪽 둥둥 떠있는 것 해제 */
+    margin: 0 0 20px 0 !important;
+    clear: both;
+    
+    /* 내부 폰트 및 패딩 조정 */
+    th, td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+    
+    /* 모바일에서는 제목(th)과 내용(td)을 위아래로 배치하고 싶다면 */
+    /* (선택사항: 표 모양 유지를 원하면 이 부분은 생략 가능) */
+    /*
+    display: block;
+    tbody, tr, th, td { display: block; width: 100%; }
+    th { background-color: var(--box-header-bg); }
+    */
+  }
+
+    /* 6. 타이포그래피 및 본문 가독성 */
+  .firstHeading {
+    font-size: 1.8em; /* 제목 크기 조정 */
+    margin-bottom: 0.5em;
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  }
+
+  #siteSub {
+    font-size: 0.85em;
+    margin-bottom: 1.5em;
+  }
+
+  .post-content {
+    font-size: 16px;   /* 본문 글자 크기 */
+    line-height: 1.7;  /* 줄간격 넉넉하게 */
+    
+    /* 긴 단어 강제 줄바꿈 */
+    word-break: break-word; 
+    overflow-wrap: break-word;
+    
+    /* 이미지 반응형 */
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+      margin: 1em 0;
+    }
+  }
+
+
+  /* 7. 코드 블럭 모바일 최적화 */
+  .code-block-container {
+    /* 화면 너비보다 넓은 코드 박스는 내부 스크롤 처리 */
+    max-width: 100%;
+    margin: 20px 0;
+    
+    .code-wrapper {
+      overflow-x: auto; /* 가로 스크롤 활성화 */
+      -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+    }
+    
+    /* 모바일에서 폰트 살짝 줄임 */
+    pre {
+      font-size: 13px; 
+      padding: 12px;
+    }
+  }
+
+  
+  /* 8. 카테고리 박스 (하단) */
+  #catlinks {
+    margin-top: 30px;
+    padding: 15px;
+    
+    .mw-normal-catlinks ul li {
+      display: inline-block;
+      margin-bottom: 5px;
+      border-left: none; /* 모바일엔 세로선 제거 */
+      margin-left: 0;
+      margin-right: 10px;
+    }
+  }
 
   /* ---------------- [Slide-Down Menu Animation] ---------------- */
   .vector-column-start {
@@ -1097,25 +1183,5 @@ body.dark {
     tr:last-child td {
       border-bottom: none;
     }
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* [Mobile Responsive] 모바일에서 표가 깨지지 않게 가로 스크롤 처리             */
-/* -------------------------------------------------------------------------- */
-@media (max-width: 768px) {
-  .post-content table {
-    display: block;      /* 블록 요소로 변경하여 스크롤 가능하게 함 */
-    width: 100%;
-    overflow-x: auto;    /* 가로 스크롤 생성 */
-    white-space: nowrap; /* 내용 줄바꿈 방지 (표 모양 유지) */
-    
-    /* 스크롤바 디자인 */
-    &::-webkit-scrollbar { height: 6px; }
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--border-color-subtle);
-      border-radius: 3px;
-    }
-    &::-webkit-scrollbar-track { background: transparent; }
   }
 }
