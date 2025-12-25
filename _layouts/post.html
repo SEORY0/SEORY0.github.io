@@ -159,12 +159,7 @@ layout: compress
 </div>
 
 <footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
-<script>
-    const checkbox = document.getElementById('theme-toggle-checkbox'); const statusText = document.getElementById('theme-status-text'); const body = document.body;
-    function updateLabel(isDark) { statusText.textContent = isDark ? "Dark" : "Light"; }
-    if (localStorage.getItem('theme') === 'dark') { body.classList.add('skin-theme-clientpref-night'); checkbox.checked = true; updateLabel(true); } else { updateLabel(false); }
-    checkbox.addEventListener('change', () => { if (checkbox.checked) { body.classList.add('skin-theme-clientpref-night'); localStorage.setItem('theme', 'dark'); updateLabel(true); } else { body.classList.remove('skin-theme-clientpref-night'); localStorage.setItem('theme', 'light'); updateLabel(false); } });
-</script>
+<script src="{{ '/assets/js/code-copy.js' | relative_url }}"></script>
 {% include scripts.html %}
 
 </body>

@@ -9,9 +9,9 @@ tags: [Windows, CVE Analysis]
 
 ## 개요
 
-CVE-2024-35250은 Windows 커널 스트리밍(Kernel Streaming) 드라이버에서 발견된 로컬 권한 상승(Local Privilege Escalation, LPE) 취약점이다. 이 취약점은 Windows 10/11 및 Server 2008~2022 전반에 영향을 미치며, CVSS 기준 7.8점으로 높은 심각도를 가진다.
+CVE-2024-35250은 Windows 커널 스트리밍  드라이버에서 발견된 로컬 권한 상승 취약점이다. 이 취약점은 Windows 10/11 및 Server 2008~2022 전반에 영향을 미치며, CVSS 기준 7.8점으로 높은 심각도를 가진다.
 
-취약점의 핵심은 **신뢰되지 않은 포인터 역참조(Untrusted Pointer Dereference)**이다. 커널 스트리밍 드라이버(ks.sys)가 사용자 입력 버퍼를 처리하는 과정에서 신뢰 경계(Trust Boundary)를 위반하여, 공격자가 제공한 악의적인 입력값이 커널 권한으로 실행되는 문제가 발생한다. 이를 통해 일반 사용자 권한의 공격자가 SYSTEM 권한을 획득할 수 있다.
+취약점의 핵심은 **신뢰되지 않은 포인터 역참조(Untrusted Pointer Dereference)**이다. 커널 스트리밍 드라이버(ks.sys)가 사용자 입력 버퍼를 처리하는 과정에서 신뢰 경계를 위반하여, 공격자가 제공한 악의적인 입력값이 커널 권한으로 실행되는 문제가 발생한다. 이를 통해 일반 사용자 권한의 공격자가 SYSTEM 권한을 획득할 수 있다.
 
 본 글에서는 이 취약점의 Root Cause부터 시작하여 PoC 작성, 그리고 실제 Exploit 개발까지의 전 과정을 상세히 다룬다. Windows 커널 드라이버의 동작 원리를 이해하고, 취약점이 어떻게 발생하며 어떤 방식으로 악용될 수 있는지 살펴본다.
 
@@ -27,7 +27,7 @@ IOCTL은 **사용자 모드(User Mode)와 커널 모드(Kernel Mode)를 연결�
 
 일반적으로 사용자 애플리케이션은 커널이나 하드웨어에 직접 접근할 수 없다. 운영체제는 보안과 안정성을 위해 사용자 영역과 커널 영역을 엄격히 분리하기 때문이다. 그렇다면 사용자 프로그램이 하드웨어를 제어하거나 커널 기능을 사용하려면 어떻게 해야 할까?
 
-이때 사용하는 것이 IOCTL이다. 사용자 애플리케이션은 `DeviceIoControl` API를 호출하여 특정 제어 코드(Control Code)와 함께 데이터를 커널 드라이버에 전달할 수 있다. 드라이버는 이 요청을 받아 해당 작업을 수행하고 결과를 반환한다.
+이때 사용하는 것이 IOCTL이다. 사용자 애플리케이션은 `DeviceIoControl` API를 호출하여 특정 제어 코드와 함께 데이터를 커널 드라이버에 전달할 수 있다. 드라이버는 이 요청을 받아 해당 작업을 수행하고 결과를 반환한다.
 ![alt text](/assets/images/writings/IRP.png)
 
 ```
@@ -48,7 +48,7 @@ IOCTL 요청이 발생하면, Windows의 I/O Manager는 이 요청을 **IRP(I/O 
 
 IRP는 커널 모드 내에서 드라이버 간, 또는 I/O Manager와 드라이버 간의 통신을 위해 사용되는 **핵심 데이터 구조체**이다. 쉽게 말해 **"작업 요청서"**와 같다.
 
-사용자 애플리케이션이 파일 읽기, 쓰기, 또는 장치 제어 같은 I/O 작업을 요청하면:
+사용자 애플리케이션이 파일 읽기, 쓰기, 또는 장치 제어 같은 I/O 작업을 요청하면 다음과 같은 처리 과정을 거친다.
 
 1. **I/O Manager가 IRP를 생성**한다
 2. 생성된 IRP를 해당 장치의 **드라이버 스택(Driver Stack)** 최상위 드라이버로 전달한다
@@ -141,7 +141,7 @@ Windows 장치 드라이버는 사용자 모드에서 `DeviceIoControl` API를 �
 
 이 요청을 처리하는 주요 함수가 `KsPropertyHandler`이며, 내부적으로 `KspPropertyHandler`를 호출한다:
 
-```C
+```c
 NTSTATUS __stdcall KsPropertyHandler(
     PIRP Irp, 
     ULONG PropertySetsCount, 
@@ -211,7 +211,7 @@ if ( Irp->RequestorMode )  // UserMode인 경우
 
 ### 2.3 취약점의 핵심: IOCTL 재호출
 
-문제는 `UnserializePropertySet` 함수 내부에서 발생한다. 이 함수는 직렬화된 속성들을 하나씩 역직렬화하면서 **각 속성에 대해 IOCTL을 재호출**한다. 이때 `KsSynchronousIoControlDevice` 함수를 사용한다:
+문제는 `UnserializePropertySet` 함수 내부에서 발생한다. 이 함수는 직렬화된 속성들을 하나씩 역직렬화하면서 **각 속성에 대해 IOCTL을 재호출**한다. 이때 `KsSynchronousIoControlDevice` 함수를 사용한다.
 
 ```c
 v16 = KsSynchronousIoControlDevice(
@@ -225,7 +225,7 @@ v16 = KsSynchronousIoControlDevice(
     &BytesReturned);
 ```
 
-**두 번째 인자가 0으로 하드코딩**되어 있다. 이 값은 새로 생성되는 IRP의 `RequestorMode`를 설정하는 데 사용된다.
+위 함수의 파라미터를 보면 **두 번째 인자가 0으로 하드코딩**되어 있다. 이 값은 새로 생성되는 IRP의 `RequestorMode`를 설정하는 데 사용된다.
 
 | 인자 값 | 의미 |
 |---|---|
@@ -236,7 +236,7 @@ v16 = KsSynchronousIoControlDevice(
 
 ### 2.4 신뢰 경계 위반
 
-`KsSynchronousIoControlDevice` 함수의 내부를 살펴보면:
+`KsSynchronousIoControlDevice` 함수의 내부를 살펴보자.
 
 ```c
 NTSTATUS __stdcall KsSynchronousIoControlDevice(...)
@@ -327,7 +327,7 @@ __int64 __fastcall CKSThunkDevice::CheckIrpForStackAdjustmentNative(
 }
 ```
 
-`RequestorMode`가 KernelMode(0)로 설정되어 있으므로:
+`RequestorMode`가 KernelMode(0)로 설정되어 있으므로 아래의 문제가 발생한다.
 1. 주소 유효성 및 접근 권한 검증(ProbeForRead/Write)이 **생략**된다
 2. DrmAudioStream 속성 집합 처리 시, **사용자 입력 버퍼에서 함수 포인터를 가져와 호출**한다
 3. 이때 사용자 버퍼의 값이 **함수 호출의 첫 번째 인자(rcx)**로 직접 사용된다
@@ -336,7 +336,7 @@ __int64 __fastcall CKSThunkDevice::CheckIrpForStackAdjustmentNative(
 
 ### 2.6 Microsoft 가이드라인 위반
 
-Microsoft는 IoBuildDeviceIoControlRequest 관련 문서에서 다음과 같이 명시하고 있다:
+Microsoft는 IoBuildDeviceIoControlRequest 관련 문서에서 다음과 같이 명시하고 있다.
 
 > "If the caller cannot validate parameter values that it copies from a user-mode buffer to the input buffer, or if these values must not be interpreted as coming from a kernel-mode component, the caller should set the RequestorMode field in the IRP to UserMode. This setting informs the driver that handles the I/O control request that the buffer contains untrusted, user-mode data."
 
@@ -346,7 +346,7 @@ Microsoft는 IoBuildDeviceIoControlRequest 관련 문서에서 다음과 같이 
 
 ### 2.7 Root Cause 요약
 
-CVE-2024-35250의 근본 원인은 다음 세 가지 조건의 결합이다:
+CVE-2024-35250의 근본 원인은 다음 세 가지 조건의 결합이다.
 
 | 조건 | 설명 |
 |---|---|
@@ -354,7 +354,7 @@ CVE-2024-35250의 근본 원인은 다음 세 가지 조건의 결합이다:
 | **2. 제어 가능한 입출력 버퍼** | 공격자가 입력/출력 버퍼 내용을 제어 가능 |
 | **3. RequestorMode 기반 보안 검사** | 새 IRP의 RequestorMode가 KernelMode로 설정되어 검증 우회 |
 
-공격자는 이 취약점을 이용하여:
+이에 따라 공격자는 아래와 같이 취약점을 촉발할 수 있다.
 1. 조작된 입력 버퍼로 역직렬화 루틴 진입
 2. RequestorMode 검증 우회
 3. 임의 커널 주소에 대한 읽기/쓰기 수행
@@ -385,7 +385,7 @@ HANDLE GetKsDevice(const GUID categories) {
 
 ### 3.2 입출력 버퍼 구성
 
-취약점을 트리거하기 위한 입력 버퍼와 출력 버퍼를 구성한다:
+취약점을 트리거하기 위한 입력 버퍼와 출력 버퍼를 구성한다.
 
 ```
 [InputBuffer] 커널 드라이버가 역직렬화를 수행하도록 만든 입력 데이터
@@ -397,11 +397,11 @@ HANDLE GetKsDevice(const GUID categories) {
                   → 임의의 인자값 할당
 ```
 
-입력 버퍼는 드라이버가 취약한 역직렬화 루틴으로 진입하도록 유도하며, 공격자가 지정한 유효하지 않은 주소로 코드 실행 흐름을 변경한다. 출력 버퍼는 역직렬화 루틴에서 처리할 직렬화 항목의 수를 지정하고, 사용자가 구성한 구조체의 주소를 rcx 레지스터에 로드되도록 유도한다.
+입력 버퍼는 드라이버가 취약한 역직렬화 루틴으로 진입하도록 유도하며 공격자가 지정한 유효하지 않은 주소로 코드 실행 흐름을 변경한다. 출력 버퍼는 역직렬화 루틴에서 처리할 직렬화 항목의 수를 지정하고 사용자가 구성한 구조체의 주소를 rcx 레지스터에 로드되도록 유도한다.
 
 ### 3.3 콜스택 흐름
 
-IOCTL 요청이 커널에 전달된 후 취약점이 발생하는 경로는 다음과 같다:
+IOCTL 요청이 커널에 전달된 후 취약점이 발생하는 경로는 다음과 같다.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -424,7 +424,7 @@ IOCTL 요청이 커널에 전달된 후 취약점이 발생하는 경로는 다�
 
 ### 3.4 크래시 결과 분석
 
-PoC 실행 결과, 다음과 같은 BSOD(Blue Screen of Death)가 발생한다:
+PoC 실행 결과, 다음과 같은 BSOD가 발생한다.
 
 ```
 BUGCHECK_CODE:  3b
@@ -461,7 +461,7 @@ PoC에서 취약점의 존재를 입증했다. 이제 이를 실제 **권한 상
 
 ### 4.1 Exploit으로의 확장
 
-취약점을 통해 다음 두 가지 핵심 요소를 제어할 수 있음을 확인했다:
+취약점을 통해 다음 두 가지 핵심 요소를 제어할 수 있음을 확인했다.
 
 1. **임의 함수 호출**: `UnserializePropertySet` → IOCTL 재호출 → `jmp rax` 명령을 통해 사용자 데이터에서 가져온 주소로 점프
 2. **첫 번째 인자 제어**: `rcx` 레지스터를 통해 사용자 모드 포인터를 전달 가능 (하위 4바이트 부분 제어)
@@ -476,13 +476,13 @@ PoC에서 취약점의 존재를 입증했다. 이제 이를 실제 **권한 상
 | **SMEP** (Supervisor Mode Execution Prevention) | 커널 모드에서 사용자 영역 코드 실행 방지 | 쉘코드 대신 커널 가젯 활용 |
 | **kCFG** (Kernel Control Flow Guard) | 간접 호출 시 유효한 함수 주소인지 비트맵 검사 | kCFG 비트맵에 등록된 함수만 호출 대상으로 사용 |
 
-SMEP와 kCFG로 인해 **사용자 모드에 위치한 쉘코드나 임의의 ROP 가젯을 직접 실행하는 방식은 사용할 수 없다**. SMEP 우회 가젯으로 CR4 레지스터를 조작하더라도, kCFG가 유효하지 않은 간접 호출을 차단하기 때문이다.
+SMEP와 kCFG로 인해 **사용자 모드에 위치한 쉘코드나 임의의 ROP 가젯을 직접 실행하는 방식은 사용할 수 없다**. SMEP 우회 가젯으로 CR4 레지스터를 조작하더라도 kCFG가 유효하지 않은 간접 호출을 차단하기 때문이다.
 
 따라서 본 Exploit은 **kCFG 비트맵에 등록된 유효한 커널 함수를 가젯으로 활용**하여 커널 구조체를 직접 조작하는 방식을 사용한다.
 
 ### 4.3 Exploit 전략
 
-LPE를 달성하기 위한 전체 전략은 다음과 같다:
+LPE를 달성하기 위한 전체 전략은 다음과 같다.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -523,7 +523,7 @@ LPE를 달성하기 위한 전체 전략은 다음과 같다:
 
 이 값은 `NtWriteVirtualMemory`, `NtReadVirtualMemory` 같은 시스템 콜에서 **커널 주소에 대한 접근을 허용할지 결정**하는 데 사용된다. 정상적으로는 UserMode 프로세스가 호출하면 `PreviousMode = 1`이므로 커널 메모리에 직접 접근할 수 없다.
 
-하지만 취약점을 통해 `PreviousMode`를 0으로 변조하면, 커널은 해당 스레드가 커널 모드에서 호출된 것으로 판단하여 **커널 주소에 대한 읽기/쓰기를 허용**하게 된다.
+하지만 취약점을 통해 `PreviousMode`를 0으로 변조하면 커널은 해당 스레드가 커널 모드에서 호출된 것으로 판단하여 **커널 주소에 대한 읽기/쓰기를 허용**하게 된다.
 
 #### Token Swapping
 
@@ -566,7 +566,7 @@ int32_t GetObjPtr(_Out_ PULONG64 ppObjAddr, _In_ ULONG ulPid, _In_ HANDLE handle
 }
 ```
 
-이 함수로 다음 커널 객체들의 주소를 획득한다:
+이 함수로 다음 커널 객체들의 주소를 획득한다.
 
 | 객체 | 용도 |
 |---|---|
@@ -606,25 +606,25 @@ UINT_PTR GetKernelModuleAddress(const char* TargetModule)
 
 #### 4.5.2 kCFG 우회 가젯 선정
 
-kCFG를 우회하면서 `PreviousMode`를 0으로 변조하기 위해, 다음 조건을 만족하는 커널 함수를 찾아야 한다:
+kCFG를 우회하면서 `PreviousMode`를 0으로 변조하기 위해 다음 조건을 만족하는 커널 함수를 찾아야 한다.
 
 1. **단일 인자(rcx)만 사용하거나**, 단일 인자만으로 원하는 주소에 값을 쓸 수 있어야 함
 2. **내부에서 `[[rcx]] = value` 또는 `*(*rcx + offset) = value` 형태의 메모리 쓰기** 동작 수행
 3. **쓰기 대상 주소가 rcx 또는 rcx로부터 유도 가능**해야 함 (UserMode에서 제어 가능)
 4. **kCFG 비트맵(GuardCFFunctionTable)에 등록**되어 있어야 함
 
-분석을 통해 두 가지 유효한 가젯을 발견했다:
+분석을 통해 두 가지 유효한 가젯을 발견했다.
 
 **가젯 1: DbgkpTriageDumpRestoreState**
 
-IDA로 분석한 결과, 이 함수는 rcx 레지스터 하나만 참조하며 다음 연산을 수행한다:
+IDA로 분석한 결과, 이 함수는 rcx 레지스터 하나만 참조하며 다음 연산을 수행한다.
 
 ```
 [[rcx] + 0x2078] = [rcx + 0x10]
 [[rcx] + 0x207C] = [rcx + 0x14]
 ```
 
-```asm
+```
 PAGE:00000001407F26F0  mov     eax, [rcx+0Ch]
 PAGE:00000001407F26F3  mov     rdx, [rcx]
 PAGE:00000001407F26F6  mov     [rcx+18h], eax
@@ -642,7 +642,7 @@ PE-Bear로 `ntoskrnl.exe`의 GuardCFFunctionTable을 확인한 결과, 이 함�
 
 **가젯 2: ExpProfileDelete**
 
-이 함수는 내부적으로 `ObfDereferenceObjectWithTag`를 호출하여 객체의 레퍼런스 카운트를 감소시킨다:
+이 함수는 내부적으로 `ObfDereferenceObjectWithTag`를 호출하여 객체의 레퍼런스 카운트를 감소시킨다.
 
 ```c
 void __fastcall ExpProfileDelete(__int64 a1)
@@ -731,7 +731,7 @@ pOutBufData->Destination = (void*)(ULONG_PTR)((uint64_t)fake_rcx);
 
 #### 4.5.4 Token Swapping 및 권한 상승
 
-취약한 IOCTL 호출 후 `PreviousMode`가 0으로 변조되면, `NtWriteVirtualMemory`로 커널 메모리에 직접 쓸 수 있게 된다:
+취약한 IOCTL 호출 후 `PreviousMode`가 0으로 변조되면 `NtWriteVirtualMemory`로 커널 메모리에 직접 쓸 수 있게 된다:
 
 ```c
 char mode = 1;
@@ -752,7 +752,7 @@ NtWriteVirtualMemory(GetCurrentProcess(),
 system("cmd.exe");
 ```
 
-**중요**: `PreviousMode`를 복구하지 않고 새 프로세스를 생성하면, 커널이 유효하지 않은 주소에 접근하여 BSOD가 발생할 수 있다. 따라서 권한 상승 직후 반드시 `PreviousMode`를 UserMode(1)로 복구해야 한다.
+그런데 `PreviousMode`를 복구하지 않고 새 프로세스를 생성할 경우 커널이 유효하지 않은 주소에 접근하여 BSOD가 발생할 수 있다. 따라서 권한 상승 직후 반드시 `PreviousMode`를 UserMode(1)로 복구해야 한다.
 
 ### 4.6 Exploit 결과
 

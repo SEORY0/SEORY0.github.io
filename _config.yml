@@ -17,7 +17,15 @@ permalink: pretty
 baseurl: ""
 
 markdown: kramdown
-highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    # line_numbers: true  <-- 이 옵션은 끄거나 주석 처리하세요! (CSS로 구현했습니다)
+    # block:
+    #   line_numbers: true
+    span:
+      line_numbers: false
 
 exclude:
   - .jekyll-cache

@@ -757,162 +757,365 @@ ul { list-style: none; padding: 0; margin: 0; }
       width: 100%;
     }
   }
-
-
-  /* ---------------- [Mobile Floating Toggle Button] ---------------- */
-  /* ★ 이 부분이 지워져서 버튼이 안 보였던 것입니다. 다시 추가! ★ */
-  .mobile-theme-toggle {
-    display: flex !important; /* 강제 표시 */
-  }
-}
-
-/* --- Clean Wiki Style Code Block (Final Fix) --- */
-
-/* 1. 인라인 코드 (문장 중간에 `code` 이렇게 쓰는 것) */
-p > code, li > code, td > code, span > code {
-  background-color: rgba(175, 184, 193, 0.2);
-  color: var(--color-base);
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85em;
-  font-weight: 500;
-}
-
-/* 2. 코드 블럭 컨테이너 (최외곽 박스 하나만 스타일링) */
-/* Jekyll(Rouge)은 보통 div.highlighter-rouge 안에 figure.highlight를 만듭니다. */
-/* 중첩을 막기 위해 가장 바깥쪽 컨테이너만 디자인합니다. */
-div.highlighter-rouge, 
-div.language-plaintext,
-div.language-c,
-div.language-cpp,
-div.language-python,
-div.language-javascript {
-  margin: 24px 0;
-  border-radius: 6px;
-  background-color: #f6f8fa; /* 라이트 모드 배경 */
-  border: 1px solid #d0d7de; 
-  box-shadow: none; 
-}
-
-/* 3. 내부 중첩 박스 스타일 초기화 (중요: 여기서 이중 박스를 없앱니다) */
-div.highlighter-rouge figure.highlight,
-div.highlighter-rouge pre.highlight {
-  background: transparent !important; /* 배경 투명하게 */
-  border: none !important;            /* 테두리 없애기 */
-  margin: 0 !important;               /* 여백 없애기 */
-  padding: 0 !important;              /* 패딩 없애기 */
-  box-shadow: none !important;
-}
-
-/* 4. 실제 코드 영역 (Pre) 스타일링 */
-/* 여기에만 패딩과 스크롤을 줍니다. */
-pre {
-  position: relative;
-  margin: 0;
-  padding: 16px; /* 코드와 박스 사이의 간격 */
-  overflow-x: auto; /* 가로 스크롤 */
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13.5px;
-  line-height: 1.6;
-  
-  /* 기본 글자색 (하이라이팅 안 된 부분) */
-  color: #1f2328; 
-  background-color: transparent; /* 투명 (부모 색 따름) */
-}
-
-/* 5. 코드 태그 초기화 */
-code {
-  font-family: 'JetBrains Mono', monospace;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-}
-
-/* 6. 스크롤바 커스텀 */
-pre::-webkit-scrollbar { height: 6px; }
-pre::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0, 0.2);
-  border-radius: 3px;
-}
-pre::-webkit-scrollbar-track { background-color: transparent; }
-
-
-/* ================================================================= */
-/* [다크 모드 대응]                                                  */
-/* ================================================================= */
-
-:global(html.skin-theme-clientpref-night) div.highlighter-rouge,
-:global(html.dark) div.highlighter-rouge,
-:global(html.skin-theme-clientpref-night) div[class^="language-"],
-:global(html.dark) div[class^="language-"] {
-  background-color: #161b22; /* 짙은 배경 */
-  border-color: #30363d;
-}
-
-:global(html.skin-theme-clientpref-night) pre,
-:global(html.dark) pre {
-  color: #e6edf3; /* 기본 글자색: 밝은 회색 */
-}
-
-/* 다크모드 스크롤바 */
-:global(html.skin-theme-clientpref-night) pre::-webkit-scrollbar-thumb,
-:global(html.dark) pre::-webkit-scrollbar-thumb {
-  background-color: rgba(255,255,255, 0.2);
-}
-
-/* 다크모드 인라인 코드 */
-:global(html.skin-theme-clientpref-night) p > code,
-:global(html.dark) p > code {
-  background-color: rgba(110, 118, 129, 0.4);
-  color: #e6edf3;
 }
 
 /* ========================================================================== */
 /* [Mobile Floating Toggle] Bottom-Left Dark Mode Button                    */
 /* ========================================================================== */
+
 .mobile-theme-toggle {
-  display: none; /* PC에선 숨김 */
-  position: fixed;
-  bottom: 30px; 
-  left: 25px;
-  z-index: 2000; /* 맨 위로 올림 */
+  /* [기본 배치] PC에서는 숨김 */
+  display: none;
   
+  /* 위치 고정: 왼쪽 아래 */
+  position: fixed;
+  bottom: 25px; 
+  left: 25px;   
+  z-index: 2000; /* 다른 요소보다 위에 오도록 */
+  
+  /* 크기 및 모양 (원형) */
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 50%; 
   
+  /* 디자인: 카드 스타일 */
   background-color: var(--box-bg);
   border: 1px solid var(--border-color-base);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 떠있는 그림자 */
   color: var(--color-base);
   
   cursor: pointer;
   padding: 0;
+  
+  /* 아이콘 중앙 정렬을 위한 Flex */
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s, background-color 0.3s;
+  
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
 
-  &:active { transform: scale(0.92); }
+  /* 클릭 시 살짝 눌리는 효과 */
+  &:active {
+    transform: scale(0.92);
+  }
   
-  svg { position: absolute; transition: opacity 0.3s, transform 0.3s; }
+  /* 내부 아이콘 공통 스타일 */
+  svg {
+    position: absolute; /* 아이콘 두 개를 정확히 겹침 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
   
-  /* 라이트 모드 */
+  /* [Light Mode Default] 달 보임 / 해 숨김 */
   .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
   .icon-sun  { opacity: 0; transform: rotate(90deg) scale(0.5); }
 }
 
-/* 다크 모드 상태 */
+
+/* -------------------------------------------------------------------------- */
+/* [State Handling] 다크모드일 때 스타일 변경                                  */
+/* -------------------------------------------------------------------------- */
 html.skin-theme-clientpref-night .mobile-theme-toggle,
 body.skin-theme-clientpref-night .mobile-theme-toggle,
 html.dark .mobile-theme-toggle,
 body.dark .mobile-theme-toggle {
-  background-color: #2d333b;
+  
+  background-color: #2d333b; /* 버튼 배경 어둡게 */
   border-color: #444c56;
   color: #e6edf3;
 
+  /* [Dark Mode Active] 달 숨김 / 해 보임 */
   .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.5); }
   .icon-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* [Mobile Trigger] 1000px 이하에서만 표시                                  */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .mobile-theme-toggle {
+    display: flex !important; /* 강제 표시 */
+  }
+}
+
+/* ========================================================================== */
+/* [Adaptive Theme] Clean Code Block Redesign                                 */
+/* ========================================================================== */
+
+/* 1. 테마별 변수 설정 (라이트 모드 기본) */
+:root {
+  /* 라이트 모드 색상 (GitHub/VS Code Light 스타일) */
+  --code-block-bg: #ffffff;       /* 밝은 배경 */
+  --code-header-bg: #f6f8fa;      /* 밝은 헤더 */
+  --code-text-color: #24292e;     /* 어두운 텍스트 */
+  --code-line-num-color: #6e7681; /* 밝은 회색 줄번호 */
+  --code-border-color: #d0d7de;   /* 밝은 테두리 */
+  --code-copy-btn-hover: rgba(0, 0, 0, 0.08); /* 복사 버튼 호버 */
+  
+  /* 인라인 코드 스타일 */
+  --inline-code-bg: rgba(175, 184, 193, 0.2);
+  --inline-code-color: var(--color-base);
+}
+
+/* 다크 모드 변수 오버라이드 */
+html.skin-theme-clientpref-night,
+body.skin-theme-clientpref-night,
+html.dark,
+body.dark {
+  /* 다크 모드 색상 (VS Code Dark 스타일) */
+  --code-block-bg: #1e1e1e;       /* 어두운 배경 */
+  --code-header-bg: #2d2d2d;      /* 어두운 헤더 */
+  --code-text-color: #d4d4d4;     /* 밝은 텍스트 */
+  --code-line-num-color: #858585; /* 어두운 회색 줄번호 */
+  --code-border-color: #333333;   /* 어두운 테두리 */
+  --code-copy-btn-hover: rgba(255, 255, 255, 0.1); /* 복사 버튼 호버 */
+
+  --inline-code-bg: rgba(110, 118, 129, 0.4);
+  --inline-code-color: #e6edf3;
+}
+
+
+/* ---------------- [Inline Code] ---------------- */
+p > code, li > code, td > code, span > code {
+  background-color: var(--inline-code-bg);
+  color: var(--inline-code-color);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  font-weight: 500;
+  border: none; 
+}
+
+
+/* ---------------- [Code Block Container Structure] ---------------- */
+
+/* 2. 메인 컨테이너 */
+.code-block-container {
+  margin: 24px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--code-block-bg);
+  border: 1px solid var(--code-border-color);
+  /* 그림자는 다크모드에서만 살짝 줍니다 */
+  box-shadow: none;
+  font-family: 'JetBrains Mono', monospace;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* 3. 상단 바 (심플 디자인) */
+.code-header {
+  display: flex;
+  align-items: center;
+  /* 신호등이 없어졌으므로 양쪽 끝 정렬 */
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--code-header-bg);
+  border-bottom: 1px solid var(--code-border-color);
+  transition: background-color 0.3s, border-color 0.3s;
+
+  /* 언어 표시 라벨 (왼쪽 배치) */
+  .language-label {
+    font-size: 0.85em;
+    color: var(--code-line-num-color);
+    font-weight: 600;
+  }
+}
+
+/* 4. 복사 버튼 */
+.copy-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  color: var(--code-line-num-color);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: var(--code-copy-btn-hover);
+    color: var(--code-text-color);
+  }
+
+  svg { width: 16px; height: 16px; }
+  
+  /* 복사 완료 상태 */
+  &.copied { color: var(--color-progressive); }
+}
+
+
+/* ---------------- [Code Body & Line Numbers] ---------------- */
+
+/* 5. 코드 본문 영역 */
+.code-body { display: flex; position: relative; }
+
+/* 6. 줄 번호 영역 */
+.line-numbers-wrapper {
+  flex-shrink: 0;
+  padding: 16px 12px;
+  text-align: right;
+  background-color: var(--code-header-bg); /* 헤더와 같은 색상 사용 */
+  border-right: 1px solid var(--code-border-color);
+  user-select: none;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  .line-number {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--code-line-num-color);
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* 7. 실제 코드 영역 */
+.code-wrapper {
+  flex-grow: 1;
+  overflow-x: auto;
+
+  pre {
+    margin: 0;
+    padding: 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: var(--code-text-color);
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  code {
+    background: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+  }
+}
+
+/* 8. 스크롤바 스타일링 */
+.code-wrapper::-webkit-scrollbar { height: 6px; width: 6px; }
+.code-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--code-border-color);
+  border-radius: 3px;
+}
+.code-wrapper::-webkit-scrollbar-track { background-color: transparent; }
+
+
+/* ================================================================= */
+/* [Syntax Highlighting Theme] Adaptive Light / Dark                 */
+/* ================================================================= */
+
+/* --- 기본: 라이트 모드 (VS Code Light 스타일) --- */
+.c, .cm, .cp, .c1, .cs { color: #008000; } /* Comment (녹색) */
+.k, .kc, .kd, .kp, .kr, .kt, .o, .ow { color: #0000ff; } /* Keyword (파랑) */
+.nf, .fm { color: #795e26; } /* Function (갈색) */
+.s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss { color: #a31515; } /* String (빨강) */
+.m, .mb, .mf, .mh, .mi, .il, .mo { color: #098658; } /* Number */
+.nc, .nt, .nn { color: #267f99; } /* Class/Type */
+.nv, .vc, .vg, .vi, .na { color: #001080; } /* Variable */
+.nt { color: #0000ff; } /* HTML Tag */
+.na { color: #001080; } /* HTML Attribute */
+.err { color: #d16969; } 
+
+/* --- 다크 모드 오버라이드 (VS Code Dark 스타일) --- */
+html.skin-theme-clientpref-night,
+body.skin-theme-clientpref-night,
+html.dark,
+body.dark {
+  .code-block-container { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); }
+
+  /* Syntax Colors - Dark */
+  .c, .cm, .cp, .c1, .cs { color: #6a9955; } 
+  .k, .kc, .kd, .kp, .kr, .kt, .o, .ow { color: #569cd6; } 
+  .nf, .fm { color: #dcdcaa; } 
+  .s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss { color: #ce9178; } 
+  .m, .mb, .mf, .mh, .mi, .il, .mo { color: #b5cea8; } 
+  .nc, .nt, .nn { color: #4ec9b0; } 
+  .nv, .vc, .vg, .vi, .na { color: #9cdcfe; } 
+  .nt { color: #569cd6; } 
+  .na { color: #9cdcfe; } 
+  .err { color: #f44747; } 
+}
+
+/* ========================================================================== */
+/* [Markdown Table Styling] Auto-apply to all tables in posts                 */
+/* ========================================================================== */
+
+/* 포스트 본문(.post-content) 안의 모든 테이블에 자동 적용 */
+.post-content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+  
+  /* 테마 색상 적용 */
+  background-color: var(--box-bg);
+  border: 1px solid var(--border-color-base);
+  border-radius: 4px; /* 모서리 살짝 둥글게 (border-collapse랑 충돌 시 무시됨) */
+  overflow: hidden;   /* 둥근 모서리 유지 */
+
+  /* 테이블 헤더 (제목 줄) */
+  thead {
+    background-color: var(--box-header-bg);
+    border-bottom: 2px solid var(--border-color-base);
+    
+    th {
+      font-weight: 700;
+      color: var(--color-base);
+      text-align: left;
+      padding: 12px 15px;
+      white-space: nowrap; /* 제목 줄바꿈 방지 */
+    }
+  }
+
+  /* 테이블 본문 */
+  tbody {
+    td {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border-color-subtle);
+      color: var(--color-base);
+      vertical-align: top;
+    }
+
+    /* 짝수 줄에 은은한 배경색 (가독성 UP) */
+    tr:nth-child(even) {
+      background-color: var(--background-color-interactive-subtle);
+    }
+
+    /* 마우스 올렸을 때 하이라이트 */
+    tr:hover {
+      background-color: var(--background-color-interactive);
+    }
+    
+    /* 마지막 줄은 테두리 제거 */
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* [Mobile Responsive] 모바일에서 표가 깨지지 않게 가로 스크롤 처리             */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .post-content table {
+    display: block;      /* 블록 요소로 변경하여 스크롤 가능하게 함 */
+    width: 100%;
+    overflow-x: auto;    /* 가로 스크롤 생성 */
+    white-space: nowrap; /* 내용 줄바꿈 방지 (표 모양 유지) */
+    
+    /* 스크롤바 디자인 */
+    &::-webkit-scrollbar { height: 6px; }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--border-color-subtle);
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-track { background: transparent; }
+  }
 }

@@ -7,19 +7,7 @@ layout: compress
 {% include head.html %}
 <body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Books rootpage-Books skin-vector-2022 action-view">
 
-<div class="vector-header-container">
-  <header class="vector-header mw-header">
-    <div class="vector-header-start">
-        <a href="{{ '/' | relative_url }}" class="mw-logo">
-            <div class="mw-logo-icon"></div>
-            <span class="mw-logo-container"><strong class="mw-logo-wordmark">SEORY0</strong><span class="mw-logo-tagline">Seokjun RYU</span></span>
-        </a>
-    </div>
-    <div class="vector-header-end">
-        {% include search-bar.html %}
-    </div>
-  </header>
-</div>
+{% include header.html %}
 
 <div class="mw-page-container">
   <div class="mw-page-container-inner">
@@ -171,11 +159,6 @@ layout: compress
 
 <footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
 <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-<script>
-    const checkbox = document.getElementById('theme-toggle-checkbox'); const statusText = document.getElementById('theme-status-text'); const body = document.body;
-    function updateLabel(isDark) { statusText.textContent = isDark ? "Dark" : "Light"; }
-    if (localStorage.getItem('theme') === 'dark') { body.classList.add('skin-theme-clientpref-night'); checkbox.checked = true; updateLabel(true); } else { updateLabel(false); }
-    checkbox.addEventListener('change', () => { if (checkbox.checked) { body.classList.add('skin-theme-clientpref-night'); localStorage.setItem('theme', 'dark'); updateLabel(true); } else { body.classList.remove('skin-theme-clientpref-night'); localStorage.setItem('theme', 'light'); updateLabel(false); } });
-</script>
+{% include scripts.html %}
 </body>
 </html>
