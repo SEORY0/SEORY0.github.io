@@ -1185,3 +1185,29 @@ body.dark {
     }
   }
 }
+
+/* ========================================================================== */
+/* [Post Images] Dark Mode Auto-Inversion (Smart Invert)                      */
+/* ========================================================================== */
+
+/* 1. 기본 상태 (라이트 모드) */
+.post-content img {
+  /* 부드러운 전환 효과 */
+  transition: filter 0.3s ease;
+  
+  /* 원본이 하얀 배경이므로, 라이트 모드에서는 그대로 보여줌 */
+  filter: none;
+}
+
+/* 2. 다크 모드 상태 (반전 적용) */
+html.skin-theme-clientpref-night .post-content img,
+body.skin-theme-clientpref-night .post-content img,
+html.dark .post-content img,
+body.dark .post-content img {
+  
+  /* invert(100%): 흰색 -> 검은색으로 반전
+     hue-rotate(180deg): 반전되면서 뒤집힌 색상(파랑->주황 등)을 다시 원상복구
+     결과: 배경은 어두워지고, 글자나 그래프 색감은 비슷하게 유지됨
+  */
+  filter: invert(100%) hue-rotate(180deg);
+}
