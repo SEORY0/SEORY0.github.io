@@ -337,6 +337,32 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
+        // Memory Cleanup: Dispose Three.js resources on page unload
+        window.addEventListener('beforeunload', () => {
+            // Dispose all geometries and materials in the scene
+            scene.traverse((object) => {
+                if (object.geometry) {
+                    object.geometry.dispose();
+                }
+                if (object.material) {
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(material => material.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
+            });
+
+            // Dispose renderer
+            renderer.dispose();
+
+            // Remove canvas element
+            const canvas = renderer.domElement;
+            if (canvas && canvas.parentNode) {
+                canvas.parentNode.removeChild(canvas);
+            }
+        });
+
     </script>
 </body>
 </html>

@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const overlay = document.getElementById('mobile-overlay');
     const body = document.body;
 
+    // Null 체크: 필수 요소가 없으면 early return
+    if (!menuBtn || !navColumn || !overlay) {
+        console.warn('Mobile nav elements not found - mobile navigation will not work');
+        return;
+    }
+
     function toggleMenu() {
         const isOpen = navColumn.classList.contains('menu-open');
         
@@ -46,14 +52,11 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleMenu();
         });
 
-        // 3. 메뉴 내부의 링크를 클릭했을 때도 닫히게 하려면 (선택사항)
-        /*
-        const navLinks = navColumn.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                toggleMenu(); // 페이지 이동하면서 메뉴 닫기
-            });
+        // 3. ESC 키로 메뉴 닫기 (접근성 개선)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navColumn.classList.contains('menu-open')) {
+                toggleMenu();
+            }
         });
-        */
     }
 });

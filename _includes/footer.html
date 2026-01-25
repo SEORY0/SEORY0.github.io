@@ -1,0 +1,12 @@
+<footer id="footer" class="mw-footer">
+  <ul id="footer-info">
+    {% if include.show_lastmod %}
+    <li id="footer-info-lastmod">
+      This page was last edited on {{ site.time | date: "%d %B %Y, at %H:%M" }}.
+    </li>
+    {% endif %}
+    <li id="footer-info-copyright">
+      Content is available under <a href="#">Hacker License 1.0</a>.
+    </li>
+  </ul>
+</footer>

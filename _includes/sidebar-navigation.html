@@ -1,0 +1,46 @@
+<div class="vector-column-start">
+  <div class="vector-main-menu-container">
+    <div id="mw-navigation">
+      <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
+        <div class="vector-menu mw-portlet" id="p-navigation">
+          <div class="vector-menu-heading">Navigation</div>
+          <div class="vector-menu-content">
+            <ul class="vector-menu-content-list">
+              <li class="mw-list-item {% if page.url == '/' or page.url == '/index.html' %}selected{% endif %}">
+                <a href="{{ '/' | relative_url }}"><span>Main page</span></a>
+              </li>
+              <li class="mw-list-item {% if page.url contains '/about' %}selected{% endif %}">
+                <a href="{{ '/about/' | relative_url }}"><span>About Me</span></a>
+              </li>
+              <li class="mw-list-item {% if page.url contains '/projects' %}selected{% endif %}">
+                <a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a>
+              </li>
+              <li class="mw-list-item {% if page.url contains '/writing' %}selected{% endif %}">
+                <a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a>
+              </li>
+              <li class="mw-list-item {% if page.url contains '/books' %}selected{% endif %}">
+                <a href="{{ '/books/' | relative_url }}"><span>Books</span></a>
+              </li>
+              <li class="mw-list-item {% if page.url contains '/photos' %}selected{% endif %}">
+                <a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="vector-menu mw-portlet" id="p-interaction">
+          <div class="vector-menu-heading">Connect</div>
+          <div class="vector-menu-content">
+            <ul class="vector-menu-content-list">
+              <li class="mw-list-item">
+                <a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a>
+              </li>
+              <li class="mw-list-item">
+                <a href="mailto:{{ site.author.email }}"><span>Email</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>

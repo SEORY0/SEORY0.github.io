@@ -4,18 +4,35 @@ let posts = [];
 
 // 1. JSON 데이터 로드
 fetch('/search.json')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         posts = data;
         console.log("Search data loaded:", posts.length, "posts");
     })
-    .catch(error => console.error('Error loading search data:', error));
+    .catch(error => {
+        console.error('Error loading search data:', error);
+        // 사용자에게 검색 데이터 로드 실패 알림 (선택사항)
+        if (searchResults) {
+            searchResults.innerHTML = '<div class="search-error">Search data failed to load. Please refresh the page.</div>';
+        }
+    });
 
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 
+// Null 체크: 검색 요소가 없으면 검색 기능 비활성화
+if (!searchInput || !searchResults) {
+    console.warn('Search elements not found - search functionality will not work');
+}
+
 // 2. 검색 실행 로직
 function executeSearch() {
+    if (!searchInput || !searchResults) return;
     const query = searchInput.value.toLowerCase().trim();
 
     // 검색어가 없으면 결과창 숨기기
@@ -63,9 +80,15 @@ function highlight(text) {
 
 // ★ 핵심 변경점: 이벤트 리스너 ★
 
+// Debouncing을 위한 타이머 변수
+let debounceTimer;
+
 if (searchInput) {
-    // 1. 'input': 타이핑할 때마다 즉시 실행 (실시간 검색)
-    searchInput.addEventListener('input', executeSearch);
+    // 1. 'input': 타이핑할 때마다 debouncing 적용 (300ms 지연)
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(executeSearch, 300);
+    });
 
     // 2. 'focus': 검색창 다시 클릭했을 때 검색어 있으면 결과 보여주기
     searchInput.addEventListener('focus', function() {

@@ -27,6 +27,26 @@
   --box-border: #d0d7de;
   --box-header-bg: #f6f8fa;
   --code-bg: #f4f4f4;
+
+  /* === 간격 스케일 (8px 기반) === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* === Border Radius 스케일 === */
+  --radius-sm: 4px;   /* 인라인 코드, 태그 */
+  --radius-md: 6px;   /* 카드, 박스 */
+  --radius-lg: 12px;  /* 큰 카드 */
+  --radius-xl: 24px;  /* 히어로 섹션 */
+  --radius-round: 50%; /* 원형 버튼 */
+
+  /* === Shadow 스케일 === */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 6px 16px rgba(0,0,0,0.2);
 }
 
 /* Dark Mode Variables */
@@ -693,158 +713,16 @@ ul { list-style: none; padding: 0; margin: 0; }
   }
 
   .book-card {
-    flex-direction: column; 
+    flex-direction: column;
     text-align: center;
     .book-cover { margin-bottom: 15px; }
   }
-}
-/* -------------------------------------------------------------------------- */
-/* [Mobile Breakpoint] 1000px 이하에서 디자인 변경                          */
-/* -------------------------------------------------------------------------- */
-@media (max-width: 1000px) {
 
-  /* 1. 레이아웃 초기화 */
-  .mw-page-container-inner {
-    display: block; 
-    padding: 15px;
-  }
-  
-  .vector-column-end { display: none; }
-  .main-page-body-grid { grid-template-columns: 1fr; }
-
-
-  /* ---------------- [Header Alignment Fix: Wrapper Support] ---------------- */
-  
-  /* 헤더 컨테이너 높이 */
-  .vector-header-container {
-    height: 3.5rem; 
-    padding: 0 12px;
-  }
-  
-  /* [부모 컨테이너] Flex 설정 */
-  .vector-header {
+  /* 모바일 테마 토글 표시 */
+  .mobile-theme-toggle {
     display: flex !important;
-    align-items: center !important;
-    width: 100% !important;
-    padding: 0;
-    justify-content: flex-start !important; 
-  }
-
-  /* ★ 로고와 그 부모 요소가 오른쪽 여백을 밀어내도록 설정 ★ */
-  .vector-header-start,
-  .mw-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    
-    /* 오른쪽 공간을 여백으로 채워서 나머지를 오른쪽 끝으로 밈 */
-    margin-right: auto !important; 
-    
-    flex-shrink: 0; 
-
-    .mw-logo-icon { width: 32px; height: 32px; }
-    .mw-logo-wordmark { font-size: 1.2em; white-space: nowrap; }
-    .mw-logo-tagline { display: none; } 
-  }
-
-  /* 오른쪽 그룹 (혹시 모를 래퍼 대응) */
-  .vector-header-end {
-    display: flex !important;
-    align-items: center;
-    gap: 5px;
-  }
-
-  /* [검색창] */
-  .vector-search-box {
-    margin-left: 0 !important; 
-    margin-right: 0 !important; 
-    
-    display: flex;
-    align-items: center;
-
-    form { display: flex; align-items: center; }
-
-    input {
-      width: 130px !important; 
-      padding: 6px 10px;
-      font-size: 13px;
-      height: 32px;
-    }
-    
-    button {
-      padding: 0 10px;
-      font-size: 13px;
-      height: 32px;
-      display: flex; align-items: center; justify-content: center;
-    }
-  }
-
-  /* [햄버거 버튼] */
-  .mobile-menu-btn {
-    display: flex !important;
-    margin-left: 8px; 
-  }
-
-
-  /* ---------------- [Slide-Down Menu Animation] ---------------- */
-  .vector-column-start {
-    display: block !important;
-    position: fixed;
-    top: 3.5rem;
-    left: 0;
-    width: 100%;
-    height: auto;
-    max-height: 0;
-    
-    background-color: var(--background-color-base);
-    border-bottom: 1px solid var(--border-color-base);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 1010;
-    padding: 0;
-
-    .vector-main-menu-container {
-      position: static;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    &.menu-open {
-      max-height: 80vh;
-      border-bottom: 1px solid var(--border-color-base);
-    }
-  }
-
-  /* ---------------- [Book Card Fix] ---------------- */
-  .book-card {
-    /* 세로 배치 */
-    flex-direction: column; 
-    
-    /* ★ 핵심: 아이템(이미지, 텍스트)을 가로축 가운데로 정렬 ★ */
-    align-items: center; 
-    
-    /* 텍스트 내용 가운데 정렬 */
-    text-align: center; 
-    
-    .book-cover { 
-      /* 이미지와 텍스트 사이 간격 */
-      margin-bottom: 15px;
-      
-      /* 혹시 모를 마진 초기화 */
-      margin-right: 0; 
-      margin-left: 0;
-    }
-
-    .book-info {
-      /* 텍스트 박스가 꽉 차게 */
-      width: 100%;
-    }
   }
 }
-
 /* ========================================================================== */
 /* [Mobile Floating Toggle] Bottom-Left Dark Mode Button                    */
 /* ========================================================================== */
@@ -915,14 +793,6 @@ body.dark .mobile-theme-toggle {
 
 
 /* -------------------------------------------------------------------------- */
-/* [Mobile Trigger] 1000px 이하에서만 표시                                  */
-/* -------------------------------------------------------------------------- */
-@media (max-width: 1000px) {
-  .mobile-theme-toggle {
-    display: flex !important; /* 강제 표시 */
-  }
-}
-
 /* ========================================================================== */
 /* [Adaptive Theme] Clean Code Block Redesign                                 */
 /* ========================================================================== */
@@ -1204,10 +1074,72 @@ html.skin-theme-clientpref-night .post-content img,
 body.skin-theme-clientpref-night .post-content img,
 html.dark .post-content img,
 body.dark .post-content img {
-  
+
   /* invert(100%): 흰색 -> 검은색으로 반전
      hue-rotate(180deg): 반전되면서 뒤집힌 색상(파랑->주황 등)을 다시 원상복구
      결과: 배경은 어두워지고, 글자나 그래프 색감은 비슷하게 유지됨
   */
   filter: invert(100%) hue-rotate(180deg);
+}
+
+/* ========================================================================== */
+/* [Utility Classes] 인라인 스타일 제거를 위한 유틸리티 클래스                  */
+/* ========================================================================== */
+
+/* Photos 페이지 */
+.section-divider {
+  margin-top: var(--space-2xl);
+}
+
+.gallery-disclaimer {
+  font-size: 0.9em;
+  color: var(--color-subtle);
+}
+
+/* Projects 페이지 - 상태 표시 */
+.status-active {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.status-maintenance {
+  color: #fd7e14;
+  font-weight: 600;
+}
+
+.status-archived {
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* ========================================================================== */
+/* [Accessibility] 포커스 상태 개선                                          */
+/* ========================================================================== */
+
+/* 모든 인터랙티브 요소에 명확한 포커스 표시 */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--color-progressive);
+  outline-offset: 2px;
+}
+
+/* 테마 토글 체크박스 포커스 */
+.toggle-switch input:focus + .slider {
+  box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.25);
+}
+
+/* 모바일 메뉴 버튼 포커스 */
+.mobile-menu-btn:focus {
+  outline: 2px solid var(--color-progressive);
+  outline-offset: 2px;
+}
+
+/* 검색 입력 포커스 */
+#searchInput:focus {
+  outline: 2px solid var(--color-progressive);
+  outline-offset: 0;
+  border-color: var(--color-progressive);
 }

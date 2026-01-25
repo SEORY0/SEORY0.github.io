@@ -1,157 +1,43 @@
 ---
-layout: compress
+layout: wiki-page
+page_class: Project_List
+page_title: "List of Projects"
+toolbar_left: "Project Page"
+subtitle: "I really want to stay at your house - Rosa Walton, Hallie Coggins"
+include_search: true
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
-{% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Projects rootpage-Projects skin-vector-2022 action-view">
+<p>This page lists the <b>research projects</b>, <b>tools</b>, and <b>exploits</b> developed by User:SEORY0.</p>
 
-{% include header.html %}
-
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
-    <div class="vector-column-start">
-      <div class="vector-main-menu-container">
-        <div id="mw-navigation">
-          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-            <div class="vector-menu mw-portlet" id="p-navigation">
-                <div class="vector-menu-heading">Navigation</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
-                        <li class="mw-list-item selected"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="vector-menu mw-portlet" id="p-interaction">
-                <div class="vector-menu-heading">Connect</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li>
-                        <li class="mw-list-item"><a href="mailto:seory0@outlook.kr"><span>Email</span></a></li>
-                    </ul>
-                </div>
-            </div>
-            </nav>
-        </div>
-      </div>
-    </div>
-
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-        <div class="vector-page-toolbar">
-          <div class="vector-page-toolbar-container">
-            <div id="left-navigation">
-              <nav aria-label="Namespaces">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Project Page</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-            <div id="right-navigation">
-              <nav aria-label="Views">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">List of Projects</h1>
-        </header>
-
-        <div id="bodyContent" class="vector-body">
-          <div id="siteSub" class="noprint">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
-          <div id="contentSub"></div>
-          
-          <div id="mw-content-text" class="mw-body-content">
-            <div class="mw-parser-output">
-                
-                <p>This page lists the <b>research projects</b>, <b>tools</b>, and <b>exploits</b> developed by User:SEORY0.</p>
-
-                <div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">
-                    <div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>
-                    <ul>
-                        <li class="toclevel-1"><a href="#Major_Projects"><span class="tocnumber">1</span> <span class="toctext">Major Projects</span></a></li>
-                        <li class="toclevel-1"><a href="#Toy_Projects"><span class="tocnumber">2</span> <span class="toctext">Toy Projects</span></a></li>
-                    </ul>
-                </div>
-
-                <h2 id="Major_Projects">Major Projects</h2>
-                <div class="mw-heading-line"></div>
-                
-                <div class="clean-box">
-                    <h3><a href="https://github.com/SEORY0/WHS3-KernelPanic">버그 헌팅에 대비하기 위한 Windows Kernel/Application 취약점 분석</a></h3>
-                    <p><b>Status:</b> <span style="color: green;">Active</span> | <b>Language:</b> C++, Assembly</p>
-                    <p>Analysis and exploitation of Windows Kernel Streaming Driver (ks.sys). Focused on Untrusted Pointer Dereference(CWE-822) on Windows 10/11.</p>
-                    <div class="code-block">
-                        > git clone https://github.com/SEORY0/WHS3-KernelPanic.git <br>
-                    </div>
-                </div>
-
-                <div class="clean-box">
-                    <h3><a href="#">Automated CVE Analyzer based on AI</a></h3>
-                    <p><b>Status:</b> <span style="color: orange;">Maintenance</span> | <b>Stack:</b> Python, Gemini API, Docker</p>
-                    <p>A framework utilizing LLMs to automatically categorize and summarize CVE feeds from NVD.</p>
-                </div>
-
-                <h2 id="Toy_Projects">Toy Projects</h2>
-                <div class="mw-heading-line"></div>
-                <ul class="wiki-list">
-                    <li><b><a href="https://seory0.github.io/projects/Apin.html">Apin: RISC-V Assembly parsing in a Nutshell</a></b></li>
-                    <li><b><a href="https://github.com/SEORY0/PCAP_programming">PCAP_programming</a></b>: Print packet details using PCAP API in C</li>
-                </ul>
-                
-
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <div class="vector-column-end">
-      <div class="vector-sticky-pinned-container">
-        <nav class="vector-appearance-landmark" aria-label="Appearance">
-            <div id="vector-appearance" class="vector-appearance">
-                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
-                <div class="vector-menu-content">
-                    <div class="theme-toggle-wrapper">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span>
-                        </label>
-                        <span id="theme-status-text">Light</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
-      </div>
-    </div>
-  </div>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">
+    <div class="toctitle"><h2 id="mw-toc-heading">Contents</h2></div>
+    <ul>
+        <li class="toclevel-1"><a href="#Major_Projects"><span class="tocnumber">1</span> <span class="toctext">Major Projects</span></a></li>
+        <li class="toclevel-1"><a href="#Toy_Projects"><span class="tocnumber">2</span> <span class="toctext">Toy Projects</span></a></li>
+    </ul>
 </div>
 
-<footer id="footer" class="mw-footer">
-  <ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul>
-</footer>
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+<h2 id="Major_Projects">Major Projects</h2>
+<div class="mw-heading-line"></div>
 
-{% include scripts.html %}
-</body>
-</html>
+<div class="clean-box">
+    <h3><a href="https://github.com/SEORY0/WHS3-KernelPanic">버그 헌팅에 대비하기 위한 Windows Kernel/Application 취약점 분석</a></h3>
+    <p><b>Status:</b> <span class="status-active">Active</span> | <b>Language:</b> C++, Assembly</p>
+    <p>Analysis and exploitation of Windows Kernel Streaming Driver (ks.sys). Focused on Untrusted Pointer Dereference(CWE-822) on Windows 10/11.</p>
+    <div class="code-block">
+        > git clone https://github.com/SEORY0/WHS3-KernelPanic.git <br>
+    </div>
+</div>
+
+<div class="clean-box">
+    <h3><a href="#">Automated CVE Analyzer based on AI</a></h3>
+    <p><b>Status:</b> <span class="status-maintenance">Maintenance</span> | <b>Stack:</b> Python, Gemini API, Docker</p>
+    <p>A framework utilizing LLMs to automatically categorize and summarize CVE feeds from NVD.</p>
+</div>
+
+<h2 id="Toy_Projects">Toy Projects</h2>
+<div class="mw-heading-line"></div>
+<ul class="wiki-list">
+    <li><b><a href="https://seory0.github.io/projects/Apin.html">Apin: RISC-V Assembly parsing in a Nutshell</a></b></li>
+    <li><b><a href="https://github.com/SEORY0/PCAP_programming">PCAP_programming</a></b>: Print packet details using PCAP API in C</li>
+</ul>

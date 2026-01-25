@@ -1,164 +1,61 @@
 ---
-layout: compress
+layout: wiki-page
+page_class: User_SEORY0_Library
+page_title: "User:SEORY0/Library"
+toolbar_left: "Library"
+subtitle: "I really want to stay at your house - Rosa Walton, Hallie Coggins"
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
-{% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Books rootpage-Books skin-vector-2022 action-view">
+<p>A personal archive of technical books, papers, and essays. <br>
+Status: <b>Reading</b> (Current) / <b>Archived</b> (Completed)</p>
 
-{% include header.html %}
+<h2 id="Currently_Reading">Currently Reading</h2>
+<div class="mw-heading-line"></div>
 
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
-    <div class="vector-column-start">
-      <div class="vector-main-menu-container">
-        <div id="mw-navigation">
-          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-            <div class="vector-menu mw-portlet" id="p-navigation">
-                <div class="vector-menu-heading">Navigation</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
-                        <li class="mw-list-item selected"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
-                    </ul>
-                </div>
+<div class="book-list">
+    {% assign reading_books = site.books | where: "status", "reading" %}
+    {% if reading_books.size > 0 %}
+        {% for book in reading_books %}
+        <div class="book-card reading">
+            <div class="book-cover">
+                <img src="{{ book.cover | default: 'https://via.placeholder.com/100x150?text=No+Cover' | relative_url }}" alt="{{ book.title }}">
             </div>
-            <div class="vector-menu mw-portlet" id="p-interaction"><div class="vector-menu-heading">Connect</div><div class="vector-menu-content"><ul class="vector-menu-content-list"><li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li><li class="mw-list-item"><a href="mailto:r.sjun3@gmail.com"><span>Email</span></a></li></ul></div></div>
-          </nav>
+            <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                <span class="author">by {{ book.author }}</span>
+                <div class="quote-box">
+                    <span class="prompt">$ cat summary.txt</span>
+                    <p>"{{ book.summary }}"</p>
+                </div>
+                <span class="meta-date">Started: {{ book.date | date: "%Y-%m-%d" }}</span>
+            </div>
         </div>
-      </div>
-    </div>
-
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-        <div class="vector-page-toolbar">
-          <div class="vector-page-toolbar-container">
-            <div id="left-navigation">
-              <nav aria-label="Namespaces">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Library</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-            <div id="right-navigation">
-              <nav aria-label="Views">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">User:SEORY0/Library</h1>
-        </header>
-
-        <div id="bodyContent" class="vector-body">
-          <div id="siteSub" class="noprint">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
-          <div id="contentSub"></div>
-          
-          <div id="mw-content-text" class="mw-body-content">
-            <div class="mw-parser-output">
-                
-                <p>A personal archive of technical books, papers, and essays. <br>
-                Status: <b>Reading</b> (Current) / <b>Archived</b> (Completed)</p>
-
-                <h2 id="Currently_Reading">Currently Reading</h2>
-                <div class="mw-heading-line"></div>
-                
-                <div class="book-list">
-                    {% assign reading_books = site.books | where: "status", "reading" %}
-                    {% if reading_books.size > 0 %}
-                        {% for book in reading_books %}
-                        <div class="book-card reading">
-                            <div class="book-cover">
-                                <img src="{{ book.cover | default: 'https://via.placeholder.com/100x150?text=No+Cover' | relative_url }}" alt="{{ book.title }}">
-                            </div>
-                            <div class="book-info">
-                                <h3>{{ book.title }}</h3>
-                                <span class="author">by {{ book.author }}</span>
-                                <div class="quote-box">
-                                    <span class="prompt">$ cat summary.txt</span>
-                                    <p>"{{ book.summary }}"</p>
-                                </div>
-                                <span class="meta-date">Started: {{ book.date | date: "%Y-%m-%d" }}</span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No books currently in the reading queue.</p>
-                    {% endif %}
-                </div>
-
-                <h2 id="Archived">Archived (Read)</h2>
-                <div class="mw-heading-line"></div>
-                
-                <div class="book-list">
-                    {% assign read_books = site.books | where: "status", "read" %}
-                    {% if read_books.size > 0 %}
-                        {% for book in read_books %}
-                        <div class="book-card">
-                            <div class="book-cover">
-                                <img src="{{ book.cover | default: 'https://via.placeholder.com/80x120?text=Cover' | relative_url }}" alt="{{ book.title }}">
-                            </div>
-                            <div class="book-info">
-                                <h3>{{ book.title }}</h3>
-                                <span class="author">by {{ book.author }}</span>
-                                <p class="simple-summary">{{ book.summary }}</p>
-                                <span class="meta-date">Read on: {{ book.date | date: "%Y-%m-%d" }}</span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Archive is empty.</p>
-                    {% endif %}
-                </div>
-
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <div class="vector-column-end">
-      <div class="vector-sticky-pinned-container">
-        <nav class="vector-appearance-landmark" aria-label="Appearance">
-            <div id="vector-appearance" class="vector-appearance">
-                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
-                <div class="vector-menu-content">
-                    <div class="theme-toggle-wrapper">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span>
-                        </label>
-                        <span id="theme-status-text">Light</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
-      </div>
-    </div>
-  </div>
+        {% endfor %}
+    {% else %}
+        <p>No books currently in the reading queue.</p>
+    {% endif %}
 </div>
 
-<footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-{% include scripts.html %}
-</body>
-</html>
+<h2 id="Archived">Archived (Read)</h2>
+<div class="mw-heading-line"></div>
+
+<div class="book-list">
+    {% assign read_books = site.books | where: "status", "read" %}
+    {% if read_books.size > 0 %}
+        {% for book in read_books %}
+        <div class="book-card">
+            <div class="book-cover">
+                <img src="{{ book.cover | default: 'https://via.placeholder.com/80x120?text=Cover' | relative_url }}" alt="{{ book.title }}">
+            </div>
+            <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                <span class="author">by {{ book.author }}</span>
+                <p class="simple-summary">{{ book.summary }}</p>
+                <span class="meta-date">Read on: {{ book.date | date: "%Y-%m-%d" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Archive is empty.</p>
+    {% endif %}
+</div>

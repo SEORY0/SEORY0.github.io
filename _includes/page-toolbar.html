@@ -1,0 +1,32 @@
+{% assign left_tab = include.left_tab | default: "User page" %}
+
+<div class="vector-page-toolbar">
+  <div class="vector-page-toolbar-container">
+    <div id="left-navigation">
+      <nav aria-label="Namespaces">
+        <div class="vector-menu vector-menu-tabs mw-portlet">
+          <div class="vector-menu-content">
+            <ul class="vector-menu-content-list">
+              <li class="selected vector-tab-noicon mw-list-item">
+                <a href="#"><span>{{ left_tab }}</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div id="right-navigation">
+      <nav aria-label="Views">
+        <div class="vector-menu vector-menu-tabs mw-portlet">
+          <div class="vector-menu-content">
+            <ul class="vector-menu-content-list">
+              <li class="selected vector-tab-noicon mw-list-item">
+                <a href="#"><span>Read</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>

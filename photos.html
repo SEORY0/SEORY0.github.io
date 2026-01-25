@@ -1,143 +1,42 @@
 ---
-layout: compress
+layout: wiki-page
+page_class: Gallery_Photos
+page_title: "Gallery:Photos"
+toolbar_left: "Gallery"
+subtitle: "I really want to stay at your house - Rosa Walton, Hallie Coggins"
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
-{% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Photos rootpage-Photos skin-vector-2022 action-view">
+<p>A collection of snapshots from conferences, CTFs, and life.</p>
 
-{% include header.html %}
-
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
-    <div class="vector-column-start">
-      <div class="vector-main-menu-container">
-        <div id="mw-navigation">
-          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-            <div class="vector-menu mw-portlet" id="p-navigation">
-                <div class="vector-menu-heading">Navigation</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item selected"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
-                    </ul>
+<div class="gallery-grid">
+    {% if site.photos.size > 0 %}
+        {% for photo in site.photos %}
+        <div class="gallery-item">
+            <a href="{{ photo.url | relative_url }}" class="thumb-link">
+                <div class="thumb">
+                    <img src="{{ photo.image | default: 'https://via.placeholder.com/300x200?text=No+Image' | relative_url }}" alt="{{ photo.title }}">
                 </div>
-            </div>
-            <div class="vector-menu mw-portlet" id="p-interaction"><div class="vector-menu-heading">Connect</div><div class="vector-menu-content"><ul class="vector-menu-content-list"><li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li><li class="mw-list-item"><a href="mailto:seory0@outlook.kr"><span>Email</span></a></li></ul></div></div>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-        <div class="vector-page-toolbar">
-          <div class="vector-page-toolbar-container">
-            <div id="left-navigation">
-              <nav aria-label="Namespaces">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Gallery</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
-                    </ul>
-                  </div>
+            </a>
+            <div class="gallery-info">
+                <div class="caption">
+                    <b>{{ photo.title }}</b>
+                    <p>{{ photo.caption | truncate: 50 }}</p>
                 </div>
-              </nav>
-            </div>
-            <div id="right-navigation">
-              <nav aria-label="Views">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>View</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Edit</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">Gallery:Photos</h1>
-        </header>
-
-        <div id="bodyContent" class="vector-body">
-          <div id="siteSub" class="noprint">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
-          <div id="contentSub"></div>
-          
-          <div id="mw-content-text" class="mw-body-content">
-            <div class="mw-parser-output">
-                
-                <p>A collection of snapshots from conferences, CTFs, and life.</p>
-
-                <div class="gallery-grid">
-                    {% if site.photos.size > 0 %}
-                        {% for photo in site.photos %}
-                        <div class="gallery-item">
-                            <a href="{{ photo.url | relative_url }}" class="thumb-link">
-                                <div class="thumb">
-                                    <img src="{{ photo.image | default: 'https://via.placeholder.com/300x200?text=No+Image' | relative_url }}" alt="{{ photo.title }}">
-                                </div>
-                            </a>
-                            <div class="gallery-info">
-                                <div class="caption">
-                                    <b>{{ photo.title }}</b>
-                                    <p>{{ photo.caption | truncate: 50 }}</p>
-                                </div>
-                                <div class="meta">
-                                    <span class="date">{{ photo.date | date: "%Y-%m-%d" }}</span>
-                                    {% if photo.location %}
-                                    <span class="location">@ {{ photo.location }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No photos uploaded yet.</p>
+                <div class="meta">
+                    <span class="date">{{ photo.date | date: "%Y-%m-%d" }}</span>
+                    {% if photo.location %}
+                    <span class="location">@ {{ photo.location }}</span>
                     {% endif %}
                 </div>
-
-                <div class="mw-heading-line" style="margin-top: 40px;"></div>
-                <p style="font-size: 0.9em; color: var(--color-subtle);">
-                    Files are available under licenses specified on their description page. All structured data from the file namespace is available under the <a href="#">Creative Commons CC0 License</a>.
-                </p>
-
             </div>
-          </div>
         </div>
-      </main>
-    </div>
-
-    <div class="vector-column-end">
-      <div class="vector-sticky-pinned-container">
-        <nav class="vector-appearance-landmark" aria-label="Appearance">
-            <div id="vector-appearance" class="vector-appearance">
-                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
-                <div class="vector-menu-content">
-                    <div class="theme-toggle-wrapper">
-                        <label class="toggle-switch"><input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span></label>
-                        <span id="theme-status-text">Light</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
-      </div>
-    </div>
-  </div>
+        {% endfor %}
+    {% else %}
+        <p>No photos uploaded yet.</p>
+    {% endif %}
 </div>
 
-<footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-{% include scripts.html %}
-</body>
-</html>
+<div class="mw-heading-line section-divider"></div>
+<p class="gallery-disclaimer">
+    Files are available under licenses specified on their description page. All structured data from the file namespace is available under the <a href="#">Creative Commons CC0 License</a>.
+</p>

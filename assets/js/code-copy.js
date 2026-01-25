@@ -54,21 +54,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 복사 기능 구현
     copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(codeText).then(() => {
-        // 성공 피드백
+      // 성공 피드백 함수
+      const showSuccess = () => {
         copyBtn.classList.add('copied');
         copyBtn.querySelector('.icon-copy').style.display = 'none';
         copyBtn.querySelector('.icon-check').style.display = 'block';
-        
+
         // 2초 후 복귀
         setTimeout(() => {
           copyBtn.classList.remove('copied');
           copyBtn.querySelector('.icon-copy').style.display = 'block';
           copyBtn.querySelector('.icon-check').style.display = 'none';
         }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+      };
+
+      // Clipboard API가 지원되는 경우
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codeText)
+          .then(() => {
+            showSuccess();
+          })
+          .catch(err => {
+            console.error('Clipboard API failed: ', err);
+          });
+      } else {
+        // 구형 브라우저 fallback: execCommand 사용
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = codeText;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          if (successful) {
+            showSuccess();
+          } else {
+            console.error('execCommand copy failed');
+          }
+        } catch (err) {
+          console.error('Copy fallback failed: ', err);
+        }
+      }
     });
 
     // 상단 바에 버튼 추가
