@@ -58,5 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 toggleMenu();
             }
         });
+
+        // 4. X 닫기 버튼 클릭
+        const closeBtn = document.querySelector('.mobile-close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+        }
     }
 });
