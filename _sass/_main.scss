@@ -35,13 +35,13 @@
 /* Dark Mode */
 .theme-dark {
   --bg: #0a0a0a;
-  --bg-hover: #141414;
-  --bg-subtle: #111111;
+  --bg-hover: #181818;
+  --bg-subtle: #151515;
   --text: #e0e0e0;
-  --text-muted: #666666;
+  --text-muted: #888888;
   --accent: #ff0000;
-  --border: #222222;
-  --border-dark: #333333;
+  --border: #2a2a2a;
+  --border-dark: #3a3a3a;
   --code-bg: #111111;
 
   --code-block-bg: #1e1e1e;
@@ -103,7 +103,7 @@ ul { list-style: none; padding: 0; margin: 0; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 12px;
+  padding: 16px 18px;
   text-decoration: none;
   border-bottom: 1px solid var(--border);
   margin-bottom: 8px;
@@ -254,7 +254,7 @@ ul { list-style: none; padding: 0; margin: 0; }
     align-items: center;
     gap: 14px;
     width: 100%;
-    padding: 10px 14px;
+    padding: 10px 21px;
     background: none;
     border: none;
     color: var(--text-muted);
@@ -292,7 +292,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 .icon-nav-divider {
   height: 1px;
   background: var(--border);
-  margin: 12px 14px;
+  margin: 12px 21px;
 }
 
 .icon-nav-item {
@@ -300,7 +300,7 @@ ul { list-style: none; padding: 0; margin: 0; }
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 10px 14px;
+    padding: 10px 21px;
     color: var(--text-muted);
     transition: color 0.15s, background-color 0.15s;
     white-space: nowrap;
@@ -568,6 +568,47 @@ ul { list-style: none; padding: 0; margin: 0; }
     margin-top: 8px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    transition: background-color 0.2s, color 0.2s, padding 0.2s;
+
+    &::after {
+      content: '_';
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+  }
+
+  &:hover .ef-card-meta {
+    background: var(--text);
+    color: var(--bg);
+    padding: 2px 6px;
+    display: inline-block;
+  }
+}
+
+/* Blink animation for terminal cursor */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* A. Featured Project card emphasis */
+.featured-highlight {
+  border-left: 3px solid var(--accent);
+
+  .featured-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  &:hover .featured-title {
+    color: var(--accent);
+
+    &::before {
+      content: '>_ ';
+      color: var(--accent);
+      animation: blink 1s step-end infinite;
+    }
   }
 }
 

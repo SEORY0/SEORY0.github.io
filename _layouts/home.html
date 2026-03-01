@@ -29,14 +29,14 @@ layout: compress
           <span class="ef-section-indicator">01 / 03</span>
         </div>
         <div class="ef-showcase">
-          <div class="ef-showcase-card cyber-trigger" id="trigger-featured"
+          <div class="ef-showcase-card cyber-trigger featured-highlight" id="trigger-featured"
                data-cyber-title="FEATURED_PROJECT"
                data-cyber-content="content-featured"
                onclick="openCyberWindow('trigger-featured')">
             <h3>Featured Project</h3>
             {% assign featured = site.posts.first %}
             {% if featured %}
-            <p>{{ featured.title }}</p>
+            <p class="featured-title">{{ featured.title }}</p>
             <div class="ef-card-meta">{{ featured.date | date: "%Y-%m-%d" }}</div>
             {% else %}
             <p>No project available.</p>
