@@ -1,243 +1,179 @@
 ---
 layout: compress
 ---
-
 <!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
+<html lang="en">
 {% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Wiktionary_Main_Page rootpage-Wiktionary_Main_Page skin-vector-2022 action-view">
+<body class="page-home">
 
-{% include header.html %}
+{% include sidebar-navigation.html %}
 
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
+<div class="site-container">
+  <main class="main-content" role="main">
 
-    <div class="vector-column-start">
-      <div class="vector-main-menu-container">
-        <div id="mw-navigation">
-          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-            <div class="vector-menu mw-portlet" id="p-navigation">
-                <div class="vector-menu-heading">Navigation</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/ai-guide/' | relative_url }}"><span>AI Guide</span></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="vector-menu mw-portlet" id="p-interaction">
-                <div class="vector-menu-heading">Connect</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li>
-                        <li class="mw-list-item"><a href="mailto:seory0@outlook.kr"><span>Email</span></a></li>
-                    </ul>
-                </div>
-            </div>
-          </nav>
-        </div>
+    <!-- Marquee Banner -->
+    <div class="marquee-banner">
+      <div class="marquee-track">
+        <span>SEORY0 // SECURITY RESEARCHER&nbsp;&mdash;&nbsp;</span>
+        <span>SEORY0 // SECURITY RESEARCHER&nbsp;&mdash;&nbsp;</span>
       </div>
     </div>
 
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-        
-        <div class="vector-page-toolbar">
-          <div class="vector-page-toolbar-container">
-            <div id="left-navigation">
-              <nav aria-label="Namespaces">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>User Page</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-            
-            <div id="right-navigation">
-              <nav aria-label="Views">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item">
-                        <a href="#"><span>./view</span></a>
-                      </li>
-                      
-                      <li class="vector-tab-noicon mw-list-item">
-                        <a href="https://github.com/SEORY0/SEORY0.github.io" target="_blank">
-                            <span>source_code()</span>
-                        </a>
-                      </li>
-                      
-                      <li class="vector-tab-noicon mw-list-item">
-                        <a href="#recent-changes-anchor">
-                            <span>trace_log</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
+    <!-- Section 1: Projects -->
+    <section class="ef-section" id="sec-projects">
+      <div class="ef-section-inner">
+        <div class="ef-meta">
+          <span class="ef-section-badge">&#9661; SEORY0</span>
+          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> PROJECTS</h2>
+          <p class="ef-section-title">프로젝트 소개</p>
+          <span class="ef-section-indicator">01 / 03</span>
+        </div>
+        <div class="ef-showcase">
+          <div class="ef-showcase-card cyber-trigger" id="trigger-featured"
+               data-cyber-title="FEATURED_PROJECT"
+               data-cyber-content="content-featured"
+               onclick="openCyberWindow('trigger-featured')">
+            <h3>Featured Project</h3>
+            {% assign featured = site.posts.first %}
+            {% if featured %}
+            <p>{{ featured.title }}</p>
+            <div class="ef-card-meta">{{ featured.date | date: "%Y-%m-%d" }}</div>
+            {% else %}
+            <p>No project available.</p>
+            {% endif %}
+          </div>
+          <div class="ef-showcase-card" onclick="window.location.href='{{ '/projects/' | relative_url }}'">
+            <h3>View All Projects</h3>
+            <p>Windows Kernel Exploitation, Reverse Engineering, and more.</p>
+            <div class="ef-card-meta">&#8594; /projects</div>
           </div>
         </div>
-
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">User:SEORY0</h1>
-        </header>
-
-        <div id="bodyContent" class="vector-body">
-          <div id="contentSub"></div>
-          
-          <div id="mw-content-text" class="mw-body-content">
-            
-            <div class="main-hero-banner">
-              <img src="{{ '/assets/images/ascii_banner.png' | relative_url }}" alt="ASCII Art Banner" class="ascii-img">
-            </div>
-            <div class="main-page-top-header">
-                <div class="welcome-inner">
-                    <h2>Software<a href="{{ '/about/' | relative_url }}">@everywhere</a></h2>
-                    <p>I am a <b>Student</b> at Soongsil University<br>
-                       Specializing in <code>Windows Kernel Exploitation</code> and <code>Reverse Engineering</code>.</p>
-                </div>
-                <div class="browse-links">
-                    <span><a href="{{ '/projects/' | relative_url }}">Projects</a></span>
-                    <span><a href="{{ '/writing/' | relative_url }}">Writings</a></span>
-                    <span><a href="{{ '/books/' | relative_url }}">Books</a></span>
-                    <span><a href="{{ '/photos/' | relative_url }}">Photos</a></span>
-                    <span><a href="{{ '/ai-guide/' | relative_url }}">AI Guide</a></span>
-                    <span><a href="https://github.com/SEORY0" target="_blank">GitHub</a></span>
-                </div>
-            </div>
-
-            <div class="main-page-body-grid">
-                
-                <div class="grid-col left">
-                    <div class="clean-box">
-                        <h3>Recent CTFs</h3>
-                        <p><b>BITS CTF</b> <i>4th</i>: Fermion</p>
-                        <p><b>Tencent 0CTF</b> <i>12th</i>: Fermion</p>
-                        <p><b>Cykor CTF</b> <i>8th</i>: Fermion</p>
-                        <p><b>LakeCTF Quals '25-'26</b> <i>20th</i>: Fermion</p>
-                        <p><b>HSpace Club League 25</b> <i>5th</i>: ASC</p>
-                    </div>
-
-                    <div class="clean-box">
-                        <h3>Education & Activities</h3>
-                        <ul class="wiki-list">
-                            <li><b>Soongsil Univ.</b>: IT Convergence, EE</li>
-                            <li><b>WhiteHat School 3rd</b>: KITRI Certificated</li>
-                            <li><b>Hacking Camp 27th</b>: POC Security Certificated</li>
-                        </ul>
-                    </div>
-                    <!--
-                    <div class="clean-box">
-                        <h3>Vacation Quest</h3>
-                        <ul class="wiki-list">
-                            <li><b>sc</b>: nav 스크롤 따라가기 구현, 찾기 기능 구현, 로고 구현, login버튼 없애기</li>
-                            <li><b>sc</b>: WHS 1-day 분석 보고서 다시 쓰기</li>
-                            <li><b>sc</b>: WHS 1단계 복습</li>
-                            <li><b>sc</b>: Windows Kernel 후속 프로젝트</li>
-                            <li><b>sc</b>: 워게임유괴단 프로젝트 마무리 및 보고서 작성</li>
-                            <li><b>sc</b>: 참여한 CTF WriteUp 작성</li>
-                            <li><b>sc</b>: 보안 매거진 제작</li>
-                            <li><b>sc</b>: Dreamhack invitational 25 등 ctf 출전</li>
-                            <li><b>sc</b>: 연간 결산</li>
-                            <li><b>ee</b>: 2-2 과목 회독</li>
-                            <li><b>ee</b>: 3-1 시간표 짜기</li>
-                            <li><b>ee</b>: 백준 알고리즘 공부</li>
-                            <li><b>ee</b>: 양자컴퓨터 공부</li>
-                            <li><b>op</b>: Amp 핸드메이드</li>
-                            <li><b>op</b>: 일본어 공부</li>
-                            <li><b>op</b>: 영어 공부</li>
-                            <li><b>op</b>: 다독 (셰익스피어, 다자이 오사무, 호메로스)</li>
-                            <li><b>op</b>: 운동</li>
-                        </ul>
-                    </div>
-                    -->
-                </div>
-
-                <div class="grid-col right">
-                    
-                    <div class="featured-card">
-                        <div class="card-header">
-                            Featured_Project
-                            <span class="card-tag">Today</span>
-                        </div>
-                        <div class="card-body">
-                            {% assign featured = site.posts.first %}
-                            {% if featured %}
-                            <h4><a href="{{ featured.url | relative_url }}">{{ featured.title }}</a></h4>
-                            <div class="code-block">
-                                $ ./view_project.sh <br>
-                                > Loading... <br>
-                                > {{ featured.excerpt | strip_html | truncatewords: 15 }}
-                            </div>
-                            {% else %}
-                            <p>No project available.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="recent-card" id="recent-changes-anchor">
-                        <div class="card-header">Recent_Changes</div>
-                        <ul class="recent-list">
-                            {% for post in site.posts limit:5 %}
-                            <li>
-                                <span class="date">{{ post.date | date: "%m-%d" }}</span>
-                                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                                <span class="diff">(+{{ post.content | size }})</span>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-
-                </div>
-
-            </div> </div>
+        <div class="ef-section-bar">
+          <span class="ef-bar-text">PROJECTS</span>
         </div>
-      </main>
-    </div>
+      </div>
+    </section>
 
-    <div class="vector-column-end">
-      <div class="vector-sticky-pinned-container">
-        <nav class="vector-appearance-landmark" aria-label="Appearance">
-            <div id="vector-appearance" class="vector-appearance">
-                <div class="vector-pinnable-header">
-                    <div class="vector-pinnable-header-label">Appearance</div>
-                </div>
-                <div class="vector-menu-content">
-                    <div class="theme-toggle-wrapper">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="theme-toggle-checkbox">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="theme-status-text">Light</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
+    <!-- Section 2: CTF & Activities -->
+    <section class="ef-section" id="sec-ctf">
+      <div class="ef-section-inner">
+        <div class="ef-meta">
+          <span class="ef-section-badge">&#9661; SEORY0</span>
+          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> CTF</h2>
+          <p class="ef-section-title">대회 및 활동</p>
+          <span class="ef-section-indicator">02 / 03</span>
+        </div>
+        <div class="ef-showcase">
+          <div class="ef-showcase-card cyber-trigger" id="trigger-ctfs"
+               data-cyber-title="RECENT_CTFS"
+               data-cyber-content="content-ctfs"
+               onclick="openCyberWindow('trigger-ctfs')">
+            <h3>Recent CTFs</h3>
+            <p>Competition results and rankings.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+          <div class="ef-showcase-card cyber-trigger" id="trigger-edu"
+               data-cyber-title="EDUCATION"
+               data-cyber-content="content-edu"
+               onclick="openCyberWindow('trigger-edu')">
+            <h3>Education & Activities</h3>
+            <p>Academic background and certifications.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+        </div>
+        <div class="ef-section-bar">
+          <span class="ef-bar-text">CTF</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Recent -->
+    <section class="ef-section" id="sec-recent">
+      <div class="ef-section-inner">
+        <div class="ef-meta">
+          <span class="ef-section-badge">&#9661; SEORY0</span>
+          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> RECENT</h2>
+          <p class="ef-section-title">최근 활동</p>
+          <span class="ef-section-indicator">03 / 03</span>
+        </div>
+        <div class="ef-showcase">
+          <div class="ef-showcase-card cyber-trigger" id="trigger-recent"
+               data-cyber-title="RECENT_CHANGES"
+               data-cyber-content="content-recent"
+               onclick="openCyberWindow('trigger-recent')">
+            <h3>Recent Changes</h3>
+            <p>Latest posts and write-ups.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+        </div>
+        <div class="ef-section-bar">
+          <span class="ef-bar-text">RECENT</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Info Row -->
+    <div class="ef-quick-row">
+      <div class="ef-quick-item">
+        <h3>Affiliation</h3>
+        <p>Soongsil University</p>
+      </div>
+      <div class="ef-quick-item">
+        <h3>Focus</h3>
+        <p>Kernel Exploitation / RE</p>
+      </div>
+      <div class="ef-quick-item">
+        <h3>Team</h3>
+        <p>Fermion / ASC</p>
       </div>
     </div>
 
-  </div>
+  </main>
 </div>
 
-<footer id="footer" class="mw-footer">
-  <ul id="footer-info">
-      <li id="footer-info-lastmod"> This page was last edited on {{ site.time | date: "%d %B %Y, at %H:%M" }}.</li>
-      <li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li>
-    </ul>
-</footer>
+{% include footer.html show_lastmod=true %}
 
+<!-- Hidden content for cyber windows -->
+<div id="content-sysinfo" class="cyber-content-hidden">
+  <p><b>Operator</b>: SEORY0</p>
+  <p><b>Affiliation</b>: Soongsil University</p>
+  <p><b>Specialization</b>: Windows Kernel Exploitation</p>
+  <p><b>Secondary</b>: Reverse Engineering</p>
+  <p><b>Team</b>: Fermion / ASC</p>
+  <p><b>Status</b>: Active</p>
+</div>
+
+<div id="content-ctfs" class="cyber-content-hidden">
+  <p><b>Tencent 0CTF</b> — 12th: Fermion</p>
+  <p><b>Cykor CTF</b> — 8th: Fermion</p>
+  <p><b>LakeCTF Quals '25-'26</b> — 20th: Fermion</p>
+  <p><b>HSpace Club League 25</b> — 5th: ASC</p>
+</div>
+
+<div id="content-edu" class="cyber-content-hidden">
+  <p><b>Soongsil Univ.</b>: IT Convergence, EE</p>
+  <p><b>WhiteHat School 3rd</b>: KITRI Certificated</p>
+  <p><b>Hacking Camp 27th</b>: POC Security Certificated</p>
+</div>
+
+<div id="content-featured" class="cyber-content-hidden">
+  {% assign featured = site.posts.first %}
+  {% if featured %}
+  <p><b>{{ featured.title }}</b></p>
+  <p>{{ featured.excerpt | strip_html | truncatewords: 30 }}</p>
+  <p><a href="{{ featured.url | relative_url }}" style="color:#ff0000;">&#8594; Open full project page</a></p>
+  {% else %}
+  <p>No project available.</p>
+  {% endif %}
+</div>
+
+<div id="content-recent" class="cyber-content-hidden">
+  {% for post in site.posts limit:5 %}
+  <p><b>{{ post.date | date: "%m-%d" }}</b> — <a href="{{ post.url | relative_url }}" style="color:#ff0000;">{{ post.title }}</a></p>
+  {% endfor %}
+</div>
+
+{% include cyber-window.html %}
 {% include scripts.html %}
 
 </body>

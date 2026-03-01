@@ -3,94 +3,38 @@ layout: compress
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
+<html lang="en">
 {% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-Post rootpage-Post skin-vector-2022 action-view">
+<body>
 
-{% include header.html %}
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
-    
-    <div class="vector-column-start">
-      <div class="vector-main-menu-container">
-        <div id="mw-navigation">
-          <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-            <div class="vector-menu mw-portlet" id="p-navigation">
-                <div class="vector-menu-heading">Navigation</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="{{ '/' | relative_url }}"><span>Main page</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/about/' | relative_url }}"><span>About Me</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a></li>
-                        <li class="mw-list-item selected"><a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/books/' | relative_url }}"><span>Books</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a></li>
-                        <li class="mw-list-item"><a href="{{ '/ai-guide/' | relative_url }}"><span>AI Guide</span></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="vector-menu mw-portlet" id="p-interaction">
-                <div class="vector-menu-heading">Connect</div>
-                <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                        <li class="mw-list-item"><a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a></li>
-                        <li class="mw-list-item"><a href="mailto:seory0@outlook.kr"><span>Email</span></a></li>
-                    </ul>
-                </div>
-            </div>
-          </nav>
-        </div>
+{% include sidebar-navigation.html %}
+
+<div class="site-container">
+
+  <div class="ef-page-banner">
+    <div class="ef-page-banner-top">
+      <div class="ef-page-banner-inner">
+        <span class="ef-section-badge">&#9661; SEORY0</span>
+        <span class="ef-page-banner-sub">{{ page.categories | join: ' / ' }}</span>
       </div>
     </div>
+    <div class="ef-page-banner-stripe">
+      <h1 class="ef-page-banner-title">{{ page.page_title | default: page.title }}</h1>
+    </div>
+  </div>
 
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-        
-        <div class="vector-page-toolbar">
-          <div class="vector-page-toolbar-container">
-            <div id="left-navigation">
-              <nav aria-label="Namespaces">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Article</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>Discussion</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-            <div id="right-navigation">
-              <nav aria-label="Views">
-                <div class="vector-menu vector-menu-tabs mw-portlet">
-                  <div class="vector-menu-content">
-                    <ul class="vector-menu-content-list">
-                      <li class="selected vector-tab-noicon mw-list-item"><a href="#"><span>Read</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>View source</span></a></li>
-                      <li class="vector-tab-noicon mw-list-item"><a href="#"><span>History</span></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
+  <div class="site-grid">
+    <div class="content-col">
+      <main class="main-content" role="main">
+        <div class="page-body">
+          <div id="siteSub">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
 
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">{{ page.title }}</h1>
-        </header>
+          <div class="page-content">
 
-        <div id="bodyContent" class="vector-body">
-          <div id="siteSub" class="noprint">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
-          <div id="contentSub"></div>
-          
-          <div id="mw-content-text" class="mw-body-content">
-            <div class="mw-parser-output">
-                
                 <table class="infobox" style="width: 22em;">
                     <tbody>
                         <tr>
-                            <th colspan="2" class="infobox-header" style="background-color: var(--box-header-bg);">Meta Information</th>
+                            <th colspan="2" class="infobox-header">Meta Information</th>
                         </tr>
                         <tr>
                             <th scope="row">Date</th>
@@ -121,9 +65,9 @@ layout: compress
                     {{ content }}
                 </div>
 
-                <div id="catlinks" class="catlinks" data-mw="interface">
-                    <div id="mw-normal-catlinks" class="mw-normal-catlinks">
-                        <a href="#" title="Special:Categories">Categories</a>: 
+                <div id="catlinks">
+                    <div class="mw-normal-catlinks">
+                        <a href="#">Categories</a>:
                         <ul>
                             {% for cat in page.categories %}
                             <li><a href="#">{{ cat }}</a></li>
@@ -133,33 +77,14 @@ layout: compress
                     </div>
                 </div>
 
-            </div>
           </div>
         </div>
       </main>
     </div>
-
-    <div class="vector-column-end">
-      <div class="vector-sticky-pinned-container">
-        <nav class="vector-appearance-landmark" aria-label="Appearance">
-            <div id="vector-appearance" class="vector-appearance">
-                <div class="vector-pinnable-header"><div class="vector-pinnable-header-label">Appearance</div></div>
-                <div class="vector-menu-content">
-                    <div class="theme-toggle-wrapper">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="theme-toggle-checkbox"><span class="slider"></span>
-                        </label>
-                        <span id="theme-status-text">Light</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
-      </div>
-    </div>
   </div>
 </div>
 
-<footer id="footer" class="mw-footer"><ul id="footer-info"><li id="footer-info-copyright">Content is available under <a href="#">Hacker License 1.0</a>.</li></ul></footer>
+{% include footer.html %}
 <script src="{{ '/assets/js/code-copy.js' | relative_url }}"></script>
 {% include scripts.html %}
 

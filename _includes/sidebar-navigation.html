@@ -1,49 +1,87 @@
-<div class="vector-column-start">
-  <div class="vector-main-menu-container">
-    <div id="mw-navigation">
-      <nav id="mw-panel" class="vector-main-menu-landmark" aria-label="Site">
-        <div class="vector-menu mw-portlet" id="p-navigation">
-          <div class="vector-menu-heading">Navigation</div>
-          <div class="vector-menu-content">
-            <ul class="vector-menu-content-list">
-              <li class="mw-list-item {% if page.url == '/' or page.url == '/index.html' %}selected{% endif %}">
-                <a href="{{ '/' | relative_url }}"><span>Main page</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/about' %}selected{% endif %}">
-                <a href="{{ '/about/' | relative_url }}"><span>About Me</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/projects' %}selected{% endif %}">
-                <a href="{{ '/projects/' | relative_url }}"><span>Projects</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/writing' %}selected{% endif %}">
-                <a href="{{ '/writing/' | relative_url }}"><span>Writings</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/books' %}selected{% endif %}">
-                <a href="{{ '/books/' | relative_url }}"><span>Books</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/photos' %}selected{% endif %}">
-                <a href="{{ '/photos/' | relative_url }}"><span>Photos</span></a>
-              </li>
-              <li class="mw-list-item {% if page.url contains '/ai-guide' %}selected{% endif %}">
-                <a href="{{ '/ai-guide/' | relative_url }}"><span>AI Guide</span></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="vector-menu mw-portlet" id="p-interaction">
-          <div class="vector-menu-heading">Connect</div>
-          <div class="vector-menu-content">
-            <ul class="vector-menu-content-list">
-              <li class="mw-list-item">
-                <a href="https://github.com/SEORY0" target="_blank"><span>GitHub</span></a>
-              </li>
-              <li class="mw-list-item">
-                <a href="mailto:{{ site.author.email }}"><span>Email</span></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+<div class="sidebar-col">
+  <div class="sidebar-nav">
+    <!-- Logo -->
+    <a href="{{ '/' | relative_url }}" class="sidebar-logo">
+      <strong class="sidebar-logo-mark">S</strong>
+      <span class="sidebar-logo-text">SEORY0</span>
+    </a>
+
+    <nav aria-label="Site">
+      <ul class="icon-nav-list">
+        <li class="icon-nav-item {% if page.url == '/' or page.url == '/index.html' %}selected{% endif %}">
+          <a href="{{ '/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="icon-label">Main</span>
+          </a>
+        </li>
+        <li class="icon-nav-item {% if page.url contains '/about' %}selected{% endif %}" data-has-sections>
+          <a href="{{ '/about/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="icon-label">About</span>
+          </a>
+          <ul class="nav-sub-list"></ul>
+        </li>
+        <li class="icon-nav-item {% if page.url contains '/projects' %}selected{% endif %}" data-has-sections>
+          <a href="{{ '/projects/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span class="icon-label">Projects</span>
+          </a>
+          <ul class="nav-sub-list"></ul>
+        </li>
+        <li class="icon-nav-item {% if page.url contains '/writing' %}selected{% endif %}">
+          <a href="{{ '/writing/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span class="icon-label">Writings</span>
+          </a>
+        </li>
+        <li class="icon-nav-item {% if page.url contains '/books' %}selected{% endif %}">
+          <a href="{{ '/books/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span class="icon-label">Books</span>
+          </a>
+        </li>
+        <li class="icon-nav-item {% if page.url contains '/photos' %}selected{% endif %}">
+          <a href="{{ '/photos/' | relative_url }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span class="icon-label">Photos</span>
+          </a>
+        </li>
+      </ul>
+      <div class="icon-nav-divider"></div>
+      <ul class="icon-nav-list">
+        <li class="icon-nav-item">
+          <a href="https://github.com/SEORY0" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            <span class="icon-label">GitHub</span>
+          </a>
+        </li>
+        <li class="icon-nav-item">
+          <a href="mailto:{{ site.author.email }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span class="icon-label">Email</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Theme toggle at bottom -->
+    <div class="sidebar-theme-toggle">
+      <button id="sidebar-theme-btn" class="icon-nav-item" aria-label="Toggle Dark Mode">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span class="icon-label">Theme</span>
+      </button>
     </div>
   </div>
+</div>
+
+<!-- Mobile Header (visible only on mobile) -->
+<div class="mobile-header">
+  <a href="{{ '/' | relative_url }}" class="mobile-logo"><strong>SEORY0</strong></a>
+  <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open Navigation">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
 </div>

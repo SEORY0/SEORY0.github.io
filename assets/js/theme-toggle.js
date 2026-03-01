@@ -11,14 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyTheme(isDark) {
         // (1) CSS 클래스 제어 (body 태그)
         if (isDark) {
-            body.classList.add('skin-theme-clientpref-night');
-            body.classList.add('dark'); // 호환성용 추가
+            body.classList.add('theme-dark');
+            // dark mode active
             localStorage.setItem('theme', 'dark');
             
             if (statusText) statusText.textContent = "Dark";
         } else {
-            body.classList.remove('skin-theme-clientpref-night');
-            body.classList.remove('dark');
+            body.classList.remove('theme-dark');
+            // light mode active
             localStorage.setItem('theme', 'light');
             
             if (statusText) statusText.textContent = "Light";
@@ -64,14 +64,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // 5. 이벤트 리스너: 모바일 원형 버튼 클릭 시
     if (mobileBtn) {
         mobileBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // 버튼 기본 동작 방지
-            
-            // 현재 상태 확인 후 반대로 토글
-            const isCurrentlyDark = body.classList.contains('skin-theme-clientpref-night');
+            e.preventDefault();
+            const isCurrentlyDark = body.classList.contains('theme-dark');
             applyTheme(!isCurrentlyDark);
         });
-    } else {
-        // 디버깅용: 모바일 버튼이 없는 경우 (PC 화면 등)에는 조용히 넘어갑니다.
-        // console.log("Mobile toggle button not found on this page.");
+    }
+
+    // 6. 이벤트 리스너: 사이드바 테마 버튼 클릭 시
+    const sidebarBtn = document.getElementById('sidebar-theme-btn');
+    if (sidebarBtn) {
+        sidebarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isCurrentlyDark = body.classList.contains('theme-dark');
+            applyTheme(!isCurrentlyDark);
+        });
     }
 });

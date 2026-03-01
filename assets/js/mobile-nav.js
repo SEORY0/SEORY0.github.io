@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const menuBtn = document.getElementById('mobile-menu-btn');
-    const navColumn = document.querySelector('.vector-column-start');
+    const navColumn = document.querySelector('.sidebar-col');
     const overlay = document.getElementById('mobile-overlay');
     const body = document.body;
 

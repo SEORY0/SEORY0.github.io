@@ -2,53 +2,46 @@
 layout: compress
 ---
 <!DOCTYPE html>
-<html lang="en" class="client-js vector-feature-language-in-header-enabled skin-vector-2022">
+<html lang="en">
 {% include head.html %}
-<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-4 ns-subject page-{{ page.page_class | default: 'default' }} rootpage-{{ page.page_class | default: 'default' }} skin-vector-2022 action-view">
+<body>
 
-{% include header.html %}
+{% include sidebar-navigation.html %}
 
-<div class="mw-page-container">
-  <div class="mw-page-container-inner">
+<div class="site-container">
 
-    {% include sidebar-navigation.html %}
+  <div class="ef-page-banner">
+    <div class="ef-page-banner-top">
+      <div class="ef-page-banner-inner">
+        <span class="ef-section-badge">&#9661; SEORY0</span>
+        {% if page.toolbar_left %}
+        <span class="ef-page-banner-sub">{{ page.toolbar_left }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="ef-page-banner-stripe">
+      <h1 class="ef-page-banner-title">{{ page.page_title | default: page.title }}</h1>
+    </div>
+  </div>
 
-    <div class="mw-content-container">
-      <main id="content" class="mw-body" role="main">
-
-        {% include page-toolbar.html left_tab=page.toolbar_left %}
-
-        <header class="mw-body-header">
-          <h1 id="firstHeading" class="firstHeading mw-first-heading">
-            {{ page.page_title | default: page.title }}
-          </h1>
-        </header>
-
-        <div id="bodyContent" class="vector-body">
+  <div class="site-grid">
+    <div class="content-col">
+      <main class="main-content" role="main">
+        <div class="page-body">
           {% if page.subtitle %}
-          <div id="siteSub" class="noprint">{{ page.subtitle }}</div>
+          <div id="siteSub">{{ page.subtitle }}</div>
           {% endif %}
-          <div id="contentSub"></div>
 
-          <div id="mw-content-text" class="mw-body-content">
-            <div class="mw-parser-output">
-              {{ content }}
-            </div>
+          <div class="page-content">
+            {{ content }}
           </div>
         </div>
       </main>
     </div>
-
-    {% include theme-toggle-sidebar.html %}
-
   </div>
 </div>
 
 {% include footer.html show_lastmod=page.show_lastmod %}
-
-{% if page.include_search %}
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-{% endif %}
 
 {% include scripts.html %}
 
