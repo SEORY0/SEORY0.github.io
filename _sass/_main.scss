@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-/* 1. Fonts: JetBrains Mono (영문/코드) + Pretendard (한글/본문) */
+/* 1. Fonts: Serif (본문) + JetBrains Mono (코드) + Pretendard (한글) */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -16,9 +16,9 @@
   --border-color-base: #c8ccd1;
   --border-color-subtle: #e1e1e1;
   
-  /* [폰트] 영문은 JetBrains Mono, 한글은 Pretendard 적용 */
-  --font-family-base: 'JetBrains Mono', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-  --font-family-serif: 'Linux Biolinum', 'Georgia', 'Pretendard', serif;
+  /* [폰트] 본문은 serif, 코드는 JetBrains Mono */
+  --font-family-base: 'Linux Biolinum', 'Georgia', 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', serif;
+  --font-family-code: 'JetBrains Mono', 'Pretendard', monospace;
   
   --sidebar-width: 16em;
   
@@ -837,7 +837,7 @@ p > code, li > code, td > code, span > code {
   color: var(--inline-code-color);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-family-code);
   font-size: 0.85em;
   font-weight: 500;
   border: none; 
@@ -855,7 +855,7 @@ p > code, li > code, td > code, span > code {
   border: 1px solid var(--code-border-color);
   /* 그림자는 다크모드에서만 살짝 줍니다 */
   box-shadow: none;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-family-code);
   transition: background-color 0.3s, border-color 0.3s;
 }
 
@@ -923,7 +923,7 @@ p > code, li > code, td > code, span > code {
     font-size: 13.5px;
     line-height: 1.6;
     color: var(--code-line-num-color);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family-code);
   }
 }
 
@@ -941,7 +941,7 @@ p > code, li > code, td > code, span > code {
     color: var(--code-text-color);
     font-size: 13.5px;
     line-height: 1.6;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family-code);
   }
 
   code {
@@ -1188,7 +1188,7 @@ textarea:focus {
 }
 
 .guide-route-path {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-family-code);
   font-size: 0.85rem;
   color: var(--color-progressive);
   font-weight: 500;
