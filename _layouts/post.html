@@ -27,54 +27,50 @@ layout: compress
     <div class="content-col">
       <main class="main-content" role="main">
         <div class="page-body">
-          <div id="siteSub">I really want to stay at your house - Rosa Walton, Hallie Coggins</div>
-
           <div class="page-content">
 
-                <table class="infobox" style="width: 22em;">
-                    <tbody>
-                        <tr>
-                            <th colspan="2" class="infobox-header">Meta Information</th>
-                        </tr>
-                        <tr>
-                            <th scope="row">Date</th>
-                            <td>{{ page.date | date: "%Y-%m-%d" }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Author</th>
-                            <td>User:SEORY0</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Category</th>
-                            <td>{{ page.categories | join: ', ' }}</td>
-                        </tr>
-                        {% if page.tags %}
-                        <tr>
-                            <th scope="row">Tags</th>
-                            <td>
-                                {% for tag in page.tags %}
-                                <span class="tag-label">{{ tag }}</span>
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                <div class="post-meta">
+                  <div class="sd-header">
+                    <span class="sd-brand">&#9661; SEORY0</span>
+                    <span class="sd-class">POST</span>
+                  </div>
+                  <div class="sd-body">
+                    <div class="sd-fields">
+                      <div class="sd-field">
+                        <span class="sd-key">DATE</span>
+                        <span class="sd-val">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
+                      </div>
+                      <div class="sd-field">
+                        <span class="sd-key">AUTHOR</span>
+                        <span class="sd-val">SEORY0</span>
+                      </div>
+                      {% if page.categories.size > 0 %}
+                      <div class="sd-field">
+                        <span class="sd-key">CATEGORY</span>
+                        <span class="sd-val">{{ page.categories | join: ' / ' }}</span>
+                      </div>
+                      {% endif %}
+                    </div>
+                    {% if page.tags %}
+                    <div class="sd-tags">
+                      {% for tag in page.tags %}
+                      <span class="post-tag">{{ tag }}</span>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
 
                 <div class="post-content">
                     {{ content }}
                 </div>
 
-                <div id="catlinks">
-                    <div class="mw-normal-catlinks">
-                        <a href="#">Categories</a>:
-                        <ul>
-                            {% for cat in page.categories %}
-                            <li><a href="#">{{ cat }}</a></li>
-                            {% endfor %}
-                            <li><a href="#">Writings</a></li>
-                        </ul>
-                    </div>
+                <div class="post-footer-meta">
+                  <span class="post-footer-label">FILED UNDER</span>
+                  {% for cat in page.categories %}
+                  <span class="post-tag">{{ cat }}</span>
+                  {% endfor %}
+                  <span class="post-tag">Writings</span>
                 </div>
 
           </div>

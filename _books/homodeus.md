@@ -4,7 +4,7 @@ title: "호모데우스"
 author: "Yuval Noah Harari"
 cover: "/assets/images/books/homodeus.jpg"  # 책 표지 이미지 경로
 summary: "-"
-status: "reading"  # reading(읽는 중) 또는 read(완독)
+status: "read"  # reading(읽는 중) 또는 read(완독)
 date: 2025-12-19
 ---
 
