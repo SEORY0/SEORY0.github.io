@@ -1,19 +1,149 @@
 ---
-layout: default
-title: "404: Page not found"
+layout: compress
 permalink: /404.html
+title: "404: Page Not Found"
 ---
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body class="page-404">
 
-<section class="error-page">
-  <div class="container">
-    <h1 class="error-code">404</h1>
-    
-    <div class="error-content">
-      <h2 class="error-title">Page Not Found</h2>
-      <p class="error-desc">
-        Sorry, we've misplaced that URL or it's pointing to something that doesn't exist.
-      </p>
-      <a href="{{ '/' | relative_url }}" class="btn-home">Back to Home</a>
+  <div class="error-wrapper">
+    <div class="pixel-404" id="pixel-404"></div>
+
+    <div class="error-divider">
+      <span class="divider-arrow left">◂</span>
+      <div class="divider-line"></div>
+      <span class="divider-arrow right">▸</span>
     </div>
+
+    <p class="error-label">Page Not Found</p>
+    <p class="error-desc">This is not the page you are looking for</p>
+    <a href="{{ '/' | relative_url }}" class="error-home-btn">RETURN HOME ›</a>
   </div>
-</section>
+
+  <script>
+  (function() {
+    var DIGITS = {
+      '4': [
+        [0,0,0,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,1,1,0,1,0,0],
+        [0,1,0,0,1,0,0],
+        [1,1,0,0,1,0,0],
+        [1,0,0,0,1,0,0],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [0,0,0,0,1,0,0],
+        [0,0,0,0,1,0,0]
+      ],
+      '0': [
+        [0,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,1],
+        [0,1,1,1,1,1,0]
+      ]
+    };
+
+    var CAT_PIXELS = [
+      [0,1,0,0,0,0,1,0],
+      [1,1,1,0,0,1,1,1],
+      [1,0,1,1,1,1,0,1],
+      [1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,1,0,0,0,0,1,0]
+    ];
+
+    var container = document.getElementById('pixel-404');
+    var text = '404';
+    var allBlocks = [];
+
+    text.split('').forEach(function(ch) {
+      var digitEl = document.createElement('div');
+      digitEl.className = 'pixel-digit';
+      var matrix = DIGITS[ch];
+      for (var r = 0; r < matrix.length; r++) {
+        for (var c = 0; c < matrix[r].length; c++) {
+          var cell = document.createElement('div');
+          if (matrix[r][c]) {
+            cell.className = 'pixel-block';
+            cell.style.opacity = '0';
+            allBlocks.push(cell);
+          } else {
+            cell.className = 'pixel-empty';
+          }
+          digitEl.appendChild(cell);
+        }
+      }
+      container.appendChild(digitEl);
+    });
+
+    function shuffle(arr) {
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      }
+      return arr;
+    }
+
+    shuffle(allBlocks);
+    allBlocks.forEach(function(block, i) {
+      block.style.animationDelay = (i * 12) + 'ms';
+      block.style.animation = 'pixelIn 0.12s ease forwards';
+    });
+
+    function createCat(startX, startY) {
+      var cat = document.createElement('div');
+      cat.className = 'pixel-cat';
+      cat.style.left = startX + 'px';
+      cat.style.top = startY + 'px';
+      var pixelSize = 3;
+      CAT_PIXELS.forEach(function(row, r) {
+        row.forEach(function(val, c) {
+          if (val) {
+            var px = document.createElement('div');
+            px.className = 'cat-pixel';
+            px.style.left = (c * pixelSize) + 'px';
+            px.style.top = (r * pixelSize) + 'px';
+            px.style.width = pixelSize + 'px';
+            px.style.height = pixelSize + 'px';
+            cat.appendChild(px);
+          }
+        });
+      });
+      container.appendChild(cat);
+      return cat;
+    }
+
+    setTimeout(function() {
+      var rect = container.getBoundingClientRect();
+      var cats = [];
+      for (var i = 0; i < 2; i++) {
+        var x = Math.random() * (rect.width - 40);
+        var y = Math.random() * (rect.height - 30);
+        var el = createCat(x, y);
+        var speed = (Math.random() > 0.5 ? 1 : -1) * (0.4 + Math.random() * 0.6);
+        cats.push({ el: el, x: x, y: y, dx: speed });
+      }
+      function moveCats() {
+        cats.forEach(function(cat) {
+          cat.x += cat.dx;
+          if (cat.x <= 0 || cat.x >= rect.width - 30) { cat.dx *= -1; }
+          cat.el.style.transform = cat.dx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+          cat.el.style.left = cat.x + 'px';
+        });
+        requestAnimationFrame(moveCats);
+      }
+      moveCats();
+    }, 300);
+  })();
+  </script>
+
+</body>
+</html>

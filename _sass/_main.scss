@@ -1,5 +1,13 @@
 @charset "utf-8";
 
+@font-face {
+  font-family: 'Corpta Demo';
+  src: url('/assets/fonts/corpta-demo.regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ========================================================================== */
 /* Minimal x Cyberpunk — Main Stylesheet                                       */
 /* ========================================================================== */
@@ -451,9 +459,9 @@ ul { list-style: none; padding: 0; margin: 0; }
   animation: marqueeScroll 20s linear infinite;
 
   span {
-    font-family: var(--font-body);
+    font-family: 'Corpta Demo', var(--font-body);
     font-size: 8vw;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: -0.04em;
     text-transform: uppercase;
     color: var(--text);
@@ -1037,6 +1045,150 @@ ul { list-style: none; padding: 0; margin: 0; }
   color: var(--text-muted);
   font-family: var(--font-body);
   text-align: center;
+}
+
+/* ========================================================================== */
+/* 404 Page                                                                    */
+/* ========================================================================== */
+
+.page-404 {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.error-wrapper {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.pixel-404 {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.pixel-digit {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 3px;
+}
+
+.pixel-block {
+  width: 32px;
+  height: 32px;
+  background: var(--text);
+  opacity: 0;
+}
+
+.pixel-empty {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+}
+
+@keyframes pixelIn {
+  from { opacity: 0; transform: scale(0.3); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Pixel Cat */
+.pixel-cat {
+  position: absolute;
+  width: 24px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cat-pixel {
+  position: absolute;
+  background: var(--accent);
+}
+
+/* Divider */
+.error-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto 40px;
+  max-width: 700px;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.divider-arrow {
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+}
+
+/* Text */
+.error-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--border);
+  display: inline-block;
+  padding: 4px 14px;
+  margin-bottom: 16px;
+}
+
+.error-desc {
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin: 0 0 40px;
+  line-height: 1.4;
+}
+
+/* Return Home Button */
+.error-home-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 2px dashed var(--border);
+  padding: 14px 32px;
+  color: var(--text);
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+/* 404 Mobile */
+@media (max-width: 700px) {
+  .pixel-404 { gap: 16px; }
+  .pixel-block, .pixel-empty { width: 18px; height: 18px; }
+  .pixel-digit { gap: 2px; }
+  .error-desc { font-size: 1.1rem; }
+}
+
+@media (max-width: 420px) {
+  .pixel-block, .pixel-empty { width: 12px; height: 12px; }
+  .pixel-digit { gap: 1px; }
+  .pixel-404 { gap: 10px; }
 }
 
 /* ========================================================================== */
