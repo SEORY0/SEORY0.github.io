@@ -19,14 +19,52 @@ layout: compress
       </div>
     </div>
 
-    <!-- Section 1: Projects -->
+    <!-- Intro Strip -->
+    <div class="intro-strip">
+      <p>I am <strong>SEORY0</strong>, a security researcher and CTF player from South Korea. Currently an undergraduate in Electrical Engineering at Soongsil University, where I also serve as a research student at the AI Safety Research Center. My core interests lie in Windows Kernel Exploitation, Reverse Engineering, and AI for Security &mdash; with a soft spot for all things cyberpunk.</p>
+    </div>
+
+    <!-- Section 1: CTF & Activities -->
+    <section class="ef-section" id="sec-ctf">
+      <div class="ef-section-inner">
+        <div class="ef-meta">
+          <span class="ef-section-badge">&#9661; SEORY0</span>
+          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> CTF</h2>
+          <p class="ef-section-title">대회 및 활동</p>
+          <span class="ef-section-indicator">01 / 03</span>
+        </div>
+        <div class="ef-showcase">
+          <div class="ef-showcase-card cyber-trigger" id="trigger-ctfs"
+               data-cyber-title="RECENT_CTFS"
+               data-cyber-content="content-ctfs"
+               onclick="openCyberWindow('trigger-ctfs')">
+            <h3>Recent CTFs</h3>
+            <p>Competition results and rankings.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+          <div class="ef-showcase-card cyber-trigger" id="trigger-edu"
+               data-cyber-title="EDUCATION"
+               data-cyber-content="content-edu"
+               onclick="openCyberWindow('trigger-edu')">
+            <h3>Education & Activities</h3>
+            <p>Academic background and certifications.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+        </div>
+        <div class="ef-section-bar">
+          <span class="ef-bar-text">CTF</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Projects -->
     <section class="ef-section" id="sec-projects">
       <div class="ef-section-inner">
         <div class="ef-meta">
           <span class="ef-section-badge">&#9661; SEORY0</span>
           <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> PROJECTS</h2>
           <p class="ef-section-title">프로젝트 소개</p>
-          <span class="ef-section-indicator">01 / 03</span>
+          <span class="ef-section-indicator">02 / 03</span>
         </div>
         <div class="ef-showcase">
           <div class="ef-showcase-card cyber-trigger featured-highlight" id="trigger-featured"
@@ -50,39 +88,6 @@ layout: compress
         </div>
         <div class="ef-section-bar">
           <span class="ef-bar-text">PROJECTS</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: CTF & Activities -->
-    <section class="ef-section" id="sec-ctf">
-      <div class="ef-section-inner">
-        <div class="ef-meta">
-          <span class="ef-section-badge">&#9661; SEORY0</span>
-          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> CTF</h2>
-          <p class="ef-section-title">대회 및 활동</p>
-          <span class="ef-section-indicator">02 / 03</span>
-        </div>
-        <div class="ef-showcase">
-          <div class="ef-showcase-card cyber-trigger" id="trigger-ctfs"
-               data-cyber-title="RECENT_CTFS"
-               data-cyber-content="content-ctfs"
-               onclick="openCyberWindow('trigger-ctfs')">
-            <h3>Recent CTFs</h3>
-            <p>Competition results and rankings.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-          <div class="ef-showcase-card cyber-trigger" id="trigger-edu"
-               data-cyber-title="EDUCATION"
-               data-cyber-content="content-edu"
-               onclick="openCyberWindow('trigger-edu')">
-            <h3>Education & Activities</h3>
-            <p>Academic background and certifications.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-        </div>
-        <div class="ef-section-bar">
-          <span class="ef-bar-text">CTF</span>
         </div>
       </div>
     </section>
