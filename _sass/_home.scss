@@ -1,0 +1,429 @@
+/* 8. Home Page — Endfield Style */
+
+.page-home .site-container {
+  padding: 0 32px;
+}
+
+/* Marquee Banner */
+.marquee-banner {
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+  margin-left: calc(-32px - var(--sidebar-width));
+  margin-right: -32px;
+}
+
+.marquee-track {
+  display: inline-flex;
+  animation: marqueeScroll 20s linear infinite;
+
+  span {
+    font-family: 'Corpta Demo', var(--font-body);
+    font-size: 8vw;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    padding-right: 0.3em;
+    line-height: 1;
+  }
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Intro Strip */
+.intro-strip {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+
+  p { margin: 0; }
+  strong { color: var(--accent); font-weight: 700; }
+}
+
+/* Endfield Section */
+.ef-section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.ef-section-inner {
+  display: grid;
+  grid-template-columns: 220px 1fr 60px;
+  gap: 0;
+  min-height: 400px;
+}
+
+.ef-meta {
+  padding: 20px 24px 20px 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+.ef-section-badge {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.ef-section-label {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.ef-label-arrow {
+  color: var(--text);
+  margin-right: 2px;
+}
+
+.ef-section-title {
+  font-family: var(--font-body);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 auto;
+  color: var(--text);
+}
+
+.ef-section-indicator {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: auto;
+}
+
+.ef-showcase {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ef-showcase-card {
+  border: 1px solid var(--border);
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  margin-bottom: 12px;
+
+  &:hover {
+    border-color: var(--accent);
+    background-color: var(--bg-hover);
+  }
+
+  &:last-child { margin-bottom: 0; }
+
+  h3 {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+    border: none;
+    padding: 0;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ef-card-meta {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background-color 0.2s, color 0.2s, padding 0.2s;
+
+    &::after {
+      content: '_';
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+  }
+
+  &:hover .ef-card-meta {
+    background: var(--text);
+    color: var(--bg);
+    padding: 2px 6px;
+    display: inline-block;
+  }
+}
+
+/* Blink animation for terminal cursor */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* A. Featured Project card emphasis */
+.featured-highlight {
+  border-left: 3px solid var(--accent);
+
+  .featured-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  &:hover .featured-title {
+    color: var(--accent);
+
+    &::before {
+      content: '>_ ';
+      color: var(--accent);
+      animation: blink 1s step-end infinite;
+    }
+  }
+}
+
+.ef-section-bar {
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    0 100%
+  );
+
+  .ef-bar-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #fff;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+
+/* ef-showcase content adjustments */
+.ef-showcase .infobox {
+  float: none;
+  width: 100%;
+  margin: 0 0 16px;
+}
+
+.ef-showcase .wikitable {
+  width: 100%;
+  margin: 0;
+}
+
+/* Quick Info Row */
+.ef-quick-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.ef-quick-item {
+  padding: 32px 24px;
+  border-right: 1px solid var(--border);
+  &:last-child { border-right: none; }
+
+  h3 {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+    border: none;
+    padding: 0;
+  }
+
+  p, a {
+    font-size: 0.85rem;
+    color: var(--text);
+    margin: 0;
+  }
+
+  a:hover { color: var(--accent); }
+}
+
+/* Legacy card styles kept for content pages */
+.code-block {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  margin-top: 8px;
+  font-size: 0.85em;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.recent-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85em;
+  &:last-child { border-bottom: none; }
+  .date { color: var(--text-muted); font-size: 0.85em; font-family: var(--font-body); }
+  .diff { color: var(--accent); font-size: 0.8em; font-family: var(--font-body); }
+}
+
+/* Archive list */
+.archive-list {
+  counter-reset: archive-index;
+}
+
+.archive-entry {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  transition: padding-left 0.2s ease, border-color 0.2s ease;
+  counter-increment: archive-index;
+
+  &::before {
+    content: counter(archive-index, decimal-leading-zero);
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    min-width: 20px;
+  }
+
+  &:hover {
+    padding-left: 12px;
+    border-bottom-color: var(--text);
+  }
+
+  &::after {
+    content: '[ENTER]';
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-left: auto;
+  }
+
+  &:hover::after {
+    opacity: 0.5;
+  }
+}
+
+.archive-date {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  .archive-entry:hover & {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.archive-title {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: color 0.2s ease;
+
+  .archive-entry:hover & {
+    color: var(--accent);
+  }
+}
+
+/* Hidden content containers for cyber windows */
+.cyber-content-hidden { display: none; }
+
+/* 9. Appearance Panel */
+.appearance-panel {
+  .panel-label {
+    font-family: var(--font-body);
+    font-size: 0.7em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85em;
+    color: var(--text-muted);
+  }
+
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+
+    input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--border-dark);
+      transition: .3s;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+  }
+
+  input:checked + .slider {
+    background-color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+}
+

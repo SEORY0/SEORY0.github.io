@@ -17,7 +17,7 @@ Status: <b>Reading</b> (Current) / <b>Archived</b> (Completed)</p>
         {% for book in reading_books %}
         <div class="book-card reading">
             <div class="book-cover">
-                <img src="{{ book.cover | default: 'https://via.placeholder.com/100x150?text=No+Cover' | relative_url }}" alt="{{ book.title }}">
+                <img src="{{ book.cover | default: 'https://via.placeholder.com/100x150?text=No+Cover' | relative_url }}" alt="{{ book.title }}" loading="lazy">
             </div>
             <div class="book-info">
                 <h3>{{ book.title }}</h3>
@@ -43,7 +43,7 @@ Status: <b>Reading</b> (Current) / <b>Archived</b> (Completed)</p>
         {% for book in read_books %}
         <div class="book-card">
             <div class="book-cover">
-                <img src="{{ book.cover | default: 'https://via.placeholder.com/80x120?text=Cover' | relative_url }}" alt="{{ book.title }}">
+                <img src="{{ book.cover | default: 'https://via.placeholder.com/80x120?text=Cover' | relative_url }}" alt="{{ book.title }}" loading="lazy">
             </div>
             <div class="book-info">
                 <h3>{{ book.title }}</h3>

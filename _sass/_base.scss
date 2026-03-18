@@ -1,0 +1,59 @@
+/* 2. Reset & Base */
+* { box-sizing: border-box; }
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  &:focus {
+    left: var(--sidebar-width);
+    outline: 2px solid var(--accent);
+  }
+}
+
+/* Focus indicators */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Cross-browser scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-dark) var(--bg);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text);
+  transition: color 0.15s;
+  &:visited { color: var(--text); }
+  &:hover { color: var(--accent); }
+}
+
+ul { list-style: none; padding: 0; margin: 0; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-dark); }
+

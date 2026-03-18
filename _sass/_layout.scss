@@ -1,0 +1,81 @@
+/* 3. Layout */
+.site-container {
+  background-color: var(--bg);
+  margin-left: var(--sidebar-width);
+}
+
+.site-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1100px;
+  width: 100%;
+  padding: 32px;
+  margin: 0 auto;
+}
+
+
+/* 7. Main Content */
+.main-content { min-width: 0; }
+
+.page-title {
+  font-family: var(--font-body);
+  font-size: 2em;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+}
+
+#siteSub {
+  font-size: 0.85em;
+  color: var(--text-muted);
+  margin-bottom: 2em;
+}
+
+/* Page Banner — Endfield Style */
+.ef-page-banner {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.ef-page-banner-top {
+  padding: 28px 32px 16px;
+}
+
+.ef-page-banner-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .ef-section-badge {
+    color: var(--text-muted);
+  }
+}
+
+.ef-page-banner-sub {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ef-page-banner-stripe {
+  background: var(--accent);
+  padding: 20px 32px;
+}
+
+.ef-page-banner-title {
+  font-family: var(--font-body);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  max-width: 1100px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+

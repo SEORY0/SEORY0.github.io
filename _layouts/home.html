@@ -2,14 +2,15 @@
 layout: compress
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 {% include head.html %}
 <body class="page-home">
+<a href="#main-content" class="skip-to-content">본문 바로가기</a>
 
 {% include sidebar-navigation.html %}
 
 <div class="site-container">
-  <main class="main-content" role="main">
+  <main class="main-content" role="main" id="main-content">
 
     <!-- Marquee Banner -->
     <div class="marquee-banner">
@@ -37,7 +38,7 @@ layout: compress
           <div class="ef-showcase-card cyber-trigger" id="trigger-ctfs"
                data-cyber-title="RECENT_CTFS"
                data-cyber-content="content-ctfs"
-               onclick="openCyberWindow('trigger-ctfs')">
+               onclick="openCyberWindow('trigger-ctfs')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-ctfs')">
             <h3>Recent CTFs</h3>
             <p>Competition results and rankings.</p>
             <div class="ef-card-meta">[ENTER] to view details</div>
@@ -45,7 +46,7 @@ layout: compress
           <div class="ef-showcase-card cyber-trigger" id="trigger-edu"
                data-cyber-title="EDUCATION"
                data-cyber-content="content-edu"
-               onclick="openCyberWindow('trigger-edu')">
+               onclick="openCyberWindow('trigger-edu')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-edu')">
             <h3>Education & Activities</h3>
             <p>Academic background and certifications.</p>
             <div class="ef-card-meta">[ENTER] to view details</div>
@@ -70,7 +71,7 @@ layout: compress
           <div class="ef-showcase-card cyber-trigger featured-highlight" id="trigger-featured"
                data-cyber-title="FEATURED_PROJECT"
                data-cyber-content="content-featured"
-               onclick="openCyberWindow('trigger-featured')">
+               onclick="openCyberWindow('trigger-featured')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-featured')">
             <h3>Featured Project</h3>
             {% assign featured = site.posts.first %}
             {% if featured %}
@@ -80,7 +81,7 @@ layout: compress
             <p>No project available.</p>
             {% endif %}
           </div>
-          <div class="ef-showcase-card" onclick="window.location.href='{{ '/projects/' | relative_url }}'">
+          <div class="ef-showcase-card" onclick="window.location.href='{{ '/projects/' | relative_url }}'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')window.location.href='{{ '/projects/' | relative_url }}'">
             <h3>View All Projects</h3>
             <p>Windows Kernel Exploitation, Reverse Engineering, and more.</p>
             <div class="ef-card-meta">&#8594; /projects</div>
@@ -105,7 +106,7 @@ layout: compress
           <div class="ef-showcase-card cyber-trigger" id="trigger-recent"
                data-cyber-title="RECENT_CHANGES"
                data-cyber-content="content-recent"
-               onclick="openCyberWindow('trigger-recent')">
+               onclick="openCyberWindow('trigger-recent')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-recent')">
             <h3>Recent Changes</h3>
             <p>Latest posts and write-ups.</p>
             <div class="ef-card-meta">[ENTER] to view details</div>

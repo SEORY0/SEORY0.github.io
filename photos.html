@@ -14,7 +14,7 @@ subtitle: "I really want to stay at your house - Rosa Walton, Hallie Coggins"
         <div class="gallery-item">
             <a href="{{ photo.url | relative_url }}" class="thumb-link">
                 <div class="thumb">
-                    <img src="{{ photo.image | default: 'https://via.placeholder.com/300x200?text=No+Image' | relative_url }}" alt="{{ photo.title }}">
+                    <img src="{{ photo.image | default: 'https://via.placeholder.com/300x200?text=No+Image' | relative_url }}" alt="{{ photo.title }}" loading="lazy">
                 </div>
             </a>
             <div class="gallery-info">

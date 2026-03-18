@@ -1,17 +1,20 @@
 site: Sidey
 url: "https://SEORY0.github.io"
 title: "SEORY0"
-description: ""
+description: "Security Researcher & CTF Player. Windows Kernel Exploitation, Reverse Engineering, and AI for Security."
 twitter:
-  username: #yourusername
-  card: summary
-  creator: #yourusername
+  username: SEORY0
+  card: summary_large_image
+  creator: SEORY0
 author:
-  twitter: #yourusername
+  twitter: SEORY0
   name: "SEORY0"
-  avatar:
+  avatar: "/assets/images/profile.jpg"
   email: seory0@outlook.kr
-  url: #yoururl
+  url: "https://SEORY0.github.io"
+
+# Open Graph defaults
+og_image: "/assets/images/logo.png"
 permalink: pretty
 
 baseurl: ""

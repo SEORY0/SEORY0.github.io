@@ -100,6 +100,7 @@ if (searchInput) {
 
 // 3. 외부 클릭 시 결과창 닫기 (UX 개선)
 document.addEventListener('click', function(event) {
+    if (!searchInput || !searchResults) return;
     const isClickInside = searchInput.contains(event.target) || searchResults.contains(event.target);
     if (!isClickInside) {
         searchResults.style.display = 'none';
