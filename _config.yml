@@ -56,10 +56,6 @@ collections:
   books:
     output: true
     permalink: /books/:slug/
-  photos:
-    output: true
-    permalink: /photos/:slug/
-  
 defaults:
   -
     scope:
