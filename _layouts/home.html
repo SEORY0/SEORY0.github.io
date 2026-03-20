@@ -47,8 +47,16 @@ layout: compress
                data-cyber-title="EDUCATION"
                data-cyber-content="content-edu"
                onclick="openCyberWindow('trigger-edu')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-edu')">
-            <h3>Education & Activities</h3>
-            <p>Academic background and certifications.</p>
+            <h3>Education</h3>
+            <p>Academic background.</p>
+            <div class="ef-card-meta">[ENTER] to view details</div>
+          </div>
+          <div class="ef-showcase-card cyber-trigger" id="trigger-activities"
+               data-cyber-title="ACTIVITIES"
+               data-cyber-content="content-activities"
+               onclick="openCyberWindow('trigger-activities')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-activities')">
+            <h3>Activities</h3>
+            <p>Certifications and research experience.</p>
             <div class="ef-card-meta">[ENTER] to view details</div>
           </div>
         </div>
@@ -158,20 +166,20 @@ layout: compress
 </div>
 
 <div id="content-edu" class="cyber-content-hidden">
-  <p><b>Soongsil Univ.</b>: IT Convergence, EE</p>
+  <p><b>Soongsil Univ.</b>: IT Convergence, Electronic Engineering</p>
+</div>
+
+<div id="content-activities" class="cyber-content-hidden">
+  <p><b>AI Safety Research Center</b>: Undergraduate Research Intern, Soongsil Univ.</p>
   <p><b>WhiteHat School 3rd</b>: KITRI Certificated</p>
   <p><b>Hacking Camp 27th</b>: POC Security Certificated</p>
 </div>
 
 <div id="content-featured" class="cyber-content-hidden">
-  {% assign featured = site.posts.first %}
-  {% if featured %}
-  <p><b>{{ featured.title }}</b></p>
-  <p>{{ featured.excerpt | strip_html | truncatewords: 30 }}</p>
-  <p><a href="{{ featured.url | relative_url }}" style="color:#ff0000;">&#8594; Open full project page</a></p>
-  {% else %}
-  <p>No project available.</p>
-  {% endif %}
+  <p><b>WHS3-KernelPanic</b>: Windows Kernel/Application 취약점 분석 (C++, Assembly)</p>
+  <p><b>CVE Analyzer</b>: AI 기반 CVE 자동 분류/요약 프레임워크 (Python, Gemini API)</p>
+  <p><b>Wargame Bandits</b>: ASC 해킹동아리 참여형 워게임 플랫폼</p>
+  <p><a href="{{ '/projects/' | relative_url }}" style="color:#ff0000;">&#8594; View all projects</a></p>
 </div>
 
 <div id="content-recent" class="cyber-content-hidden">
