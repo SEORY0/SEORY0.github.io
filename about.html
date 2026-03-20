@@ -6,202 +6,135 @@ subtitle: "I really want to stay at your house - Rosa Walton, Hallie Coggins"
 show_lastmod: true
 ---
 
-<!-- Section 1: Profile -->
-<section class="ef-section" id="sec-profile">
-  <div class="ef-section-inner">
-    <div class="ef-meta">
-      <span class="ef-section-badge">&#9661; SEORY0</span>
-      <h2 class="ef-section-label" id="Profile"><span class="ef-label-arrow">&#8811;</span> PROFILE</h2>
-      <p class="ef-section-title">프로필</p>
-      <span class="ef-section-indicator">01 / 04</span>
-    </div>
-    <div class="ef-showcase">
+<div class="resume">
 
-      <div class="about-hero">
-        <div class="about-hero-photo">
-          <img src="{{ '/assets/images/profile.jpg' | relative_url }}" alt="SEORY0 프로필 사진" class="about-avatar">
-        </div>
-        <div class="about-hero-info">
-          <h2 class="about-name-ko">류석준</h2>
-          <p class="about-name-en">RYU SEOKJUN</p>
-          <div class="about-contact">
-            <span>Seoul, South Korea</span>
-            <span class="about-contact-sep">&middot;</span>
-            <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
-            <span class="about-contact-sep">&middot;</span>
-            <a href="https://github.com/SEORY0" target="_blank">github.com/SEORY0</a>
-          </div>
-          <p class="about-handle">Handle: <strong>SEORY0</strong></p>
-        </div>
+  <!-- Header -->
+  <header class="resume-header">
+    <img src="{{ '/assets/images/profile.jpg' | relative_url }}" alt="SEORY0 프로필 사진" class="resume-avatar">
+    <div class="resume-header-info">
+      <h2 class="resume-name">류석준</h2>
+      <p class="resume-name-en">RYU SEOKJUN</p>
+      <p class="resume-title">Security Researcher &amp; CTF Player</p>
+      <div class="resume-contact">
+        <span>Seoul, South Korea</span>
+        <span class="resume-contact-sep">&middot;</span>
+        <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
+        <span class="resume-contact-sep">&middot;</span>
+        <a href="https://github.com/SEORY0" target="_blank">github.com/SEORY0</a>
       </div>
+    </div>
+  </header>
 
-      <div class="about-bio">
-        <p>
-          Security researcher and CTF player from South Korea.
-          Currently an undergraduate in Electronic Engineering at <strong>Soongsil University</strong>,
-          working as a research intern at the <strong>AI Safety Research Center</strong>.
-          Member of the <a href="https://whitehatschool.kr/">WhiteHat School</a> 3rd cohort.
-        </p>
-        <p>
-          My primary research focus includes <strong>Windows Kernel Exploitation</strong> and advanced <strong>Reverse Engineering</strong> techniques.
-          I aim to understand the root causes of vulnerabilities beyond exploitation.
-        </p>
+  <hr class="resume-divider">
+
+  <!-- About -->
+  <section class="resume-section">
+    <h2 class="resume-section-title" id="About">ABOUT</h2>
+    <p>
+      Security researcher and CTF player from South Korea.
+      Currently an undergraduate in Electronic Engineering at <strong>Soongsil University</strong>,
+      working as a research intern at the <strong>AI Safety Research Center</strong>.
+      Member of the <a href="https://whitehatschool.kr/">WhiteHat School</a> 3rd cohort.
+    </p>
+    <p>
+      My primary research focus includes <strong>Windows Kernel Exploitation</strong> and advanced <strong>Reverse Engineering</strong> techniques.
+      I aim to understand the root causes of vulnerabilities beyond exploitation.
+    </p>
+  </section>
+
+  <hr class="resume-divider">
+
+  <!-- Education -->
+  <section class="resume-section">
+    <h2 class="resume-section-title" id="Education">EDUCATION</h2>
+    <ul class="resume-list">
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>Soongsil University</strong>
+          <span class="resume-item-sub">IT Convergence, Electronic Engineering</span>
+        </div>
+        <span class="resume-item-date">Current</span>
+      </li>
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>WhiteHat School 3rd</strong>
+          <span class="resume-item-sub">KITRI</span>
+        </div>
+        <span class="resume-item-date">Certificated</span>
+      </li>
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>Hacking Camp 27th</strong>
+          <span class="resume-item-sub">POC Security</span>
+        </div>
+        <span class="resume-item-date">Certificated</span>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="resume-divider">
+
+  <!-- Experience -->
+  <section class="resume-section">
+    <h2 class="resume-section-title" id="Experience">EXPERIENCE</h2>
+    <ul class="resume-list">
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>Undergraduate Research Intern</strong>
+          <span class="resume-item-sub">AI Safety Research Center, Soongsil University</span>
+          <span class="resume-item-detail">AI for Security research</span>
+        </div>
+        <span class="resume-item-date">Current</span>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="resume-divider">
+
+  <!-- Skills -->
+  <section class="resume-section">
+    <h2 class="resume-section-title" id="Skills">SKILLS</h2>
+    <div class="resume-skills">
+      <div class="resume-skill-row">
+        <span class="resume-skill-label">Languages</span>
+        <span class="resume-skill-value">C, C++, Python, Assembly (x86/x64)</span>
       </div>
-
-      <div class="about-tags">
-        <span class="about-tag">Windows Kernel</span>
-        <span class="about-tag">Reverse Engineering</span>
-        <span class="about-tag">AI for Security</span>
-        <span class="about-tag">CTF Player</span>
+      <div class="resume-skill-row">
+        <span class="resume-skill-label">Tools</span>
+        <span class="resume-skill-value">WinDbg, IDA, GDB</span>
       </div>
-
-    </div>
-    <div class="ef-section-bar">
-      <span class="ef-bar-text">PROFILE</span>
-    </div>
-  </div>
-</section>
-
-<!-- Section 2: Biography + Education + Experiences -->
-<section class="ef-section" id="sec-biography">
-  <div class="ef-section-inner">
-    <div class="ef-meta">
-      <span class="ef-section-badge">&#9661; SEORY0</span>
-      <h2 class="ef-section-label" id="Biography"><span class="ef-label-arrow">&#8811;</span> BIOGRAPHY</h2>
-      <p class="ef-section-title">이력</p>
-      <span class="ef-section-indicator">02 / 04</span>
-    </div>
-    <div class="ef-showcase">
-
-      <h3 id="Education">Education</h3>
-      <div class="timeline">
-        <div class="timeline-entry">
-          <div class="timeline-header">
-            <div>
-              <h4 class="timeline-title">Soongsil University</h4>
-              <span class="timeline-org">IT Convergence, Electronic Engineering</span>
-            </div>
-            <span class="timeline-date">Current</span>
-          </div>
-        </div>
-        <div class="timeline-entry">
-          <div class="timeline-header">
-            <div>
-              <h4 class="timeline-title">WhiteHat School 3rd</h4>
-              <span class="timeline-org">KITRI</span>
-            </div>
-            <span class="timeline-date">Certificated</span>
-          </div>
-        </div>
-        <div class="timeline-entry">
-          <div class="timeline-header">
-            <div>
-              <h4 class="timeline-title">Hacking Camp 27th</h4>
-              <span class="timeline-org">POC Security</span>
-            </div>
-            <span class="timeline-date">Certificated</span>
-          </div>
-        </div>
+      <div class="resume-skill-row">
+        <span class="resume-skill-label">Platforms</span>
+        <span class="resume-skill-value">Windows, Linux</span>
       </div>
+    </div>
+  </section>
 
-      <h3 id="Experiences">Experiences</h3>
-      <div class="timeline">
-        <div class="timeline-entry">
-          <div class="timeline-header">
-            <div>
-              <h4 class="timeline-title">AI Safety Research Center</h4>
-              <span class="timeline-org">Soongsil University</span>
-            </div>
-            <span class="timeline-date">Current</span>
-          </div>
-          <ul class="timeline-details">
-            <li>Undergraduate Research Intern</li>
-            <li>AI for Security research</li>
-          </ul>
+  <hr class="resume-divider">
+
+  <!-- Research Interests -->
+  <section class="resume-section">
+    <h2 class="resume-section-title" id="Research_Interests">RESEARCH INTERESTS</h2>
+    <ul class="resume-list">
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>Kernel Exploitation</strong>
+          <span class="resume-item-sub">Focusing on Windows drivers and modern mitigation bypass techniques.</span>
         </div>
-      </div>
-
-    </div>
-    <div class="ef-section-bar">
-      <span class="ef-bar-text">BIO</span>
-    </div>
-  </div>
-</section>
-
-<!-- Section 3: Skills -->
-<section class="ef-section" id="sec-skills">
-  <div class="ef-section-inner">
-    <div class="ef-meta">
-      <span class="ef-section-badge">&#9661; SEORY0</span>
-      <h2 class="ef-section-label" id="Skills"><span class="ef-label-arrow">&#8811;</span> SKILLS</h2>
-      <p class="ef-section-title">기술 스택</p>
-      <span class="ef-section-indicator">03 / 04</span>
-    </div>
-    <div class="ef-showcase">
-
-      <div class="skill-group">
-        <h3 class="skill-label">Languages</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">C</span>
-          <span class="skill-tag">C++</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">Assembly (x86/x64)</span>
+      </li>
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>Root Cause Analysis</strong>
+          <span class="resume-item-sub">Deep diving into CVEs to understand the underlying logic errors.</span>
         </div>
-      </div>
-
-      <div class="skill-group">
-        <h3 class="skill-label">Tools</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">WinDbg</span>
-          <span class="skill-tag">IDA</span>
-          <span class="skill-tag">GDB</span>
+      </li>
+      <li class="resume-item">
+        <div class="resume-item-main">
+          <strong>AI for Security</strong>
+          <span class="resume-item-sub">Developing tools for fuzzing and crash analysis based on AI.</span>
         </div>
-      </div>
+      </li>
+    </ul>
+  </section>
 
-      <div class="skill-group">
-        <h3 class="skill-label">Platforms</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Windows</span>
-          <span class="skill-tag">Linux</span>
-        </div>
-      </div>
-
-    </div>
-    <div class="ef-section-bar">
-      <span class="ef-bar-text">SKILLS</span>
-    </div>
-  </div>
-</section>
-
-<!-- Section 4: Research Interests -->
-<section class="ef-section" id="sec-research">
-  <div class="ef-section-inner">
-    <div class="ef-meta">
-      <span class="ef-section-badge">&#9661; SEORY0</span>
-      <h2 class="ef-section-label" id="Research_Interests"><span class="ef-label-arrow">&#8811;</span> RESEARCH</h2>
-      <p class="ef-section-title">연구 분야</p>
-      <span class="ef-section-indicator">04 / 04</span>
-    </div>
-    <div class="ef-showcase">
-
-      <div class="research-list">
-        <div class="research-item">
-          <h3 class="research-title">Kernel Exploitation</h3>
-          <p class="research-desc">Focusing on Windows drivers and modern mitigation bypass techniques.</p>
-        </div>
-        <div class="research-item">
-          <h3 class="research-title">Root Cause Analysis</h3>
-          <p class="research-desc">Deep diving into CVEs to understand the underlying logic errors.</p>
-        </div>
-        <div class="research-item">
-          <h3 class="research-title">AI for Security</h3>
-          <p class="research-desc">Developing tools for fuzzing and crash analysis based on AI.</p>
-        </div>
-      </div>
-
-    </div>
-    <div class="ef-section-bar">
-      <span class="ef-bar-text">RESEARCH</span>
-    </div>
-  </div>
-</section>
+</div>
