@@ -123,10 +123,12 @@
   padding: 24px;
   cursor: pointer;
   transition: border-color 0.2s, background-color 0.2s;
+  display: block;
 
   &:hover {
     border-color: var(--accent);
     background-color: var(--bg-hover);
+    padding-left: 24px;
   }
 
 
