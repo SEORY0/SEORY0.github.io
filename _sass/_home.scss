@@ -123,12 +123,27 @@
   padding: 24px;
   cursor: pointer;
   transition: border-color 0.2s, background-color 0.2s;
-  display: block;
+
+  // Override .cyber-trigger styles when used on cards
+  &.cyber-trigger {
+    display: block;
+    border: 1px solid var(--border);
+    padding: 24px;
+    counter-increment: none;
+
+    &::before,
+    &::after { display: none; }
+
+    &:hover {
+      padding-left: 24px;
+      border-color: var(--accent);
+      color: inherit;
+    }
+  }
 
   &:hover {
     border-color: var(--accent);
     background-color: var(--bg-hover);
-    padding-left: 24px;
   }
 
 
