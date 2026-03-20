@@ -59,6 +59,11 @@ layout: compress
             <p>Certifications and research experience.</p>
             <div class="ef-card-meta">[ENTER] to view details</div>
           </div>
+          <div class="ef-showcase-card" onclick="window.location.href='{{ '/about/' | relative_url }}'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')window.location.href='{{ '/about/' | relative_url }}'">
+            <h3>View About</h3>
+            <p>Full profile, skills, and research interests.</p>
+            <div class="ef-card-meta">&#8594; /about</div>
+          </div>
         </div>
         <div class="ef-section-bar">
           <span class="ef-bar-text">CTF</span>

@@ -115,6 +115,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 12px;
 }
 
 .ef-showcase-card {
@@ -122,14 +123,12 @@
   padding: 24px;
   cursor: pointer;
   transition: border-color 0.2s, background-color 0.2s;
-  margin-bottom: 12px;
 
   &:hover {
     border-color: var(--accent);
     background-color: var(--bg-hover);
   }
 
-  &:last-child { margin-bottom: 0; }
 
   h3 {
     font-family: var(--font-body);
