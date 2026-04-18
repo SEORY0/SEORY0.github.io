@@ -149,6 +149,23 @@
   font-weight: 600;
 }
 
+/* Interactive row: rows whose right-side value is a link (e.g. CVE, CTF teams) */
+.resume-item:has(> a.resume-item-date) {
+  transition: padding-left 0.15s ease, border-bottom-color 0.15s ease;
+
+  &:hover {
+    padding-left: 8px;
+    border-bottom-color: var(--text);
+
+    .resume-item-main strong { color: var(--accent); }
+    .resume-item-date { text-decoration: underline; }
+  }
+}
+
+a.resume-item-date {
+  transition: color 0.15s ease;
+}
+
 /* Skills */
 .resume-skills {
   display: flex;
