@@ -1,0 +1,336 @@
+/* ========================================================================== */
+/* Top Navigation — Quiet Fixed Bar                                            */
+/* Width matches .container (left-biased 700px). No border, no blur.           */
+/* ========================================================================== */
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: var(--nav-bg);
+  z-index: 1000;
+}
+
+/* Inner wrapper —
+ *  margin both sides = home content's left margin (0.2 * (100% - 700px))
+ *  → nav left edge matches home content left edge, right edge symmetric (centered balance)
+ *  → on non-home pages (centered 700px content), nav extends equally past content on both sides */
+.top-nav-inner {
+  height: 100%;
+  max-width: none;
+  margin: 0 calc(0.2 * (100% - 700px));
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  @media (max-width: 950px) {
+    margin: 0;
+    padding: 0 var(--indent);
+    gap: 12px;
+  }
+}
+
+/* Nav inner is centered on all pages (consistent visual balance regardless of
+ * page-home left-bias content alignment) */
+
+/* ========================================================================== */
+/* Tier 1 — Logo (identity)                                                    */
+/* ========================================================================== */
+
+/* Terminal prompt "&gt;_" with _ as blinking cursor */
+.top-nav-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+
+  &:visited { color: var(--text); }
+  &:hover { color: var(--text); opacity: 0.75; }
+}
+
+.top-nav-logo-name {
+  letter-spacing: 0;
+  line-height: 1;
+
+  .accent {
+    color: var(--accent);
+    animation: cursor-blink 1.06s step-end infinite;
+  }
+}
+
+@keyframes cursor-blink {
+  0%, 50%        { opacity: 1; }
+  50.01%, 100%   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-nav-logo-name .accent {
+    animation: none;
+  }
+}
+
+/* ========================================================================== */
+/* Tier 2 — Nav links (WRITING)                                                */
+/* mono uppercase, matches `.date` label visual                                 */
+/* ========================================================================== */
+
+.top-nav-links {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+
+  @media (max-width: 750px) {
+    display: none;
+  }
+
+  li {
+    a {
+      display: inline-block;
+      padding: 6px 4px;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s ease, border-bottom-color 0.15s ease;
+
+      &:visited {
+        color: var(--text-muted);
+      }
+
+      &:hover {
+        color: var(--text);
+      }
+    }
+
+    &.is-active a {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+
+      &:visited {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+/* ========================================================================== */
+/* Tier 3 — Utility actions (right-aligned cluster)                            */
+/* ========================================================================== */
+
+.top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* push WRITING away from icon cluster */
+.top-nav-links + .top-nav-actions,
+.top-nav-actions .top-nav-links {
+  margin-left: 0;
+}
+
+/* When .top-nav-links is sibling before .top-nav-actions, give 24px gap */
+.top-nav-inner > .top-nav-links {
+  margin-left: auto;        /* push to right side */
+  margin-right: 24px;        /* gap before icon cluster */
+}
+
+.top-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  padding: 0;
+  border-radius: 0;
+
+  &:visited {
+    color: var(--text-muted);
+  }
+
+  &:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+  }
+}
+
+/* Theme toggle — show one icon based on body class */
+.top-nav-theme {
+  .icon-sun { display: none; }
+  .icon-moon { display: inline-block; }
+
+  .theme-dark & {
+    .icon-sun { display: inline-block; }
+    .icon-moon { display: none; }
+  }
+}
+
+/* ========================================================================== */
+/* Mobile hamburger                                                            */
+/* ========================================================================== */
+
+.top-nav-hamburger {
+  display: none;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+
+  @media (max-width: 750px) {
+    display: flex;
+  }
+
+  .bar {
+    display: block;
+    height: 2px;
+    background: var(--text);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  &.active {
+    .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .bar:nth-child(2) { opacity: 0; }
+    .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+}
+
+/* Hide GitHub/Mail icons on mobile (in drawer instead) */
+@media (max-width: 750px) {
+  .top-nav-actions .top-nav-icon[aria-label="GitHub"],
+  .top-nav-actions .top-nav-icon[aria-label="Email"] {
+    display: none;
+  }
+}
+
+/* ========================================================================== */
+/* Mobile Drawer (slides from right)                                            */
+/* ========================================================================== */
+
+.top-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(80vw, 320px);
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  z-index: 1100;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  padding: 24px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &.menu-open {
+    transform: translateX(0);
+  }
+}
+
+.top-nav-drawer-close {
+  align-self: flex-end;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-nav-drawer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li a {
+    display: block;
+    padding: 12px 4px;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: padding-left 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      padding-left: 8px;
+      color: var(--accent);
+    }
+  }
+}
+
+.top-nav-drawer-footer {
+  margin-top: auto;
+  display: flex;
+  gap: 16px;
+  font-size: 0.88rem;
+
+  a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+
+    &:hover { color: var(--text); border-bottom-color: var(--text); }
+  }
+}
+
+/* Overlay behind drawer */
+.top-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1050;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+body.mobile-menu-active {
+  overflow: hidden;
+}

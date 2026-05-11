@@ -1,12 +1,23 @@
 <footer class="site-footer">
-  <ul id="footer-info">
-    {% if include.show_lastmod %}
-    <li id="footer-info-lastmod">
-      This page was last edited on {{ site.time | date: "%d %B %Y, at %H:%M" }}.
-    </li>
-    {% endif %}
-    <li id="footer-info-copyright">
-      &copy; {{ site.time | date: "%Y" }} SEORY0. All rights reserved.
-    </li>
-  </ul>
+  <div class="site-footer-box">
+    <div class="site-footer-inner">
+      {% if include.show_lastmod %}
+      <p class="site-footer-lastmod">Last edited {{ site.time | date: "%Y-%m-%d" }}</p>
+      {% endif %}
+
+      <p class="site-footer-links">
+        <a href="https://github.com/SEORY0/SEORY0.github.io" target="_blank" rel="noopener">Source on GitHub</a>
+        <span class="sep">·</span>
+        <a href="{{ '/atom.xml' | relative_url }}">Atom feed</a>
+        <span class="sep">·</span>
+        <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a>
+      </p>
+
+      <p class="site-footer-copy">
+        &copy; {{ site.time | date: "%Y" }} SEORY0 &middot; 류석준 / Seokjun Ryu
+      </p>
+    </div>
+
+    <div class="site-footer-brand" aria-hidden="true">KERNEL PAN<span class="accent">!</span>C</div>
+  </div>
 </footer>

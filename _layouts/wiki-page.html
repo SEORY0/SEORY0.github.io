@@ -1,44 +1,36 @@
 ---
 layout: compress
 ---
+
 <!DOCTYPE html>
 <html lang="ko">
 {% include head.html %}
 <body>
 <a href="#main-content" class="skip-to-content">본문 바로가기</a>
 
-{% include sidebar-navigation.html %}
+{% include top-nav.html %}
 
 <div class="site-container" id="main-content">
 
-  <div class="ef-page-banner">
-    <div class="ef-page-banner-top">
-      <div class="ef-page-banner-inner">
-        <span class="ef-section-badge">&#9661; SEORY0</span>
-        {% if page.toolbar_left %}
-        <span class="ef-page-banner-sub">{{ page.toolbar_left }}</span>
+  <header class="post-banner">
+    {% if page.toolbar_left %}
+    <p class="post-banner-eyebrow">{{ page.toolbar_left }}</p>
+    {% endif %}
+    <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
+  </header>
+
+  <div class="content-col">
+    <main class="main-content" role="main">
+      <div class="page-body">
+        {% if page.subtitle %}
+        <div id="siteSub">{{ page.subtitle }}</div>
         {% endif %}
-      </div>
-    </div>
-    <div class="ef-page-banner-stripe">
-      <h1 class="ef-page-banner-title">{{ page.page_title | default: page.title }}</h1>
-    </div>
-  </div>
 
-  <div class="site-grid">
-    <div class="content-col">
-      <main class="main-content" role="main">
-        <div class="page-body">
-          {% if page.subtitle %}
-          <div id="siteSub">{{ page.subtitle }}</div>
-          {% endif %}
-
-          <div class="page-content">
-            {{ content }}
-          </div>
+        <div class="page-content">
+          {{ content }}
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   </div>
 </div>
 

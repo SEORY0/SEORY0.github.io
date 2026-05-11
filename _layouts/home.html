@@ -7,194 +7,122 @@ layout: compress
 <body class="page-home">
 <a href="#main-content" class="skip-to-content">본문 바로가기</a>
 
-{% include sidebar-navigation.html %}
+{% include top-nav.html %}
 
 <div class="site-container">
-  <main class="main-content" role="main" id="main-content">
+  <main class="container" id="main-content" role="main">
 
-    <!-- Marquee Banner -->
-    <div class="marquee-banner">
-      <div class="marquee-track">
-        <span>SEORY0 // SECURITY RESEARCHER&nbsp;&mdash;&nbsp;</span>
-        <span>SEORY0 // SECURITY RESEARCHER&nbsp;&mdash;&nbsp;</span>
-      </div>
+    <h1>SEORY<span class="accent">0</span></h1>
+    <p class="hero-subtitle"><span class="hero-name-kr">류석준</span> · <span class="hero-name-en">Seokjun Ryu</span></p>
+
+    <div class="info">
+      <p>Security researcher and CTF player from South Korea.</p>
+      <p>Undergraduate in Electronic Engineering at <b>Soongsil University</b>, working as a research intern at the <b>AI Safety Research Center</b>. Member of <a href="https://whitehatschool.kr/" target="_blank" rel="noopener"><b>WhiteHat School</b></a> 3rd cohort.</p>
+      <p>Focus: <b>Windows Kernel Exploitation</b>, <b>Reverse Engineering</b>, and <b>AI for Security</b>.</p>
     </div>
 
-    <!-- Intro Strip -->
-    <div class="intro-strip">
-      <p>I am <strong>SEORY0</strong>, a security researcher and CTF player from South Korea. I'm currently an undergraduate in Electronic engineering at Soongsil University, where I also work as an undergraduate research intern at the AI Safety Research Center. My core interests lie in Windows Kernel Exploitation, Reverse Engineering, and AI for Security &mdash; with a soft spot for all things cyberpunk.</p>
-    </div>
+    <div class="date first-child">EDUCATION</div>
 
-    <!-- Section 1: CTF & Activities -->
-    <section class="ef-section" id="sec-ctf">
-      <div class="ef-section-inner">
-        <div class="ef-meta">
-          <span class="ef-section-badge">&#9661; SEORY0</span>
-          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> CTF</h2>
-          <p class="ef-section-title">대회 및 활동</p>
-          <span class="ef-section-indicator">01 / 03</span>
-        </div>
-        <div class="ef-showcase">
-          <div class="ef-showcase-card cyber-trigger" id="trigger-ctfs"
-               data-cyber-title="RECENT_CTFS"
-               data-cyber-content="content-ctfs"
-               onclick="openCyberWindow('trigger-ctfs')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-ctfs')">
-            <h3>Recent CTFs</h3>
-            <p>Competition results and rankings.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-          <div class="ef-showcase-card cyber-trigger" id="trigger-edu"
-               data-cyber-title="EDUCATION"
-               data-cyber-content="content-edu"
-               onclick="openCyberWindow('trigger-edu')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-edu')">
-            <h3>Education</h3>
-            <p>Academic background.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-          <div class="ef-showcase-card cyber-trigger" id="trigger-activities"
-               data-cyber-title="ACTIVITIES"
-               data-cyber-content="content-activities"
-               onclick="openCyberWindow('trigger-activities')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-activities')">
-            <h3>Activities</h3>
-            <p>Certifications and research experience.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-          <div class="ef-showcase-card" onclick="window.location.href='{{ '/about/' | relative_url }}'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')window.location.href='{{ '/about/' | relative_url }}'">
-            <h3>View About</h3>
-            <p>Full profile, skills, and research interests.</p>
-            <div class="ef-card-meta">&#8594; /about</div>
-          </div>
-        </div>
-        <div class="ef-section-bar">
-          <span class="ef-bar-text">CTF</span>
-        </div>
-      </div>
-    </section>
+    <span class="note">
+      <h3>Soongsil University</h3><span class="description">IT Convergence, Electronic Engineering</span>
+    </span>
+    <span class="note">
+      <h3>WhiteHat School 3rd</h3><span class="description">KITRI · Certificated</span>
+    </span>
+    <span class="note">
+      <h3>Hacking Camp 27th</h3><span class="description">POC Security · Certificated</span>
+    </span>
 
-    <!-- Section 2: Projects -->
-    <section class="ef-section" id="sec-projects">
-      <div class="ef-section-inner">
-        <div class="ef-meta">
-          <span class="ef-section-badge">&#9661; SEORY0</span>
-          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> PROJECTS</h2>
-          <p class="ef-section-title">프로젝트 소개</p>
-          <span class="ef-section-indicator">02 / 03</span>
-        </div>
-        <div class="ef-showcase">
-          <div class="ef-showcase-card cyber-trigger featured-highlight" id="trigger-featured"
-               data-cyber-title="FEATURED_PROJECT"
-               data-cyber-content="content-featured"
-               onclick="openCyberWindow('trigger-featured')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-featured')">
-            <h3>Featured Project</h3>
-            {% assign featured = site.posts.first %}
-            {% if featured %}
-            <p class="featured-title">{{ featured.title }}</p>
-            <div class="ef-card-meta">{{ featured.date | date: "%Y-%m-%d" }}</div>
-            {% else %}
-            <p>No project available.</p>
-            {% endif %}
-          </div>
-          <div class="ef-showcase-card" onclick="window.location.href='{{ '/projects/' | relative_url }}'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')window.location.href='{{ '/projects/' | relative_url }}'">
-            <h3>View All Projects</h3>
-            <p>Windows Kernel Exploitation, Reverse Engineering, and more.</p>
-            <div class="ef-card-meta">&#8594; /projects</div>
-          </div>
-        </div>
-        <div class="ef-section-bar">
-          <span class="ef-bar-text">PROJECTS</span>
-        </div>
-      </div>
-    </section>
+    <div class="date">EXPERIENCE</div>
 
-    <!-- Section 3: Recent -->
-    <section class="ef-section" id="sec-recent">
-      <div class="ef-section-inner">
-        <div class="ef-meta">
-          <span class="ef-section-badge">&#9661; SEORY0</span>
-          <h2 class="ef-section-label"><span class="ef-label-arrow">&#8811;</span> RECENT</h2>
-          <p class="ef-section-title">최근 활동</p>
-          <span class="ef-section-indicator">03 / 03</span>
-        </div>
-        <div class="ef-showcase">
-          <div class="ef-showcase-card cyber-trigger" id="trigger-recent"
-               data-cyber-title="RECENT_CHANGES"
-               data-cyber-content="content-recent"
-               onclick="openCyberWindow('trigger-recent')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')openCyberWindow('trigger-recent')">
-            <h3>Recent Changes</h3>
-            <p>Latest posts and write-ups.</p>
-            <div class="ef-card-meta">[ENTER] to view details</div>
-          </div>
-        </div>
-        <div class="ef-section-bar">
-          <span class="ef-bar-text">RECENT</span>
-        </div>
-      </div>
-    </section>
+    <span class="note">
+      <h3>AI Safety Research Center</h3><span class="description">Undergraduate Research Intern · AI for Security · Current</span>
+    </span>
 
-    <!-- Quick Info Row -->
-    <div class="ef-quick-row">
-      <div class="ef-quick-item">
-        <h3>Affiliation</h3>
-        <p>Soongsil University</p>
-      </div>
-      <div class="ef-quick-item">
-        <h3>Focus</h3>
-        <p>Kernel Exploitation / RE</p>
-      </div>
-      <div class="ef-quick-item">
-        <h3>Team</h3>
-        <p>Fermion / ASC</p>
-      </div>
-    </div>
+    <div class="date">PUBLICATIONS</div>
+
+    <span class="note publication">
+      <h3>공개 CVE 기반 AI/ML 프레임워크 취약점 공격 경로 분석 및 LLM 프롬프팅 기반 경량 버그헌팅 방법론</h3>
+      <span class="pub-authors"><strong>류석준</strong>, 박소희, 옥도민, 최대선</span>
+      <span class="pub-venue">정보보호학회 하계학술대회 2026</span>
+    </span>
+
+    <div class="date">AWARDS</div>
+
+    <span class="note">
+      <h3>국가보안기술연구소 소장상</h3><span class="description">우수 논문 · 한국정보보호학회 하계학술대회 2026</span>
+    </span>
+
+    <div class="date">CTF TEAMS</div>
+
+    <a class="note" href="https://ssu-asc.kr/" target="_blank" rel="noopener">
+      <h3>ASC</h3><span class="description">ssu-asc.kr</span>
+    </a>
+    <a class="note" href="https://project-plasma.org/" target="_blank" rel="noopener">
+      <h3>Fermion</h3><span class="description">project-plasma.org</span>
+    </a>
+
+    <div class="date">CVE DISCLOSURES</div>
+
+    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-34755" target="_blank" rel="noopener">
+      <h3>CVE-2026-34755 — vLLM</h3><span class="description">disclosed via NVD</span>
+    </a>
+    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35626" target="_blank" rel="noopener">
+      <h3>CVE-2026-35626 — OpenClaw</h3><span class="description">disclosed via NVD</span>
+    </a>
+
+    <div class="date">CTF</div>
+    {% for ev in site.data.ctfs %}
+    <span class="note">
+      <h3>{{ ev.event }}</h3><span class="description">{{ ev.placement }} — {{ ev.team }}</span>
+    </span>
+    {% endfor %}
+
+    <div class="date">SKILLS</div>
+
+    <span class="note">
+      <h3>Languages</h3><span class="description">C, C++, Python, Assembly (x86 / x64 / ARM)</span>
+    </span>
+    <span class="note">
+      <h3>Tools</h3><span class="description">WinDbg, IDA, GDB</span>
+    </span>
+    <span class="note">
+      <h3>Platforms</h3><span class="description">Windows, Linux</span>
+    </span>
+
+    <div class="date">PROJECTS</div>
+    <a class="note featured" href="https://github.com/SEORY0/WHS3-KernelPanic" target="_blank" rel="noopener">
+      <span class="featured-tag">Featured</span>
+      <h3>WHS3-KernelPanic</h3>
+      <span class="featured-byline">Windows Kernel/Application 취약점 분석 — Untrusted Pointer Dereference (CWE-822) on Windows 10/11. Stack: C++, Assembly.</span>
+    </a>
+    <span class="note">
+      <h3>CVE Analyzer</h3><span class="description">AI 기반 CVE 자동 분류/요약 프레임워크 (Python, Gemini API, Docker)</span>
+    </span>
+    <a class="note" href="https://wargamebandits.vercel.app/" target="_blank" rel="noopener">
+      <h3>Wargame Bandits</h3><span class="description">ASC 동아리 워게임 플랫폼 (2025 2nd, ASC)</span>
+    </a>
+    <a class="note" href="{{ '/projects/Apin.html' | relative_url }}">
+      <h3>Apin</h3><span class="description">RISC-V Assembly parsing in a nutshell</span>
+    </a>
+    <a class="note" href="https://github.com/SEORY0/PCAP_programming" target="_blank" rel="noopener">
+      <h3>PCAP_programming</h3><span class="description">PCAP API로 패킷 분석 (C)</span>
+    </a>
+
+    {% if site.posts.size > 0 %}
+    <div class="date">WRITING</div>
+    {% for post in site.posts limit:5 %}
+    <a class="note" href="{{ post.url | relative_url }}">
+      <h3>{{ post.title }}</h3><span class="description">{{ post.date | date: "%Y-%m-%d" }}</span>
+    </a>
+    {% endfor %}
+    <p class="more"><a href="{{ '/writing/' | relative_url }}">→ All writing</a></p>
+    {% endif %}
 
   </main>
 </div>
 
-{% include footer.html show_lastmod=true %}
-
-<!-- Hidden content for cyber windows -->
-<div id="content-sysinfo" class="cyber-content-hidden">
-  <p><b>Operator</b>: SEORY0</p>
-  <p><b>Affiliation</b>: Soongsil University</p>
-  <p><b>Specialization</b>: Windows Kernel Exploitation</p>
-  <p><b>Secondary</b>: Reverse Engineering</p>
-  <p><b>Team</b>: Fermion / ASC</p>
-  <p><b>Status</b>: Active</p>
-</div>
-
-<div id="content-ctfs" class="cyber-content-hidden">
-  <p><b>Codegate CTF Preliminary</b> — 25th: 밥친구</p>
-  <p><b>BITSCTF 2026</b> — 4th: Fermion</p>
-  <p><b>Tencent 0CTF</b> — 12th: Fermion</p>
-  <p><b>Cykor CTF</b> — 8th: Fermion</p>
-  <p><b>LakeCTF Quals '25-'26</b> — 20th: Fermion</p>
-  <p><b>HSpace Club League 25</b> — 5th: ASC</p>
-</div>
-
-<div id="content-edu" class="cyber-content-hidden">
-  <p><b>Soongsil Univ.</b>: IT Convergence, Electronic Engineering</p>
-</div>
-
-<div id="content-activities" class="cyber-content-hidden">
-  <p><b>AI Safety Research Center</b>: Undergraduate Research Intern, Soongsil Univ.</p>
-  <p><b>WhiteHat School 3rd</b>: KITRI Certificated</p>
-  <p><b>Hacking Camp 27th</b>: POC Security Certificated</p>
-</div>
-
-<div id="content-featured" class="cyber-content-hidden">
-  <p><b>WHS3-KernelPanic</b>: Windows Kernel/Application 취약점 분석 (C++, Assembly)</p>
-  <p><b>CVE Analyzer</b>: AI 기반 CVE 자동 분류/요약 프레임워크 (Python, Gemini API)</p>
-  <p><b>Wargame Bandits</b>: ASC 해킹동아리 참여형 워게임 플랫폼</p>
-  <p><a href="{{ '/projects/' | relative_url }}" style="color:#ff0000;">&#8594; View all projects</a></p>
-</div>
-
-<div id="content-recent" class="cyber-content-hidden">
-  {% for post in site.posts limit:5 %}
-  <p><b>{{ post.date | date: "%m-%d" }}</b> — <a href="{{ post.url | relative_url }}" style="color:#ff0000;">{{ post.title }}</a></p>
-  {% endfor %}
-</div>
-
-{% include cyber-window.html %}
+{% include footer.html %}
 {% include scripts.html %}
 
 </body>

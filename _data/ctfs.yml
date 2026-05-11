@@ -1,0 +1,36 @@
+# CTF event results.
+# Order: latest first (manually curated, not date-sorted).
+# Fields:
+#   event:     Competition name
+#   placement: Final ranking (e.g. "4th", "25th")
+#   team:      Team name
+#   date:      Optional ISO-style date for display (YYYY-MM-DD)
+#   url:       Optional link (writeup, scoreboard, ranking page)
+
+- event: 2026 HackTheon Sejong Quals
+  placement: 7th
+  team: 나는야임영웅
+
+- event: Codegate CTF Preliminary
+  placement: 25th
+  team: 밥친구
+
+- event: BITSCTF 2026
+  placement: 4th
+  team: Fermion
+
+- event: Tencent 0CTF
+  placement: 12th
+  team: Fermion
+
+- event: Cykor CTF
+  placement: 8th
+  team: Fermion
+
+- event: LakeCTF Quals '25–'26
+  placement: 20th
+  team: Fermion
+
+- event: HSpace Club League 25
+  placement: 5th
+  team: ASC
