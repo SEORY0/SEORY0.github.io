@@ -334,15 +334,14 @@ a.note.featured:hover h3 { color: var(--accent); }
     aspect-ratio: 1 / 1;
     object-fit: cover;
     object-position: center;
+    filter: url(#vid-alpha);            /* SVG color-matrix: white bg → transparent */
   }
 }
 
-/* Dark mode: invert the WebM source's color channel so dark drawing lines become
-   light against dark page. Alpha channel stays intact (transparent bg already shows
-   page color through). MP4 fallback (no alpha) gets same invert — slightly off but
-   acceptable for legacy browsers. */
+/* Dark mode: alpha filter 먼저 적용, 그 후 invert로 검정 라인 → 흰색.
+   순서 중요: SVG filter는 RGB pass-through + alpha 재계산, invert는 RGB만 반전 (alpha 유지) */
 .theme-dark .home-side-video video {
-  filter: invert(1) hue-rotate(180deg);
+  filter: url(#vid-alpha) invert(1) hue-rotate(180deg);
 }
 
 @media (max-width: $bp-desktop-wide) {
