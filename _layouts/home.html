@@ -126,6 +126,7 @@ layout: compress
       data-frame-base="{{ '/assets/videos/quixote-frames' | relative_url }}"
       data-frame-count="96"
       data-frame-pad="4"
+      data-frame-cb="{{ site.github.build_revision | default: site.time | date: '%s' }}"
     ></canvas>
   </aside>
 </div>

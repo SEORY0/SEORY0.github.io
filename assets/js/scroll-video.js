@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var FRAME_BASE = canvas.dataset.frameBase;
     var FRAME_COUNT = parseInt(canvas.dataset.frameCount, 10);
     var FRAME_PAD = parseInt(canvas.dataset.framePad, 10);
+    var FRAME_CB = canvas.dataset.frameCb || '';     // cache buster: invalidates stale frames after re-encoding
     if (!FRAME_BASE || !FRAME_COUNT || !FRAME_PAD) return;
 
     var SCROLL_PER_FRAME = 25;     // 25 px scroll = 1 frame advance
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 };
             })(i, img);
-            img.src = FRAME_BASE + '/f_' + pad(i + 1) + '.webp';
+            img.src = FRAME_BASE + '/f_' + pad(i + 1) + '.webp' + (FRAME_CB ? '?v=' + FRAME_CB : '');
         }
     }
 
