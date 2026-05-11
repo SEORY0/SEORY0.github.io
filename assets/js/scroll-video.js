@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Accessibility: respect reduce-motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var SCROLL_PER_SEC = 1200;   // 1200 px scroll = 1 s of video time
-    var SMOOTHING = 0.12;         // lerp factor per RAF tick
+    var SCROLL_PER_SEC = 300;    // 300 px scroll = 1 s of video time
+                                  // (50px wheel tick → 0.17s = ~4 frames advance, clearly visible)
+    var SMOOTHING = 0.15;         // lerp factor per RAF tick (slightly snappier)
     var EPSILON = 0.005;          // settled threshold (seconds)
 
     var duration = 0;
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function onScroll() {
+        if (duration <= 0) return;  // wait for init — avoid NaN target from mod(x, 0)
         targetTime = readTarget();
         if (rafId === null) rafId = requestAnimationFrame(step);
     }
