@@ -121,21 +121,9 @@ layout: compress
 
   </main>
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="vid-alpha">
-        <feColorMatrix type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          -5 -5 -5 0 14
-        "/>
-      </filter>
-    </defs>
-  </svg>
-
   <aside class="home-side-video" aria-hidden="true">
     <video muted loop playsinline preload="metadata">
+      <source src="{{ '/assets/videos/quixote.webm' | relative_url }}" type="video/webm">
       <source src="{{ '/assets/videos/quixote.mp4' | relative_url }}" type="video/mp4">
     </video>
   </aside>
