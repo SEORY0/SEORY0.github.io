@@ -337,6 +337,12 @@ a.note.featured:hover h3 { color: var(--accent); }
   }
 }
 
+/* Dark mode: invert the B&W drawing so white bg becomes dark (blends with page),
+   black lines become white (visible). MP4 alpha 미지원이라 색반전이 가장 깔끔한 fix. */
+.theme-dark .home-side-video video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 @media (max-width: $bp-desktop-wide) {
   .home-side-video {
     display: none;
