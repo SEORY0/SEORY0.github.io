@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var EPSILON = 0.05;            // settled threshold (in frames)
 
     var ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     var frames = new Array(FRAME_COUNT);
     var firstFramePainted = false;
 
@@ -107,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 };
             })(i, img);
-            img.src = FRAME_BASE + '/f_' + pad(i + 1) + '.jpg';
+            img.src = FRAME_BASE + '/f_' + pad(i + 1) + '.webp';
         }
     }
 
