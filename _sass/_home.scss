@@ -250,8 +250,13 @@ a.note.featured:hover h3 { color: var(--accent); }
 /* Mobile padding (red.anthropic source has indent for date label)              */
 /* ========================================================================== */
 
-@media (max-width: 750px) {
+@media (max-width: $bp-mobile) {
   .info {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
+  .hero-subtitle {
     padding-left: var(--indent);
     padding-right: var(--indent);
   }
@@ -280,6 +285,19 @@ a.note.featured:hover h3 { color: var(--accent); }
     padding-left: var(--indent);
     padding-right: var(--indent);
   }
+
+  /* Long text wrap safety net — long Korean phrases or technical terms
+     shouldn't overflow inside narrow viewports */
+  .hero-subtitle,
+  .info p,
+  .note h3,
+  .note .description,
+  .featured-byline,
+  .pub-authors,
+  .pub-venue {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
 }
 
 /* ========================================================================== */
@@ -307,7 +325,7 @@ a.note.featured:hover h3 { color: var(--accent); }
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: $bp-desktop-wide) {
   .home-side-video {
     display: none;
   }

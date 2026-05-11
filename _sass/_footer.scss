@@ -19,7 +19,15 @@
   padding: 40px 40px 120px;
   overflow: hidden;
 
-  @media (max-width: 950px) {
+  /* Tablet: centered to match nav/container */
+  @media (max-width: $bp-tablet) {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Mobile: edge-to-edge */
+  @media (max-width: $bp-mobile) {
+    max-width: 100%;
     margin: 0 var(--indent);
     padding: 24px 24px 80px;
     border-radius: 8px 8px 0 0;
@@ -95,9 +103,14 @@
     color: var(--accent);
   }
 
-  @media (max-width: 750px) {
+  @media (max-width: $bp-mobile) {
     font-size: 9.5vw;
     margin-top: 48px;
+  }
+
+  @media (max-width: $bp-phone-small) {
+    font-size: 11vw;
+    margin-top: 32px;
   }
 }
 
@@ -246,7 +259,7 @@
 /* Mobile global adjustments                                                   */
 /* ========================================================================== */
 
-@media (max-width: 1000px) {
+@media (max-width: $bp-mobile) {
   .site-grid {
     display: block;
     padding: 0 16px;

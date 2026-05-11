@@ -1,6 +1,15 @@
 @charset "utf-8";
 
 /* ========================================================================== */
+/* Sass breakpoint tokens — single source of truth for media queries           */
+/* ========================================================================== */
+
+$bp-phone-small: 375px;   // h1 안전 축소, 작은 폰
+$bp-mobile: 750px;         // 모바일 — red.anthropic 원본 분기
+$bp-tablet: 1024px;        // 태블릿 — centered layout
+$bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
+
+/* ========================================================================== */
 /* red.anthropic.com literal clone — Design Tokens                             */
 /* ========================================================================== */
 
@@ -51,7 +60,7 @@
 }
 
 /* mobile: --indent grows to 20px (red.anthropic source) */
-@media (max-width: 750px) {
+@media (max-width: $bp-mobile) {
   :root {
     --indent: 20px;
   }
