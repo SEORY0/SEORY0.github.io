@@ -69,6 +69,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function drawFrame(idx) {
         var img = frames[Math.floor(idx) % FRAME_COUNT];
         if (img && img.complete && img.naturalWidth > 0) {
+            // Clear before drawing — RGBA frames have transparent regions, so
+            // without clear the previous frame's lines stay visible underneath.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         }
     }
@@ -102,7 +105,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!firstFramePainted && idx === 0) {
                         canvas.width = imgRef.naturalWidth;
                         canvas.height = imgRef.naturalHeight;
-                        ctx.drawImage(imgRef, 0, 0, canvas.width, canvas.height);
+                        // Setting canvas.width/height resets ctx state — re-apply smoothing
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
                         firstFramePainted = true;
                         // Sync initial scroll position once first frame is ready
                         targetFrame = readTargetFrame();
