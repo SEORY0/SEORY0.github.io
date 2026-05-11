@@ -312,3 +312,9 @@ a.note.featured:hover h3 { color: var(--accent); }
     display: none;
   }
 }
+
+/* writing archive: date column shouldn't wrap */
+.writing-list .note .description {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
