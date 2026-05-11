@@ -8,77 +8,55 @@ layout: compress
 <body>
 <a href="#main-content" class="skip-to-content">본문 바로가기</a>
 
-{% include sidebar-navigation.html %}
+{% include top-nav.html %}
 
 <div class="site-container" id="main-content">
 
-  <div class="ef-page-banner">
-    <div class="ef-page-banner-top">
-      <div class="ef-page-banner-inner">
-        <span class="ef-section-badge">&#9661; SEORY0</span>
-        <span class="ef-page-banner-sub">{{ page.categories | join: ' / ' }}</span>
-      </div>
-    </div>
-    <div class="ef-page-banner-stripe">
-      <h1 class="ef-page-banner-title">{{ page.page_title | default: page.title }}</h1>
-    </div>
-  </div>
+  <article class="post">
+    <header class="post-banner">
+      {% if page.categories.size > 0 %}
+      <p class="post-banner-eyebrow">{{ page.categories | join: ' / ' }}</p>
+      {% endif %}
+      <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
+    </header>
 
-  <div class="site-grid">
     <div class="content-col">
       <main class="main-content" role="main">
         <div class="page-body">
-          <div class="page-content">
 
-                <div class="post-meta">
-                  <div class="sd-header">
-                    <span class="sd-brand">&#9661; SEORY0</span>
-                    <span class="sd-class">POST</span>
-                  </div>
-                  <div class="sd-body">
-                    <div class="sd-fields">
-                      <div class="sd-field">
-                        <span class="sd-key">DATE</span>
-                        <span class="sd-val">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
-                      </div>
-                      <div class="sd-field">
-                        <span class="sd-key">AUTHOR</span>
-                        <span class="sd-val">SEORY0</span>
-                      </div>
-                      {% if page.categories.size > 0 %}
-                      <div class="sd-field">
-                        <span class="sd-key">CATEGORY</span>
-                        <span class="sd-val">{{ page.categories | join: ' / ' }}</span>
-                      </div>
-                      {% endif %}
-                    </div>
-                    {% if page.tags %}
-                    <div class="sd-tags">
-                      {% for tag in page.tags %}
-                      <span class="post-tag">{{ tag }}</span>
-                      {% endfor %}
-                    </div>
-                    {% endif %}
-                  </div>
-                </div>
-
-                <div class="post-content">
-                    {{ content }}
-                </div>
-
-                <div class="post-footer-meta">
-                  <span class="post-footer-label">FILED UNDER</span>
-                  {% for cat in page.categories %}
-                  <span class="post-tag">{{ cat }}</span>
-                  {% endfor %}
-                  <span class="post-tag">Writings</span>
-                </div>
-
+          <div class="post-meta-inline">
+            <span class="post-meta-key">DATE</span>
+            <span class="post-meta-val">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
+            <span class="post-meta-sep">·</span>
+            <span class="post-meta-key">AUTHOR</span>
+            <span class="post-meta-val">SEORY0</span>
+            {% if page.categories.size > 0 %}
+            <span class="post-meta-sep">·</span>
+            <span class="post-meta-key">CATEGORY</span>
+            <span class="post-meta-val">{{ page.categories | join: ' / ' }}</span>
+            {% endif %}
+            {% if page.tags %}
+            <div class="post-meta-tags">
+              {% for tag in page.tags %}<span class="post-tag">{{ tag }}</span>{% endfor %}
+            </div>
+            {% endif %}
           </div>
+
+          <div class="post-content">
+            {{ content }}
+          </div>
+
+          <footer class="post-footer-meta">
+            <span class="post-footer-label">FILED UNDER</span>
+            {% for cat in page.categories %}<span class="post-tag">{{ cat }}</span>{% endfor %}
+            <span class="post-tag">Writings</span>
+          </footer>
+
         </div>
       </main>
     </div>
-  </div>
+  </article>
+
 </div>
 
 {% include footer.html %}

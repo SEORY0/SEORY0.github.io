@@ -70,10 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 6. 이벤트 리스너: 사이드바 테마 버튼 클릭 시
-    const sidebarBtn = document.getElementById('sidebar-theme-btn');
-    if (sidebarBtn) {
-        sidebarBtn.addEventListener('click', function(e) {
+    // 6. 이벤트 리스너: 상단 nav 테마 버튼 클릭 시 (또는 레거시 사이드바 버튼)
+    const navBtn = document.getElementById('nav-theme-btn') || document.getElementById('sidebar-theme-btn');
+    if (navBtn) {
+        navBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const isCurrentlyDark = body.classList.contains('theme-dark');
             applyTheme(!isCurrentlyDark);

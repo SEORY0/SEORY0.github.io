@@ -2,10 +2,12 @@
 layout: default
 ---
 
-<section class="post">
-  <h2>{{ page.title }}</h2>
-  {{ content }}
-</section>
+<header class="post-banner">
+  <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
+</header>
 
-
-
+<div class="content-col">
+  <section class="post page-body">
+    {{ content }}
+  </section>
+</div>

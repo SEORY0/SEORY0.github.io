@@ -1,71 +1,68 @@
-/* /assets/js/mobile-nav.js */
+/* /assets/js/mobile-nav.js — top-nav drawer toggle */
 
 document.addEventListener('DOMContentLoaded', function() {
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const navColumn = document.querySelector('.sidebar-col');
-    const overlay = document.getElementById('mobile-overlay');
-    const body = document.body;
+    var menuBtn = document.getElementById('mobile-menu-btn');
+    var drawer = document.getElementById('top-nav-drawer');
+    var overlay = document.getElementById('mobile-overlay');
+    var body = document.body;
 
-    // Null 체크: 필수 요소가 없으면 early return
-    if (!menuBtn || !navColumn || !overlay) {
-        console.warn('Mobile nav elements not found - mobile navigation will not work');
+    if (!menuBtn || !drawer || !overlay) {
         return;
     }
 
+    function openMenu() {
+        drawer.classList.add('menu-open');
+        menuBtn.classList.add('active');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        overlay.style.display = 'block';
+        // next frame to enable transition
+        requestAnimationFrame(function () {
+            overlay.classList.add('visible');
+        });
+        body.classList.add('mobile-menu-active');
+    }
+
+    function closeMenu() {
+        drawer.classList.remove('menu-open');
+        menuBtn.classList.remove('active');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        overlay.classList.remove('visible');
+        setTimeout(function () { overlay.style.display = 'none'; }, 250);
+        body.classList.remove('mobile-menu-active');
+    }
+
     function toggleMenu() {
-        const isOpen = navColumn.classList.contains('menu-open');
-        
-        if (isOpen) {
-            // [닫기 로직]
-            navColumn.classList.remove('menu-open');
-            menuBtn.classList.remove('active');
-            overlay.classList.remove('visible');
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-            
-            // ★ 핵심 수정: body에서 클래스 제거 및 스크롤 잠금 해제
-            body.classList.remove('mobile-menu-active'); 
-            body.style.overflow = ''; 
-
+        if (drawer.classList.contains('menu-open')) {
+            closeMenu();
         } else {
-            // [열기 로직]
-            navColumn.classList.add('menu-open');
-            menuBtn.classList.add('active');
-            overlay.style.display = 'block';
-            setTimeout(() => { overlay.classList.add('visible'); }, 10);
-            
-            // ★ 핵심 수정: body에 'mobile-menu-active' 클래스 추가
-            // 이 클래스가 붙으면 CSS가 아스키 아트를 숨길 것입니다.
-            body.classList.add('mobile-menu-active');
-            body.style.overflow = 'hidden'; 
+            openMenu();
         }
     }
 
-    if (menuBtn) {
-        // 1. 햄버거 버튼 클릭
-        menuBtn.addEventListener('click', function(e) {
+    menuBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMenu();
+    });
+
+    overlay.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drawer.classList.contains('menu-open')) {
+            closeMenu();
+        }
+    });
+
+    var closeBtn = drawer.querySelector('.top-nav-drawer-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-            toggleMenu();
+            closeMenu();
         });
-
-        // 2. 오버레이(뒷배경) 클릭 시 닫기
-        overlay.addEventListener('click', function() {
-            toggleMenu();
-        });
-
-        // 3. ESC 키로 메뉴 닫기 (접근성 개선)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && navColumn.classList.contains('menu-open')) {
-                toggleMenu();
-            }
-        });
-
-        // 4. X 닫기 버튼 클릭
-        const closeBtn = document.querySelector('.mobile-close-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMenu();
-            });
-        }
     }
+
+    // Close drawer when a nav link is clicked (helpful for in-page anchors)
+    var navLinks = drawer.querySelectorAll('a');
+    navLinks.forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+    });
 });

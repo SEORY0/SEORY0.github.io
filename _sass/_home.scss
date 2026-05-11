@@ -1,445 +1,283 @@
-/* 8. Home Page — Endfield Style */
+/* ========================================================================== */
+/* Home page — CV-style minimal (red.anthropic 톤 + 명함식 행 정렬)            */
+/* ========================================================================== */
 
-.page-home .site-container {
-  padding: 0 32px;
-}
+/* .info — intro paragraph block */
+.info {
+  margin-top: 28px;
 
-/* Marquee Banner */
-.marquee-banner {
-  overflow: hidden;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--border);
-  padding: 24px 0;
-  margin-left: calc(-32px - var(--sidebar-width));
-  margin-right: -32px;
-}
-
-.marquee-track {
-  display: inline-flex;
-  animation: marqueeScroll 20s linear infinite;
-
-  span {
-    font-family: 'Corpta Demo', var(--font-body);
-    font-size: 8vw;
-    font-weight: 400;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-    color: var(--text);
-    padding-right: 0.3em;
-    line-height: 1;
-  }
-}
-
-@keyframes marqueeScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* Intro Strip */
-.intro-strip {
-  padding: 20px 32px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  letter-spacing: 0.03em;
-
-  p { margin: 0; }
-  strong { color: var(--accent); font-weight: 700; }
-}
-
-/* Endfield Section */
-.ef-section {
-  padding: 60px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.ef-section-inner {
-  display: grid;
-  grid-template-columns: 220px 1fr 60px;
-  gap: 0;
-  min-height: 400px;
-}
-
-.ef-meta {
-  padding: 20px 24px 20px 0;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border);
-}
-
-.ef-section-badge {
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 16px;
-}
-
-.ef-section-label {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.ef-label-arrow {
-  color: var(--text);
-  margin-right: 2px;
-}
-
-.ef-section-title {
-  font-family: var(--font-body);
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0 0 auto;
-  color: var(--text);
-}
-
-.ef-section-indicator {
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-top: auto;
-}
-
-.ef-showcase {
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-}
-
-.ef-showcase-card {
-  border: 1px solid var(--border);
-  padding: 24px;
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
-
-  // Override .cyber-trigger styles when used on cards
-  &.cyber-trigger {
-    display: block;
-    border: 1px solid var(--border);
-    padding: 24px;
-    counter-increment: none;
-
-    &::before,
-    &::after { display: none; }
-
-    &:hover {
-      padding-left: 24px;
-      border-color: var(--accent);
-      color: inherit;
-    }
-  }
-
-  &:hover {
-    border-color: var(--accent);
-    background-color: var(--bg-hover);
-  }
-
-
-  h3 {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin: 0 0 6px;
-    border: none;
-    padding: 0;
-  }
-
-  p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+  * {
     margin: 0;
-    line-height: 1.5;
+    opacity: 0.9;
+    line-height: 1.7;
   }
+  *:not(:first-child) { margin-top: 16px; }
 
-  .ef-card-meta {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: background-color 0.2s, color 0.2s, padding 0.2s;
-
-    &::after {
-      content: '_';
-      animation: blink 1s step-end infinite;
-      margin-left: 2px;
-    }
-  }
-
-  &:hover .ef-card-meta {
-    background: var(--text);
-    color: var(--bg);
-    padding: 2px 6px;
-    display: inline-block;
-  }
-}
-
-/* Blink animation for terminal cursor */
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* A. Featured Project card emphasis */
-.featured-highlight {
-  border-left: 3px solid var(--accent);
-
-  .featured-title {
-    font-size: 1.1rem;
+  a {
+    text-decoration: none;
     font-weight: 700;
     color: var(--text);
-    transition: color 0.2s;
-  }
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    transition: color 0.15s ease;
 
-  &:hover .featured-title {
-    color: var(--accent);
-
-    &::before {
-      content: '>_ ';
-      color: var(--accent);
-      animation: blink 1s step-end infinite;
-    }
+    &:hover { color: var(--accent); }
   }
 }
 
-.ef-section-bar {
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%;
-  clip-path: polygon(
-    0 0,
-    calc(100% - 16px) 0,
-    100% 16px,
-    100% 100%,
-    0 100%
-  );
-
-  .ef-bar-text {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: #fff;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-}
-
-/* ef-showcase content adjustments */
-.ef-showcase .infobox {
-  float: none;
-  width: 100%;
-  margin: 0 0 16px;
-}
-
-.ef-showcase .wikitable {
-  width: 100%;
-  margin: 0;
-}
-
-/* Quick Info Row */
-.ef-quick-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.ef-quick-item {
-  padding: 32px 24px;
-  border-right: 1px solid var(--border);
-  &:last-child { border-right: none; }
-
-  h3 {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin: 0 0 8px;
-    border: none;
-    padding: 0;
-  }
-
-  p, a {
-    font-size: 0.85rem;
-    color: var(--text);
-    margin: 0;
-  }
-
-  a:hover { color: var(--accent); }
-}
-
-/* Legacy card styles kept for content pages */
-.code-block {
-  background-color: var(--code-bg);
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-  margin-top: 8px;
-  font-size: 0.85em;
+/* .date — section label (uppercase + bold + letterspacing) */
+.date {
+  display: block;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
   color: var(--text-muted);
-  font-family: var(--font-mono);
-}
-
-.recent-list li {
-  padding: 8px 0;
   border-bottom: 1px solid var(--border);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 0.85em;
-  &:last-child { border-bottom: none; }
-  .date { color: var(--text-muted); font-size: 0.85em; font-family: var(--font-body); }
-  .diff { color: var(--accent); font-size: 0.8em; font-family: var(--font-body); }
+  padding-bottom: 8px;
+  margin-top: 80px;
+  margin-bottom: 8px;
 }
+.date.first-child { margin-top: 56px; }
 
-/* Archive list */
-.archive-list {
-  counter-reset: archive-index;
-}
+/* ========================================================================== */
+/* .note — CV row: title left, description right                                */
+/* No background. Border-bottom only. Hover shifts text right + bottom border.  */
+/* ========================================================================== */
 
-.archive-entry {
+.note {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
   padding: 14px 0;
   border-bottom: 1px solid var(--border);
+  background: transparent;
   text-decoration: none;
   color: var(--text);
-  transition: padding-left 0.2s ease, border-color 0.2s ease;
-  counter-increment: archive-index;
+  transition: padding-left 0.15s ease, border-bottom-color 0.15s ease;
 
-  &::before {
-    content: counter(archive-index, decimal-leading-zero);
-    color: var(--accent);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    min-width: 20px;
-  }
-
-  &:hover {
-    padding-left: 12px;
-    border-bottom-color: var(--text);
-  }
-
-  &::after {
-    content: '[ENTER]';
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    margin-left: auto;
-  }
-
-  &:hover::after {
-    opacity: 0.5;
-  }
+  &:last-of-type { border-bottom: 1px solid var(--border); }
 }
 
-.archive-date {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  white-space: nowrap;
-  letter-spacing: 0.03em;
-  transition: border-color 0.2s ease, color 0.2s ease;
-
-  .archive-entry:hover & {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+.note:hover {
+  padding-left: 8px;
+  border-bottom-color: var(--text);
 }
 
-.archive-title {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
+a.note:hover h3 { color: var(--accent); }
+a.note:hover .description { color: var(--accent); }
+
+.note h3 {
+  display: block;
+  margin: 0;
+  font-size: 1rem;
   font-weight: 700;
-  transition: color 0.2s ease;
+  line-height: 1.4;
+  flex: 0 1 auto;
+  min-width: 0;
+}
 
-  .archive-entry:hover & {
-    color: var(--accent);
+.note .description {
+  display: block;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-align: right;
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.5;
+  transition: color 0.15s ease;
+
+  /* inline links inside description (e.g. "ASC · Fermion") */
+  a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+
+    &:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
   }
 }
 
-/* Hidden content containers for cyber windows */
-.cyber-content-hidden { display: none; }
+/* override red.anthropic's " - " prefix for CV layout */
+.note .description::before {
+  content: none;
+}
 
-/* 9. Appearance Panel */
-.appearance-panel {
-  .panel-label {
-    font-family: var(--font-body);
-    font-size: 0.7em;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
+/* ========================================================================== */
+/* .note.publication — academic paper variant (vertical stack)                  */
+/* Title + authors (1st author bolded) + venue                                  */
+/* ========================================================================== */
 
-  .theme-toggle-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.85em;
-    color: var(--text-muted);
-  }
+.note.publication {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 16px 0;
+}
 
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 22px;
+.note.publication h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
 
-    input { opacity: 0; width: 0; height: 0; }
+.pub-authors {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.5;
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--border-dark);
-      transition: .3s;
-      border-radius: 22px;
-      border: 1px solid var(--border);
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-  }
-
-  input:checked + .slider {
-    background-color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(22px);
+  strong {
+    color: var(--text);
+    font-weight: 700;
   }
 }
 
+.pub-venue {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-meta);
+}
+
+/* ========================================================================== */
+/* .note.featured — emphasized project card (no beige, red accent tag)         */
+/* Stacks vertically: small red FEATURED tag + larger title + italic byline    */
+/* ========================================================================== */
+
+.note.featured {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 18px 0;
+}
+
+.note.featured h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 2px;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.featured-tag {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+.featured-byline {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.55;
+  margin-top: 2px;
+}
+
+a.note.featured:hover h3 { color: var(--accent); }
+
+/* "→ All writing" trailing link */
+.more {
+  margin-top: 32px;
+  font-size: 0.88rem;
+
+  a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+
+    &:hover {
+      color: var(--text);
+      border-bottom-color: var(--text);
+    }
+  }
+}
+
+/* ========================================================================== */
+/* h1 accent — red on the trailing "0" character                                */
+/* ========================================================================== */
+
+.container h1 .accent { color: var(--accent); }
+
+/* h1 letter-spacing for the SEORY0 monogram-style title */
+.container h1 {
+  letter-spacing: 0.02em;
+}
+
+/* ========================================================================== */
+/* Hero subtitle — Korean + English name beneath h1                             */
+/* ========================================================================== */
+
+.hero-subtitle {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+.hero-name-kr {
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.hero-name-en {
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* ========================================================================== */
+/* Mobile padding (red.anthropic source has indent for date label)              */
+/* ========================================================================== */
+
+@media (max-width: 750px) {
+  .info {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
+  .date {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
+  .note {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .description { text-align: left; }
+  }
+
+  .paper {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
+  .more {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+}
