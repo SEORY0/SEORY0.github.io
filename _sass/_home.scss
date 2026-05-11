@@ -334,14 +334,13 @@ a.note.featured:hover h3 { color: var(--accent); }
     aspect-ratio: 1 / 1;
     object-fit: cover;
     object-position: center;
-    filter: url(#vid-alpha);            /* SVG color-matrix: white bg → transparent */
   }
 }
 
-/* Dark mode: alpha filter 먼저 적용, 그 후 invert로 검정 라인 → 흰색.
-   순서 중요: SVG filter는 RGB pass-through + alpha 재계산, invert는 RGB만 반전 (alpha 유지) */
+/* Dark mode: WebM 알파 채널이 흰 배경을 투명으로 가려주므로,
+   invert로 검정 라인 → 흰색 변환만 적용. */
 .theme-dark .home-side-video video {
-  filter: url(#vid-alpha) invert(1) hue-rotate(180deg);
+  filter: invert(1) hue-rotate(180deg);
 }
 
 @media (max-width: $bp-desktop-wide) {
