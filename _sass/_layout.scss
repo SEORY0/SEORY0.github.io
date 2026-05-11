@@ -27,7 +27,8 @@
   .container {
     margin: 100px 0;
     max-width: 100%;
-    padding: 0 var(--indent);
+    /* No padding — each child manages its own indent (red.anthropic pattern).
+       Prevents double-indent (container padding + element padding overlap). */
     font-size: 100%;
   }
 }

@@ -256,6 +256,11 @@ a.note.featured:hover h3 { color: var(--accent); }
     padding-right: var(--indent);
   }
 
+  .hero-subtitle {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
   .date {
     padding-left: var(--indent);
     padding-right: var(--indent);
@@ -279,6 +284,19 @@ a.note.featured:hover h3 { color: var(--accent); }
   .more {
     padding-left: var(--indent);
     padding-right: var(--indent);
+  }
+
+  /* Long text wrap safety net — long Korean phrases or technical terms
+     shouldn't overflow inside narrow viewports */
+  .hero-subtitle,
+  .info p,
+  .note h3,
+  .note .description,
+  .featured-byline,
+  .pub-authors,
+  .pub-venue {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 }
 
