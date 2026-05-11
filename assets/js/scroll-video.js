@@ -1,12 +1,12 @@
 /* /assets/js/scroll-video.js
  * Don Quixote ambient scroll-sync animation — image sequence + canvas.
  *
- * Apple iPhone-style: preload 96 JPG frames into Image[], paint to <canvas>
- * via drawImage() based on scrollY. requestAnimationFrame uses GPU; no
- * <video> decoder seek lag.
+ * Apple iPhone-style: preload 96 frames into Image[], paint to <canvas>
+ * via drawImage() based on accumulated scroll distance. requestAnimationFrame
+ * uses GPU; no <video> decoder seek lag.
  *
- * Bidirectional: scroll down → forward, scroll up → backward.
- * Loops at modulo boundary via shortest-signed-diff.
+ * Forward-only: scroll in either direction advances the windmill forward.
+ * Loops at modulo boundary via forward-only diff (never plays backward).
  *
  * Tuning:
  *   SCROLL_PER_FRAME — px of scroll per 1 frame advance (lower = faster)
@@ -44,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var displayedFrame = 0;
     var rafId = null;
 
+    // Accumulated absolute scroll distance — drives forward-only advance.
+    // Scrolling up or down both add to this total, so the windmill never reverses.
+    var totalScroll = 0;
+    var lastScrollY = window.scrollY;
+
     function pad(n) {
         var s = String(n);
         while (s.length < FRAME_PAD) s = '0' + s;
@@ -52,18 +57,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function mod(n, m) { return ((n % m) + m) % m; }
 
-    // Shortest signed distance through loop boundary.
-    // e.g. count=96, current=94, target=2 → diff=+4 (not -92)
-    function shortestDiff(target, current, total) {
+    // Forward-only distance through loop boundary.
+    // e.g. count=96, current=95, target=2 → diff=+3 (wrap forward, never backward).
+    function forwardDiff(target, current, total) {
         var diff = target - current;
-        var half = total / 2;
-        if (diff > half) diff -= total;
-        if (diff < -half) diff += total;
+        if (diff < 0) diff += total;
         return diff;
-    }
-
-    function readTargetFrame() {
-        return mod(window.scrollY / SCROLL_PER_FRAME, FRAME_COUNT);
     }
 
     function drawFrame(idx) {
@@ -77,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function step() {
-        var diff = shortestDiff(targetFrame, displayedFrame, FRAME_COUNT);
-        if (Math.abs(diff) < EPSILON) {
+        var diff = forwardDiff(targetFrame, displayedFrame, FRAME_COUNT);
+        if (diff < EPSILON) {
             displayedFrame = targetFrame;
             drawFrame(displayedFrame);
             rafId = null;                       // settled — stop RAF until next scroll
@@ -90,7 +89,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function onScroll() {
-        targetFrame = readTargetFrame();
+        var currentY = window.scrollY;
+        totalScroll += Math.abs(currentY - lastScrollY);
+        lastScrollY = currentY;
+        targetFrame = mod(totalScroll / SCROLL_PER_FRAME, FRAME_COUNT);
         if (rafId === null) rafId = requestAnimationFrame(step);
     }
 
@@ -109,9 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         ctx.imageSmoothingEnabled = true;
                         ctx.imageSmoothingQuality = 'high';
                         firstFramePainted = true;
-                        // Sync initial scroll position once first frame is ready
-                        targetFrame = readTargetFrame();
-                        displayedFrame = targetFrame;
+                        // Start at frame 0 — subsequent scroll events advance from here
                         drawFrame(displayedFrame);
                     }
                 };
