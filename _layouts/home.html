@@ -122,10 +122,12 @@ layout: compress
   </main>
 
   <aside class="home-side-video" aria-hidden="true">
-    <video muted loop playsinline preload="metadata">
-      <source src="{{ '/assets/videos/quixote.webm' | relative_url }}" type="video/webm">
-      <source src="{{ '/assets/videos/quixote.mp4' | relative_url }}" type="video/mp4">
-    </video>
+    <canvas
+      data-frame-base="{{ '/assets/videos/quixote-frames' | relative_url }}"
+      data-frame-count="96"
+      data-frame-pad="4"
+      data-frame-cb="{{ site.github.build_revision | default: site.time | date: '%s' }}"
+    ></canvas>
   </aside>
 </div>
 

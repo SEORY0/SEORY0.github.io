@@ -327,19 +327,16 @@ a.note.featured:hover h3 { color: var(--accent); }
   pointer-events: none;
   overflow: hidden;
 
-  video {
+  canvas {
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 1 / 1;
-    object-fit: cover;
-    object-position: center;
   }
 }
 
-/* Dark mode: WebM 알파 채널이 흰 배경을 투명으로 가려주므로,
-   invert로 검정 라인 → 흰색 변환만 적용. */
-.theme-dark .home-side-video video {
+/* Dark mode: invert로 검정 라인 → 흰색, 흰 배경 → 검정 (다크 페이지와 자연 blend) */
+.theme-dark .home-side-video canvas {
   filter: invert(1) hue-rotate(180deg);
 }
 
