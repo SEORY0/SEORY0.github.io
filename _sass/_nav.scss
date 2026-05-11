@@ -26,7 +26,16 @@
   align-items: center;
   gap: 24px;
 
-  @media (max-width: 950px) {
+  /* Tablet: centered, no left-bias */
+  @media (max-width: $bp-tablet) {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Mobile: full-width, tighter padding */
+  @media (max-width: $bp-mobile) {
+    max-width: 100%;
     margin: 0;
     padding: 0 var(--indent);
     gap: 12px;
@@ -90,7 +99,7 @@
   list-style: none;
   padding: 0;
 
-  @media (max-width: 750px) {
+  @media (max-width: $bp-mobile) {
     display: none;
   }
 
@@ -167,6 +176,12 @@
   padding: 0;
   border-radius: 0;
 
+  /* Touch target enlarged on mobile (44px guideline) */
+  @media (max-width: $bp-mobile) {
+    width: 40px;
+    height: 40px;
+  }
+
   &:visited {
     color: var(--text-muted);
   }
@@ -210,8 +225,11 @@
   justify-content: space-between;
   align-items: stretch;
 
-  @media (max-width: 750px) {
+  /* Touch target enlarged on mobile */
+  @media (max-width: $bp-mobile) {
     display: flex;
+    width: 40px;
+    height: 40px;
   }
 
   .bar {
@@ -229,7 +247,7 @@
 }
 
 /* Hide GitHub/Mail icons on mobile (in drawer instead) */
-@media (max-width: 750px) {
+@media (max-width: $bp-mobile) {
   .top-nav-actions .top-nav-icon[aria-label="GitHub"],
   .top-nav-actions .top-nav-icon[aria-label="Email"] {
     display: none;

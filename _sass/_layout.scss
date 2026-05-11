@@ -16,7 +16,14 @@
   margin: 100px 0 100px calc(0.2 * (100% - #{700px}));
 }
 
-@media (max-width: 750px) {
+/* Tablet (768-1024): centered to avoid awkward left-bias mid-range */
+@media (max-width: $bp-tablet) {
+  .container {
+    margin: 100px auto;
+  }
+}
+
+@media (max-width: $bp-mobile) {
   .container {
     margin: 100px 0;
     max-width: 100%;
@@ -42,7 +49,7 @@
   font-weight: 700;
 }
 
-@media (max-width: 750px) {
+@media (max-width: $bp-mobile) {
   .container h1,
   .container h2 {
     margin-left: var(--indent);
@@ -51,13 +58,28 @@
   .container h1 { font-size: 200%; }
 }
 
+@media (max-width: $bp-phone-small) {
+  .container h1 { font-size: 170%; }
+}
+
+/* Landscape orientation on small viewports — give h1 less vertical room */
+@media (max-width: $bp-mobile) and (orientation: landscape) {
+  .container h1 {
+    margin-top: 40px;
+    font-size: 180%;
+  }
+  .container {
+    margin-top: 56px;
+  }
+}
+
 /* Generic body content column for sub-pages (writing post detail etc) */
 .content-col {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 24px;
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     padding: 0 20px;
   }
 }
@@ -85,7 +107,7 @@
   padding: 56px 24px 16px;
   border-bottom: 1px solid var(--border);
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     padding: 36px 20px 14px;
   }
 }
@@ -109,7 +131,7 @@
   margin: 0;
   line-height: 1.2;
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     font-size: 1.7rem;
   }
 }

@@ -8,7 +8,7 @@
   padding: 56px 24px 16px;
   border-bottom: 1px solid var(--border);
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     padding: 36px 20px 14px;
   }
 }
@@ -32,7 +32,7 @@
   margin: 0;
   line-height: 1.2;
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     font-size: 1.7rem;
   }
 }
@@ -265,7 +265,7 @@
     color: var(--text-muted);
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: $bp-mobile) {
     float: none;
     width: 100%;
     margin: 1em 0;
@@ -416,6 +416,21 @@
       justify-content: space-between;
       font-family: var(--font-mono);
     }
+  }
+}
+
+/* ========================================================================== */
+/* Responsive table overflow — long markdown tables shouldn't break layout     */
+/* ========================================================================== */
+
+@media (max-width: $bp-mobile) {
+  .post-content table,
+  .page-content table,
+  .wikitable {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

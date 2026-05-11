@@ -250,7 +250,7 @@ a.note.featured:hover h3 { color: var(--accent); }
 /* Mobile padding (red.anthropic source has indent for date label)              */
 /* ========================================================================== */
 
-@media (max-width: 750px) {
+@media (max-width: $bp-mobile) {
   .info {
     padding-left: var(--indent);
     padding-right: var(--indent);
@@ -307,7 +307,7 @@ a.note.featured:hover h3 { color: var(--accent); }
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: $bp-desktop-wide) {
   .home-side-video {
     display: none;
   }
