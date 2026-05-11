@@ -337,8 +337,10 @@ a.note.featured:hover h3 { color: var(--accent); }
   }
 }
 
-/* Dark mode: invert the B&W drawing so white bg becomes dark (blends with page),
-   black lines become white (visible). MP4 alpha 미지원이라 색반전이 가장 깔끔한 fix. */
+/* Dark mode: invert the WebM source's color channel so dark drawing lines become
+   light against dark page. Alpha channel stays intact (transparent bg already shows
+   page color through). MP4 fallback (no alpha) gets same invert — slightly off but
+   acceptable for legacy browsers. */
 .theme-dark .home-side-video video {
   filter: invert(1) hue-rotate(180deg);
 }

@@ -122,13 +122,10 @@ layout: compress
   </main>
 
   <aside class="home-side-video" aria-hidden="true">
-    <video
-      src="{{ '/assets/videos/quixote.mp4' | relative_url }}"
-      muted
-      loop
-      playsinline
-      preload="metadata"
-    ></video>
+    <video muted loop playsinline preload="metadata">
+      <source src="{{ '/assets/videos/quixote.webm' | relative_url }}" type="video/webm">
+      <source src="{{ '/assets/videos/quixote.mp4' | relative_url }}" type="video/mp4">
+    </video>
   </aside>
 </div>
 
