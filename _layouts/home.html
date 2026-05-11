@@ -120,6 +120,17 @@ layout: compress
     {% endif %}
 
   </main>
+
+  <aside class="home-side-video" aria-hidden="true">
+    <video
+      src="{{ '/assets/videos/quixote.mp4' | relative_url }}"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    ></video>
+  </aside>
 </div>
 
 {% include footer.html %}
