@@ -2,6 +2,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  {% if page.layout == 'home' %}
+  <script>
+    // FOWL guard: apply saved language before content paints
+    (function () {
+      try {
+        var lang = localStorage.getItem('lang');
+        if (lang === 'ko' || lang === 'en') {
+          document.documentElement.lang = lang;
+        }
+      } catch (e) {}
+    })();
+  </script>
+  {% endif %}
+
   {% seo title=false %}
 
   {% assign page_title = page.title | default: site.title %}

@@ -215,3 +215,19 @@
     .icon-moon { display: none; }
   }
 }
+
+/* Language toggle — text label (current lang shown), home page only */
+.top-nav-lang {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+
+  /* default: html[lang="en"] (or any non-ko value) shows EN label */
+  .lang-label-ko { display: none; }
+  .lang-label-en { display: inline-block; }
+}
+html[lang="ko"] .top-nav-lang {
+  .lang-label-ko { display: inline-block; }
+  .lang-label-en { display: none; }
+}
