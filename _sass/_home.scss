@@ -351,3 +351,10 @@ a.note.featured:hover h3 { color: var(--accent); }
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
+/* ========================================================================== */
+/* i18n: hide opposite-language spans based on html[lang], home-only scope     */
+/* ========================================================================== */
+
+html[lang="en"] .page-home [lang="ko"] { display: none; }
+html[lang="ko"] .page-home [lang="en"] { display: none; }
