@@ -1,0 +1,50 @@
+<svg viewBox="0 0 1600 900" width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'Noto Sans', 'Noto Sans KR', sans-serif; fill: #000; }
+    .box { fill: #fff; stroke: #000; stroke-width: 4; }
+    .soft { fill: #f2f2f2; stroke: #000; stroke-width: 4; }
+    .redbox { fill: #f00; stroke: #000; stroke-width: 4; }
+    .label { font-size: 38px; font-weight: 800; }
+    .small { font-size: 24px; font-weight: 700; fill: #666; }
+    .white { fill: #fff; }
+    .red { fill: #f00; }
+    .boundary { stroke: #000; stroke-width: 4; stroke-dasharray: 16 12; }
+    .arrow-red { stroke: #f00; stroke-width: 5; fill: none; marker-end: url(#arrow-red); }
+    .arrow-black { stroke: #000; stroke-width: 4; fill: none; marker-end: url(#arrow-black); }
+  </style>
+  <defs>
+    <marker id="arrow-red" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16" fill="none" stroke="#f00" stroke-width="3"/>
+    </marker>
+    <marker id="arrow-black" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16" fill="none" stroke="#000" stroke-width="3"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fff"/>
+  <line class="boundary" x1="800" y1="105" x2="800" y2="770"/>
+  <text class="label" x="370" y="105" text-anchor="middle">User Mode</text>
+  <text class="label red" x="1230" y="105" text-anchor="middle">Kernel Mode</text>
+
+  <rect class="box" x="120" y="300" width="460" height="135"/>
+  <text class="label" x="350" y="355" text-anchor="middle">Application</text>
+  <text class="small" x="350" y="395" text-anchor="middle">DeviceIoControl()</text>
+
+  <path class="arrow-red" d="M580 368 H980"/>
+  <text class="label red" x="780" y="330" text-anchor="middle" style="font-size:34px">IOCTL_KS_PROPERTY</text>
+  <text class="small" x="780" y="420" text-anchor="middle" style="font-size:22px">I/O Manager: UserMode IRP 생성</text>
+
+  <rect class="box" x="980" y="308" width="430" height="120"/>
+  <text class="label" x="1195" y="360" text-anchor="middle">ks.sys</text>
+  <text class="small" x="1195" y="396" text-anchor="middle">RequestorMode = 1</text>
+
+  <path class="arrow-black" d="M1195 428 V485"/>
+  <rect class="soft" x="980" y="485" width="430" height="120"/>
+  <text class="label" x="1195" y="538" text-anchor="middle">KsPropertyHandler</text>
+  <text class="small" x="1195" y="574" text-anchor="middle">ProbeForRead / ProbeForWrite</text>
+
+  <path class="arrow-black" d="M1195 605 V675"/>
+  <rect class="redbox" x="980" y="675" width="430" height="120"/>
+  <text class="label white" x="1195" y="728" text-anchor="middle">검증 수행</text>
+  <text class="small white" x="1195" y="764" text-anchor="middle">사용자 버퍼를 신뢰하지 않음</text>
+</svg>

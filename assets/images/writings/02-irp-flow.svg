@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1600 900" width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'Noto Sans', 'Noto Sans KR', sans-serif; fill: #000; }
+    .box { fill: #fff; stroke: #000; stroke-width: 4; }
+    .soft { fill: #f2f2f2; stroke: #000; stroke-width: 4; }
+    .gray { fill: #666; stroke: #000; stroke-width: 4; }
+    .redbox { fill: #f00; stroke: #000; stroke-width: 4; }
+    .label { font-size: 40px; font-weight: 800; }
+    .small { font-size: 25px; font-weight: 700; fill: #666; }
+    .num { font-size: 34px; font-weight: 800; }
+    .white { fill: #fff; }
+    .red { fill: #f00; }
+    .line { stroke: #000; stroke-width: 4; fill: none; }
+    .arrow-red { stroke: #f00; stroke-width: 5; fill: none; marker-end: url(#arrow-red); }
+    .arrow-black { stroke: #000; stroke-width: 4; fill: none; marker-end: url(#arrow-black); }
+  </style>
+  <defs>
+    <marker id="arrow-red" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16" fill="none" stroke="#f00" stroke-width="3"/>
+    </marker>
+    <marker id="arrow-black" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16" fill="none" stroke="#000" stroke-width="3"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fff"/>
+
+  <rect class="box" x="110" y="295" width="350" height="160"/>
+  <text class="label red" x="285" y="365" text-anchor="middle">IRP</text>
+  <text class="small" x="285" y="410" text-anchor="middle">I/O Request Packet</text>
+
+  <text class="label" x="110" y="250" style="font-size:34px">CurrentStackLocation</text>
+  <text class="small" x="110" y="288" style="font-size:22px">현재 IRP가 가리키는 IO_STACK_LOCATION</text>
+  <path class="arrow-red" d="M460 375 H575 V485 H690"/>
+
+  <g transform="translate(690 105)">
+    <path class="line" d="M -70 -75 L 0 0 H 520 L 590 -75"/>
+    <rect class="box" x="0" y="0" width="520" height="640"/>
+    <text class="label" x="260" y="-25" text-anchor="middle">Driver Stack</text>
+
+    <rect class="box" x="0" y="0" width="520" height="150"/>
+    <text class="num" x="-150" y="90" text-anchor="middle">1</text>
+    <text class="label" x="260" y="72" text-anchor="middle">Top Driver</text>
+    <text class="small" x="260" y="112" text-anchor="middle">요청을 먼저 받는 드라이버</text>
+
+    <rect class="box" x="0" y="150" width="520" height="150"/>
+    <text class="num" x="-150" y="240" text-anchor="middle">2</text>
+    <text class="label" x="260" y="222" text-anchor="middle">Middle Driver</text>
+    <text class="small" x="260" y="262" text-anchor="middle">필요 시 하위로 전달</text>
+
+    <rect class="redbox" x="0" y="300" width="520" height="160"/>
+    <text class="num" x="-150" y="395" text-anchor="middle">3</text>
+    <text class="label white" x="260" y="392" text-anchor="middle">Current Stack Location</text>
+
+    <rect class="gray" x="0" y="460" width="520" height="180"/>
+    <text class="num" x="-150" y="565" text-anchor="middle">4</text>
+    <text class="label white" x="260" y="560" text-anchor="middle">Lower Driver</text>
+  </g>
+
+  <path class="arrow-black" d="M950 750 V800"/>
+  <text class="small" x="950" y="835" text-anchor="middle">요청 처리 후 완료하거나 하위 드라이버로 전달한다</text>
+</svg>

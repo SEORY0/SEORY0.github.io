@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1600 900" width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'Noto Sans', 'Noto Sans KR', sans-serif; fill: #000; }
+    .box { fill: #fff; stroke: #000; stroke-width: 4; }
+    .soft { fill: #f2f2f2; stroke: #000; stroke-width: 4; }
+    .label { font-size: 38px; font-weight: 800; }
+    .small { font-size: 24px; font-weight: 700; fill: #666; }
+    .red { fill: #f00; }
+    .arrow-red { stroke: #f00; stroke-width: 5; fill: none; marker-end: url(#arrow-red); }
+  </style>
+  <defs>
+    <marker id="arrow-red" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16" fill="none" stroke="#f00" stroke-width="3"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fff"/>
+
+  <rect class="box" x="120" y="210" width="560" height="420"/>
+  <text class="label red" x="400" y="275" text-anchor="middle">InputBuffer</text>
+  <text class="small" x="400" y="315" text-anchor="middle">역직렬화 경로로 진입시키는 입력 데이터</text>
+
+  <rect class="soft" x="185" y="380" width="430" height="120"/>
+  <text class="label" x="400" y="430" text-anchor="middle" style="font-size:34px">ptr_ArbitraryFunCall</text>
+  <text class="label red" x="400" y="470" text-anchor="middle" style="font-size:32px">0x4242424242424242</text>
+  <text class="small" x="400" y="565" text-anchor="middle">유효하지 않은 함수 포인터로 jmp rax 크래시 유도</text>
+
+  <rect class="box" x="920" y="210" width="560" height="420"/>
+  <text class="label red" x="1200" y="275" text-anchor="middle">OutputBuffer</text>
+  <text class="small" x="1200" y="315" text-anchor="middle">rcx에 전달될 인자값을 포함</text>
+
+  <rect class="soft" x="985" y="380" width="430" height="120"/>
+  <text class="label" x="1200" y="430" text-anchor="middle">Destination</text>
+  <text class="label red" x="1200" y="470" text-anchor="middle" style="font-size:31px">0xDEADBEEFDEADBEEF</text>
+  <text class="small" x="1200" y="565" text-anchor="middle">실제 레지스터에서는 하위 4바이트 제어로 관찰</text>
+
+  <path class="arrow-red" d="M615 440 H985"/>
+</svg>

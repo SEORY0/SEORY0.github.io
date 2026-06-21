@@ -204,6 +204,61 @@ a.note:hover .description { color: var(--accent); }
 
 a.note.featured:hover h3 { color: var(--accent); }
 
+/* ========================================================================== */
+/* .note.award — award variant (accent tag + trophy icon + title + venue)      */
+/* Vertical stack so long award names / venues read cleanly instead of being   */
+/* split across a cramped two-column CV row.                                    */
+/* ========================================================================== */
+
+.note.award {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 18px 0;
+
+  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
+  @media (max-width: $bp-mobile) {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+}
+
+.note.award h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 2px;
+  color: var(--text);
+}
+
+.award-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+.award-icon {
+  flex: 0 0 auto;
+  display: block;
+}
+
+.award-venue {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-meta);
+  margin-top: 2px;
+}
+
 /* "→ All writing" trailing link */
 .more {
   margin-top: 32px;
