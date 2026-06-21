@@ -66,6 +66,12 @@ $bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
   }
 }
 
+@media (min-width: 1800px) {
+  :root {
+    --nav-height: 60px;
+  }
+}
+
 /* Dark Mode — red.anthropic tone naturally extended */
 .theme-dark {
   --bg: #0d0d0d;
