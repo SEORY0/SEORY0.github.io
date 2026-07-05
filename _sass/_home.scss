@@ -368,8 +368,8 @@ a.note.featured:hover h3 { color: var(--accent); }
 }
 
 /* ========================================================================== */
-/* Ambient shader background (Paper Shaders — neuro noise) — home only         */
-/* Fixed grayscale canvas behind everything. Dark theme flips via invert(1),   */
+/* Ambient shader background (Paper Shaders — halftone dots over a sky photo)  */
+/* Fixed monochrome canvas behind everything. Dark theme flips via invert(1),  */
 /* so a single shader instance serves both themes.                             */
 /* ========================================================================== */
 
@@ -390,20 +390,78 @@ a.note.featured:hover h3 { color: var(--accent); }
   filter: invert(1);
 }
 
-/* Text sits on a solid --bg panel with a feathered edge so it reads cleanly
-   against the shader instead of a hard cut-off box. */
+/* Text sits on a solid --bg panel, separated from the halftone backdrop by a
+   plain hairline — no feathering/blur. */
 .page-home .site-container {
   background: transparent;
 }
 
 .page-home .container {
   background: var(--bg);
-  box-shadow: 0 0 48px 32px var(--bg);
+  border: 1px solid var(--border);
 }
 
 .page-home .site-footer-box {
   background: var(--bg);
-  box-shadow: 0 0 32px 16px var(--bg);
+  max-width: calc(var(--container-max) + 128px);
+  margin: 0 auto;
+
+  @media (max-width: $bp-tablet) {
+    max-width: calc(var(--container-max) + 96px);
+  }
+
+  @media (max-width: $bp-mobile) {
+    max-width: 100%;
+    margin: 0 var(--indent);
+  }
+}
+
+/* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
+.page-home .site-footer-brand {
+  font-size: clamp(2.2rem, 4.4vw, 4.1rem);
+
+  @media (max-width: $bp-mobile) {
+    font-size: 8.5vw;
+  }
+}
+
+/* Home top nav — box hugs the same width as the content panel */
+.page-home .top-nav {
+  left: 50%;
+  right: auto;
+  width: 100%;
+  max-width: calc(var(--container-max) + 128px);
+  transform: translateX(-50%);
+  border: 1px solid var(--border);
+  border-top: 0;
+}
+
+.page-home .top-nav-inner {
+  max-width: none;
+  margin: 0;
+  padding: 0 64px;
+}
+
+@media (max-width: $bp-tablet) {
+  .page-home .top-nav {
+    max-width: calc(var(--container-max) + 96px);
+  }
+
+  .page-home .top-nav-inner {
+    padding: 0 48px;
+  }
+}
+
+@media (max-width: $bp-mobile) {
+  .page-home .top-nav {
+    max-width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-home .top-nav-inner {
+    padding: 0 var(--indent);
+  }
 }
 
 /* writing archive: date column shouldn't wrap */
