@@ -26,7 +26,7 @@ function mount(image) {
       u_colorHighlight: getShaderColorFromString('#ffffff'),
       u_type: DitheringTypes['8x8'],
       u_pxSize: 4,
-      u_colorSteps: 1,
+      u_colorSteps: 2,
       u_originalColors: false,
       u_inverted: false,
       /* object sizing — behave like background-size: cover */
