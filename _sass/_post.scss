@@ -128,24 +128,32 @@
 .page-post .top-nav-inner {
   max-width: none;
   margin: 0;
-  padding: 0 64px;
+  padding: 0;
 }
 
-/* Banner title, body text and every divider share one 700px column that
-   matches home/writing; only the nav & footer boxes widen to 828px to frame
-   it. Zero side padding so the banner's border-bottom lines up with the
-   content dividers instead of running full-width like the nav box. */
-.page-post .post-banner,
-.page-post .content-col {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding-left: 0;
-  padding-right: 0;
+/* The article fills the same 828px frame as the nav & footer boxes, inset a
+   uniform 32px. Nav items, body text, footer content and every divider line up
+   at that inset, so the body reads as wide as the nav/footer instead of a
+   narrow centered column. The banner is sized to the content width (frame −
+   2×inset) so its underline matches the meta/body dividers, not the outer box. */
+.page-post .top-nav-inner,
+.page-post .content-col,
+.page-post .site-footer-box {
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
+.page-post .content-col,
 .page-post .site-footer-box {
   max-width: calc(var(--container-max) + 128px);
   margin: 0 auto;
+}
+
+.page-post .post-banner {
+  max-width: calc(var(--container-max) + 64px);
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .page-post .site-footer-brand {
@@ -154,13 +162,13 @@
 
 @media (max-width: $bp-tablet) {
   .page-post .top-nav,
+  .page-post .content-col,
   .page-post .site-footer-box {
     max-width: calc(var(--container-max) + 96px);
   }
 
-  .page-post .top-nav-inner {
-    padding-left: 48px;
-    padding-right: 48px;
+  .page-post .post-banner {
+    max-width: calc(var(--container-max) + 32px);
   }
 }
 
@@ -172,8 +180,14 @@
   }
 
   .page-post .top-nav-inner,
-  .page-post .post-banner,
-  .page-post .content-col {
+  .page-post .content-col,
+  .page-post .site-footer-box {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+
+  .page-post .post-banner {
+    max-width: 100%;
     padding-left: var(--indent);
     padding-right: var(--indent);
   }
