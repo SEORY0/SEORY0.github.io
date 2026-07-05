@@ -452,12 +452,32 @@ a.note.featured:hover h3 { color: var(--accent); }
 
   /* Mobile: float the content as a rounded card over the shader — matching the
      footer box and the PC panel, instead of a borderless edge-to-edge slab.
-     Children already carry a var(--indent) inset, so the card reads with even
-     inner padding. */
+     The card owns the horizontal inset here (see the child-reset block below). */
   @media (max-width: $bp-mobile) {
     margin: 72px var(--indent) 40px;
+    padding: 4px var(--indent) 32px;
     border-radius: 14px;
     overflow: hidden;
+  }
+}
+
+/* Mobile card inset: the container now provides the left/right padding, so its
+   children drop their own indent. Without this the .note grid (padding: 15px 0)
+   overrode the base mobile indent and its text hit the card edge, getting
+   clipped by overflow: hidden. Higher specificity (.container descendant) wins
+   over every base/page-shader rule regardless of source order. */
+@media (max-width: $bp-mobile) {
+  .page-shader .container .info,
+  .page-shader .container .hero-subtitle,
+  .page-shader .container .date,
+  .page-shader .container .note,
+  .page-shader .container .more,
+  .page-shader .container h1,
+  .page-shader .container h2 {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
