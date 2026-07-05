@@ -1,6 +1,6 @@
 /* ========================================================================== */
 /* Layout                                                                       */
-/* red.anthropic.com .container is left-biased (NOT centered)                  */
+/* .container is a centered solid panel floating over the shader background    */
 /* ========================================================================== */
 
 .site-container {
@@ -8,18 +8,19 @@
   padding-top: var(--nav-height);
 }
 
-/* Master content wrapper — red.anthropic literal layout (font-size matched to writing page) */
+/* Master content wrapper — centered column; padding keeps the panel background
+   wrapping the text with breathing room */
 .container {
   font-size: 100%;
-  max-width: var(--container-max);
-  /* left-biased: 100px top/bottom, 0 right, calc-shifted from left */
-  margin: 100px 0 100px calc(0.2 * (100% - #{700px}));
+  max-width: calc(var(--container-max) + 128px);
+  margin: 100px auto;
+  padding: 24px 64px 64px;
 }
 
-/* Tablet (768-1024): centered to avoid awkward left-bias mid-range */
 @media (max-width: $bp-tablet) {
   .container {
-    margin: 100px auto;
+    max-width: calc(var(--container-max) + 96px);
+    padding: 24px 48px 56px;
   }
 }
 
@@ -27,8 +28,9 @@
   .container {
     margin: 100px 0;
     max-width: 100%;
-    /* No padding — each child manages its own indent (red.anthropic pattern).
+    /* No horizontal padding — each child manages its own indent.
        Prevents double-indent (container padding + element padding overlap). */
+    padding: 8px 0 40px;
     font-size: 100%;
   }
 }
@@ -37,7 +39,7 @@
 .container h1 {
   font-family: var(--font-display);
   font-size: 250%;
-  margin-top: 80px;
+  margin-top: 56px;
   margin-bottom: 0;
   font-weight: 800;
   letter-spacing: -0.01em;

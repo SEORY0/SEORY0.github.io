@@ -71,8 +71,8 @@ hr.hairline {
   top: 0;
   z-index: 10000;
   padding: 8px 16px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--text);
+  color: var(--bg);
   font-weight: 700;
   font-size: 14px;
   text-decoration: none;
@@ -99,8 +99,8 @@ hr.hairline {
   &:hover { background: var(--border-dark); }
 }
 
-/* Selection */
+/* Selection — monochrome inversion */
 ::selection {
-  background: var(--accent);
-  color: #fff;
+  background: var(--text);
+  color: var(--bg);
 }

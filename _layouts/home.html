@@ -7,6 +7,8 @@ layout: compress
 <body class="page-home">
 <a href="#main-content" class="skip-to-content"><span lang="en">Skip to content</span><span lang="ko">본문 바로가기</span></a>
 
+<div class="shader-bg" aria-hidden="true"></div>
+
 {% include top-nav.html %}
 
 <div class="site-container">
@@ -149,19 +151,11 @@ layout: compress
     {% endif %}
 
   </main>
-
-  <aside class="home-side-video" aria-hidden="true">
-    <canvas
-      data-frame-base="{{ '/assets/videos/quixote-frames' | relative_url }}"
-      data-frame-count="96"
-      data-frame-pad="4"
-      data-frame-cb="{{ site.github.build_revision | default: site.time | date: '%s' }}"
-    ></canvas>
-  </aside>
 </div>
 
 {% include footer.html %}
 {% include scripts.html %}
+<script type="module" src="{{ '/assets/js/home-shader.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 
 </body>
 </html>

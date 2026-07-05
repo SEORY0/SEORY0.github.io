@@ -368,37 +368,42 @@ a.note.featured:hover h3 { color: var(--accent); }
 }
 
 /* ========================================================================== */
-/* Right-fixed ambient video (Don Quixote) — home only                          */
-/* No border. aspect-ratio + object-fit crops the source video's letterbox bars */
+/* Ambient shader background (Paper Shaders — neuro noise) — home only         */
+/* Fixed grayscale canvas behind everything. Dark theme flips via invert(1),   */
+/* so a single shader instance serves both themes.                             */
 /* ========================================================================== */
 
-.home-side-video {
+.shader-bg {
   position: fixed;
-  right: 160px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: clamp(340px, 26vw, 540px);
-  z-index: 50;
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
-  overflow: hidden;
 
   canvas {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
+    height: 100%;
   }
 }
 
-/* Dark mode: invert로 검정 라인 → 흰색, 흰 배경 → 검정 (다크 페이지와 자연 blend) */
-.theme-dark .home-side-video canvas {
-  filter: invert(1) hue-rotate(180deg);
+.theme-dark .shader-bg {
+  filter: invert(1);
 }
 
-@media (max-width: $bp-desktop-wide) {
-  .home-side-video {
-    display: none;
-  }
+/* Text sits on a solid --bg panel with a feathered edge so it reads cleanly
+   against the shader instead of a hard cut-off box. */
+.page-home .site-container {
+  background: transparent;
+}
+
+.page-home .container {
+  background: var(--bg);
+  box-shadow: 0 0 48px 32px var(--bg);
+}
+
+.page-home .site-footer-box {
+  background: var(--bg);
+  box-shadow: 0 0 32px 16px var(--bg);
 }
 
 /* writing archive: date column shouldn't wrap */

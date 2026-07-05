@@ -7,7 +7,6 @@
 $bp-phone-small: 375px;   // h1 안전 축소, 작은 폰
 $bp-mobile: 750px;         // 모바일 — red.anthropic 원본 분기
 $bp-tablet: 1024px;        // 태블릿 — centered layout
-$bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
 
 /* ========================================================================== */
 /* red.anthropic.com literal clone — Design Tokens                             */
@@ -17,7 +16,7 @@ $bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
 :root {
   /* surfaces */
   --bg: #ffffff;
-  --bg-paper: hsla(32, 44%, 86%, 1);   /* warm beige — featured cards */
+  --bg-paper: #f2f2f2;                  /* neutral gray — featured cards */
   --bg-note: #f9f8f8;                   /* off-white — list cards */
   --bg-subtle: #f9f8f8;
   --bg-hover: #f5f4ee;
@@ -27,8 +26,8 @@ $bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
   --text-muted: #555555;
   --text-meta: #333333;                 /* .date label color */
 
-  /* accent — only used in logo + theme/focus rings */
-  --accent: #ff0000;
+  /* accent — monochrome theme: black on light, white on dark */
+  --accent: #000000;
 
   /* borders */
   --border: #d8d8d8;                    /* card border-bottom (red.anthropic source) */
@@ -75,7 +74,7 @@ $bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
 /* Dark Mode — red.anthropic tone naturally extended */
 .theme-dark {
   --bg: #0d0d0d;
-  --bg-paper: #2a2218;     /* dark equivalent of warm beige (deep brown) */
+  --bg-paper: #1c1c1c;     /* neutral dark gray — featured cards */
   --bg-note: #161616;
   --bg-subtle: #161616;
   --bg-hover: #1a1a1a;
@@ -84,7 +83,7 @@ $bp-desktop-wide: 1100px;  // 데스크탑 와이드 — ambient 영상 표시
   --text-muted: #888888;
   --text-meta: #aaaaaa;
 
-  --accent: #ff3838;       /* OLED-friendly */
+  --accent: #ffffff;       /* monochrome: white on dark */
 
   --border: #2a2a2a;
   --border-dark: #555555;
