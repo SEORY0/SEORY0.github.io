@@ -1,15 +1,14 @@
-/* assets/js/home-shader.js — ambient home background (Paper Shaders, halftone dots)
- * Halftones a sky photo (Wikimedia Commons, CC0: "Cumulus clouds in the sky")
- * into a monochrome dot screen. Light theme: dark dots on white; dark theme
- * flips via CSS invert(1). If WebGL/CDN fails, the element is removed and the
- * plain --bg background shows instead. */
+/* assets/js/home-shader.js — ambient home background (Paper Shaders, image dithering)
+ * Dithers a sky photo (Wikimedia Commons, CC0: "Cumulus clouds in the sky")
+ * into a monochrome 8x8 Bayer pixel pattern. Light theme: dark pixels on
+ * white; dark theme flips via CSS invert(1). If WebGL/CDN fails, the element
+ * is removed and the plain --bg background shows instead. */
 
 import {
   ShaderMount,
-  halftoneDotsFragmentShader,
+  imageDitheringFragmentShader,
   getShaderColorFromString,
-  HalftoneDotsTypes,
-  HalftoneDotsGrids,
+  DitheringTypes,
 } from 'https://cdn.jsdelivr.net/npm/@paper-design/shaders@0.0.77/+esm';
 
 const host = document.querySelector('.shader-bg');
@@ -18,20 +17,17 @@ const host = document.querySelector('.shader-bg');
    (string URLs are only resolved by the React wrapper). */
 function mount(image) {
   try {
-    new ShaderMount(host, halftoneDotsFragmentShader, {
+    new ShaderMount(host, imageDitheringFragmentShader, {
       u_image: image,
-      u_colorFront: getShaderColorFromString('#1f1f1f'),
-      u_colorBack: getShaderColorFromString('#ffffff'),
-      u_size: 0.5,
-      u_radius: 1.25,
-      u_contrast: 0.55,
+      /* colorBack maps to dark image areas, colorFront/Highlight to light ones */
+      u_colorFront: getShaderColorFromString('#ffffff'),
+      u_colorBack: getShaderColorFromString('#1f1f1f'),
+      u_colorHighlight: getShaderColorFromString('#ffffff'),
+      u_type: DitheringTypes['8x8'],
+      u_pxSize: 4,
+      u_colorSteps: 1,
       u_originalColors: false,
       u_inverted: false,
-      u_grainMixer: 0,
-      u_grainOverlay: 0,
-      u_grainSize: 0.5,
-      u_grid: HalftoneDotsGrids.hex,
-      u_type: HalftoneDotsTypes.classic,
       /* object sizing — behave like background-size: cover */
       u_fit: 2,
       u_scale: 1,
