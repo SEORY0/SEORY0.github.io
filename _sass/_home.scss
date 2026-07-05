@@ -449,6 +449,16 @@ a.note.featured:hover h3 { color: var(--accent); }
 .page-shader .container {
   background: var(--bg);
   border: 1px solid var(--border);
+
+  /* Mobile: float the content as a rounded card over the shader — matching the
+     footer box and the PC panel, instead of a borderless edge-to-edge slab.
+     Children already carry a var(--indent) inset, so the card reads with even
+     inner padding. */
+  @media (max-width: $bp-mobile) {
+    margin: 72px var(--indent) 40px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
 }
 
 .page-shader .site-footer-box {
