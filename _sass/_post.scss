@@ -131,13 +131,16 @@
   padding: 0 64px;
 }
 
-/* Banner + body share the home panel geometry: 828px outer, 64px side
-   padding → 700px text column that lines up with home/writing. */
+/* Banner title, body text and every divider share one 700px column that
+   matches home/writing; only the nav & footer boxes widen to 828px to frame
+   it. Zero side padding so the banner's border-bottom lines up with the
+   content dividers instead of running full-width like the nav box. */
 .page-post .post-banner,
 .page-post .content-col {
-  max-width: calc(var(--container-max) + 128px);
-  padding-left: 64px;
-  padding-right: 64px;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .page-post .site-footer-box {
@@ -151,15 +154,11 @@
 
 @media (max-width: $bp-tablet) {
   .page-post .top-nav,
-  .page-post .post-banner,
-  .page-post .content-col,
   .page-post .site-footer-box {
     max-width: calc(var(--container-max) + 96px);
   }
 
-  .page-post .top-nav-inner,
-  .page-post .post-banner,
-  .page-post .content-col {
+  .page-post .top-nav-inner {
     padding-left: 48px;
     padding-right: 48px;
   }
