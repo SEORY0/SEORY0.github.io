@@ -1,7 +1,7 @@
 ---
-layout: wiki-page
+layout: writing
 page_title: "Writing"
-toolbar_left: "Archive"
+subtitle: "Archive"
 ---
 
 <div class="writing-list">
@@ -13,7 +13,7 @@ toolbar_left: "Archive"
       {% assign current_year = post_year %}
     {% endif %}
     <a class="note" href="{{ post.url | relative_url }}">
-      <h3>{{ post.title }}</h3><span class="description">{{ post.date | date: "%Y-%m-%d" }}</span>
+      <h3>{{ post.title }}</h3><span class="period">{{ post.date | date: "%Y-%m-%d" }}</span>
     </a>
   {% endfor %}
 </div>

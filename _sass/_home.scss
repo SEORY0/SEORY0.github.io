@@ -115,12 +115,12 @@ a.note:hover .description { color: var(--accent); }
 }
 
 /* ========================================================================== */
-/* Home résumé rows — professional CV grid                                     */
-/* Title + description stacked left, period (or meta) right in mono.           */
-/* Scoped to .page-home so the writing archive keeps the legacy two-column row.*/
+/* Résumé / archive rows — professional CV grid                                */
+/* Title + description stacked left, period (or meta) right-aligned.           */
+/* Scoped to .page-shader (home + writing); other layouts keep the base row.   */
 /* ========================================================================== */
 
-.page-home .note {
+.page-shader .note {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   column-gap: 32px;
@@ -129,20 +129,20 @@ a.note:hover .description { color: var(--accent); }
   padding: 15px 0;
 }
 
-.page-home .note h3 {
+.page-shader .note h3 {
   grid-column: 1;
   font-size: 0.98rem;
   letter-spacing: -0.01em;
 }
 
-.page-home .note .description {
+.page-shader .note .description {
   grid-column: 1;
   text-align: left;
   font-size: 0.88rem;
   line-height: 1.55;
 }
 
-.page-home .note .period {
+.page-shader .note .period {
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
@@ -156,9 +156,9 @@ a.note:hover .description { color: var(--accent); }
 }
 
 /* stacked variants (publication / award / featured) keep their vertical flow */
-.page-home .note.publication,
-.page-home .note.award,
-.page-home .note.featured {
+.page-shader .note.publication,
+.page-shader .note.award,
+.page-shader .note.featured {
   display: flex;
 }
 
@@ -442,16 +442,16 @@ a.note.featured:hover h3 { color: var(--accent); }
 
 /* Text sits on a solid --bg panel, separated from the halftone backdrop by a
    plain hairline — no feathering/blur. */
-.page-home .site-container {
+.page-shader .site-container {
   background: transparent;
 }
 
-.page-home .container {
+.page-shader .container {
   background: var(--bg);
   border: 1px solid var(--border);
 }
 
-.page-home .site-footer-box {
+.page-shader .site-footer-box {
   background: var(--bg);
   max-width: calc(var(--container-max) + 128px);
   margin: 0 auto;
@@ -467,7 +467,7 @@ a.note.featured:hover h3 { color: var(--accent); }
 }
 
 /* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
-.page-home .site-footer-brand {
+.page-shader .site-footer-brand {
   font-size: clamp(2.2rem, 4.4vw, 4.1rem);
 
   @media (max-width: $bp-mobile) {
@@ -476,7 +476,7 @@ a.note.featured:hover h3 { color: var(--accent); }
 }
 
 /* Home top nav — box hugs the same width as the content panel */
-.page-home .top-nav {
+.page-shader .top-nav {
   left: 50%;
   right: auto;
   width: 100%;
@@ -486,30 +486,30 @@ a.note.featured:hover h3 { color: var(--accent); }
   border-top: 0;
 }
 
-.page-home .top-nav-inner {
+.page-shader .top-nav-inner {
   max-width: none;
   margin: 0;
   padding: 0 64px;
 }
 
 @media (max-width: $bp-tablet) {
-  .page-home .top-nav {
+  .page-shader .top-nav {
     max-width: calc(var(--container-max) + 96px);
   }
 
-  .page-home .top-nav-inner {
+  .page-shader .top-nav-inner {
     padding: 0 48px;
   }
 }
 
 @media (max-width: $bp-mobile) {
-  .page-home .top-nav {
+  .page-shader .top-nav {
     max-width: 100%;
     border: 0;
     border-bottom: 1px solid var(--border);
   }
 
-  .page-home .top-nav-inner {
+  .page-shader .top-nav-inner {
     padding: 0 var(--indent);
   }
 }

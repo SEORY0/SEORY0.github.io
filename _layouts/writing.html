@@ -1,0 +1,32 @@
+---
+layout: compress
+---
+<!DOCTYPE html>
+<html lang="ko">
+{% include head.html %}
+<body class="page-writing page-shader">
+<a href="#main-content" class="skip-to-content">본문 바로가기</a>
+
+<div class="shader-bg" aria-hidden="true" data-image="{{ '/assets/images/mountain-halftone.jpg' | relative_url }}"></div>
+
+{% include top-nav.html %}
+
+<div class="site-container">
+  <main class="container" id="main-content" role="main">
+
+    <h1>{{ page.page_title | default: page.title }}</h1>
+    {% if page.subtitle %}
+    <p class="hero-subtitle">{{ page.subtitle }}</p>
+    {% endif %}
+
+    {{ content }}
+
+  </main>
+</div>
+
+{% include footer.html %}
+{% include scripts.html %}
+<script type="module" src="{{ '/assets/js/home-shader.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
+
+</body>
+</html>

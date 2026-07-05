@@ -1,8 +1,9 @@
-/* assets/js/home-shader.js — ambient home background (Paper Shaders, image dithering)
- * Dithers a sky photo (Wikimedia Commons, CC0: "Cumulus clouds in the sky")
- * into a monochrome 8x8 Bayer pixel pattern. Light theme: dark pixels on
- * white; dark theme flips via CSS invert(1). If WebGL/CDN fails, the element
- * is removed and the plain --bg background shows instead. */
+/* assets/js/home-shader.js — ambient page background (Paper Shaders, image dithering)
+ * Dithers a nature photo (Wikimedia Commons, CC0) into a monochrome 8x8 Bayer
+ * pixel pattern. The source image comes from the .shader-bg element's
+ * data-image attribute, so each page can supply its own backdrop.
+ * Light theme: dark pixels on white; dark theme flips via CSS invert(1).
+ * If WebGL/CDN fails, the element is removed and the plain --bg shows instead. */
 
 import {
   ShaderMount,
@@ -48,5 +49,5 @@ if (host) {
   const img = new Image();
   img.onload = () => mount(img);
   img.onerror = () => host.remove();
-  img.src = '/assets/images/sky-halftone.jpg';
+  img.src = host.dataset.image || '/assets/images/sky-halftone.jpg';
 }
