@@ -5,19 +5,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkbox = document.getElementById('theme-toggle-checkbox'); // 데스크탑 (스위치)
     const mobileBtn = document.getElementById('mobile-theme-toggle'); // 모바일 (원형 버튼)
     const statusText = document.getElementById('theme-status-text');
-    const body = document.body;
+    // Theme class lives on <html> so the head FOUC guard can apply it
+    // before <body> exists (prevents light→dark flash on navigation).
+    const root = document.documentElement;
 
     // 2. 통합 테마 변경 함수 (핵심 로직)
     function applyTheme(isDark) {
-        // (1) CSS 클래스 제어 (body 태그)
+        // (1) CSS 클래스 제어 (<html> 태그)
         if (isDark) {
-            body.classList.add('theme-dark');
+            root.classList.add('theme-dark');
             // dark mode active
             localStorage.setItem('theme', 'dark');
             
             if (statusText) statusText.textContent = "Dark";
         } else {
-            body.classList.remove('theme-dark');
+            root.classList.remove('theme-dark');
             // light mode active
             localStorage.setItem('theme', 'light');
             
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mobileBtn) {
         mobileBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            const isCurrentlyDark = body.classList.contains('theme-dark');
+            const isCurrentlyDark = root.classList.contains('theme-dark');
             applyTheme(!isCurrentlyDark);
         });
     }
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (navBtn) {
         navBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            const isCurrentlyDark = body.classList.contains('theme-dark');
+            const isCurrentlyDark = root.classList.contains('theme-dark');
             applyTheme(!isCurrentlyDark);
         });
     }
