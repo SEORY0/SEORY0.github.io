@@ -36,18 +36,22 @@ layout: compress
 
     <span class="note">
       <h3><span lang="en">Soongsil University</span><span lang="ko">숭실대학교</span></h3><span class="description"><span lang="en">IT Convergence, Electronic Engineering</span><span lang="ko">전자정보공학부 IT융합전공</span></span>
+      <span class="period"><span lang="en">2022 — Present</span><span lang="ko">2022 — 현재</span></span>
     </span>
     <span class="note">
       <h3><span lang="en">WhiteHat School 3rd</span><span lang="ko">화이트햇스쿨 3기</span></h3><span class="description"><span lang="en">KITRI · Certificated</span><span lang="ko">KITRI · 수료</span></span>
+      <span class="period">2025.03 — 09</span>
     </span>
     <span class="note">
       <h3><span lang="en">Hacking Camp 29th</span><span lang="ko">해킹캠프 29기</span></h3><span class="description"><span lang="en">POC Security · Certificated</span><span lang="ko">POC Security · 수료</span></span>
+      <span class="period">2024.08</span>
     </span>
 
     <div class="date"><span lang="en">EXPERIENCE</span><span lang="ko">경력</span></div>
 
     <a class="note" href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">
-      <h3><span lang="en">AI Safety Center</span><span lang="ko">AI안전성연구센터</span></h3><span class="description"><span lang="en">Undergraduate Research Intern · AI for Security · Current</span><span lang="ko">학부연구생 · AI for Security · 현재</span></span>
+      <h3><span lang="en">AI Safety Center</span><span lang="ko">AI안전성연구센터</span></h3><span class="description"><span lang="en">Undergraduate Research Intern · AI for Security</span><span lang="ko">학부연구생 · AI for Security</span></span>
+      <span class="period"><span lang="en">2026.01 — Present</span><span lang="ko">2026.01 — 현재</span></span>
     </a>
 
     <div class="date"><span lang="en">PUBLICATIONS</span><span lang="ko">연구</span></div>
@@ -84,10 +88,10 @@ layout: compress
     <div class="date"><span lang="en">CTF TEAMS</span><span lang="ko">CTF 팀</span></div>
 
     <a class="note" href="https://ssu-asc.kr/" target="_blank" rel="noopener">
-      <h3>ASC</h3><span class="description">ssu-asc.kr</span>
+      <h3>ASC</h3><span class="period">ssu-asc.kr</span>
     </a>
     <a class="note" href="https://project-plasma.org/" target="_blank" rel="noopener">
-      <h3>Fermion</h3><span class="description">project-plasma.org</span>
+      <h3>Fermion</h3><span class="period">project-plasma.org</span>
     </a>
 
     <div class="date"><span lang="en">CVE DISCLOSURES</span><span lang="ko">CVE</span></div>
@@ -102,7 +106,7 @@ layout: compress
     <div class="date">CTF</div>
     {% for ev in site.data.ctfs %}
     <span class="note">
-      <h3>{{ ev.event }}</h3><span class="description">{{ ev.placement }} — {{ ev.team }}</span>
+      <h3>{{ ev.event }}</h3><span class="period">{{ ev.placement }} — {{ ev.team }}</span>
     </span>
     {% endfor %}
 
@@ -144,7 +148,7 @@ layout: compress
     <div class="date"><span lang="en">WRITING</span><span lang="ko">글</span></div>
     {% for post in site.posts limit:5 %}
     <a class="note" href="{{ post.url | relative_url }}">
-      <h3>{{ post.title }}</h3><span class="description">{{ post.date | date: "%Y-%m-%d" }}</span>
+      <h3>{{ post.title }}</h3><span class="period">{{ post.date | date: "%Y-%m-%d" }}</span>
     </a>
     {% endfor %}
     <p class="more"><a href="{{ '/writing/' | relative_url }}"><span lang="en">→ All writing</span><span lang="ko">→ 전체 글 보기</span></a></p>

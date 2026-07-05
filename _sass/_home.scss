@@ -25,18 +25,19 @@
   }
 }
 
-/* .date — section label (uppercase + bold + letterspacing) */
+/* .date — section label (mono + uppercase + wide tracking) */
 .date {
   display: block;
+  font-family: var(--font-mono);
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
   color: var(--text-muted);
   border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
-  margin-top: 80px;
-  margin-bottom: 8px;
+  margin-top: 72px;
+  margin-bottom: 4px;
 }
 .date.first-child { margin-top: 56px; }
 
@@ -61,8 +62,12 @@
 }
 
 .note:hover {
-  padding-left: 8px;
   border-bottom-color: var(--text);
+}
+
+/* only clickable rows shift — static rows shouldn't pretend to be links */
+a.note:hover {
+  padding-left: 8px;
 }
 
 a.note:hover h3 { color: var(--accent); }
@@ -108,6 +113,54 @@ a.note:hover .description { color: var(--accent); }
 /* override red.anthropic's " - " prefix for CV layout */
 .note .description::before {
   content: none;
+}
+
+/* ========================================================================== */
+/* Home résumé rows — professional CV grid                                     */
+/* Title + description stacked left, period (or meta) right in mono.           */
+/* Scoped to .page-home so the writing archive keeps the legacy two-column row.*/
+/* ========================================================================== */
+
+.page-home .note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 32px;
+  row-gap: 3px;
+  align-items: baseline;
+  padding: 15px 0;
+}
+
+.page-home .note h3 {
+  grid-column: 1;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+
+.page-home .note .description {
+  grid-column: 1;
+  text-align: left;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.page-home .note .period {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--text-meta);
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+/* stacked variants (publication / award / featured) keep their vertical flow */
+.page-home .note.publication,
+.page-home .note.award,
+.page-home .note.featured {
+  display: flex;
 }
 
 /* ========================================================================== */
