@@ -105,7 +105,6 @@
     a {
       display: inline-block;
       padding: 6px 4px;
-      font-family: var(--font-mono);
       font-size: 0.74rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -236,7 +235,6 @@
 
 /* Language toggle — text label (current lang shown), home page only */
 .top-nav-lang {
-  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;

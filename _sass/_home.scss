@@ -25,14 +25,13 @@
   }
 }
 
-/* .date — section label (mono + uppercase + wide tracking) */
+/* .date — section label (uppercase + wide tracking) */
 .date {
   display: block;
-  font-family: var(--font-mono);
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   color: var(--text-muted);
   border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
@@ -147,10 +146,10 @@ a.note:hover .description { color: var(--accent); }
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-meta);
   white-space: nowrap;
   line-height: 1.5;
@@ -202,10 +201,10 @@ a.note:hover .description { color: var(--accent); }
 
 .pub-venue {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-meta);
 }
 
@@ -238,11 +237,10 @@ a.note:hover .description { color: var(--accent); }
 
 .featured-tag {
   display: block;
-  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   color: var(--accent);
 }
 
@@ -289,11 +287,10 @@ a.note.featured:hover h3 { color: var(--accent); }
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   color: var(--accent);
 }
 
@@ -304,10 +301,10 @@ a.note.featured:hover h3 { color: var(--accent); }
 
 .award-venue {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-meta);
   margin-top: 2px;
 }
