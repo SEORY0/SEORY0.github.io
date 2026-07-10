@@ -8,6 +8,13 @@
   <script>/* FOWL guard: apply saved language before content paints */(function(){try{var lang=localStorage.getItem('lang');if(lang==='ko'||lang==='en'){document.documentElement.lang=lang;}}catch(e){}})();</script>
   {% endif %}
 
+  {%- comment -%} Preload the dithered backdrop so it downloads in parallel with the page, not after the shader module parses. {%- endcomment -%}
+  {% if page.layout == 'home' %}
+  <link rel="preload" as="image" href="{{ '/assets/images/sky-halftone.jpg' | relative_url }}">
+  {% elsif page.layout == 'writing' %}
+  <link rel="preload" as="image" href="{{ '/assets/images/mountain-halftone.jpg' | relative_url }}">
+  {% endif %}
+
   {% seo title=false %}
 
   {% assign page_title = page.title | default: site.title %}

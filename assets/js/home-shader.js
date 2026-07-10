@@ -3,14 +3,19 @@
  * pixel pattern. The source image comes from the .shader-bg element's
  * data-image attribute, so each page can supply its own backdrop.
  * Light theme: dark pixels on white; dark theme flips via CSS invert(1).
- * If WebGL/CDN fails, the element is removed and the plain --bg shows instead. */
+ *
+ * Perf: the shader library is self-hosted (./paper-shaders.min.js, same-origin
+ * + cacheable, no third-party CDN round-trip) and the source photos are small
+ * (~800px; dithering hides the low resolution). The page also preloads the
+ * backdrop (see head.html) so it starts downloading before this module runs.
+ * If WebGL/load fails, the element is removed and the plain --bg shows instead. */
 
 import {
   ShaderMount,
   imageDitheringFragmentShader,
   getShaderColorFromString,
   DitheringTypes,
-} from 'https://cdn.jsdelivr.net/npm/@paper-design/shaders@0.0.77/+esm';
+} from './paper-shaders.min.js';
 
 const host = document.querySelector('.shader-bg');
 
