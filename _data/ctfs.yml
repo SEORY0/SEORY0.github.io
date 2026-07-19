@@ -7,13 +7,14 @@
 #   date:      Optional ISO-style date for display (YYYY-MM-DD)
 #   url:       Optional link (writeup, scoreboard, ranking page)
 
+- event: Hacktheon International University Student Cyber Security Competition
+  placement: Finalist
+  team: 나는야임영웅
+  url: https://hacktheon.org/y2026/
+
 - event: HyperSonic CTF
   placement: 2nd
   team: ASC
-
-- event: 2026 HackTheon Sejong Quals
-  placement: 7th
-  team: 나는야임영웅
 
 - event: Codegate CTF Preliminary
   placement: 25th

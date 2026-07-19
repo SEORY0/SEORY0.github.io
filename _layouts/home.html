@@ -94,8 +94,11 @@ layout: compress
       <h3>Fermion</h3><span class="period">project-plasma.org</span>
     </a>
 
-    <div class="date"><span lang="en">CVE DISCLOSURES</span><span lang="ko">CVE</span></div>
+    <div class="date"><span lang="en">DISCLOSURES</span><span lang="ko">취약점 공개</span></div>
 
+    <a class="note" href="https://github.com/openclaw/openclaw/security/advisories/GHSA-wxh3-g47h-q3mc" target="_blank" rel="noopener">
+      <h3>GHSA-wxh3-g47h-q3mc — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </a>
     <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-34755" target="_blank" rel="noopener">
       <h3>CVE-2026-34755 — vLLM</h3><span class="description"><span lang="en">disclosed via Huntr</span><span lang="ko">Huntr 제보</span></span>
     </a>
@@ -105,9 +108,16 @@ layout: compress
 
     <div class="date">CTF</div>
     {% for ev in site.data.ctfs %}
+    {% capture ctf_meta %}{{ ev.placement }}{% if ev.team %} — {{ ev.team }}{% endif %}{% endcapture %}
+    {% if ev.url %}
+    <a class="note" href="{{ ev.url }}" target="_blank" rel="noopener">
+      <h3>{{ ev.event }}</h3><span class="period">{{ ctf_meta }}</span>
+    </a>
+    {% else %}
     <span class="note">
-      <h3>{{ ev.event }}</h3><span class="period">{{ ev.placement }} — {{ ev.team }}</span>
+      <h3>{{ ev.event }}</h3><span class="period">{{ ctf_meta }}</span>
     </span>
+    {% endif %}
     {% endfor %}
 
     <div class="date"><span lang="en">SKILLS</span><span lang="ko">기술스택</span></div>
