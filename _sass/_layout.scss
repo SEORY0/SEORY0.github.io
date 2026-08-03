@@ -37,7 +37,7 @@
 
 /* h1, h2 follow red.anthropic source CSS */
 .container h1 {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 250%;
   margin-top: 56px;
   margin-bottom: 0;
@@ -148,7 +148,7 @@
 }
 .ef-page-banner-inner .ef-section-badge { display: none; }
 .ef-page-banner-sub {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-meta);
+  font-family: var(--font-body); font-size: 0.78rem; color: var(--text-meta);
   text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700;
 }
 

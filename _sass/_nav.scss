@@ -11,6 +11,17 @@
   height: var(--nav-height);
   background: var(--nav-bg);
   z-index: 1000;
+
+  /* --nav-bg is only 90% opaque, so without a blur the content scrolling
+     underneath shows through and collides with the logo. */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* No backdrop-filter (older Firefox, some in-app browsers) — fall back to an
+   opaque bar rather than leaving the bleed-through. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .top-nav { background: var(--bg); }
 }
 
 /* Inner wrapper —
@@ -50,7 +61,7 @@
   align-items: center;
   text-decoration: none;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: 0;
