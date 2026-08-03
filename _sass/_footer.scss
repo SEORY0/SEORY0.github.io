@@ -87,10 +87,10 @@
   text-align: center;
   margin: 80px 0 0;
   padding: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(2.4rem, 8vw, 6.5rem);
   font-weight: 800;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
   color: var(--text);
   opacity: 1;
   line-height: 1;
@@ -98,19 +98,15 @@
   -webkit-user-select: none;
   white-space: nowrap;
 
-  .accent {
-    color: var(--accent);
-  }
-
   @media (max-width: $bp-mobile) {
     font-size: 8.5vw;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.01em;
     margin-top: 48px;
   }
 
   @media (max-width: $bp-phone-small) {
     font-size: 9vw;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.01em;
     margin-top: 32px;
   }
 }
@@ -206,7 +202,7 @@
 }
 
 .error-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -225,7 +221,7 @@
 }
 
 .error-home-btn {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 0.76rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -439,7 +435,7 @@ p > code, li > code, td > code, span > code {
     border-bottom: 1px solid var(--border);
 
     th {
-      font-family: var(--font-mono);
+      font-family: var(--font-body);
       font-weight: 700;
       text-align: left;
       padding: 10px 12px;

@@ -14,8 +14,8 @@ layout: compress
 <div class="site-container">
   <main class="container" id="main-content" role="main">
 
-    <h1>SEORY<span class="accent">0</span></h1>
-    <p class="hero-subtitle"><span class="hero-name-kr">류석준</span> · <span class="hero-name-en">Seokjun Ryu</span></p>
+    <h1>SEORY0</h1>
+    <p class="hero-subtitle"><span class="hero-name-kr">류석준</span> <span class="sep">·</span> <span class="hero-name-en">Seokjun Ryu</span></p>
 
     <div class="info">
       <p>
@@ -105,6 +105,27 @@ layout: compress
     <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35626" target="_blank" rel="noopener">
       <h3>CVE-2026-35626 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
     </a>
+    {%- comment -%}
+      Advisory IDs not yet assigned — these stay as plain rows (no href) so they
+      do not render as links pointing nowhere. Once each GHSA ID is issued,
+      replace the placeholder and wrap the row back in:
+      <a class="note" href="https://github.com/<org>/<repo>/security/advisories/GHSA-..." target="_blank" rel="noopener">
+    {%- endcomment -%}
+    <span class="note">
+      <h3>GHSA-c2p8-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </span>
+    <span class="note">
+      <h3>GHSA-rwm5-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </span>
+    <span class="note">
+      <h3>GHSA-rj8f-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </span>
+    <span class="note">
+      <h3>GHSA-7cp7-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </span>
+    <span class="note">
+      <h3>GHSA-5968-****-**** — Flowise</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
+    </span>
 
     <div class="date">CTF</div>
     {% for ev in site.data.ctfs %}

@@ -4,7 +4,7 @@
 
 /* .info — intro paragraph block */
 .info {
-  margin-top: 28px;
+  margin-top: 32px;
 
   * {
     margin: 0;
@@ -332,36 +332,44 @@ a.note.featured:hover h3 { color: var(--accent); }
 /* h1 accent — red on the trailing "0" character                                */
 /* ========================================================================== */
 
-.container h1 .accent { color: var(--accent); }
+/* ========================================================================== */
+/* Home h1 — the SEORY0 wordmark. Same typeface as everything else; the        */
+/* hierarchy comes from size and weight, not from a second face.               */
+/* Sizing is inherited from .container h1 (250% / 200% / 170%).                */
+/* ========================================================================== */
 
-/* h1 letter-spacing for the SEORY0 monogram-style title */
-.container h1 {
-  letter-spacing: 0.02em;
+.page-home .container h1 {
+  margin-top: 48px;
+
+  /* Pretendard ships a slashed zero — without it the trailing 0 is an O and the
+     name reads "SEORYO". Same advance width, so nothing reflows. */
+  font-feature-settings: "zero" 1;
 }
 
 /* ========================================================================== */
 /* Hero subtitle — Korean + English name beneath h1                             */
 /* ========================================================================== */
 
+/* One uniformly muted line under the name — the lockup reads as a single unit
+   only if nothing inside it competes with the name for attention. */
 .hero-subtitle {
-  margin: 8px 0 0;
-  font-size: 0.95rem;
+  margin: 5px 0 0;
+  font-size: 0.9rem;
   font-weight: 400;
   color: var(--text-muted);
-  letter-spacing: 0.02em;
-  line-height: 1.5;
+  letter-spacing: 0;
+  line-height: 1.45;
 }
 
-.hero-name-kr {
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.04em;
-}
-
+.hero-name-kr,
 .hero-name-en {
-  font-style: italic;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  font-style: normal;
+  color: inherit;
+  letter-spacing: 0;
 }
+
+.hero-subtitle .sep { opacity: 0.55; }
 
 /* ========================================================================== */
 /* Mobile padding (red.anthropic source has indent for date label)              */
@@ -498,10 +506,10 @@ a.note.featured:hover h3 { color: var(--accent); }
 
 /* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
 .page-shader .site-footer-brand {
-  font-size: clamp(2.2rem, 4.4vw, 4.1rem);
+  font-size: clamp(3rem, 7.2vw, 6rem);
 
   @media (max-width: $bp-mobile) {
-    font-size: 8.5vw;
+    font-size: 9vw;
   }
 }
 
