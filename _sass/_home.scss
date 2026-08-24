@@ -157,17 +157,19 @@ a.note:hover .description { color: var(--accent); }
 
 /* stacked variants (publication / award / featured) keep their vertical flow */
 .page-shader .note.publication,
+.page-shader .note.talk,
 .page-shader .note.award,
 .page-shader .note.featured {
   display: flex;
 }
 
 /* ========================================================================== */
-/* .note.publication — academic paper variant (vertical stack)                  */
-/* Title + authors (1st author bolded) + venue                                  */
+/* .note.publication / .note.talk — stacked variant (vertical flow)             */
+/* Title + authors or speakers (owner bolded) + venue                           */
 /* ========================================================================== */
 
-.note.publication {
+.note.publication,
+.note.talk {
   flex-direction: column;
   align-items: stretch;
   gap: 6px;
@@ -180,13 +182,15 @@ a.note:hover .description { color: var(--accent); }
   }
 }
 
-.note.publication h3 {
+.note.publication h3,
+.note.talk h3 {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.5;
 }
 
-.pub-authors {
+.pub-authors,
+.talk-speakers {
   display: block;
   font-size: 0.88rem;
   font-weight: 400;
@@ -199,7 +203,8 @@ a.note:hover .description { color: var(--accent); }
   }
 }
 
-.pub-venue {
+.pub-venue,
+.talk-venue {
   display: block;
   font-size: 0.8rem;
   font-weight: 500;
@@ -419,7 +424,9 @@ a.note.featured:hover h3 { color: var(--accent); }
   .note .description,
   .featured-byline,
   .pub-authors,
-  .pub-venue {
+  .pub-venue,
+  .talk-speakers,
+  .talk-venue {
     overflow-wrap: break-word;
     word-wrap: break-word;
   }
