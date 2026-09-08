@@ -155,11 +155,12 @@ a.note:hover .description { color: var(--accent); }
   line-height: 1.5;
 }
 
-/* stacked variants (publication / award / featured) keep their vertical flow */
+/* stacked variants (publication / award / featured / role) keep their vertical flow */
 .page-shader .note.publication,
 .page-shader .note.talk,
 .page-shader .note.award,
-.page-shader .note.featured {
+.page-shader .note.featured,
+.page-shader .note.role {
   display: flex;
 }
 
@@ -314,6 +315,84 @@ a.note.featured:hover h3 { color: var(--accent); }
   margin-top: 2px;
 }
 
+/* ========================================================================== */
+/* .note.role — experience sub-entry: a project under the org row above.        */
+/* Title + role tag on one line, then a compact bullet list. Sits flush like    */
+/* the other stacked variants (publication / talk / award / featured).          */
+/* ========================================================================== */
+
+.note.role {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 16px 0;
+
+  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
+  @media (max-width: $bp-mobile) {
+    padding-left: var(--indent);
+    padding-right: var(--indent);
+  }
+}
+
+.role-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.note.role h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.role-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.role-points {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.role-points li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.role-points li::before {
+  content: "•";
+  position: absolute;
+  left: 2px;
+  color: var(--text-meta);
+}
+
+.role-link {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-meta);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  transition: color 0.15s ease, border-bottom-color 0.15s ease;
+
+  &:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+}
+
 /* "→ All writing" trailing link */
 .more {
   margin-top: 32px;
@@ -426,7 +505,8 @@ a.note.featured:hover h3 { color: var(--accent); }
   .pub-authors,
   .pub-venue,
   .talk-speakers,
-  .talk-venue {
+  .talk-venue,
+  .role-points li {
     overflow-wrap: break-word;
     word-wrap: break-word;
   }
