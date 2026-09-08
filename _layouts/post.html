@@ -42,6 +42,13 @@ layout: compress
             {% endif %}
           </div>
 
+          <details class="post-toc" hidden>
+            <summary>목차</summary>
+            <nav aria-label="글 목차">
+              <ul class="post-toc-list"></ul>
+            </nav>
+          </details>
+
           <div class="post-content">
             {{ content }}
           </div>
@@ -52,6 +59,8 @@ layout: compress
             <span class="post-tag">Writings</span>
           </footer>
 
+          <a class="post-back-link" href="{{ '/writing/' | relative_url }}">Writing 목록으로 돌아가기</a>
+
         </div>
       </main>
     </div>
@@ -61,6 +70,7 @@ layout: compress
 
 {% include footer.html %}
 <script src="{{ '/assets/js/code-copy.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/post-toc.js' | relative_url }}"></script>
 {% include scripts.html %}
 
 </body>

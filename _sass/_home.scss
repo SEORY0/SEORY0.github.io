@@ -60,7 +60,7 @@
   &:last-of-type { border-bottom: 1px solid var(--border); }
 }
 
-.note:hover {
+a.note:hover {
   border-bottom-color: var(--text);
 }
 
@@ -522,6 +522,7 @@ a.note.featured:hover h3 { color: var(--accent); }
   position: fixed;
   inset: 0;
   z-index: -1;
+  opacity: 0.25;
   pointer-events: none;
 
   canvas {
@@ -593,10 +594,10 @@ a.note.featured:hover h3 { color: var(--accent); }
 
 /* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
 .page-shader .site-footer-brand {
-  font-size: clamp(3rem, 7.2vw, 6rem);
+  font-size: 2rem;
 
   @media (max-width: $bp-mobile) {
-    font-size: 9vw;
+    font-size: 1.5rem;
   }
 }
 

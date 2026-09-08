@@ -32,7 +32,9 @@ layout: compress
       </p>
     </div>
 
-    <div class="date first-child"><span lang="en">EDUCATION</span><span lang="ko">교육사항</span></div>
+    {% include home-section-nav.html %}
+
+    <h2 class="date first-child" id="education"><span lang="en">EDUCATION</span><span lang="ko">교육사항</span></h2>
 
     <span class="note">
       <h3><span lang="en">Soongsil University</span><span lang="ko">숭실대학교</span></h3><span class="description"><span lang="en">IT Convergence, Electronic Engineering</span><span lang="ko">전자정보공학부 IT융합전공</span></span>
@@ -49,7 +51,7 @@ layout: compress
 
     {% include experience.html %}
 
-    <div class="date"><span lang="en">PUBLICATIONS</span><span lang="ko">연구</span></div>
+    <h2 class="date" id="research"><span lang="en">PUBLICATIONS</span><span lang="ko">연구</span></h2>
 
     <span class="note publication">
       <h3>
@@ -66,7 +68,7 @@ layout: compress
       </span>
     </span>
 
-    <div class="date"><span lang="en">AWARDS</span><span lang="ko">수상</span></div>
+    <h2 class="date" id="awards"><span lang="en">AWARDS</span><span lang="ko">수상</span></h2>
 
     <span class="note award">
       <span class="award-tag">
@@ -80,7 +82,7 @@ layout: compress
       </span>
     </span>
 
-    <div class="date"><span lang="en">CTF TEAMS</span><span lang="ko">CTF 팀</span></div>
+    <h2 class="date" id="teams"><span lang="en">CTF TEAMS</span><span lang="ko">CTF 팀</span></h2>
 
     <a class="note" href="https://ssu-asc.kr/" target="_blank" rel="noopener">
       <h3>ASC</h3><span class="period">ssu-asc.kr</span>
@@ -89,7 +91,7 @@ layout: compress
       <h3>Fermion</h3><span class="period">project-plasma.org</span>
     </a>
 
-    <div class="date"><span lang="en">DISCLOSURES</span><span lang="ko">취약점 공개</span></div>
+    <h2 class="date" id="disclosures"><span lang="en">DISCLOSURES</span><span lang="ko">취약점 공개</span></h2>
 
     <a class="note" href="https://www.cve.org/CVERecord?id=CVE-2026-62203" target="_blank" rel="noopener">
       <h3>CVE-2026-62203 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
@@ -122,7 +124,7 @@ layout: compress
       <h3>GHSA-5968-****-**** — Flowise</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
     </span>
 
-    <div class="date">CTF</div>
+    <h2 class="date" id="ctf">CTF</h2>
     {% for ev in site.data.ctfs %}
     {% capture ctf_meta %}{{ ev.placement }}{% if ev.team %} — {{ ev.team }}{% endif %}{% endcapture %}
     {% if ev.url %}
@@ -136,7 +138,7 @@ layout: compress
     {% endif %}
     {% endfor %}
 
-    <div class="date"><span lang="en">SPEAKER</span><span lang="ko">발표</span></div>
+    <h2 class="date" id="speaker"><span lang="en">SPEAKER</span><span lang="ko">발표</span></h2>
 
     <a class="note talk" href="https://hackingcamp.org/" target="_blank" rel="noopener">
       <h3>AI for Security for AI - AI 에이전트로 AI 에이전트 해킹하기</h3>
@@ -150,7 +152,7 @@ layout: compress
       </span>
     </a>
 
-    <div class="date"><span lang="en">PROJECTS</span><span lang="ko">프로젝트</span></div>
+    <h2 class="date" id="projects"><span lang="en">PROJECTS</span><span lang="ko">프로젝트</span></h2>
     <a class="note featured" href="https://github.com/SEORY0/WHS3-KernelPanic" target="_blank" rel="noopener">
       <span class="featured-tag"><span lang="en">Featured</span><span lang="ko">대표</span></span>
       <h3>WHS3-KernelPanic</h3>
@@ -173,13 +175,13 @@ layout: compress
     </a>
 
     {% if site.posts.size > 0 %}
-    <div class="date"><span lang="en">WRITING</span><span lang="ko">글</span></div>
+    <h2 class="date" id="writing"><span lang="en">WRITING</span><span lang="ko">글</span></h2>
     {% for post in site.posts limit:5 %}
     <a class="note" href="{{ post.url | relative_url }}">
       <h3>{{ post.title }}</h3><span class="period">{{ post.date | date: "%Y-%m-%d" }}</span>
     </a>
     {% endfor %}
-    <p class="more"><a href="{{ '/writing/' | relative_url }}"><span lang="en">→ All writing</span><span lang="ko">→ 전체 글 보기</span></a></p>
+    <p class="more"><a href="{{ '/writing/' | relative_url }}"><span lang="en">All writing</span><span lang="ko">전체 글 보기</span></a></p>
     {% endif %}
 
   </main>

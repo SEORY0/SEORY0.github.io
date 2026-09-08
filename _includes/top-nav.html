@@ -4,9 +4,9 @@
       <span class="top-nav-logo-name">&gt;<span class="accent">_</span></span>
     </a>
 
-    <ul class="top-nav-links" role="menubar">
-      <li role="none"{% if page.url contains '/writing' %} class="is-active"{% endif %}>
-        <a role="menuitem" href="{{ '/writing/' | relative_url }}">Writing</a>
+    <ul class="top-nav-links">
+      <li{% if page.url contains '/writing' or page.layout == 'post' %} class="is-active"{% endif %}>
+        <a href="{{ '/writing/' | relative_url }}"{% if page.url contains '/writing' %} aria-current="page"{% elsif page.layout == 'post' %} aria-current="location"{% endif %}>Writing</a>
       </li>
     </ul>
 

@@ -48,3 +48,22 @@ bilingual labels. Preserve readable wrapping at 375px, dark/light contrast,
 keyboard focus, and the existing language visibility rules. Research-project
 dates must be explicitly distinguished from the author's employment dates.
 No new accessibility debt is accepted for this change.
+
+## Minimal navigation refinement
+- Keep the monochrome CV system; no new dependency, card grid, illustration, or animation.
+- Add only a wrapping, underlined section-link cluster after the introduction.
+  Do not add a selected-highlights summary. Use existing 0.88rem body
+  and 0.8rem metadata scales with 8/16/24/32px spacing.
+- Section labels become h2 elements retaining the small `.date` style and get stable IDs.
+  Anchor destinations use `scroll-margin-top: calc(var(--nav-height) + 24px)`.
+- Mobile CV rows use one column: title, description, then date/placement. Desktop
+  retains the date column. Keep links text-only without arrows, with hover and keyboard focus feedback.
+- Top-bar controls use a 44px touch target with compact gaps; icons keep their current size.
+  Ordinary navigation uses native links, not application menu roles.
+- Articles use one native details/summary table of contents above the body. Derive
+  h2/h3 links from rendered headings; hide the control when there are too few headings.
+  Preserve keyboard operation, heading IDs, and a visible Back to Writing link at the end.
+- Error recovery uses the shared plain surface and type, visible home/Writing links,
+  natural content height, no clipped frame or flashing interaction.
+- Tone down the halftone backdrop to 0.25 opacity; keep solid text surfaces. Reduce the
+  footer mark to at most 2rem and use a 1px divider with 24–32px padding/margins.

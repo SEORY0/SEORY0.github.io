@@ -1,22 +1,20 @@
 /* ========================================================================== */
-/* Site Footer — categorized links + oversized brand mark                       */
+/* Site Footer — quiet links and compact brand mark                       */
 /* ========================================================================== */
 
 .site-footer {
-  margin-top: 80px;
+  margin-top: 48px;
   padding: 0;
   font-family: var(--font-body);
 }
 
-/* Contained rectangle: top + left + right borders only (bottom open).
- * Lines extend downward and get cut off at the page bottom edge.
- * Margin matches nav (= home content's left margin on both sides) for symmetry. */
+/* Keep footer alignment shared with the content panel. */
 .site-footer-box {
   margin: 0 calc(0.2 * (100% - 700px));
-  border: 2px solid var(--text);
+  border: 1px solid var(--border);
   border-bottom: 0;
-  border-radius: 12px 12px 0 0;
-  padding: 40px 40px 120px;
+  border-radius: 0;
+  padding: 32px;
   overflow: hidden;
 
   /* Tablet: centered to match nav/container */
@@ -29,8 +27,8 @@
   @media (max-width: $bp-mobile) {
     max-width: 100%;
     margin: 0 var(--indent);
-    padding: 24px 24px 80px;
-    border-radius: 8px 8px 0 0;
+    padding: 24px;
+    border-radius: 0;
   }
 }
 
@@ -85,10 +83,10 @@
 
 .site-footer-brand {
   text-align: center;
-  margin: 80px 0 0;
+  margin: 32px 0 0;
   padding: 0;
   font-family: var(--font-body);
-  font-size: clamp(2.4rem, 8vw, 6.5rem);
+  font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text);
@@ -99,15 +97,15 @@
   white-space: nowrap;
 
   @media (max-width: $bp-mobile) {
-    font-size: 8.5vw;
+    font-size: 1.5rem;
     letter-spacing: -0.01em;
-    margin-top: 48px;
+    margin-top: 24px;
   }
 
   @media (max-width: $bp-phone-small) {
-    font-size: 9vw;
+    font-size: 1.5rem;
     letter-spacing: -0.01em;
-    margin-top: 32px;
+    margin-top: 24px;
   }
 }
 

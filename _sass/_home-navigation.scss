@@ -1,0 +1,69 @@
+.page-shader .container h2.date {
+  margin: 64px 0 4px;
+  padding-bottom: 8px;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.page-shader .container h2.date.first-child { margin-top: 48px; }
+
+.page-home h2[id],
+.page-home h3[id],
+.page-home h4[id] {
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+}
+
+.section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 24px;
+  font-size: 0.8rem;
+}
+
+.section-nav a {
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--border);
+}
+
+.section-nav a:hover { text-decoration-color: currentColor; }
+
+.top-nav-icon,
+.top-nav-logo {
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.top-nav-links li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: $bp-mobile) {
+  .page-shader .note {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page-shader .note .period {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .top-nav-inner,
+  .page-shader .top-nav-inner {
+    padding: 0 8px;
+    gap: 4px;
+  }
+
+  .top-nav-inner > .top-nav-links { margin-right: 0; }
+  .top-nav-actions { gap: 0; }
+}
