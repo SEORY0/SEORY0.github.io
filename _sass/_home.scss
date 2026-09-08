@@ -522,7 +522,7 @@ a.note.featured:hover h3 { color: var(--accent); }
   position: fixed;
   inset: 0;
   z-index: -1;
-  opacity: 0.25;
+  filter: brightness(0.85);
   pointer-events: none;
 
   canvas {
@@ -533,7 +533,7 @@ a.note.featured:hover h3 { color: var(--accent); }
 }
 
 .theme-dark .shader-bg {
-  filter: invert(1);
+  filter: invert(1) brightness(0.85);
 }
 
 /* Text sits on a solid --bg panel, separated from the halftone backdrop by a

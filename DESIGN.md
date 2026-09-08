@@ -65,5 +65,5 @@ No new accessibility debt is accepted for this change.
   Preserve keyboard operation, heading IDs, and a visible Back to Writing link at the end.
 - Error recovery uses the shared plain surface and type, visible home/Writing links,
   natural content height, no clipped frame or flashing interaction.
-- Tone down the halftone backdrop to 0.25 opacity; keep solid text surfaces. Reduce the
+- Keep the halftone backdrop fully opaque and reduce its brightness to 85% in both themes; keep solid text surfaces. Reduce the
   footer mark to at most 2rem and use a 1px divider with 24–32px padding/margins.
