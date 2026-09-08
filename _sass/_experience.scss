@@ -1,0 +1,65 @@
+.experience > .note {
+  border-bottom: 0;
+}
+
+.experience-projects {
+  margin-left: var(--indent);
+  padding-left: var(--indent);
+  border-left: 1px solid var(--border);
+}
+
+.experience-projects .role-head {
+  justify-content: space-between;
+}
+
+.experience-projects h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.project-period,
+.project-sponsor {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--text-meta);
+}
+
+.project-period {
+  font-variant-numeric: tabular-nums;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px var(--indent);
+}
+
+.experience-projects .role-tag {
+  white-space: normal;
+}
+
+.experience-projects [lang="ko"] {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: $bp-mobile) {
+  .experience-projects {
+    margin-left: 0;
+  }
+
+  .experience > .note {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .experience > .note .period {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}

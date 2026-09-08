@@ -32,6 +32,7 @@ kramdown:
 
 exclude:
   - .jekyll-cache
+  - DESIGN.md
   
 compress_html:
   clippings: all
