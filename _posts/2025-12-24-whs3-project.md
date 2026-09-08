@@ -30,9 +30,9 @@ IOCTL은 사용자 모드(User Mode)와 커널 모드(Kernel Mode)를 연결하�
 일반적으로 사용자 애플리케이션은 커널이나 하드웨어에 직접 접근할 수 없다. 운영체제는 보안과 안정성을 위해 사용자 영역과 커널 영역을 엄격히 분리하기 때문이다. 그렇다면 사용자 프로그램이 하드웨어를 제어하거나 커널 기능을 사용하려면 어떻게 해야 할까?
 
 이때 사용하는 것이 IOCTL이다. 사용자 애플리케이션은 `DeviceIoControl` API를 호출하여 특정 제어 코드와 함께 데이터를 커널 드라이버에 전달할 수 있다. 드라이버는 이 요청을 받아 해당 작업을 수행하고 결과를 반환한다.
-![IRP와 IO StackLocation 구조](/assets/images/writings/IRP.png){:width="100%" height="auto"}
+<a href="/assets/images/writings/IRP.png"><img src="/assets/images/writings/IRP.webp" alt="IRP와 IO StackLocation 구조" width="1920" height="1080" style="width: 100%" loading="eager" fetchpriority="high" decoding="async"></a>
 
-![IOCTL 통신 구조](/assets/images/writings/01-ioctl-communication.svg){:width="100%" height="auto"}
+![IOCTL 통신 구조](/assets/images/writings/01-ioctl-communication.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 IOCTL 요청이 발생하면, Windows의 I/O Manager는 이 요청을 IRP(I/O Request Packet)라는 구조체로 변환하여 드라이버에 전달한다.
 
@@ -47,7 +47,7 @@ IRP는 커널 모드 내에서 드라이버 간, 또는 I/O Manager와 드라이
 3. 드라이버는 요청을 직접 처리하거나, 필요시 하위 드라이버로 IRP를 전달한다
 4. 요청이 완료되면 결과가 다시 스택을 거슬러 올라가 요청자에게 반환된다
 
-![IRP 흐름과 드라이버 스택](/assets/images/writings/02-irp-flow.svg){:width="100%" height="auto"}
+![IRP 흐름과 드라이버 스택](/assets/images/writings/02-irp-flow.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 IRP 구조체에는 여러 중요한 필드가 있는데, 이 중 취약점과 밀접한 관련이 있는 것이 RequestorMode 필드이다.
 
@@ -78,7 +78,7 @@ Windows는 실시간 멀티미디어 데이터(오디오, 비디오 등)의 효�
 
 `ks.sys`는 Kernel Streaming의 공통 처리 로직을 담당하는 시스템 드라이버이다. `IOCTL_KS_PROPERTY`, `IOCTL_KS_METHOD`와 같은 표준 요청을 받아 Property Set과 플래그를 해석하고, 필요하면 내부적으로 다시 IOCTL을 구성해 하위 경로로 전달한다. CVE-2024-35250에서는 이 재구성 과정이 핵심 분석 대상이 된다.
 
-![커널 스트리밍 아키텍처](/assets/images/writings/02-ks-architecture.svg){:width="100%" height="auto"}
+![커널 스트리밍 아키텍처](/assets/images/writings/02-ks-architecture.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 ### 1.4 KS Property (커널 스트리밍 속성)
 
@@ -149,7 +149,7 @@ if ( Irp->RequestorMode )  // UserMode인 경우
 
 즉, 최초 요청 자체는 사용자 모드 요청으로 정상 처리된다. 문제는 이 요청이 `UnserializePropertySet` 내부에서 다시 IOCTL로 구성될 때 발생한다.
 
-![RequestorMode 정상 검증 흐름](/assets/images/writings/03-requestor-mode-flow.svg){:width="100%" height="auto"}
+![RequestorMode 정상 검증 흐름](/assets/images/writings/03-requestor-mode-flow.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 ### 2.3 취약점의 핵심: IOCTL 재호출
 
@@ -214,7 +214,7 @@ Microsoft 공식 문서에서도 이 동작을 확인할 수 있다:
 
 **문제는 새 IRP에 포함된 데이터 버퍼가 신뢰할 수 없는 사용자 모드에서 온 데이터를 그대로 담고 있다는 점이다.**
 
-![취약점 발생 흐름](/assets/images/writings/03-vulnerability-flow.svg){:width="100%" height="auto"}
+![취약점 발생 흐름](/assets/images/writings/03-vulnerability-flow.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 ### 2.5 검증 우회와 임의 함수 호출
 
@@ -315,7 +315,7 @@ HANDLE GetKsDevice(const GUID categories) {
 
 PoC에서 버퍼는 두 가지 역할을 한다. 입력 버퍼에는 `UnserializePropertySet`이 다시 처리할 property 정보와 호출 대상으로 사용될 값을 배치한다. 출력 버퍼에는 재호출 과정에서 참조될 구조체와, 이후 호출 인자로 전달될 값을 배치한다.
 
-![PoC 입출력 버퍼 구성](/assets/images/writings/04-poc-buffer-layout.svg){:width="100%" height="auto"}
+![PoC 입출력 버퍼 구성](/assets/images/writings/04-poc-buffer-layout.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 여기서 함수 포인터 자리에는 정상 함수 주소 대신 `0x4242424242424242`를 넣고, 첫 번째 인자로 전달될 위치에는 `0xDEADBEEF` 계열 값을 넣는다. 이후 크래시 덤프에서 `rax`와 `rcx`를 확인하면, 두 값이 실제 indirect call 경로까지 도달했는지 확인할 수 있다.
 
@@ -323,7 +323,7 @@ PoC에서 버퍼는 두 가지 역할을 한다. 입력 버퍼에는 `Unserializ
 
 IOCTL 요청이 커널에 전달된 뒤, PoC는 다음 흐름으로 크래시 지점에 도달한다.
 
-![PoC 콜스택 흐름](/assets/images/writings/04-poc-callstack.svg?v=20260621-ksflow){:width="100%" height="auto"}
+![PoC 콜스택 흐름](/assets/images/writings/04-poc-callstack.svg?v=20260621-ksflow){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 1. UserMode에서 `DeviceIoControl()`로 `IOCTL_KS_PROPERTY` 요청을 보낸다.
 2. `ks!KspPropertyHandler`가 property flags를 확인하고 `KSPROPERTY_TYPE_UNSERIALIZESET` 경로로 분기한다.
@@ -400,7 +400,7 @@ LPE를 달성하기 위한 전체 전략은 다음과 같다.
 4. 해당 함수의 동작을 이용해 `PreviousMode`를 `KernelMode` 값으로 바꾼다.
 5. `NtWriteVirtualMemory`를 이용해 현재 프로세스의 Token을 SYSTEM Token으로 교체한 뒤, `PreviousMode`를 복구한다.
 
-![익스플로잇 흐름](/assets/images/writings/05-exploit-strategy.svg){:width="100%" height="auto"}
+![익스플로잇 흐름](/assets/images/writings/05-exploit-strategy.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 ### 4.4 주요 개념 설명
 
@@ -588,7 +588,7 @@ pInBufData->ptr_ArbitraryFunCall = (void*)(ULONG_PTR)(nt_base + 0x7f26f0);
 pOutBufData->Destination = (void*)(ULONG_PTR)(0x10000000);
 ```
 
-![메모리 레이아웃](/assets/images/writings/06-memory-layout.svg){:width="100%" height="auto"}
+![메모리 레이아웃](/assets/images/writings/06-memory-layout.svg){:width="1600" height="900" style="width: 100%" loading="lazy" decoding="async"}
 
 방법 2: ExpProfileDelete 사용
 
