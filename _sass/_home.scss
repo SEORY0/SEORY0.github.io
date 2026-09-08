@@ -594,10 +594,10 @@ a.note.featured:hover h3 { color: var(--accent); }
 
 /* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
 .page-shader .site-footer-brand {
-  font-size: 2rem;
+  font-size: clamp(3rem, 7.2vw, 6rem);
 
   @media (max-width: $bp-mobile) {
-    font-size: 1.5rem;
+    font-size: 9vw;
   }
 }
 
