@@ -8,11 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. 코드 내용과 언어 가져오기
     const pre = block.querySelector('pre');
     if (!pre) return;
+    pre.tabIndex = 0;
 
     let code = pre.querySelector('code');
     if (!code) code = pre; // code 태그가 없으면 pre 자체를 사용
 
-    const codeText = code.innerText;
+    const codeText = code.textContent;
     let language = '';
 
     // 클래스에서 언어 이름 추출 (예: language-python -> python)
@@ -40,64 +41,88 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. 복사 버튼 생성
     const copyBtn = document.createElement('button');
     copyBtn.className = 'copy-btn';
-    copyBtn.ariaLabel = 'Copy to clipboard';
+    copyBtn.type = 'button';
+    copyBtn.ariaLabel = document.documentElement.lang === 'ko' ? '코드 복사' : 'Copy code';
     // SVG 아이콘 (클립보드 모양)
     copyBtn.innerHTML = `
-      <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg aria-hidden="true" focusable="false" class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
       </svg>
-      <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+      <svg aria-hidden="true" focusable="false" class="icon-check" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
     `;
 
-    // 복사 기능 구현
-    copyBtn.addEventListener('click', () => {
-      // 성공 피드백 함수
-      const showSuccess = () => {
-        copyBtn.classList.add('copied');
-        copyBtn.querySelector('.icon-copy').style.display = 'none';
-        copyBtn.querySelector('.icon-check').style.display = 'block';
+    const status = document.createElement('span');
+    status.className = 'code-copy-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-atomic', 'true');
+    header.appendChild(status);
+    let feedbackTimer;
+    let announcementTimer;
+    let copying = false;
 
-        // 2초 후 복귀
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.querySelector('.icon-copy').style.display = 'block';
-          copyBtn.querySelector('.icon-check').style.display = 'none';
-        }, 2000);
-      };
+    function showFeedback(success) {
+      const korean = document.documentElement.lang === 'ko';
+      copyBtn.classList.toggle('copied', success);
+      copyBtn.querySelector('.icon-copy').style.display = success ? 'none' : 'block';
+      copyBtn.querySelector('.icon-check').style.display = success ? 'block' : 'none';
+      // Clear between identical messages so repeated copies are announced.
+      clearTimeout(announcementTimer);
+      clearTimeout(feedbackTimer);
+      status.textContent = '';
+      announcementTimer = setTimeout(() => {
+        status.textContent = success
+          ? (korean ? '복사 완료' : 'Copied')
+          : (korean ? '복사 실패. 코드를 직접 선택해 주세요.' : 'Copy failed. Select the code manually.');
+      }, 100);
+      feedbackTimer = setTimeout(() => {
+        status.textContent = '';
+        copyBtn.classList.remove('copied');
+        copyBtn.querySelector('.icon-copy').style.display = 'block';
+        copyBtn.querySelector('.icon-check').style.display = 'none';
+      }, success ? 3000 : 8000);
+    }
 
-      // Clipboard API가 지원되는 경우
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(codeText)
-          .then(() => {
-            showSuccess();
-          })
-          .catch(err => {
-            console.error('Clipboard API failed: ', err);
-          });
-      } else {
-        // 구형 브라우저 fallback: execCommand 사용
-        try {
-          const textarea = document.createElement('textarea');
-          textarea.value = codeText;
-          textarea.style.position = 'fixed';
-          textarea.style.opacity = '0';
-          document.body.appendChild(textarea);
-          textarea.select();
+    function copyWithSelection() {
+      const focused = document.activeElement;
+      const textarea = document.createElement('textarea');
+      textarea.value = codeText;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      try {
+        textarea.select();
+        return document.execCommand('copy');
+      } finally {
+        textarea.remove();
+        if (focused) focused.focus({ preventScroll: true });
+      }
+    }
 
-          const successful = document.execCommand('copy');
-          document.body.removeChild(textarea);
-
-          if (successful) {
-            showSuccess();
-          } else {
-            console.error('execCommand copy failed');
+    copyBtn.addEventListener('click', async () => {
+      if (copying) return;
+      copying = true;
+      copyBtn.setAttribute('aria-busy', 'true');
+      let success = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(codeText);
+            success = true;
+          } catch (error) {
+            success = copyWithSelection();
           }
-        } catch (err) {
-          console.error('Copy fallback failed: ', err);
+        } else {
+          success = copyWithSelection();
         }
+      } catch (error) {
+        success = false;
+      } finally {
+        copying = false;
+        copyBtn.removeAttribute('aria-busy');
+        showFeedback(success);
       }
     });
 
@@ -108,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. 줄 번호 생성 및 구조 재배치
     const lineNumbersWrapper = document.createElement('div');
     lineNumbersWrapper.className = 'line-numbers-wrapper';
+    lineNumbersWrapper.setAttribute('aria-hidden', 'true');
     
     const lines = codeText.split('\n');
     // 마지막 빈 줄 제외 처리 (선택 사항)

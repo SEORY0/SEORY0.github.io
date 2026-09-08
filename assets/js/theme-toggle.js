@@ -9,6 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // before <body> exists (prevents light→dark flash on navigation).
     const root = document.documentElement;
 
+    const themeButtons = document.querySelectorAll('#nav-theme-btn, #sidebar-theme-btn, #mobile-theme-toggle');
+    function syncThemeButtons() {
+        themeButtons.forEach(button => {
+            button.setAttribute('aria-pressed', String(root.classList.contains('theme-dark')));
+            button.setAttribute('aria-label', root.lang === 'ko' ? '다크 모드' : 'Dark mode');
+        });
+    }
+    document.addEventListener('languagechange', syncThemeButtons);
+
     // 2. 통합 테마 변경 함수 (핵심 로직)
     function applyTheme(isDark) {
         // (1) CSS 클래스 제어 (<html> 태그)
@@ -25,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (statusText) statusText.textContent = "Light";
         }
+
+        syncThemeButtons();
 
         // (2) UI 동기화: 데스크탑 스위치 상태 맞춤
         if (checkbox) {

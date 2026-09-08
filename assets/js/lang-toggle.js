@@ -17,8 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function applyLang(lang) {
         html.lang = lang;
+        btn.setAttribute('aria-label', lang === 'ko'
+            ? 'KO: 한국어. 영어로 전환'
+            : 'EN: English. Switch to Korean');
+        document.dispatchEvent(new Event('languagechange'));
         try { localStorage.setItem('lang', lang); } catch (e) {}
     }
+
+    applyLang(html.lang);
 
     btn.addEventListener('click', function (e) {
         e.preventDefault();

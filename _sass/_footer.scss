@@ -342,6 +342,13 @@ p > code, li > code, td > code, span > code {
   &.copied { color: var(--accent); }
 }
 
+.code-copy-status {
+  margin-left: auto;
+  margin-right: 8px;
+  color: var(--code-text-color);
+  font-size: 0.75rem;
+}
+
 .code-body {
   display: flex;
   position: relative;
@@ -393,28 +400,6 @@ p > code, li > code, td > code, span > code {
   background: var(--code-border-color);
 }
 .code-wrapper::-webkit-scrollbar-track { background: transparent; }
-
-/* Syntax Highlighting — Light */
-.c, .cm, .cp, .c1, .cs { color: #008000; }
-.k, .kc, .kd, .kp, .kr, .kt, .o, .ow { color: #0000ff; }
-.nf, .fm { color: #795e26; }
-.s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss { color: #a31515; }
-.m, .mb, .mf, .mh, .mi, .il, .mo { color: #098658; }
-.nc, .nt, .nn { color: #267f99; }
-.nv, .vc, .vg, .vi, .na { color: #001080; }
-.err { color: #d16969; }
-
-/* Syntax Highlighting — Dark */
-.theme-dark {
-  .c, .cm, .cp, .c1, .cs { color: #6a9955; }
-  .k, .kc, .kd, .kp, .kr, .kt, .o, .ow { color: #569cd6; }
-  .nf, .fm { color: #dcdcaa; }
-  .s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss { color: #ce9178; }
-  .m, .mb, .mf, .mh, .mi, .il, .mo { color: #b5cea8; }
-  .nc, .nt, .nn { color: #4ec9b0; }
-  .nv, .vc, .vg, .vi, .na { color: #9cdcfe; }
-  .err { color: #f44747; }
-}
 
 /* ========================================================================== */
 /* Markdown Tables                                                             */

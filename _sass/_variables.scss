@@ -52,7 +52,7 @@ $bp-tablet: 1024px;        // 태블릿 — centered layout
   /* Single typeface for the whole site — headings, marks, labels and body all
      share Pretendard. There is deliberately no display or brand face: hierarchy
      comes from size and weight, not from a second typeface. */
-  --font-body: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-body: "Portfolio Sans", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
   /* Code only — code blocks and inline code. Nothing else should use this. */
   --font-mono: "IBM Plex Mono", "SF Mono", Consolas, "Pretendard", monospace;
 
@@ -61,7 +61,7 @@ $bp-tablet: 1024px;        // 태블릿 — centered layout
   --code-block-bg: #ffffff;
   --code-header-bg: #f6f8fa;
   --code-text-color: #24292e;
-  --code-line-num-color: #6e7681;
+  --code-line-num-color: #626b75;
   --code-border-color: #e0e0e0;
   --code-copy-btn-hover: rgba(0, 0, 0, 0.08);
   --inline-code-bg: rgba(175, 184, 193, 0.2);
@@ -107,7 +107,7 @@ $bp-tablet: 1024px;        // 태블릿 — centered layout
   --code-block-bg: #1e1e1e;
   --code-header-bg: #2d2d2d;
   --code-text-color: #d4d4d4;
-  --code-line-num-color: #858585;
+  --code-line-num-color: #a0a0a0;
   --code-border-color: #333333;
   --code-copy-btn-hover: rgba(255, 255, 255, 0.1);
   --inline-code-bg: rgba(110, 118, 129, 0.4);

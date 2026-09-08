@@ -10,7 +10,7 @@ layout: compress
 
 {% include top-nav.html %}
 
-<div class="site-container" id="main-content">
+<main class="site-container" id="main-content" tabindex="-1">
 
   <article class="post">
     <header class="post-banner">
@@ -21,7 +21,7 @@ layout: compress
     </header>
 
     <div class="content-col">
-      <main class="main-content" role="main">
+      <div class="main-content">
         <div class="page-body">
 
           <div class="post-meta-inline">
@@ -62,11 +62,11 @@ layout: compress
           <a class="post-back-link" href="{{ '/writing/' | relative_url }}">Writing 목록으로 돌아가기</a>
 
         </div>
-      </main>
+      </div>
     </div>
   </article>
 
-</div>
+</main>
 
 {% include footer.html %}
 <script src="{{ '/assets/js/code-copy.js' | relative_url }}"></script>

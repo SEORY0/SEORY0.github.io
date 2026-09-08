@@ -77,6 +77,13 @@ hr.hairline {
   font-size: 14px;
   text-decoration: none;
 
+  &:visited,
+  &:hover,
+  &:focus {
+    color: var(--bg);
+    background: var(--text);
+  }
+
   &:focus {
     left: 16px;
     top: 16px;

@@ -67,3 +67,13 @@ No new accessibility debt is accepted for this change.
   natural content height, no clipped frame or flashing interaction.
 - Keep the halftone backdrop fully opaque and reduce its brightness to 85% in both themes; keep solid text surfaces.
 - Preserve the original oversized Kernel Panic footer mark, 2px frame, rounded upper corners and generous padding.
+
+## Audit remediation
+- Preserve layout, original Kernel Panic footer, monochrome chrome and 85% background brightness at full opacity.
+- Retain Pretendard outlines and variable weights through a 651-character local web subset (renamed PortfolioSans for the Reserved Font Name), with the original complete Unicode subsets as fallback. Load IBM Plex Mono 400/700 only for posts.
+- Article image previews use responsive WebP sources, reserved intrinsic dimensions, an eager first image and lazy lower images. Preserve full-resolution originals.
+- Code palettes must meet 4.5:1 text contrast in both themes; decorative line numbers remain visible but are hidden from assistive technology.
+- Language controls expose the visible EN/KO label and current/action language. Theme controls expose pressed state. Code-copy success and failure have a visible polite status.
+- Skip-link hover, focus and visited states keep the inverse contrast pair.
+
+Code syntax palette (light / dark): comment `#537343` / `#8eaf7d`, keyword `#0000cc` / `#75b9ef`, function `#795e26` / `#dcdcaa`, string `#a31515` / `#ce9178`, number `#08774e` / `#b5cea8`, type `#1f7087` / `#4ec9b0`, name `#001080` / `#9cdcfe`, error `#ad2424` / `#ff8080`. Line numbers: `#626b75` / `#a0a0a0`.
