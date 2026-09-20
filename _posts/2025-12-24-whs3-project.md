@@ -3,6 +3,7 @@ layout: post
 title: Windows Kernel Streaming Driver LPE Analysis (CVE-2024-35250)
 description: Windows Kernel Streaming 드라이버의 CVE-2024-35250 로컬 권한 상승 취약점을 Root Cause, PoC, Exploit 흐름으로 분석합니다.
 summary: ks.sys의 RequestorMode 신뢰 경계 위반을 추적하고, PoC와 kCFG 우회 기반 LPE exploit 구현 과정을 정리합니다.
+preview: /assets/images/previews/writing-whs3-lpe.webp
 comments: true
 tags: [Windows, CVE Analysis]
 ---
