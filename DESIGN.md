@@ -77,3 +77,45 @@ No new accessibility debt is accepted for this change.
 - Skip-link hover, focus and visited states keep the inverse contrast pair.
 
 Code syntax palette (light / dark): comment `#537343` / `#8eaf7d`, keyword `#0000cc` / `#75b9ef`, function `#795e26` / `#dcdcaa`, string `#a31515` / `#ce9178`, number `#08774e` / `#b5cea8`, type `#1f7087` / `#4ec9b0`, name `#001080` / `#9cdcfe`, error `#ad2424` / `#ff8080`. Line numbers: `#626b75` / `#a0a0a0`.
+
+## Hover preview — home
+The single documented exception to §6 "Add no animation". It applies to the
+linked sections of the home page — EXPERIENCE, HACKING TEAMS, DISCLOSURES, CTF,
+SPEAKER, PROJECTS, WRITING — and nowhere else.
+
+- A row with `data-hover-image` shows that thumbnail following the pointer.
+  Rows without one keep the plain CV hover and dismiss the preview rather than
+  leaving the previous row's image under the pointer, so a row never needs an
+  image. The whole feature is an enhancement: no-JS, touch, and coarse pointers
+  get the existing row untouched.
+- A section opts in with `data-hover-image-group` on a `.note-group` wrapper.
+  EXPERIENCE marks its `<section class="experience">` directly instead — a
+  wrapper there would break the `.experience > .note` child combinator.
+- One preview element serves the whole page, and all thumbnails share one
+  stacked track, so moving between rows slides the stack rather than swapping
+  the `src` — the change reads as one surface travelling, and no row waits on a
+  fresh decode. Each section's images are fetched on the first hover into that
+  section, so a visitor pays only for what they explore.
+- No animation library. The pointer follow is an exponential ease on one
+  translate driven by rAF; the fade, scale, and stack slide are CSS
+  transitions, so `prefers-reduced-motion` switches the motion off in the
+  stylesheet. Under reduced motion the frame still tracks the pointer — that
+  movement is the user's own input, not autonomous animation — but stops
+  lagging, and the timed transitions are removed.
+- Thumbnails are 560×350 WebP in `assets/images/previews/`, rendered at
+  280×175 (2× for retina, 16:10). Sources are the repo's own artwork where it
+  exists, and otherwise a 1280×800 capture of the linked page. Keep the
+  full-size originals; the WebP is a derived preview. Posts opt in with
+  `preview:` in their front matter and CTF entries with `preview:` in
+  `_data/ctfs.yml` — deliberately never falling back to a post's `image:`,
+  which is a full-size OG asset measured in megabytes.
+- Surface: `1px solid var(--border)`, 10px radius, `var(--bg)` behind. This is
+  the one place §7's "no shadows" is relaxed — a cursor follower is a genuinely
+  floating layer, and a hairline alone does not separate a photo from the
+  halftone backdrop. Neutral and low-contrast, so it reads as depth, not a card.
+- Layering: `z-index: 900`, below the sticky top bar, so the preview passes
+  beneath the nav instead of covering it.
+- Accessibility: the preview is `aria-hidden` and carries `alt=""` — every row
+  already states its title and description as text, so nothing is lost to
+  keyboard or screen-reader users, who never see it. Accepted debt: the images
+  are reachable by pointer only.

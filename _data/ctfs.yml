@@ -6,11 +6,13 @@
 #   team:      Team name
 #   date:      Optional ISO-style date for display (YYYY-MM-DD)
 #   url:       Optional link (writeup, scoreboard, ranking page)
+#   preview:   Optional 560x350 hover thumbnail under /assets/images/previews/
 
 - event: Hacktheon International University Student Cyber Security Competition
   placement: Finalist
   team: 나는야임영웅
   url: https://hacktheon.org/y2026/
+  preview: /assets/images/previews/hacktheon.webp
 
 - event: HyperSonic CTF
   placement: 2nd

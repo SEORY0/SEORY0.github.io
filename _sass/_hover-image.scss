@@ -1,0 +1,97 @@
+/* ========================================================================== */
+/* Hover preview — cursor-following project thumbnail                          */
+/* Built by assets/js/hover-image.js and appended to <body>, so it escapes the  */
+/* container's overflow: hidden on mobile and never inherits row styling.       */
+/*                                                                             */
+/* Division of labour: JS drives only the outer translate (pointer follow);     */
+/* every timed transition — fade, scale, stack slide — lives here, so           */
+/* prefers-reduced-motion can switch the motion off in one place.               */
+/* ========================================================================== */
+
+.hover-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Under the sticky top bar (z-index: 1000) — the preview passes beneath the
+     nav instead of covering it. */
+  z-index: 900;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* The frame: fixed size, monochrome hairline, clips the sliding track. */
+.hover-preview-inner {
+  width: 280px;
+  height: 175px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  /* The one shadow in the system. A cursor follower is a genuinely floating
+     layer, and a hairline alone does not separate a photo from the halftone
+     backdrop it drifts over. Neutral and low-contrast, so it reads as depth,
+     not as a card. */
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  /* Percentages in translate resolve against the unscaled box, so the frame
+     scales about its own centre and stays pinned to the pointer. */
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.theme-dark .hover-preview-inner {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+.hover-preview.is-visible .hover-preview-inner {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* All thumbnails stack in one column; hovering a row slides the stack by one
+   frame. Moving between rows reads as one surface travelling, not as three
+   images swapping. */
+.hover-preview-track {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transform: translateY(calc(var(--hover-preview-index, 0) * -100%));
+  transition: transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hover-preview-frame {
+  flex: 0 0 100%;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Deliberately no cursor rule on the rows. Link rows already get a pointer
+   from the browser, and a row like CVE Analyzer is a <span> with no href —
+   giving it a pointer would promise a click that goes nowhere. The preview is
+   the only affordance a preview-only row needs. */
+
+/* Pointer-tied movement is the user's own input, not autonomous animation, so
+   the follow stays — it simply stops lagging (see hover-image.js). The timed
+   transitions do not. */
+@media (prefers-reduced-motion: reduce) {
+  .hover-preview-inner,
+  .hover-preview.is-visible .hover-preview-inner {
+    transform: translate(-50%, -50%);
+  }
+
+  .hover-preview-inner {
+    transition: opacity 0.01s linear;
+  }
+
+  .hover-preview-track {
+    transition: none;
+  }
+}
+
+/* Touch and coarse pointers never hover. JS already skips building the preview
+   there; this keeps the rule true if it is ever rendered server-side. */
+@media (hover: none), (pointer: coarse) {
+  .hover-preview { display: none; }
+}

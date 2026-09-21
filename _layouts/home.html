@@ -82,24 +82,36 @@ layout: compress
       </span>
     </span>
 
-    <h2 class="date" id="teams"><span lang="en">CTF TEAMS</span><span lang="ko">CTF 팀</span></h2>
+    <h2 class="date" id="teams"><span lang="en">HACKING TEAMS</span><span lang="ko">해킹팀</span></h2>
 
-    <a class="note" href="https://ssu-asc.kr/" target="_blank" rel="noopener">
-      <h3>ASC</h3><span class="period">ssu-asc.kr</span>
+    <div class="note-group" data-hover-image-group>
+    <a class="note" href="https://ssu-asc.com/" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/asc.webp' | relative_url }}">
+      <h3>ASC</h3><span class="period">ssu-asc.com</span>
     </a>
-    <a class="note" href="https://project-plasma.org/" target="_blank" rel="noopener">
+    <a class="note" href="https://project-plasma.org/" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/fermion.webp' | relative_url }}">
       <h3>Fermion</h3><span class="period">project-plasma.org</span>
     </a>
+    <a class="note" href="https://phylab.space/" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/physical-lab.webp' | relative_url }}">
+      <h3>Physical Lab</h3><span class="period">phylab.space</span>
+    </a>
+    </div>
 
     <h2 class="date" id="disclosures"><span lang="en">DISCLOSURES</span><span lang="ko">취약점 공개</span></h2>
 
-    <a class="note" href="https://www.cve.org/CVERecord?id=CVE-2026-62203" target="_blank" rel="noopener">
+    <div class="note-group" data-hover-image-group>
+    <a class="note" href="https://www.cve.org/CVERecord?id=CVE-2026-62203" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/cve-2026-62203.webp' | relative_url }}">
       <h3>CVE-2026-62203 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
     </a>
-    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-34755" target="_blank" rel="noopener">
+    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-34755" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/cve-2026-34755.webp' | relative_url }}">
       <h3>CVE-2026-34755 — vLLM</h3><span class="description"><span lang="en">disclosed via Huntr</span><span lang="ko">Huntr 제보</span></span>
     </a>
-    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35626" target="_blank" rel="noopener">
+    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35626" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/cve-2026-35626.webp' | relative_url }}">
       <h3>CVE-2026-35626 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
     </a>
     {%- comment -%}
@@ -123,12 +135,15 @@ layout: compress
     <span class="note">
       <h3>GHSA-5968-****-**** — Flowise</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
     </span>
+    </div>
 
     <h2 class="date" id="ctf">CTF</h2>
+    <div class="note-group" data-hover-image-group>
     {% for ev in site.data.ctfs %}
     {% capture ctf_meta %}{{ ev.placement }}{% if ev.team %} — {{ ev.team }}{% endif %}{% endcapture %}
     {% if ev.url %}
-    <a class="note" href="{{ ev.url }}" target="_blank" rel="noopener">
+    <a class="note" href="{{ ev.url }}" target="_blank" rel="noopener"{% if ev.preview %}
+       data-hover-image="{{ ev.preview | relative_url }}"{% endif %}>
       <h3>{{ ev.event }}</h3><span class="period">{{ ctf_meta }}</span>
     </a>
     {% else %}
@@ -137,10 +152,13 @@ layout: compress
     </span>
     {% endif %}
     {% endfor %}
+    </div>
 
     <h2 class="date" id="speaker"><span lang="en">SPEAKER</span><span lang="ko">발표</span></h2>
 
-    <a class="note talk" href="https://hackingcamp.org/" target="_blank" rel="noopener">
+    <div class="note-group" data-hover-image-group>
+    <a class="note talk" href="https://hackingcamp.org/" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/hackingcamp.webp' | relative_url }}">
       <h3>AI for Security for AI - AI 에이전트로 AI 에이전트 해킹하기</h3>
       <span class="talk-speakers">
         <span lang="en"><strong>Seokjun Ryu</strong> &amp; Taeyoung Jeong</span>
@@ -151,9 +169,12 @@ layout: compress
         <span lang="ko">제33회 해킹캠프 · POC Security · 2026.08</span>
       </span>
     </a>
+    </div>
 
     <h2 class="date" id="projects"><span lang="en">PROJECTS</span><span lang="ko">프로젝트</span></h2>
-    <a class="note featured" href="https://github.com/SEORY0/WHS3-KernelPanic" target="_blank" rel="noopener">
+    <div class="note-group" data-hover-image-group>
+    <a class="note featured" href="https://github.com/SEORY0/WHS3-KernelPanic" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/kernelpanic.webp' | relative_url }}">
       <span class="featured-tag"><span lang="en">Featured</span><span lang="ko">대표</span></span>
       <h3>WHS3-KernelPanic</h3>
       <span class="featured-byline">
@@ -161,26 +182,37 @@ layout: compress
         <span lang="ko">Windows 커널/애플리케이션 취약점 분석 — Untrusted Pointer Dereference (CWE-822). Windows 10/11. 스택: C++, Assembly.</span>
       </span>
     </a>
-    <span class="note">
+    <span class="note" data-hover-image="{{ '/assets/images/previews/cve-analyzer.webp' | relative_url }}">
       <h3>CVE Analyzer</h3><span class="description"><span lang="en">AI-powered CVE auto-classification/summarization framework (Python, Gemini API, Docker)</span><span lang="ko">AI 기반 CVE 자동 분류/요약 프레임워크 (Python, Gemini API, Docker)</span></span>
     </span>
-    <a class="note" href="https://wargamebandits.vercel.app/" target="_blank" rel="noopener">
+    <a class="note" href="https://wargamebandits.vercel.app/" target="_blank" rel="noopener"
+       data-hover-image="{{ '/assets/images/previews/wargame-bandits.webp' | relative_url }}">
       <h3>Wargame Bandits</h3><span class="description"><span lang="en">ASC club wargame platform (2025 2nd, ASC)</span><span lang="ko">ASC 동아리 워게임 플랫폼 (2025 2nd, ASC)</span></span>
     </a>
-    <a class="note" href="{{ '/projects/Apin.html' | relative_url }}">
+    <a class="note" href="{{ '/projects/Apin.html' | relative_url }}"
+       data-hover-image="{{ '/assets/images/previews/apin.webp' | relative_url }}">
       <h3>Apin</h3><span class="description"><span lang="en">RISC-V Assembly parsing in a nutshell</span><span lang="ko">RISC-V 어셈블리 파싱 요약</span></span>
     </a>
     <a class="note" href="https://github.com/SEORY0/PCAP_programming" target="_blank" rel="noopener">
       <h3>PCAP_programming</h3><span class="description"><span lang="en">Packet analysis with PCAP API (C)</span><span lang="ko">PCAP API로 패킷 분석 (C)</span></span>
     </a>
+    </div>
 
     {% if site.posts.size > 0 %}
     <h2 class="date" id="writing"><span lang="en">WRITING</span><span lang="ko">글</span></h2>
+    <div class="note-group" data-hover-image-group>
     {% for post in site.posts limit:5 %}
-    <a class="note" href="{{ post.url | relative_url }}">
+    {%- comment -%}
+      Opt in per post with `preview:` in the front matter. Deliberately NOT
+      falling back to `image:` — that is a full-size OG asset (megabytes), not
+      a 560x350 thumbnail.
+    {%- endcomment -%}
+    <a class="note" href="{{ post.url | relative_url }}"{% if post.preview %}
+       data-hover-image="{{ post.preview | relative_url }}"{% endif %}>
       <h3>{{ post.title }}</h3><span class="period">{{ post.date | date: "%Y-%m-%d" }}</span>
     </a>
     {% endfor %}
+    </div>
     <p class="more"><a href="{{ '/writing/' | relative_url }}"><span lang="en">All writing</span><span lang="ko">전체 글 보기</span></a></p>
     {% endif %}
 
@@ -190,6 +222,7 @@ layout: compress
 {% include footer.html %}
 {% include scripts.html %}
 <script type="module" src="{{ '/assets/js/home-shader.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
+<script defer src="{{ '/assets/js/hover-image.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 
 </body>
 </html>
