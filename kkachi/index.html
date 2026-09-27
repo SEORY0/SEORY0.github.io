@@ -1,0 +1,1711 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 모든 경로를 따라가, 확인된 하나를 가져옵니다</title>
+<meta name="description" content="KKACHI(까치)는 코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 재현으로 확인된 취약점만 보고하는 자율 보안 연구 에이전트입니다. 화면의 대상·경로·수치는 모두 설명용 샘플입니다.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F0F0F0">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33H36V12H15ZM3 15H33V45H24V24H3Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33H36V12H15ZM3 15H33V45H24V24H3Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<link rel="preload" href="../assets/fonts/pretendard/font.css" as="style">
+<link rel="stylesheet" href="../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../assets/fonts/mono/font.css">
+<script>(function(d){d.classList.add('js');try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('motion')}catch(e){}})(document.documentElement)</script>
+<style>
+:root {
+  /* §7 — exact names and values */
+  --kkachi-lacquer-black: #292623;
+  --kkachi-lacquer-graphite: #363333;
+  --kkachi-lacquer-smoke: #424041;
+  --kkachi-shell-white: #EDF1F5;
+  --kkachi-shell-cream: #E6E1DF;
+  --kkachi-shell-mist: #F0F0F0;
+  --kkachi-najeon-jade: #5D8D91;
+  --kkachi-najeon-sage: #98A197;
+  --kkachi-najeon-violet: #96688D;
+  --kkachi-najeon-lilac: #928FA1;
+  --kkachi-heritage-taupe: #8F8279;
+  --kkachi-heritage-rose-brown: #877976;
+  --kkachi-heritage-silver-sage: #A2A8A2;
+  --kkachi-heritage-silver-lilac: #9997A6;
+  --kkachi-gradient-najeon: linear-gradient(115deg, #5D8D91 0%, #98A197 35%, #928FA1 68%, #96688D 100%);
+  /* Preset 04 — Lacquer Edge, verbatim from spec §5. Only ever 1px, only on lacquer (incl. the black button). */
+  --kkachi-gradient-lacquer-edge: linear-gradient(90deg, rgba(93,141,145,0.85) 0%, rgba(152,161,151,0.65) 33%, rgba(146,143,161,0.75) 66%, rgba(150,104,141,0.85) 100%);
+
+  /* ── semantic: light frame ── */
+  --text:      var(--kkachi-lacquer-black);
+  --text-2:    var(--kkachi-lacquer-smoke);
+  --surface:   var(--kkachi-shell-mist);
+  --surface-2: var(--kkachi-shell-cream);
+  --card:      var(--kkachi-shell-mist);
+  --line:      rgba(41,38,35,.08);
+  --line-2:    rgba(41,38,35,.16);
+  --rule:      var(--kkachi-lacquer-black);
+  --focus:     var(--kkachi-lacquer-black);
+
+  /* ── semantic: lacquer (dark) ── */
+  --d-surface: var(--kkachi-lacquer-black);
+  --d-card:    var(--kkachi-lacquer-graphite);
+  --d-panel:   var(--kkachi-lacquer-smoke);
+  --d-text:    var(--kkachi-shell-white);
+  --d-text-2:  var(--kkachi-shell-cream);
+  --d-text-3:  rgba(230,225,223,.68);
+  --d-line:    rgba(237,241,245,.08);
+  --d-line-2:  rgba(237,241,245,.16);
+  --d-rule:    rgba(237,241,245,.40);
+  --d-groove:  rgba(237,241,245,.16);
+  --d-muted:   rgba(237,241,245,.55);
+  --d-focus:   var(--kkachi-shell-white);
+
+  /* ── meaning ── */
+  --path:    var(--kkachi-najeon-jade);
+  --finding: var(--kkachi-najeon-violet);
+  --hold:    var(--kkachi-najeon-lilac);
+  --sample:  var(--kkachi-heritage-taupe);
+  --removed: var(--kkachi-heritage-rose-brown);
+
+  /* ── type ── */
+  --sans: 'Portfolio Sans', 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'Portfolio Sans', ui-monospace, Menlo, Consolas, monospace;
+
+  /* ── space & rhythm ── */
+  --m: 64px;
+  --g: 24px;
+  --sec: 160px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+@media (max-width: 1200px) { :root { --m: 40px; --g: 20px; --sec: 128px; } }
+@media (max-width: 900px)  { :root { --m: 32px; --g: 16px; --sec: 104px; } }
+@media (max-width: 600px)  { :root { --m: 20px; --g: 12px; --sec: 88px; } }
+
+.on-dark { --focus: var(--d-focus); color: var(--d-text); }
+
+/* ── base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--surface); color-scheme: light; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html.motion:focus-within { scroll-behavior: smooth; } /* in-page link jumps only; never programmatic/find-in-page scrolls */
+body {
+  margin: 0; background: var(--surface); color: var(--text);
+  font-family: var(--sans); font-size: 16px; line-height: 1.7;
+  word-break: keep-all; overflow-wrap: break-word; line-break: strict;
+  font-synthesis: none; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4 { margin: 0; font-weight: 600; text-wrap: balance; text-rendering: optimizeLegibility; }
+p, dd, li, figcaption { text-wrap: pretty; }
+p, dl, dd, dt, figure, ol, ul { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+a { color: inherit; }
+button, input { font: inherit; color: inherit; }
+svg { overflow: visible; }
+section[id] { scroll-margin-top: 24px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.wrap { max-width: 1440px; margin: 0 auto; padding-inline: var(--m); }
+.g12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); }
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+:focus:not(:focus-visible) { outline: none; }
+
+/* UA colours kept inside the palette (13.26:1 either way) */
+::selection { background: var(--kkachi-lacquer-black); color: var(--kkachi-shell-white); }
+.on-dark ::selection { background: var(--kkachi-shell-white); color: var(--kkachi-lacquer-black); }
+a, button { -webkit-tap-highlight-color: rgba(41,38,35,.08); }
+
+.skip {
+  position: absolute; z-index: 30; top: -64px; left: var(--m);
+  padding: 12px 16px; border-radius: 2px;
+  background: var(--kkachi-lacquer-black); color: var(--kkachi-shell-white);
+  font-weight: 600; font-size: 15px; line-height: 20px; text-decoration: none;
+}
+.skip:focus { top: 12px; }
+
+/* mono label: every mono string is a measurement or a reference */
+.label { font: 400 12px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.ko { font-family: var(--sans); letter-spacing: 0; text-transform: none; }
+.label .ko { font-size: 1.04em; }
+.lc { text-transform: none; }
+.mono { font-family: var(--mono); }
+.tab { font-variant-numeric: tabular-nums; }
+
+/* ── controls ─────────────────────────────────────── */
+.btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  min-height: 48px; padding: 0 22px; border: 0; border-radius: 2px; cursor: pointer;
+  font: 600 15px/1.2 var(--sans); letter-spacing: -.005em; text-decoration: none; white-space: nowrap;
+  transition: background-color .25s var(--ease);
+}
+.arr { display: inline-block; font-family: var(--mono); font-weight: 400; font-size: 14px; line-height: 1; transition: transform .3s var(--ease); }
+.btn:hover .arr, .qlink:hover .arr { transform: translateX(3px); }
+.btn-primary { background: var(--kkachi-lacquer-black); color: var(--kkachi-shell-white); }
+.btn-primary::after {
+  content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 1px;
+  background: var(--kkachi-gradient-lacquer-edge); opacity: 0; transition: opacity .3s var(--ease);
+}
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:active { background: var(--kkachi-lacquer-graphite); }
+.btn-shell { background: var(--kkachi-shell-white); color: var(--kkachi-lacquer-black); }
+.btn-shell:hover { background: var(--kkachi-shell-cream); }
+.btn-shell:active { background: #E6E1DF; transform: translateY(1px); }
+
+.qlink {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px;
+  font-weight: 600; font-size: 15px; line-height: 1.3; letter-spacing: -.005em; text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) left calc(100% - 12px) / 100% 1px no-repeat;
+  transition: background-size .3s var(--ease);
+}
+.qlink:hover { background-image: linear-gradient(var(--path), var(--path)); background-size: 100% 2px; }
+
+.ilink { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: text-decoration-color .25s var(--ease); }
+.ilink:hover { text-decoration-color: var(--path); text-decoration-thickness: 2px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 24px; padding: 2px 9px;
+  border: 1px solid var(--sample); border-radius: 2px;
+  font: 400 11.5px/1.3 var(--mono); letter-spacing: .04em; white-space: nowrap; color: var(--text-2);
+}
+.chip .ko { font-size: 12px; }
+.chip-draft { border-color: var(--line-2); }
+.on-dark .chip { color: var(--d-text-3); }
+
+/* ── header ───────────────────────────────────────── */
+.site-head { position: relative; z-index: 10; }
+.head-row { display: flex; align-items: center; gap: 32px; min-height: 76px; }
+/* logo: the ㄲ symbol + live-text "ACHI". The symbol's two offset ㄱ read as two Kenaz runes
+   (ᚲᚲ, "<<" = KK), so the lockup reads as one word: KK + ACHI. Only the symbol svg sits between the
+   kk-logo markers (swap-logo.mjs replaces that svg alone). Everything is in wordmark ems, so the
+   lockup scales by font-size only.
+   --lk-sym   = the symbol's full 48-unit box. Its ink is 42/48 of the box, so .8114em puts the ink
+                at exactly the cap height (.71em): the symbol sits on the baseline like two letters.
+   --lk-gap   = box edge to the A (.03em; + the box's .0507em side margin = the ink gap). It sits
+                inside the word's clip window, so the letters vanish exactly at the symbol's edge.
+   --lk-inset = the box's side margin (3/48 of --lk-sym); the closing lockup pulls it back so the
+                ink, not the box, meets the column edge.
+   ACHI is set at 780 so its stems match the symbol's stroke (9/42 of the cap height). */
+:root { --lk-sym: .8114em; --lk-gap: .03em; --lk-inset: .0507em; }
+.brand-sym { display: inline-flex; flex: none; position: relative; z-index: 1; }
+.brand-sym svg { display: block; height: var(--lk-sym); width: auto; }
+.brand-word { display: inline-block; overflow: hidden; padding-left: var(--lk-gap); font-weight: 780; text-transform: uppercase; letter-spacing: .015em; white-space: nowrap; }
+.brand-word .bw { display: inline-block; }
+.brand { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); text-decoration: none; font: 700 24px/1 var(--sans); } /* 24px: cap and symbol ink 17px */
+/* Hover: ACHI slides left into the symbol and is clipped at its edge, leaving the ㄲ alone. The link
+   keeps its full width while it plays, so the pointer never falls off it (no open/close flicker).
+   Fine pointers only; under reduced motion (no html.motion) the logo simply stays whole. */
+html.motion .brand-word .bw { transition: transform .55s var(--ease); }
+html.motion .closing .brand-word .bw { transition-duration: .8s; } /* the closing word travels ~16× farther */
+@media (hover: hover) and (pointer: fine) {
+  html.motion :is(.brand, .closing-lockup):hover .brand-word .bw { transform: translateX(calc(-100% - var(--lk-gap) - .08em)); }
+}
+.nav { margin-left: auto; }
+.nav ul { display: flex; align-items: center; gap: 32px; }
+.nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: -.005em; text-decoration: underline;
+  text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 8px;
+  transition: text-decoration-color .25s var(--ease);
+}
+.nav a:hover { text-decoration-color: var(--path); }
+.nav a:active { text-decoration-thickness: 2px; text-decoration-color: var(--path); }
+.nav .nav-cta { display: none; }
+.nav .nav-cta a { gap: 10px; }
+.head-cta { min-height: 44px; padding: 0 18px; font-size: 14px; }
+.menu-btn { display: none; }
+
+/* ── section heads ────────────────────────────────── */
+.eyebrow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; color: var(--text-2); }
+.eyebrow .sep { color: var(--sample); }
+.on-dark .eyebrow { color: var(--d-text-3); }
+.d1 { font-size: clamp(2.375rem, .95rem + 4.3vw, 4.875rem); line-height: 1.06; letter-spacing: -.055em; font-weight: 600; }
+.d2 { font-size: clamp(1.875rem, 1.05rem + 2.6vw, 3.375rem); line-height: 1.12; letter-spacing: -.045em; font-weight: 600; }
+.ln { display: block; }
+.lede { font-size: 17px; line-height: 1.72; letter-spacing: -.01em; color: var(--text-2); }
+
+.sec-head { align-items: end; margin-bottom: 72px; }
+.sec-head .eyebrow { grid-column: 1 / -1; margin-bottom: 30px; }
+.sec-head .d2 { grid-column: 1 / 8; }
+.sec-head .lede { grid-column: 8 / 13; justify-self: end; max-width: 30em; }
+
+/* ── hero ─────────────────────────────────────────── */
+.hero { padding-top: 72px; }
+.hero-top { align-items: end; }
+.hero-top .eyebrow { grid-column: 1 / -1; margin-bottom: 30px; }
+.hero-top .d1 { grid-column: 1 / 9; }
+.hero-aside { grid-column: 9 / 13; padding-bottom: 6px; }
+.hero-aside .lede { max-width: 24em; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: 26px; }
+
+/* ── the lid ──────────────────────────────────────── */
+.stage { margin-top: 64px; }
+.slab {
+  --tilt: .62;
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--d-surface); border-radius: 4px; padding: 20px 32px 28px;
+}
+.slab::after {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background: radial-gradient(80% 110% at 14% -24%, rgba(237,241,245,.045), transparent 62%);
+}
+/* --tilt is written by JS on the three consumers only (not on #slab), and they move by transform
+   only, so tilting never restyles the lid's subtree, never lays out and never repaints the slab.
+   lustre: a 180%-wide sheet = the old background-size 180% / position (1 - tilt)·100%.
+   glint: 28% wide; translateX(tilt · 257.14%) = the old left: tilt · 72%. */
+.lustre { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.lustre::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 180%;
+  background: linear-gradient(104deg, transparent 38%, rgba(237,241,245,.034) 50%, transparent 62%);
+  transform: translateX(calc((var(--tilt) - 1) * 44.444%));
+  transition: transform .9s var(--ease);
+}
+.glint {
+  position: absolute; top: 0; left: 0; width: 28%; height: 1px; pointer-events: none;
+  background: var(--kkachi-gradient-lacquer-edge);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  transform: translateX(calc(var(--tilt) * 257.143%));
+  transition: transform .7s var(--ease);
+}
+/* promote the two tilt layers only where tilt can run (fine pointer + motion) and only while the
+   pointer is over the lid; the 180%-wide lustre sheet is not held in GPU memory otherwise */
+@media (hover: hover) and (pointer: fine) {
+  html.motion .slab:hover .lustre::before, html.motion .slab:hover .glint { will-change: transform; }
+}
+.slab-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; padding: 8px 0 16px; border-bottom: 1px solid var(--d-line); }
+.slab-head .label { font-size: 11.5px; }
+.sh-id { color: var(--d-text); }
+.sh-target { color: var(--d-text-3); }
+.sh-br { display: none; }
+.sh-right { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.status { display: inline-flex; align-items: center; gap: 9px; color: var(--d-text); }
+.status i { display: inline-block; width: 6px; height: 6px; background: var(--path); }
+.st-live, .st-wait { display: none; }
+.clock { color: var(--d-text-3); font-variant-numeric: tabular-nums; }
+.replay {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px;
+  background: transparent; color: var(--d-text-3); border: 1px solid var(--d-line-2); border-radius: 2px; cursor: pointer;
+  font: 400 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.replay::after { content: ""; position: absolute; inset: -6px; }
+.replay:hover { color: var(--d-text); border-color: rgba(237,241,245,.32); }
+.replay:active { border-color: var(--d-text); }
+html:not(.motion) .replay { display: none; }
+
+.slab-body { display: grid; grid-template-columns: minmax(0, 1fr) 336px; gap: clamp(36px, calc(100vw - 1364px), 44px); padding-top: 22px; }
+.graph-box { min-width: 0; }
+.graph { display: block; width: 100%; height: auto; }
+.graph-land { max-width: 1056px; }
+.graph-port { display: none; max-width: 360px; }
+.graph text { font-family: var(--mono); font-size: 11.2px; letter-spacing: .01em; }
+.graph-port text { font-size: 12.5px; }
+.grooves { opacity: .85; transition: opacity 1.4s var(--ease); }
+.grooves path { fill: none; stroke: var(--d-groove); stroke-width: 1; }
+.e { fill: none; }
+.e-a { stroke: var(--path); stroke-width: 1.6; }
+.e-r { stroke: rgba(237,241,245,.5); stroke-width: 1; opacity: .56; }
+.e-p { stroke: var(--hold); stroke-width: 1; stroke-dasharray: 2 3; }
+.nd-a { fill: var(--path); }
+.nd-i { fill: var(--d-surface); stroke: rgba(237,241,245,.3); stroke-width: 1; }
+.nd-r rect { fill: var(--d-surface); stroke: rgba(237,241,245,.45); stroke-width: 1; }
+.nd-r path { fill: none; stroke: rgba(237,241,245,.45); stroke-width: 1; }
+.nd-p rect { fill: var(--d-surface); stroke: var(--hold); stroke-width: 1; }
+.lb-a { fill: var(--d-text); }
+.lb-x, .lb-p, .tag { fill: var(--d-text-3); }
+.lb-x { text-decoration: line-through; } /* rejected only; the pending (H4) label is never struck */
+.graph .tag { font-family: var(--sans); font-size: 11.2px; letter-spacing: 0; }
+.graph-port .tag { font-size: 12px; }
+.ruler-base { fill: none; stroke: var(--d-line-2); }
+.ruler-minor { fill: none; stroke: rgba(237,241,245,.12); }
+.ruler-major { fill: none; stroke: rgba(237,241,245,.4); }
+.graph .ruler-t { fill: var(--d-text-3); font-size: 11.2px; letter-spacing: .1em; }
+.f-ring { fill: none; stroke: var(--finding); stroke-width: 1; }
+.f-ticks { fill: none; stroke: rgba(237,241,245,.8); stroke-width: 1; }
+.f-edge { fill: none; stroke: var(--finding); stroke-width: 1; }
+.f-sheen { transform: translateX(calc((var(--tilt) - .62) * -48px)); transition: transform .7s var(--ease); }
+.graph .lb-f1 { fill: var(--d-text); font-size: 12px; letter-spacing: .04em; }
+.graph .lb-f2 { fill: var(--d-text-3); }
+.graph-port .lb-f1 { font-size: 13px; }
+
+.readout { display: flex; flex-direction: column; min-width: 0; border-left: 1px solid var(--d-line); padding-left: 30px; }
+.ro-h { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--d-text-3); font-size: 11.5px; }
+.log { font: 400 12px/1.5 var(--mono); }
+.log li { display: grid; grid-template-columns: 22px 56px minmax(0, 1fr); gap: 8px; padding: 3px 0; color: var(--d-text-3); }
+.log .n { font-variant-numeric: tabular-nums; }
+.log .k { letter-spacing: .06em; }
+.log .v { color: var(--d-text-2); overflow-wrap: anywhere; word-break: keep-all; }
+.log .v .ko { font-size: 12.5px; }
+.log .is-trace .k, .log .is-ok .k, .log .is-ok .v { color: var(--d-text); }
+/* ≥1400 the readout is a 336px column: a tighter index/verb grid (the widest verb, VERIFY, is 47.5px)
+   gives the value column 225px, so row 08 (read_chunk → copy_rows → memcpy, ≈230px) holds one line
+   like the other eight. Narrower readouts bind each arrow to the name before it (markup), so a wrap
+   never starts a line with →. */
+@media (min-width: 1400px) {
+  .log li { grid-template-columns: 18px 50px minmax(0, 1fr); gap: 6px; }
+  .log .is-3hop .v { letter-spacing: -.03em; } /* the two arrows fall back to a wider face (≈10.8px): −.36px a glyph closes the last 5px */
+}
+.log { margin-bottom: 20px; }
+.ro-foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--d-line); }
+.ro-foot .qlink { color: var(--d-text); }
+
+.fig-cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 24px; font-size: 14px; line-height: 1.6; color: var(--text-2); }
+.fig-cap .label { color: var(--text); margin-right: 14px; }
+
+/* ── 01 method ────────────────────────────────────── */
+.method { padding-block: var(--sec); }
+.line { position: relative; margin-top: 40px; }
+.stations { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: var(--g); }
+.stations::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--rule); }
+.stations::after { content: ""; position: absolute; left: 0; right: 0; top: -.5px; height: 2px; background: var(--path); transform-origin: left center; }
+.station { position: relative; min-width: 0; padding-top: 28px; }
+.station::before { content: ""; position: absolute; left: 0; top: -3px; width: 7px; height: 7px; background: var(--rule); }
+.st-idx { position: absolute; left: 0; top: -30px; display: flex; gap: 10px; color: var(--text-2); }
+.st-idx .n { color: var(--text); }
+.st-t { font-size: clamp(1.25rem, 1.05rem + .75vw, 1.75rem); line-height: 1.38; letter-spacing: -.025em; }
+.st-p { margin-top: 12px; max-width: 18em; font-size: 15px; line-height: 1.7; color: var(--text-2); }
+.st-data { margin-top: 20px; display: grid; gap: 6px; font: 400 12px/1.5 var(--mono); color: var(--text-2); }
+.st-data div { display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 8px; }
+.st-data dt { letter-spacing: .08em; text-transform: uppercase; color: var(--text); }
+.st-data .ko { font-size: 12.5px; }
+.nw { white-space: nowrap; }
+.st-end { position: absolute; right: 0; top: 0; }
+.st-end i { position: absolute; right: 0; top: -5px; width: 11px; height: 11px; background: var(--finding); transform: rotate(45deg); }
+.st-end .label { position: absolute; right: 0; top: -30px; color: var(--text); white-space: nowrap; }
+.cap-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 48px; font-size: 14px; line-height: 1.6; color: var(--text-2); }
+
+/* ── 02 console ───────────────────────────────────── */
+.console { padding: 144px 0 152px; background: var(--d-surface); }
+.c-head { align-items: end; margin-bottom: 72px; }
+.c-head-l { grid-column: 1 / 8; }
+.c-head-l .eyebrow { margin-bottom: 30px; }
+.c-lede { margin-top: 28px; max-width: 32em; font-size: 17px; line-height: 1.75; letter-spacing: -.01em; color: var(--d-text-2); }
+.spec { grid-column: 9 / 13; border-top: 1px solid var(--d-rule); }
+.spec div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--d-line); }
+.spec dt { font-size: 11.5px; color: var(--d-text-3); }
+.spec dd { font-size: 14.5px; line-height: 1.5; color: var(--d-text); }
+.spec dd .mono { font-size: 12.5px; letter-spacing: .02em; }
+.spec dd .chip { vertical-align: middle; }
+
+.plate { background: var(--d-card); border: 1px solid var(--d-line); border-radius: 4px; overflow: hidden; }
+.plate-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; padding: 14px 32px; background: var(--d-surface); border-bottom: 1px solid var(--d-line); }
+.pb-name { display: inline-flex; align-items: center; gap: 10px; color: var(--d-text); }
+.pb-name .label { font-size: 11.5px; }
+.pb-mark { display: inline-flex; color: var(--d-text); }
+.pb-mark svg { display: block; height: 16px; width: auto; } /* 16px box = 14px ink (§6); 16px is the symbol's smallest pixel-exact box (LOCKUP.md) */
+
+.f-head { position: relative; align-items: end; padding: 40px 32px; border-bottom: 1px solid var(--d-line); }
+.f-head::before { content: ""; position: absolute; left: 32px; top: -1px; width: 56px; height: 2px; background: var(--finding); }
+.f-main { grid-column: 1 / 8; }
+.f-state { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--d-text-3); }
+.f-state .dia { display: inline-block; width: 8px; height: 8px; margin: 0 3px; background: var(--finding); transform: rotate(45deg); }
+.f-state b { font-weight: 400; color: var(--d-text); }
+.f-title { margin: 16px 0; font-size: clamp(1.5rem, 1.2rem + .8vw, 2rem); line-height: 1.3; letter-spacing: -.03em; }
+.f-sum { max-width: 36em; font-size: 16px; line-height: 1.75; color: var(--d-text-2); }
+.f-main .qlink { margin-top: 12px; color: var(--d-text); }
+.f-dl { grid-column: 9 / 13; align-self: end; font: 400 12.5px/1.5 var(--mono); }
+.f-dl div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--d-line); }
+.f-dl div:last-child { border-bottom: 1px solid var(--d-line); }
+.f-dl dt { font-size: 11.5px; letter-spacing: .08em; color: var(--d-text-3); } /* the one label-mono size, as .spec dt */
+.f-dl dd { color: var(--d-text); overflow-wrap: anywhere; word-break: keep-all; }
+.f-dl dd .ko { font-size: 13.5px; }
+
+.cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1px; background: var(--d-line); }
+.cell { min-width: 0; padding: 28px 32px 34px; background: var(--d-card); }
+.c-a { grid-column: 1 / 5; }
+.c-b { grid-column: 5 / 10; container-type: inline-size; }
+.c-c { grid-column: 10 / 13; }
+.c-d { grid-column: 1 / -1; container-type: inline-size; }
+.cell-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 20px; }
+.cell-h .label { font-size: 11.5px; color: var(--d-text-3); }
+.cell-h .ct { font-size: 14px; line-height: 1.4; font-weight: 600; letter-spacing: -.01em; color: var(--d-text); }
+
+/* A · hypotheses */
+.hyps { display: grid; margin: 0 -14px; }
+.hyp {
+  position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 10px; width: 100%;
+  padding: 13px 14px 14px; border: 0; border-top: 1px solid var(--d-line); border-radius: 0;
+  background: transparent; text-align: left; cursor: pointer;
+  transition: background-color .2s var(--ease);
+}
+.hyp:first-child { border-top-color: transparent; }
+.hyp:hover { background: rgba(237,241,245,.04); }
+.hyp:focus-visible { outline-offset: -2px; }
+.hyp:active { background: var(--d-panel); }
+.hyp .id { font: 400 12px/1.8 var(--mono); color: var(--d-text-3); }
+.hyp .q { font-size: 14.5px; line-height: 1.55; letter-spacing: -.01em; color: var(--d-text); }
+.hyp .why { grid-column: 2; font-size: 13px; line-height: 1.5; color: var(--d-text-3); }
+.hyp[aria-checked="true"] { background: var(--d-panel); border-radius: 2px; border-top-color: transparent; }
+.hyp[aria-checked="true"] + .hyp { border-top-color: transparent; }
+.hyp[aria-checked="true"]::before { content: ""; position: absolute; left: 0; top: 12px; bottom: 12px; width: 2px; background: var(--d-text); }
+.hyp[aria-checked="true"] .id, .hyp[aria-checked="true"] .why { color: var(--d-text-2); }
+.hyp .q, .hyp .why, .lnotes span { text-wrap: pretty; } /* grid items, so the p/li orphan control reaches them too */
+/* rejected: dimmer text (--d-text-3, ≥ 4.65:1 even on smoke) under a strike that reads at 1× */
+.hyp.is-rej .q { color: var(--d-text-3); text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: rgba(237,241,245,.7); }
+.hyp.is-rej[aria-checked="true"] .q { color: var(--d-text-2); }
+html:not(.js) .hyp { cursor: default; }
+
+/* status word + glyph (§5.3) */
+.st { display: inline-flex; align-items: center; gap: 6px; margin-right: 8px; font: 400 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--d-text-3); vertical-align: 1px; white-space: nowrap; }
+.st::before { content: ""; flex: none; width: 9px; height: 9px; background-repeat: no-repeat; }
+.st-ok { color: var(--d-text); }
+.hyp[aria-checked="true"] .st-ok { color: var(--d-text); }
+/* jade square with a 1px shell edge (the ruler ◆ precedent): jade alone is 2.78:1 on the checked row's smoke */
+.st-ok::before { background-image: linear-gradient(var(--path), var(--path)), linear-gradient(rgba(237,241,245,.55), rgba(237,241,245,.55)); background-position: 2px 2px, 1px 1px; background-size: 5px 5px, 7px 7px; }
+.st-rej::before {
+  --c: rgba(237,241,245,.45);
+  background-image:
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(45deg, transparent calc(50% - .6px), var(--c) calc(50% - .6px) calc(50% + .6px), transparent calc(50% + .6px)),
+    linear-gradient(-45deg, transparent calc(50% - .6px), var(--c) calc(50% - .6px) calc(50% + .6px), transparent calc(50% + .6px));
+  background-position: 2px 2px, 2px 6px, 2px 2px, 6px 2px, 0 0, 0 0;
+  background-size: 5px 1px, 5px 1px, 1px 5px, 1px 5px, 9px 9px, 9px 9px;
+}
+.st-hold::before {
+  --c: var(--hold);
+  background-image:
+    repeating-linear-gradient(90deg, var(--c) 0 1px, transparent 1px 2px), repeating-linear-gradient(90deg, var(--c) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(180deg, var(--c) 0 1px, transparent 1px 2px), repeating-linear-gradient(180deg, var(--c) 0 1px, transparent 1px 2px);
+  background-position: 2px 2px, 2px 6px, 2px 2px, 6px 2px;
+  background-size: 5px 1px, 5px 1px, 1px 5px, 1px 5px;
+}
+
+/* B · root cause */
+.code { position: relative; margin: 0 -32px; padding: 2px 0; font: 400 12.5px/1.8 var(--mono); color: var(--d-text-2); white-space: normal; }
+/* the block runs flush to its cell edges at every width, so the ring is inset (an outward one would be
+   clipped by the plate). It is drawn by ::after, which follows the positioned .l rows in paint order,
+   so the hot bands and their 2px bars at 207/212 can never cover it. */
+.code:focus-visible { outline: none; }
+.code:focus-visible::after { content: ""; position: absolute; inset: 0; outline: 2px solid var(--focus); outline-offset: -2px; border-radius: 2px; pointer-events: none; }
+.code code { display: block; font: inherit; }
+.code .l { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); padding: 0 32px; }
+.code .n { color: var(--d-text-3); -webkit-user-select: none; user-select: none; font-variant-numeric: tabular-nums; }
+.code .c { white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; padding-left: 6ch; text-indent: -6ch; } /* hanging indent deeper than the 4-space code indent, so a wrap never reads as a new statement */
+.code .kw { color: var(--d-text); }
+.code .cm { color: var(--d-text-3); }
+.code .nw { white-space: nowrap; }
+.code .l.hot { background: var(--d-panel); color: var(--d-text); }
+.code .l.hot .n { color: var(--d-text-2); }
+.code .l.hot::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; }
+.code .l.root::before { background: var(--path); }
+.code .l.sink::before { background: var(--finding); }
+.code .u { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.code .root .u { text-decoration-color: var(--path); }
+.code .sink .u { text-decoration-color: var(--finding); }
+@container (max-width: 430px) { .code .cm { display: none; } }
+.lnotes { display: grid; gap: 8px; margin-top: 18px; font-size: 13.5px; line-height: 1.6; color: var(--d-text-2); }
+.lnotes li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 4px; }
+.lnotes .at { display: inline-flex; align-items: center; gap: 8px; height: 21.6px; font: 400 12px/1 var(--mono); color: var(--d-text); }
+.lnotes .at::before { content: ""; width: 2px; height: 12px; }
+.lnotes .root .at::before { background: var(--path); }
+.lnotes .sink .at::before { background: var(--finding); }
+
+/* C · reproduction */
+.rep-big { display: flex; align-items: flex-end; gap: 16px; }
+.rep-big b { font: 400 64px/1 var(--mono); letter-spacing: -.05em; font-variant-numeric: tabular-nums; color: var(--d-text); }
+.rep-big b small { font-size: .45em; letter-spacing: 0; color: var(--d-text-3); }
+.rep-big span { padding-bottom: 4px; font-size: 13px; line-height: 1.45; color: var(--d-text-2); }
+.runs { margin-top: 22px; font: 400 12px/1.5 var(--mono); }
+.runs li { display: grid; grid-template-columns: 50px 14px minmax(0, 1fr); gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--d-line); }
+.runs li:last-child { border-bottom: 1px solid var(--d-line); }
+.runs .rn { letter-spacing: .06em; color: var(--d-text-3); }
+.runs svg { display: block; width: 12px; height: 12px; }
+.runs svg path { fill: none; stroke: var(--path); stroke-width: 1.6; }
+.runs .t { color: var(--d-text-2); font-variant-numeric: tabular-nums; }
+.env { margin-top: 14px; font-size: 12.5px; line-height: 1.6; color: var(--d-text-3); }
+
+/* D · session ruler — one hairline, nothing is erased */
+.sr { position: relative; height: 116px; margin-top: 4px; }
+.sr > * { position: absolute; }
+.sr-track { left: 0; top: 24px; width: 70%; height: 1px; background: var(--d-line-2); }
+.sr-future { left: var(--at); width: var(--len); top: 24px; height: 1px; background: repeating-linear-gradient(90deg, rgba(237,241,245,.28) 0 2px, transparent 2px 6px); }
+.sr-seg { left: var(--at); width: var(--len); top: 24px; height: 1px; background: var(--d-muted); }
+.sr-seg.is-b { top: 23px; height: 3px; background: var(--path); }
+.sr-stub { left: var(--at); top: 25px; width: 0; height: 0; }
+.sr-stub::before { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 19px; background: rgba(237,241,245,.45); }
+.sr-stub::after { content: ""; position: absolute; left: -3px; top: 19px; width: 7px; height: 1px; background: rgba(237,241,245,.45); }
+.sr-stub.r2::before { height: 41px; }
+.sr-stub.r2::after { top: 41px; }
+.sr-stub.is-hold::before { background: repeating-linear-gradient(180deg, var(--hold) 0 2px, transparent 2px 5px); }
+.sr-stub.is-hold::after { display: none; }
+.sr-lab { position: absolute; white-space: nowrap; font: 400 11.5px/14px var(--mono); letter-spacing: .02em; color: var(--d-text-3); transition: color .2s var(--ease); }
+.sr-lab .ko { font-size: 12px; }
+.sr-stub .sr-lab { left: 8px; top: 12px; }
+.sr-stub.r2 .sr-lab { top: 34px; }
+.sr > .sr-lab { left: var(--at); }
+.sr-lab.r1 { top: 37px; }
+.sr-lab.r2 { top: 59px; }
+.sr-ring { left: var(--at); top: 21px; width: 7px; height: 7px; margin-left: -3px; border: 1px solid var(--d-muted); border-radius: 50%; background: var(--d-card); }
+.sr-tick { left: var(--at); top: 18px; width: 1px; height: 13px; background: var(--path); }
+.sr-find { left: var(--at); top: 20px; width: 9px; height: 9px; margin-left: -4px; background: var(--finding); transform: rotate(45deg); box-shadow: 0 0 0 2px var(--d-card), 0 0 0 3px rgba(237,241,245,.7); }
+.sr-play { left: var(--at); top: 0; width: 1px; height: 24px; background: var(--d-text); }
+.sr-play .sr-lab { left: 10px; top: 0; font-size: 11px; color: var(--d-text); }
+.sr-axis { left: 0; right: 0; top: 92px; height: 14px; font: 400 11px/14px var(--mono); color: var(--d-text-3); font-variant-numeric: tabular-nums; }
+.sr-axis span { position: absolute; top: 0; left: var(--at); transform: translateX(-50%); }
+.sr-axis span::before { content: ""; position: absolute; left: 50%; top: -8px; width: 1px; height: 5px; background: rgba(237,241,245,.3); }
+.sr-axis span:first-child { transform: none; }
+.sr-axis span:first-child::before { left: 0; }
+.sr-axis span:last-child { transform: translateX(-100%); }
+.sr-axis span:last-child::before { left: auto; right: 0; }
+.sr .m, .sr-stub::before, .sr-stub::after { transition: opacity .2s var(--ease); }
+.sr[data-sel="h1"] .m[data-h]:not([data-h="h1"]), .sr[data-sel="h1"] .sr-stub:not([data-h="h1"])::before, .sr[data-sel="h1"] .sr-stub:not([data-h="h1"])::after,
+.sr[data-sel="h2"] .m[data-h]:not([data-h="h2"]), .sr[data-sel="h2"] .sr-stub:not([data-h="h2"])::before, .sr[data-sel="h2"] .sr-stub:not([data-h="h2"])::after,
+.sr[data-sel="h3"] .m[data-h]:not([data-h="h3"]), .sr[data-sel="h3"] .sr-stub:not([data-h="h3"])::before, .sr[data-sel="h3"] .sr-stub:not([data-h="h3"])::after,
+.sr[data-sel="h4"] .m[data-h]:not([data-h="h4"]), .sr[data-sel="h4"] .sr-stub:not([data-h="h4"])::before, .sr[data-sel="h4"] .sr-stub:not([data-h="h4"])::after { opacity: .4; }
+.sr[data-sel="h2"] .sr-stub[data-h="h2"] .sr-lab, .sr[data-sel="h3"] .sr-stub[data-h="h3"] .sr-lab, .sr[data-sel="h4"] .sr-stub[data-h="h4"] .sr-lab { color: var(--d-text); }
+
+/* narrow horizontal ruler (≥601 viewport = 483px+ container). The §7.4 rows are kept wherever they
+   fit; each label moves only below the container width where it would actually collide:
+   - H2 label flips to the LEFT of its stub (the space under READ/HYPO is empty), else the H3 stub
+     hairline at 41% cuts through it;
+   - H3 label flips left too, else it runs into the ring label (입력 1–2) at 60%;
+   - 재현 3/3 lifts onto the playhead row, right-aligned to it, else it runs into the H4 label. */
+@container (max-width: 840px) { .sr-stub[data-h="h2"] .sr-lab { left: auto; right: 8px; } }
+@container (max-width: 690px) { .sr-stub[data-h="h3"] .sr-lab { left: auto; right: 8px; } }
+@container (max-width: 730px) { .sr > .sr-lab.rep { top: 0; left: auto; right: calc(30% + 10px); } }
+/* vertical spine: phone only (§4 / §7.4: horizontal at ≥601) */
+@media (max-width: 600px) {
+  .sr { height: 460px; }
+  .sr-track { left: 64px; top: 0; width: 1px; height: 70%; }
+  .sr-future { left: 64px; top: var(--at); width: 1px; height: var(--len); background: repeating-linear-gradient(180deg, rgba(237,241,245,.28) 0 2px, transparent 2px 6px); }
+  .sr-seg { left: 64px; top: var(--at); width: 1px; height: var(--len); }
+  .sr-seg.is-b { left: 63px; top: var(--at); width: 3px; height: var(--len); }
+  .sr-stub, .sr-stub.r2 { left: 65px; top: var(--at); }
+  .sr-stub::before, .sr-stub.r2::before { left: 0; top: 0; width: 16px; height: 1px; }
+  .sr-stub::after, .sr-stub.r2::after { left: 15px; top: -3px; width: 1px; height: 7px; }
+  .sr-stub.is-hold::before { background: repeating-linear-gradient(90deg, var(--hold) 0 2px, transparent 2px 5px); }
+  .sr-stub .sr-lab, .sr-stub.r2 .sr-lab, .sr-stub[data-h] .sr-lab { left: 23px; right: auto; top: -7px; }
+  .sr > .sr-lab, .sr-lab.r1, .sr-lab.r2 { left: 88px; right: auto; top: calc(var(--at) - 7px); }
+  .sr > .sr-lab.rep { left: 88px; right: auto; top: calc(65.5% - 7px); } /* level with the middle repro tick */
+  .sr-ring { left: 64px; top: var(--at); margin: -3px 0 0 -3px; }
+  .sr-tick { left: 58px; top: var(--at); width: 13px; height: 1px; }
+  .sr-find { left: 64px; top: var(--at); margin: -4px 0 0 -4px; }
+  .sr-play { left: 65px; top: var(--at); width: 18px; height: 1px; }
+  .sr-play .sr-lab { left: 23px; top: -7px; }
+  .sr-axis { left: 0; top: 0; bottom: 0; width: 52px; height: auto; }
+  .sr-axis span, .sr-axis span:first-child, .sr-axis span:last-child { left: auto; right: 0; top: var(--at); transform: translateY(-50%); }
+  .sr-axis span:first-child { transform: translateY(-3px); }
+  .sr-axis span:last-child { transform: translateY(calc(-100% + 3px)); }
+  .sr-axis span::before, .sr-axis span:first-child::before, .sr-axis span:last-child::before { left: auto; right: -11px; top: 50%; width: 5px; height: 1px; }
+  .sr-axis span:first-child::before { top: 3px; }
+  .sr-axis span:last-child::before { top: auto; bottom: 3px; }
+  .sr-axis .odd { display: none; }
+}
+.sr-legend { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 16px; font-size: 11.5px; line-height: 1.5; color: var(--d-text-3); }
+.sr-legend span { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.sr-legend .ko { font-size: 12px; }
+.sr-legend .mono { font-size: 11.5px; letter-spacing: .02em; }
+.lg { display: inline-block; flex: none; }
+.lg-trace { width: 16px; height: 3px; background: var(--path); }
+.lg-read { width: 16px; height: 1px; background: var(--d-muted); }
+.lg-rej { position: relative; width: 7px; height: 11px; }
+.lg-rej::before { content: ""; position: absolute; left: 3px; top: 0; width: 1px; height: 10px; background: rgba(237,241,245,.45); }
+.lg-rej::after { content: ""; position: absolute; left: 0; top: 10px; width: 7px; height: 1px; background: rgba(237,241,245,.45); }
+.lg-hold { width: 1px; height: 11px; background: repeating-linear-gradient(180deg, var(--hold) 0 2px, transparent 2px 5px); margin: 0 3px; }
+.lg-ring { width: 7px; height: 7px; border: 1px solid var(--d-muted); border-radius: 50%; }
+.lg-find { width: 7px; height: 7px; margin: 0 3px; background: var(--finding); transform: rotate(45deg); box-shadow: 0 0 0 1.5px var(--d-card), 0 0 0 2.5px rgba(237,241,245,.7); } /* same white ring as the ruler ◆ it keys */
+
+.plate-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding: 22px 32px; background: var(--d-surface); }
+.plate-foot p { font-size: 15px; line-height: 1.6; color: var(--d-text-2); }
+
+/* ── 03 report ────────────────────────────────────── */
+.report { padding-block: var(--sec); background: var(--surface-2); }
+.report-grid { row-gap: 0; }
+.part { position: relative; grid-column: 1 / 9; min-width: 0; padding: 28px 40px; background: var(--card); border: 1px solid var(--line); border-bottom: 0; }
+.part.p0 { border-radius: 2px 2px 0 0; padding-top: 32px; padding-bottom: 32px; }
+.part.p0::before { content: ""; position: absolute; left: 40px; top: -1px; width: 56px; height: 2px; background: var(--finding); }
+.part.p6 { border-bottom: 1px solid var(--line); border-radius: 0 0 2px 2px; padding-bottom: 32px; }
+.p0-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
+.p0-row .label { color: var(--text); }
+.r-title { margin: 18px 0 10px; font-size: clamp(1.5rem, 1.2rem + .8vw, 2rem); line-height: 1.3; letter-spacing: -.03em; }
+.r-meta { font: 400 12px/1.7 var(--mono); color: var(--text-2); letter-spacing: .02em; }
+.r-meta .grp { white-space: nowrap; }
+/* one line at ≥1201; below that it breaks only between its two groups (no separator at a line start);
+   ≤600 goes one reference per line */
+@media (max-width: 1200px) { .r-meta .grp { display: block; } .r-meta > .sep { display: none; } }
+.part-h { display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 10px; color: var(--text-2); }
+.part-h .n { color: var(--text); }
+.part-b { max-width: 40em; font-size: 16px; line-height: 1.75; color: var(--text); }
+.part-b .mono { font-size: 13.5px; }
+.part-b .est { color: var(--text-2); }
+.rc { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px 10px; align-items: baseline; margin-left: -24px; }
+.rc .mono { display: inline-block; margin-right: 10px; font-size: 12.5px; letter-spacing: .02em; }
+.rc .rc-a { color: var(--text-2); }
+.cmd { margin-bottom: 12px; padding: 10px 14px; border-radius: 2px; background: var(--surface-2); font: 400 12.5px/1.7 var(--mono); color: var(--text); overflow-wrap: anywhere; word-break: normal; }
+.cmd > span { display: block; }
+.cmd-note { font-size: 14px; line-height: 1.6; color: var(--text-2); }
+.diff { font: 400 12.5px/1.8 var(--mono); color: var(--text); }
+.diff li { position: relative; display: grid; grid-template-columns: 16px minmax(0, 1fr); padding-left: 12px; overflow-wrap: anywhere; word-break: normal; }
+.diff li::before { content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 2px; }
+.diff .rm::before { background: var(--removed); }
+.diff .ad::before { background: var(--path); }
+.diff .nw { white-space: nowrap; }
+.rv { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.rv .pair { display: inline-flex; align-items: baseline; gap: 12px; white-space: nowrap; } /* a key never wraps away from its value */
+.rv .k { color: var(--text-2); font-size: 14px; }
+.rv .blank { display: inline-block; width: 7em; border-bottom: 1px solid var(--rule); transform: translateY(-4px); }
+.rv .dot { color: var(--text-2); }
+
+.note { position: relative; grid-column: 9 / 13; padding: 28px 0 0 24px; font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+.note .label { display: block; color: var(--text); margin-bottom: 4px; }
+.note::before { content: ""; position: absolute; top: 36px; left: calc(var(--g) * -1); width: calc(var(--g) + 16px); height: 1px; background: var(--rule); }
+.note::after { content: ""; position: absolute; top: 34.5px; left: calc(var(--g) * -1 - 2.5px); width: 4px; height: 4px; border-radius: 50%; background: var(--rule); }
+.notes-m { display: none; }
+
+/* ── 04 principles ───────────────────────────────── */
+.principles { padding-top: var(--sec); }
+.plist { border-top: 1px solid var(--rule); }
+.plist li { align-items: baseline; padding: 40px 0; border-bottom: 1px solid var(--line-2); }
+.plist .pn { grid-column: 1 / 2; color: var(--text-2); }
+.plist h3 { grid-column: 2 / 8; font-size: clamp(1.25rem, 1.05rem + .75vw, 1.75rem); line-height: 1.38; letter-spacing: -.025em; }
+.plist p { grid-column: 8 / 13; align-self: center; max-width: 30em; font-size: 15.5px; line-height: 1.7; color: var(--text-2); }
+
+/* ── 05 notes ─────────────────────────────────────── */
+.notes { padding-top: var(--sec); }
+.nlist { border-top: 1px solid var(--rule); }
+.nlist li { align-items: baseline; min-height: 72px; padding: 20px 0; border-bottom: 1px solid var(--line-2); }
+.nlist .nid { grid-column: 1 / 3; color: var(--text-2); }
+.nlist h3 { grid-column: 3 / 11; font-size: 18px; line-height: 1.45; letter-spacing: -.02em; }
+.nlist .chip { grid-column: 11 / 13; justify-self: end; }
+.notes .after { margin-top: 28px; }
+
+/* ── access ───────────────────────────────────────── */
+.access { padding-block: var(--sec); }
+.access .eyebrow { margin-bottom: 30px; }
+.ax-h { grid-column: 1 / 11; }
+.ax-h .l1 { font-weight: 300; color: var(--text-2); letter-spacing: -.045em; }
+.ax-h .l2 { white-space: nowrap; }
+.stop { display: inline-block; width: max(10px, .2em); height: max(10px, .2em); margin-left: .07em; vertical-align: baseline; }
+.ax-body { margin-top: 64px; }
+.ax-l { grid-column: 1 / 7; }
+.ax-l .lede { max-width: 30em; }
+.ax { margin-top: 32px; }
+.ax-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px; }
+.fld { display: grid; gap: 4px; min-width: 0; }
+.fld-email { flex: 1.4 1 180px; } /* 180 + 120 + button 166 + 2 × 20 = 506 ≤ the 524px of cols 1–6 at 1201: one row at ≥1201 (§14) */
+.fld-org { flex: 1 1 120px; }
+.ax-row .btn { flex: 0 0 auto; }
+.fld label { font-size: 13px; font-weight: 500; line-height: 1.5; color: var(--text-2); }
+.fld label .en { margin-left: 4px; font: 400 11.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.fld label .opt { font-weight: 400; }
+.fld input {
+  width: 100%; height: 52px; margin: 0; padding: 0 2px; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0;
+  background: transparent; font-size: 17px; font-weight: 400; color: var(--text); -webkit-appearance: none; appearance: none;
+}
+.fld input::placeholder { color: var(--text-2); opacity: 1; }
+.fld input:-webkit-autofill { -webkit-text-fill-color: var(--text); transition: background-color 600000s 0s; } /* keeps the UA autofill tint off the transparent field, without an inset shadow */
+.fld input:hover, .fld input:focus-visible { border-bottom-width: 2px; margin-bottom: -1px; }
+.fld input:focus-visible { outline-offset: 4px; }
+.err { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--text); }
+.err::before { content: ""; flex: none; width: 6px; height: 6px; background: var(--removed); }
+/* both live regions stay rendered (in the accessibility tree) while empty; only their spacing and glyph collapse */
+.err:empty { margin-top: 0; }
+.err:empty::before { display: none; }
+#ax-hint { margin-top: 14px; font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+#ax-status { margin-top: 12px; font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--text); }
+#ax-status:empty { margin-top: 0; }
+#ax-status small { display: block; font-size: 13.5px; font-weight: 400; color: var(--text-2); }
+.ax-r { grid-column: 8 / 13; }
+.ax-r > .label { color: var(--text-2); margin-bottom: 14px; }
+.gloss { max-width: 26em; font-size: 16px; line-height: 1.75; color: var(--text); }
+.lex { margin-top: 28px; border-top: 1px solid var(--rule); }
+.lex div { display: grid; grid-template-columns: 9em minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line-2); }
+.lex dt { font-size: 15px; font-weight: 600; line-height: 1.5; }
+.lex dt .label { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 400; color: var(--text-2); }
+.lex dd { font-size: 14.5px; line-height: 1.6; color: var(--text-2); }
+
+/* ── footer ───────────────────────────────────────── */
+.foot-row { padding-top: 28px; border-top: 1px solid var(--line-2); font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+.foot-nav { grid-column: 1 / 5; }
+.foot-nav a { display: inline-flex; align-items: center; min-height: 36px; font-weight: 500; color: var(--text); text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: text-decoration-color .25s var(--ease); }
+.foot-nav a:hover { text-decoration-color: var(--path); text-decoration-thickness: 2px; }
+.foot-txt { grid-column: 5 / 10; display: grid; gap: 12px; align-content: start; padding-top: 7px; max-width: 34em; }
+.foot-c { grid-column: 10 / 13; justify-self: end; text-align: right; padding-top: 7px; }
+.foot-c b { font-weight: 500; color: var(--text); }
+/* closing lockup: the same em proportions as the header, scaled by the container. The symbol's box
+   margin is pulled back (--lk-inset), so its ink starts on the column edge like everything above it;
+   31cqi then puts the I's stem on the right column edge (measured: 31.09 at 1440, 30.99 at 375).
+   The word's trailing bearing overflows into the page margin and is clipped. It shares the header's
+   hover: ACHI slides into the ㄲ. */
+.closing { margin-top: clamp(96px, 8.6vw, 124px); padding-bottom: 40px; color: var(--text); container-type: inline-size; overflow: hidden; /* overflow: the trailing bearing + a fallback-font (FOUT) guard */ }
+.closing-lockup { display: flex; align-items: center; font: 700 31cqi/1 var(--sans); white-space: nowrap; }
+.closing .brand-sym svg { margin-left: calc(var(--lk-inset) * -1); }
+
+/* ── motion (the one trace), gated: html.motion + .is-armed ─────── */
+@keyframes draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes dim { from { opacity: 1; } to { opacity: .56; } }
+@keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes ring { from { opacity: 0; transform: scale(1.9); } to { opacity: 1; transform: none; } }
+@keyframes sweep { from { transform: translateX(26px); } to { transform: none; } }
+
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .e-a,
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .e-r { stroke-dasharray: 100 200; stroke-dashoffset: 100; }
+html.motion .slab.is-armed:not(.is-live):not(.is-done) :is(.e-p, .nd-a, .nd-r, .nd-p, .lb-a, .lb-x, .lb-p, .tag, .f-ring, .f-ticks, .f-sweep, .f-edge, .f-label, .log li) { opacity: 0; }
+html.motion .slab.is-armed:not(.is-done) .grooves { opacity: 1; }
+/* waiting (armed, F-01 not yet in view): the lid claims nothing it has not earned. The status reads
+   READY on a hollow square, and the step count is withheld over the still-empty log. TRACING shows
+   only while the trace runs (§7.2 / §8), and VERIFIED from its end. */
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .st-wait { display: inline; }
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .st-done { display: none; }
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .status i { background: none; box-shadow: inset 0 0 0 1px var(--path); }
+html.motion .slab.is-armed:not(.is-live):not(.is-done) .ro-h > span:last-child { visibility: hidden; }
+html.motion .slab.is-live:not(.is-done) .st-live { display: inline; }
+html.motion .slab.is-live:not(.is-done) .st-done { display: none; }
+
+html.motion .slab.is-live .e-a { stroke-dasharray: 100 200; animation: draw var(--t) linear var(--d) both; }
+html.motion .slab.is-live .e-r { stroke-dasharray: 100 200; animation: draw var(--t) linear var(--d) both, dim .9s var(--ease) calc(var(--d) + var(--t) + 160ms) both; }
+html.motion .slab.is-live .e-p { animation: appear var(--t) linear var(--d) both; }
+html.motion .slab.is-live :is(.nd-a, .nd-r, .nd-p, .lb-a, .lb-x, .lb-p, .tag) { animation: appear .3s var(--ease) var(--d) both; }
+html.motion .slab.is-live .f-edge, html.motion .slab.is-live .f-label { animation: appear .5s var(--ease) var(--d) both; }
+html.motion .slab.is-live .f-sweep { animation: appear .3s var(--ease) var(--d) both, sweep 1.3s var(--ease) var(--d) both; }
+html.motion .slab.is-live .f-ring { transform-box: fill-box; transform-origin: 50% 50%; animation: ring .8s var(--ease) calc(var(--d) + 80ms) both; }
+html.motion .slab.is-live .f-ticks { animation: appear .5s var(--ease) calc(var(--d) + 420ms) both; }
+html.motion .slab.is-live .log li { animation: rise .35s var(--ease) var(--d) both; }
+
+/* Method line: CSS scroll-driven, progressive enhancement only */
+@keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes endIn { 0%, 75% { opacity: 0; } 100% { opacity: 1; } }
+/* entry 0% → entry 100% at every width: the line draws while the list rises in from the bottom edge
+   and is complete the moment it is fully in view (§14); the ◆ fades in over the last 25%. A spine
+   taller than the screen is always drawn past the viewport bottom, so no visible part is undrawn. */
+@supports (animation-timeline: view()) {
+  html.motion .line { view-timeline: --stations block; }
+  html.motion .stations::after { animation: growX linear both; animation-timeline: --stations; animation-range: entry 0% entry 100%; }
+  html.motion .st-end { animation: endIn linear both; animation-timeline: --stations; animation-range: entry 0% entry 100%; }
+}
+
+/* ── responsive ───────────────────────────────────── */
+@media (min-width: 1201px) { .hero-top .d1 .ln { white-space: nowrap; } }
+
+@media (max-width: 1399px) {
+  .slab-body { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .readout { border-left: 0; padding-left: 0; border-top: 1px solid var(--d-line); padding-top: 20px; }
+  .log { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(5, auto); column-gap: 48px; }
+  .ro-foot { margin-top: 0; }
+}
+
+@media (max-width: 1279px) {
+  .line { margin-top: 0; }
+  .stations { display: block; padding-left: 40px; }
+  .stations::before { left: 3px; right: auto; top: 9px; bottom: 0; width: 1px; height: auto; }
+  .stations::after { left: 2.5px; right: auto; top: 9px; bottom: 0; width: 2px; height: auto; transform-origin: center top; }
+  .station { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); padding: 0 0 48px; }
+  .station::before { left: -40px; top: 5.5px; }
+  .st-head { grid-column: 1 / 5; }
+  .st-body { grid-column: 5 / 13; padding-top: 28px; }
+  .st-idx { position: static; margin-bottom: 10px; }
+  .st-p { margin-top: 0; max-width: 34em; }
+  .st-end { right: auto; left: 0; top: auto; bottom: 0; }
+  .st-end i { right: auto; left: -2px; top: -5px; }
+  .st-end .label { right: auto; left: 40px; top: -9px; }
+  @supports (animation-timeline: view()) { html.motion .stations::after { animation-name: growY; } }
+  /* cells 2 + 1 (§14): below 1280, cols 10–12 are narrower than a run row (≈217px), which would split
+     "0.41 s · rows.c:212" at its separator. A and C share row 1; B takes the full width in row 2. */
+  .c-a { grid-column: 1 / 7; }
+  .c-c { grid-column: 7 / 13; }
+  .c-b { grid-column: 1 / -1; grid-row: 2; }
+}
+
+@media (max-width: 1200px) {
+  .hero-top .d1 { grid-column: 1 / -1; }
+  .hero-aside { grid-column: 1 / 8; margin-top: 32px; }
+  .stage { margin-top: 56px; }
+  .slab { padding: 18px 24px 24px; }
+  .sec-head .d2 { grid-column: 1 / 10; }
+  .sec-head .lede { grid-column: 1 / 9; justify-self: start; margin-top: 26px; }
+  .console { padding: 120px 0 128px; }
+  .c-head-l { grid-column: 1 / 10; }
+  .spec { grid-column: 1 / 9; margin-top: 40px; }
+  .f-main { grid-column: 1 / -1; }
+  .f-dl { grid-column: 1 / -1; margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--g); }
+  .f-dl div:nth-last-child(2) { border-bottom: 1px solid var(--d-line); }
+  .ax-h { grid-column: 1 / -1; }
+  /* §7.8/§14: the form is one row at ≥901. Below 1201 cols 1–6 get too narrow for email · 소속 · button,
+     so the left block takes the full width (max 820) and the name/lexicon follows below (as ≤900). */
+  .ax-l { grid-column: 1 / -1; }
+  .ax-r { grid-column: 1 / -1; margin-top: 56px; }
+  .ax { max-width: 820px; }
+}
+
+@media (max-width: 999px) {
+  .graph-land { display: none; }
+  .graph-port { display: block; }
+  .slab-body { grid-template-columns: minmax(0, clamp(330px, 100% - 320px, 360px)) minmax(0, 1fr); gap: 30px; }
+  .readout { border-top: 0; padding-top: 0; border-left: 1px solid var(--d-line); padding-left: 26px; }
+  .log { display: block; }
+  .log li { grid-template-columns: 56px minmax(0, 1fr); }
+  .log .n { display: none; }
+  .ro-foot { margin-top: auto; }
+  .log { margin-bottom: 20px; }
+}
+
+@media (max-width: 900px) {
+  .head-row { min-height: 64px; gap: 20px; }
+  .nav { display: none; }
+  html.js .menu-btn {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 44px; min-width: 44px; margin-left: auto; padding: 0 2px;
+    background: none; border: 0; color: var(--text); font: 500 15px/1 var(--sans); cursor: pointer;
+  }
+  .menu-btn i { position: relative; display: block; width: 18px; height: 6.5px; }
+  .menu-btn i::before, .menu-btn i::after { content: ""; position: absolute; left: 0; width: 18px; height: 1.5px; background: currentColor; }
+  .menu-btn i::before { top: 0; }
+  .menu-btn i::after { bottom: 0; }
+  .menu-btn[aria-expanded="true"] i::before { top: 2.5px; transform: rotate(45deg); }
+  .menu-btn[aria-expanded="true"] i::after { bottom: 2.5px; transform: rotate(-45deg); }
+  /* open: a full sheet down to the viewport bottom, so the panel never ends partway through the hero
+     text below it (flat: no shadow, no scrim) */
+  html.js .nav.is-open {
+    display: block; position: absolute; left: 0; right: 0; top: 100%; margin: 0; padding: 8px var(--m) 20px;
+    min-height: calc(100vh - 64px); min-height: calc(100dvh - 64px);
+    background: var(--surface); border-bottom: 1px solid var(--line-2);
+  }
+  html.js .nav.is-open ul { flex-direction: column; align-items: stretch; gap: 0; }
+  /* the hairline belongs to the row (page edge to page edge); the link reaches 8px past it on both
+     sides, so its text sits on the page's left edge, under the brand, and the inset ring has room */
+  html.js .nav.is-open li { border-top: 1px solid var(--line); }
+  html.js .nav.is-open li:last-child { border-bottom: 1px solid var(--line); } /* the list closes on a hairline, not on open sheet */
+  html.js .nav.is-open a { display: flex; min-height: 52px; margin-inline: -8px; padding-inline: 8px; font-size: 17px; text-decoration: none; }
+  html.js .nav.is-open a:hover { text-decoration: underline; text-decoration-color: var(--path); }
+  html.js .nav.is-open a:focus-visible { outline-offset: -2px; } /* touching 52px rows: inset ring (§5) */
+  html:not(.js) .head-row { flex-wrap: wrap; row-gap: 0; }
+  html:not(.js) .head-cta { margin-left: auto; }
+  html:not(.js) .nav { display: block; order: 3; flex: 1 0 100%; margin: 0 0 8px; }
+  html:not(.js) .nav ul { flex-wrap: wrap; gap: 0 20px; }
+  html:not(.js) .nav a { font-size: 14px; }
+  .hero { padding-top: 64px; }
+  .hero-aside { grid-column: 1 / -1; }
+  .slab-head .sh-right { display: contents; }
+  .slab-head { gap: 0 22px; }
+  .sh-id { order: 1; }
+  .status { order: 2; margin-left: auto; }
+  .clock { order: 3; }
+  .sh-br { display: block; order: 4; flex: 0 0 100%; height: 0; }
+  .sh-target { order: 5; margin-top: 10px; }
+  .slab-head .chip { order: 6; margin-top: 10px; }
+  .replay { order: 7; margin-top: 10px; margin-left: auto; }
+  .sec-head .d2, .sec-head .lede { grid-column: 1 / -1; }
+  .c-head-l, .spec { grid-column: 1 / -1; }
+  .cell { padding: 26px; }
+  /* one inner edge for the whole plate: bar, finding head, cells and foot all start 26px in */
+  .plate-bar, .f-head, .plate-foot { padding-inline: 26px; }
+  .f-head::before { left: 26px; }
+  .code { margin: 0 -26px; }
+  .code .l { padding: 0 26px; }
+  .report-grid { display: block; }
+  .note { display: none; }
+  .part { padding: 26px 28px; }
+  .part.p0::before { left: 28px; }
+  /* no hang here: the empty arrow column collapses so both references share the sheet's text edge,
+     and the → travels with the second reference as a mono prefix */
+  .rc { margin-left: 0; grid-template-columns: minmax(0, 1fr); }
+  .rc > .rc-a { display: none; }
+  .rc > span:last-child > .mono::before { content: "→\00a0"; content: "→\00a0" / ""; }
+  .notes-m { display: block; margin-top: 32px; border-top: 1px solid var(--rule); font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+  .notes-m li { display: grid; grid-template-columns: 4px 28px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .notes-m li::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--rule); transform: translateY(-3px); }
+  .notes-m .label { color: var(--text); }
+  .plist li { row-gap: 12px; }
+  .plist .pn { grid-column: 1 / 2; }
+  .plist h3 { grid-column: 2 / 13; }
+  .plist p { grid-column: 2 / 13; align-self: start; }
+  .ax-l, .ax-r { grid-column: 1 / -1; }
+  .ax-r { margin-top: 56px; }
+  .ax-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .ax-row .btn { justify-self: start; }
+  .foot-row { grid-template-rows: auto 1fr; } /* row 1 = the text's own height; the tall nav list spills into row 2, so the © sits right under the text */
+  .foot-nav { grid-column: 1 / 5; grid-row: 1 / span 2; }
+  .foot-nav a { min-height: 44px; min-width: 44px; }
+  .foot-txt { grid-column: 5 / 13; grid-row: 1; }
+  .foot-c { grid-column: 5 / 13; grid-row: 2; align-self: start; justify-self: start; text-align: left; margin-top: 24px; padding-top: 0; }
+}
+
+@media (max-width: 719px) {
+  .slab-body { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .graph-port { max-width: 360px; }
+  .readout { border-left: 0; padding-left: 0; border-top: 1px solid var(--d-line); padding-top: 16px; }
+  .log li { grid-template-columns: 20px 56px minmax(0, 1fr); }
+  .log .n { display: block; }
+  /* console: below 720 a half-width cell (≈287px) and a half-width facts column (≈150px) split mono
+     references and "·" pairs, so A, B and C stack (source order) and the facts go one column */
+  .c-a, .c-b, .c-c { grid-column: 1 / -1; grid-row: auto; }
+  .f-dl { grid-template-columns: minmax(0, 1fr); }
+  .f-dl div:nth-last-child(2) { border-bottom: 0; }
+}
+
+@media (max-width: 600px) {
+  body { font-size: 15.5px; }
+  .hero { padding-top: 44px; }
+  .eyebrow { flex-direction: column; gap: 2px; }
+  .eyebrow .sep { display: none; }
+  .hero-top .eyebrow { margin-bottom: 20px; }
+  .d1 { font-size: clamp(2.125rem, 10.4vw, 2.75rem); line-height: 1.12; letter-spacing: -.05em; }
+  .lede { font-size: 16px; }
+  .stage { margin-top: 40px; }
+  .slab { margin-inline: calc(var(--m) * -1); border-radius: 0; padding: 14px var(--m) 20px; }
+  .slab-head { padding-bottom: 12px; gap: 0 16px; }
+  .sh-target { display: none; }
+  .slab-head .chip { order: 5; }
+  .slab-body { gap: 16px; padding-top: 12px; }
+  .graph-port { max-width: min(100%, 420px); }
+  .fig-cap { margin-top: 18px; font-size: 13.5px; }
+  .sec-head { margin-bottom: 44px; }
+  .st-head, .st-body { grid-column: 1 / -1; }
+  .st-body { padding-top: 12px; }
+  .station { padding-bottom: 40px; }
+  .console { padding: 88px 0 96px; }
+  .c-head { margin-bottom: 44px; }
+  .spec { grid-column: 1 / -1; }
+  .plate { margin-inline: calc(var(--m) * -1); border-inline: 0; border-radius: 0; }
+  .plate-bar { padding: 12px var(--m); }
+  .f-head { padding: 32px var(--m); }
+  .f-head::before { left: var(--m); }
+  .f-dl { grid-template-columns: minmax(0, 1fr); }
+  .f-dl div:nth-last-child(2) { border-bottom: 0; }
+  .cells { grid-template-columns: minmax(0, 1fr); }
+  .c-a, .c-b, .c-c, .c-d { grid-column: 1; grid-row: auto; }
+  .cell { padding: 22px var(--m) 26px; }
+  .hyps { margin: 0 -4px; }            /* §7.4 said -8px; -4px keeps the checked panel and its bar at 16px from the screen edge (§4/§11) */
+  .hyp { padding: 12px 4px 13px; }
+  .code { margin: 0 calc(var(--m) * -1); font-size: 12px; }
+  .code .l { grid-template-columns: 32px minmax(0, 1fr); padding: 0 var(--m); }
+  .code .l.hot::before { left: calc(var(--m) - 4px); } /* the band stays full-bleed; its 2px bar sits 16px in, beside the line number (§4/§11) */
+  .code .cm { display: none; }
+  .rep-big b { font-size: 56px; }
+  .plate-foot { padding: 20px var(--m) 22px; }
+  .plate-foot .btn { width: 100%; }
+  .part, .part.p0, .part.p6 { padding: 22px 20px; }
+  .part.p0::before { left: 20px; }
+  .rc .mono { display: block; margin: 0 0 2px; }
+  .plist li { padding: 28px 0; }
+  .plist .pn, .plist h3, .plist p { grid-column: 1 / -1; }
+  .nlist li { row-gap: 8px; }
+  .nlist .nid { grid-column: 1 / 7; grid-row: 1; }
+  .nlist .chip { grid-column: 7 / 13; grid-row: 1; }
+  .nlist h3 { grid-column: 1 / -1; grid-row: 2; }
+  .ax-body { margin-top: 40px; }
+  .ax-row .btn { width: 100%; }
+  .lex div { grid-template-columns: 7.5em minmax(0, 1fr); }
+  .foot-row { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; row-gap: 24px; }
+  .foot-nav, .foot-txt, .foot-c { grid-column: 1; grid-row: auto; margin-top: 0; padding-top: 0; }
+  .rv { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .rv .dot { display: none; }
+  .r-meta .grp { white-space: normal; }
+  .r-meta .nw { display: block; }     /* one reference per line; no separator left dangling at a line start */
+  .r-meta .sep { display: none; }
+  .brand { font-size: 22px; } /* symbol ink 20px (§6) */
+  html.js .nav.is-open a { margin-inline: -4px; padding-inline: 4px; } /* ring room 4px: its outer edge stays 16px from the screen (the .hyps precedent) */
+  .closing { margin-top: 56px; padding-bottom: 24px; }
+}
+
+/* 320–359px: the portrait graph scales below .86, so its text is set larger to stay ≥ 10.5px rendered (§3) */
+@media (max-width: 359px) {
+  .graph-port text { font-size: 13px; }
+  .graph-port .tag { font-size: 12.8px; }
+}
+
+@media (max-width: 420px) {
+  .head-cta { display: none; }
+  .nav .nav-cta { display: list-item; }
+  html.js .nav.is-open .nav-cta { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="#top" aria-label="KKACHI 홈"><span class="brand-sym">
+<!-- kk-logo:master:start -->
+<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15 3H45V33H36V12H15ZM3 15H33V45H24V24H3Z"/></svg>
+<!-- kk-logo:master:end -->
+</span><span class="brand-word" aria-hidden="true"><span class="bw">ACHI</span></span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">메뉴<i aria-hidden="true"></i></button>
+    <nav class="nav" id="nav" aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#method">작동 원리</a></li>
+        <li><a href="#console">콘솔</a></li>
+        <li><a href="#report">보고서</a></li>
+        <li><a href="#principles">원칙</a></li>
+        <li><a href="#notes">연구 노트</a></li>
+        <li class="nav-cta"><a href="#access">대기자 명단 <span class="arr" aria-hidden="true">→</span></a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-primary head-cta" href="#access">대기자 명단</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ═══ Hero · the lid ═══ -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-top g12">
+        <p class="eyebrow label"><span lang="en">Autonomous vulnerability research agent</span><span class="sep" aria-hidden="true">/</span><span class="ko">자율 취약점 연구 에이전트</span></p>
+        <h1 class="d1" id="hero-title"><span class="ln">모든 경로를 따라가,</span> <span class="ln">확인된 하나를 가져옵니다.</span></h1>
+        <div class="hero-aside">
+          <p class="lede">KKACHI(까치)는 코드와 바이너리를 읽고 가설을 세운&nbsp;뒤, 호출 경로를 끝까지 따라갑니다. 재현으로 입증된 것만 발견으로 보고합니다.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#access">대기자 명단 등록<span class="arr" aria-hidden="true">→</span></a>
+            <a class="qlink" href="#console">추적 과정 보기<span class="arr" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+
+      <figure class="stage">
+        <div class="slab on-dark" id="slab">
+          <span class="lustre" aria-hidden="true"></span><span class="glint" aria-hidden="true"></span>
+          <div class="slab-head">
+            <span class="label sh-id" lang="en">Session 7F2A</span>
+            <span class="label sh-target" lang="en">Target · <span class="lc">sample-imgcodec 2.4</span></span>
+            <span class="sh-br" aria-hidden="true"></span>
+            <span class="sh-right">
+              <span class="label status" lang="en"><i aria-hidden="true"></i><span class="st-wait" aria-hidden="true">Ready</span><span class="st-live" aria-hidden="true">Tracing</span><span class="st-done">Verified</span></span>
+              <span class="label clock" role="img" aria-label="세션 경과 시간 4분 12초 (샘플)">T+04:12</span>
+              <span class="chip"><span class="ko">샘플 데이터</span> · <span lang="en">Illustrative</span></span>
+              <button class="replay" type="button"><span aria-hidden="true">↻</span> <span lang="en">Replay</span><span class="sr-only"> · 추적 애니메이션 다시 보기</span></button>
+            </span>
+          </div>
+          <div class="slab-body">
+            <div class="graph-box">
+<svg class="graph graph-land" viewBox="0 0 880 404" role="img" aria-labelledby="gL-t" aria-describedby="gL-d" focusable="false">
+<title id="gL-t">샘플 호출 그래프 · Illustrative call graph</title>
+<desc id="gL-d">설명용 샘플입니다. fuzz_entry에서 시작한 추적이 decode_image, parse_header, read_chunk, copy_rows를 거쳐 memcpy에서 발견 F-01에 도달합니다. 가설 H2(read_palette)와 H3(inflate_block)는 기각되었고 H4(validate_len)는 보류되었습니다.</desc>
+<defs><linearGradient id="sheen-L" gradientUnits="userSpaceOnUse" x1="-18" y1="0" x2="10" y2="0" gradientTransform="rotate(25)"><stop offset="0" stop-color="#5D8D91"/><stop offset=".35" stop-color="#98A197"/><stop offset=".68" stop-color="#928FA1"/><stop offset="1" stop-color="#96688D"/></linearGradient>
+<clipPath id="dia-L"><path d="M0 -10 L10 0 L0 10 L-10 0 Z"/></clipPath></defs>
+<g class="ruler" aria-hidden="true"><path class="ruler-base" d="M24 380.5H856"/><path class="ruler-minor" d="M32.8 380v3M63.2 380v3M78.4 380v3M93.6 380v3M108.8 380v3M124 380v3M139.2 380v3M154.4 380v3M169.6 380v3M184.8 380v3M215.2 380v3M230.4 380v3M245.6 380v3M260.8 380v3M276 380v3M291.2 380v3M306.4 380v3M321.6 380v3M336.8 380v3M367.2 380v3M382.4 380v3M397.6 380v3M412.8 380v3M428 380v3M443.2 380v3M458.4 380v3M473.6 380v3M488.8 380v3M519.2 380v3M534.4 380v3M549.6 380v3M564.8 380v3M580 380v3M595.2 380v3M610.4 380v3M625.6 380v3M640.8 380v3M671.2 380v3M686.4 380v3M701.6 380v3M716.8 380v3M732 380v3M747.2 380v3M762.4 380v3M777.6 380v3M792.8 380v3M823.2 380v3M838.4 380v3M853.6 380v3"/>
+<path class="ruler-major" d="M48.5 376v11"/><text class="ruler-t" x="48" y="400" text-anchor="middle">D0</text>
+<path class="ruler-major" d="M200.5 376v11"/><text class="ruler-t" x="200" y="400" text-anchor="middle">D1</text>
+<path class="ruler-major" d="M352.5 376v11"/><text class="ruler-t" x="352" y="400" text-anchor="middle">D2</text>
+<path class="ruler-major" d="M504.5 376v11"/><text class="ruler-t" x="504" y="400" text-anchor="middle">D3</text>
+<path class="ruler-major" d="M656.5 376v11"/><text class="ruler-t" x="656" y="400" text-anchor="middle">D4</text>
+<path class="ruler-major" d="M808.5 376v11"/><text class="ruler-t" x="808" y="400" text-anchor="middle">D5</text>
+<text class="ruler-t" x="880" y="400" text-anchor="end">DEPTH</text></g>
+<g class="grooves" aria-hidden="true">
+<path d="M54 206 L171 206 L176 201 L176 97 L181 92 L194 92"/>
+<path d="M54 206 L171 206 L176 211 L176 315 L181 320 L194 320"/>
+<path d="M206 92 L323 92 L328 87 L328 57 L333 52 L346 52"/>
+<path d="M206 320 L323 320 L328 325 L328 345 L333 350 L346 350"/>
+<path d="M510 206 L627 206 L632 201 L632 121 L637 116 L650 116"/>
+<path d="M510 296 L650 296"/>
+<path d="M54 206 L194 206"/>
+<path d="M206 206 L323 206 L328 211 L328 291 L333 296 L346 296"/>
+<path d="M206 206 L346 206"/>
+<path d="M358 206 L475 206 L480 211 L480 291 L485 296 L498 296"/>
+<path d="M358 206 L475 206 L480 201 L480 121 L485 116 L498 116"/>
+<path d="M358 206 L498 206"/>
+<path d="M510 206 L650 206"/>
+<path d="M662 206 L802 206"/>
+</g>
+<g class="inlay" aria-hidden="true">
+<path class="e e-a" d="M54 206 L194 206" pathLength="100" style="--d:360ms;--t:160ms"/>
+<path class="e e-r" d="M206 206 L323 206 L328 211 L328 291 L333 296 L346 296" pathLength="100" style="--d:580ms;--t:224ms"/>
+<path class="e e-a" d="M206 206 L346 206" pathLength="100" style="--d:864ms;--t:160ms"/>
+<path class="e e-r" d="M358 206 L475 206 L480 211 L480 291 L485 296 L498 296" pathLength="100" style="--d:1084ms;--t:224ms"/>
+<path class="e e-p" d="M358 206 L475 206 L480 201 L480 121 L485 116 L498 116" pathLength="100" style="--d:1368ms;--t:224ms"/>
+<path class="e e-a" d="M358 206 L498 206" pathLength="100" style="--d:1652ms;--t:160ms"/>
+<path class="e e-a" d="M510 206 L650 206" pathLength="100" style="--d:1872ms;--t:160ms"/>
+<path class="e e-a" d="M662 206 L802 206" pathLength="100" style="--d:2092ms;--t:160ms"/>
+</g>
+<g class="nodes" aria-hidden="true">
+<rect class="nd nd-a" style="--d:220ms" x="44.5" y="202.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:220ms" x="58" y="195">fuzz_entry()</text>
+<rect class="nd nd-i" x="197.5" y="89.5" width="5" height="5"/>
+<rect class="nd nd-a" style="--d:520ms" x="196.5" y="202.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:520ms" x="210" y="195">decode_image()</text>
+<rect class="nd nd-i" x="197.5" y="317.5" width="5" height="5"/>
+<rect class="nd nd-i" x="349.5" y="49.5" width="5" height="5"/>
+<rect class="nd nd-a" style="--d:1024ms" x="348.5" y="202.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:1024ms" x="362" y="195">parse_header()</text>
+<g class="nd nd-r" style="--d:804ms" transform="translate(352 296)"><rect x="-3" y="-3" width="6" height="6"/><path d="M-6 -6L6 6M6 -6L-6 6"/></g>
+<text class="lb lb-x" style="--d:804ms" x="362" y="285">read_palette()</text>
+<text class="tag" style="--d:804ms" x="362" y="314">H2 기각</text>
+<rect class="nd nd-i" x="349.5" y="347.5" width="5" height="5"/>
+<g class="nd nd-p" style="--d:1592ms" transform="translate(504 116)"><rect x="-3" y="-3" width="6" height="6"/></g>
+<text class="lb lb-p" style="--d:1592ms" x="514" y="105">validate_len()</text>
+<text class="tag" style="--d:1592ms" x="514" y="134">H4 보류</text>
+<rect class="nd nd-a" style="--d:1812ms" x="500.5" y="202.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:1812ms" x="514" y="195">read_chunk()</text>
+<g class="nd nd-r" style="--d:1308ms" transform="translate(504 296)"><rect x="-3" y="-3" width="6" height="6"/><path d="M-6 -6L6 6M6 -6L-6 6"/></g>
+<text class="lb lb-x" style="--d:1308ms" x="514" y="285">inflate_block()</text>
+<text class="tag" style="--d:1308ms" x="514" y="314">H3 기각</text>
+<rect class="nd nd-a" style="--d:2032ms" x="652.5" y="202.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:2032ms" x="666" y="195">copy_rows()</text>
+<rect class="nd nd-i" x="653.5" y="113.5" width="5" height="5"/>
+<rect class="nd nd-i" x="653.5" y="293.5" width="5" height="5"/>
+</g>
+<g class="finding" transform="translate(808 206)" aria-hidden="true">
+<circle class="f-ring" style="--d:2252ms" r="17"/><path class="f-ticks" style="--d:2252ms" d="M24 0L33 0M0 24L0 33M0 -24L0 -33"/>
+<g clip-path="url(#dia-L)"><g class="f-sweep" style="--d:2252ms"><rect class="f-sheen" x="-42" y="-14" width="84" height="28" fill="url(#sheen-L)"/></g></g>
+<path class="f-edge" style="--d:2252ms" d="M0 -10 L10 0 L0 10 L-10 0 Z"/></g>
+<g class="f-label" style="--d:2252ms" aria-hidden="true"><text class="lb-f1" x="808" y="264" text-anchor="middle">F-01 · memcpy()</text><text class="lb-f2" x="808" y="282" text-anchor="middle">src/rows.c:212</text></g>
+</svg>
+<svg class="graph graph-port" viewBox="0 0 340 492" role="img" aria-labelledby="gP-t" aria-describedby="gP-d" focusable="false">
+<title id="gP-t">샘플 호출 그래프 · Illustrative call graph</title>
+<desc id="gP-d">설명용 샘플입니다. fuzz_entry에서 시작한 추적이 decode_image, parse_header, read_chunk, copy_rows를 거쳐 memcpy에서 발견 F-01에 도달합니다. 가설 H2(read_palette)와 H3(inflate_block)는 기각되었고 H4(validate_len)는 보류되었습니다.</desc>
+<defs><linearGradient id="sheen-P" gradientUnits="userSpaceOnUse" x1="-18" y1="0" x2="10" y2="0" gradientTransform="rotate(25)"><stop offset="0" stop-color="#5D8D91"/><stop offset=".35" stop-color="#98A197"/><stop offset=".68" stop-color="#928FA1"/><stop offset="1" stop-color="#96688D"/></linearGradient>
+<clipPath id="dia-P"><path d="M0 -10 L10 0 L0 10 L-10 0 Z"/></clipPath></defs>
+<g class="grooves" aria-hidden="true">
+<path d="M44 36 L44 81 L49 86 L195 86 L200 91 L200 106"/>
+<path d="M44 36 L44 81 L49 86 L267 86 L272 91 L272 106"/>
+<path d="M272 118 L272 188"/>
+<path d="M44 282 L44 327 L49 332 L195 332 L200 337 L200 352"/>
+<path d="M272 282 L272 352"/>
+<path d="M44 36 L44 106"/>
+<path d="M44 118 L44 163 L49 168 L195 168 L200 173 L200 188"/>
+<path d="M44 118 L44 188"/>
+<path d="M44 200 L44 245 L49 250 L267 250 L272 255 L272 270"/>
+<path d="M44 200 L44 245 L49 250 L195 250 L200 255 L200 270"/>
+<path d="M44 200 L44 270"/>
+<path d="M44 282 L44 352"/>
+<path d="M44 364 L44 440"/>
+</g>
+<g class="inlay" aria-hidden="true">
+<path class="e e-a" d="M44 36 L44 106" pathLength="100" style="--d:360ms;--t:160ms"/>
+<path class="e e-r" d="M44 118 L44 163 L49 168 L195 168 L200 173 L200 188" pathLength="100" style="--d:580ms;--t:224ms"/>
+<path class="e e-a" d="M44 118 L44 188" pathLength="100" style="--d:864ms;--t:160ms"/>
+<path class="e e-r" d="M44 200 L44 245 L49 250 L267 250 L272 255 L272 270" pathLength="100" style="--d:1084ms;--t:224ms"/>
+<path class="e e-p" d="M44 200 L44 245 L49 250 L195 250 L200 255 L200 270" pathLength="100" style="--d:1368ms;--t:224ms"/>
+<path class="e e-a" d="M44 200 L44 270" pathLength="100" style="--d:1652ms;--t:160ms"/>
+<path class="e e-a" d="M44 282 L44 352" pathLength="100" style="--d:1872ms;--t:160ms"/>
+<path class="e e-a" d="M44 364 L44 440" pathLength="100" style="--d:2092ms;--t:160ms"/>
+</g>
+<g class="nodes" aria-hidden="true">
+<rect class="nd nd-a" style="--d:220ms" x="40.5" y="26.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:220ms" x="58" y="34.5">fuzz_entry()</text>
+<rect class="nd nd-i" x="197.5" y="109.5" width="5" height="5"/>
+<rect class="nd nd-a" style="--d:520ms" x="40.5" y="108.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:520ms" x="58" y="116.5">decode_image()</text>
+<rect class="nd nd-i" x="269.5" y="109.5" width="5" height="5"/>
+<rect class="nd nd-a" style="--d:1024ms" x="40.5" y="190.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:1024ms" x="58" y="198.5">parse_header()</text>
+<g class="nd nd-r" style="--d:804ms" transform="translate(200 194)"><rect x="-3" y="-3" width="6" height="6"/><path d="M-6 -6L6 6M6 -6L-6 6"/></g>
+<text class="tag" style="--d:804ms" x="211" y="198.5">H2 기각</text>
+<rect class="nd nd-i" x="269.5" y="191.5" width="5" height="5"/>
+<g class="nd nd-p" style="--d:1592ms" transform="translate(200 276)"><rect x="-3" y="-3" width="6" height="6"/></g>
+<text class="tag" style="--d:1592ms" x="211" y="280.5">H4 보류</text>
+<rect class="nd nd-a" style="--d:1812ms" x="40.5" y="272.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:1812ms" x="58" y="280.5">read_chunk()</text>
+<g class="nd nd-r" style="--d:1308ms" transform="translate(272 276)"><rect x="-3" y="-3" width="6" height="6"/><path d="M-6 -6L6 6M6 -6L-6 6"/></g>
+<text class="tag" style="--d:1308ms" x="283" y="280.5">H3 기각</text>
+<rect class="nd nd-a" style="--d:2032ms" x="40.5" y="354.5" width="7" height="7"/>
+<text class="lb lb-a" style="--d:2032ms" x="58" y="362.5">copy_rows()</text>
+<rect class="nd nd-i" x="197.5" y="355.5" width="5" height="5"/>
+<rect class="nd nd-i" x="269.5" y="355.5" width="5" height="5"/>
+</g>
+<g class="finding" transform="translate(44 446)" aria-hidden="true">
+<circle class="f-ring" style="--d:2252ms" r="17"/><path class="f-ticks" style="--d:2252ms" d="M24 0L33 0M0 24L0 33M-24 0L-33 0"/>
+<g clip-path="url(#dia-P)"><g class="f-sweep" style="--d:2252ms"><rect class="f-sheen" x="-42" y="-14" width="84" height="28" fill="url(#sheen-P)"/></g></g>
+<path class="f-edge" style="--d:2252ms" d="M0 -10 L10 0 L0 10 L-10 0 Z"/></g>
+<g class="f-label" style="--d:2252ms" aria-hidden="true"><text class="lb-f1" x="90" y="443">F-01 · memcpy()</text><text class="lb-f2" x="90" y="461">src/rows.c:212</text></g>
+</svg>
+            </div>
+            <div class="readout">
+              <p class="label ro-h"><span lang="en">Step log</span><span lang="en">09 / 09</span></p>
+              <ol class="log" lang="en">
+                <li style="--d:120ms"><span class="n">01</span><span class="k">READ</span><span class="v"><span class="ko" lang="ko">색인</span> · 1,284 fn</span></li>
+                <li style="--d:300ms"><span class="n">02</span><span class="k">HYPO</span><span class="v">H1–H4 · <span class="ko" lang="ko">가설 4개</span></span></li>
+                <li class="is-trace" style="--d:360ms"><span class="n">03</span><span class="k">TRACE</span><span class="v">fuzz_entry → decode_image</span></li>
+                <li style="--d:804ms"><span class="n">04</span><span class="k">REJECT</span><span class="v">H2 · read_palette <span class="ko" lang="ko">경계 검사됨</span></span></li>
+                <li class="is-trace" style="--d:864ms"><span class="n">05</span><span class="k">TRACE</span><span class="v">decode_image → parse_header</span></li>
+                <li style="--d:1308ms"><span class="n">06</span><span class="k">REJECT</span><span class="v">H3 · inflate_block <span class="ko" lang="ko">버퍼 고정</span></span></li>
+                <li style="--d:1592ms"><span class="n">07</span><span class="k">HOLD</span><span class="v">H4 · validate_len <span class="ko" lang="ko">입력 부족</span></span></li>
+                <li class="is-trace is-3hop" style="--d:1652ms"><span class="n">08</span><span class="k">TRACE</span><span class="v">read_chunk&nbsp;→ copy_rows&nbsp;→ memcpy</span></li>
+                <li class="is-ok" style="--d:2612ms"><span class="n">09</span><span class="k">VERIFY</span><span class="v"><span class="ko" lang="ko">재현</span> 3/3 → F-01</span></li>
+              </ol>
+              <div class="ro-foot"><a class="qlink" href="#console">02 콘솔에서 F-01 열기<span class="arr" aria-hidden="true">→</span></a></div>
+            </div>
+          </div>
+        </div>
+        <figcaption class="fig-cap"><span><span class="label" lang="en">Fig. 01</span>호출 그래프 추적 — 대상, 경로, 결과는 모두 설명을 위한&nbsp;샘플입니다.</span><span class="chip"><span class="ko">샘플 데이터</span> · <span lang="en">Illustrative</span></span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══ 01 Method ═══ -->
+  <section class="method" id="method" aria-labelledby="method-title">
+    <div class="wrap">
+      <div class="sec-head g12">
+        <p class="eyebrow label"><span lang="en">01 — Method</span><span class="sep" aria-hidden="true">/</span><span class="ko">작동 원리</span></p>
+        <h2 class="d2" id="method-title"><span class="ln">의심하고, 따라가고,</span> <span class="ln">다시 확인합니다.</span></h2>
+        <p class="lede">KKACHI의 작업은 다섯 단계로 이어집니다. 어느&nbsp;단계도 건너뛰지 않고, 앞&nbsp;단계의 조건을 채우지 못하면 다음으로 넘어가지 않습니다. 넘어가지&nbsp;못한&nbsp;사실까지 기록에 남깁니다.</p>
+      </div>
+      <div class="line">
+        <ol class="stations">
+          <li class="station">
+            <div class="st-head"><p class="st-idx label"><span class="n">01</span><span lang="en">Read</span></p><h3 class="st-t">읽기</h3></div>
+            <div class="st-body"><p class="st-p">코드와 바이너리, 빌드&nbsp;설정과 크래시&nbsp;로그를 읽고 호출&nbsp;그래프를 만듭니다.</p>
+              <dl class="st-data"><div><dt lang="en">Sample</dt><dd lang="en">1,284 functions indexed</dd></div><div><dt lang="en">Gate</dt><dd class="ko">입력 경계가 표시된 지도</dd></div></dl></div>
+          </li>
+          <li class="station">
+            <div class="st-head"><p class="st-idx label"><span class="n">02</span><span lang="en">Hypothesize</span></p><h3 class="st-t">가설</h3></div>
+            <div class="st-body"><p class="st-p">입력을 믿는 자리마다 “여기서 무엇이 잘못될&nbsp;수&nbsp;있는가”를 반증할&nbsp;수 있는 문장으로 적습니다.</p>
+              <dl class="st-data"><div><dt lang="en">Sample</dt><dd lang="en">4 hypotheses</dd></div><div><dt lang="en">Gate</dt><dd class="ko">반증 조건이 있는 가설</dd></div></dl></div>
+          </li>
+          <li class="station">
+            <div class="st-head"><p class="st-idx label"><span class="n">03</span><span lang="en">Trace</span></p><h3 class="st-t">추적</h3></div>
+            <div class="st-body"><p class="st-p">가설마다 진입점에서 싱크까지 경로를 끝까지 따라갑니다. 막히면 이유를 적고 버립니다.</p>
+              <dl class="st-data"><div><dt lang="en">Sample</dt><dd lang="en"><span class="nw">2 rejected</span> · <span class="nw">1 on hold</span></dd></div><div><dt lang="en">Gate</dt><dd class="ko">입력에서 도달 가능한 경로</dd></div></dl></div>
+          </li>
+          <li class="station">
+            <div class="st-head"><p class="st-idx label"><span class="n">04</span><span lang="en">Reproduce</span></p><h3 class="st-t">재현</h3></div>
+            <div class="st-body"><p class="st-p">격리된 새 환경에서 고정된 입력으로 세&nbsp;번 재현합니다. 한&nbsp;번이라도 어긋나면 발견이 아닙니다.</p>
+              <dl class="st-data"><div><dt lang="en">Sample</dt><dd lang="en">3 / 3</dd></div><div><dt lang="en">Gate</dt><dd class="ko">결정적으로 재현됨</dd></div></dl></div>
+          </li>
+          <li class="station">
+            <div class="st-head"><p class="st-idx label"><span class="n">05</span><span lang="en">Report</span></p><h3 class="st-t">보고</h3></div>
+            <div class="st-body"><p class="st-p">근본 원인, 재현 절차, 수정&nbsp;방향을 보고서로 정리하고 사람의&nbsp;검토를 기다립니다.</p>
+              <dl class="st-data"><div><dt lang="en">Sample</dt><dd lang="en">F-01 · draft</dd></div><div><dt lang="en">Gate</dt><dd class="ko">사람의 검토</dd></div></dl></div>
+          </li>
+        </ol>
+        <span class="st-end" aria-hidden="true"><i></i><span class="label" lang="en">F-01</span></span>
+      </div>
+      <p class="cap-row"><span>단계별 수치는 Fig. 01 세션(<span class="mono" lang="en">7F2A</span>)의 샘플입니다.</span><span class="chip"><span class="ko">샘플 데이터</span> · <span lang="en">Illustrative</span></span></p>
+    </div>
+  </section>
+
+  <!-- ═══ 02 Console ═══ -->
+  <section class="console on-dark" id="console" aria-labelledby="console-title">
+    <div class="wrap">
+      <div class="c-head g12">
+        <div class="c-head-l">
+          <p class="eyebrow label"><span lang="en">02 — Console</span><span class="sep" aria-hidden="true">/</span><span class="ko">콘솔</span></p>
+          <h2 class="d2" id="console-title"><span class="ln">뚜껑을 열면,</span> <span class="ln">판단의 기록이 보입니다.</span></h2>
+          <p class="c-lede">결과만 보여주지 않습니다. 무엇을 의심했고, 어디까지 따라갔고, 왜 버렸는지. 모든&nbsp;판단은 호출&nbsp;경로와 재현 기록에 묶여 남습니다.</p>
+        </div>
+        <dl class="spec">
+          <div><dt class="label" lang="en">Session</dt><dd><span class="mono" lang="en">7F2A</span></dd></div>
+          <div><dt class="label" lang="en">Target</dt><dd><span class="mono" lang="en">sample-imgcodec 2.4</span> (가상)</dd></div>
+          <div><dt class="label" lang="en">Scope</dt><dd>승인된 로컬 빌드</dd></div>
+          <div><dt class="label" lang="en">Elapsed</dt><dd>4분 12초</dd></div>
+          <div><dt class="label" lang="en">Data</dt><dd><span class="chip"><span class="ko">샘플 데이터</span> · <span lang="en">Illustrative</span></span></dd></div>
+        </dl>
+      </div>
+
+      <article class="plate" id="plate" aria-labelledby="f-title">
+        <div class="plate-bar">
+          <span class="pb-name"><span class="pb-mark" aria-hidden="true">
+<!-- kk-logo:mark:start -->
+<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15 3H45V33H36V12H15ZM3 15H33V45H24V24H3Z"/></svg>
+<!-- kk-logo:mark:end -->
+          </span><span class="label" lang="en">Console</span></span>
+          <span class="chip"><span class="ko">샘플 데이터</span> · <span lang="en">Illustrative</span></span>
+        </div>
+
+        <div class="f-head g12">
+          <div class="f-main">
+            <p class="label f-state"><span lang="en">Finding F-01</span><i class="dia" aria-hidden="true"></i><b lang="en">Verified 3/3</b></p>
+            <h3 class="f-title" id="f-title">copy_rows()의 행 길이 계산에서 정수 오버플로</h3>
+            <p class="f-sum">헤더의 width × bpp가 32비트 곱셈에서 넘쳐 작은 행 버퍼가 할당되고, 같은 값을 64비트로 다시 계산한 memcpy()가 힙 경계를 넘어 씁니다.</p>
+            <a class="qlink" href="#report">03 보고서 초안 보기<span class="arr" aria-hidden="true">→</span></a>
+          </div>
+          <dl class="f-dl">
+            <div><dt lang="en">CLASS</dt><dd lang="en">CWE-190&nbsp;→ CWE-122</dd></div>
+            <div><dt lang="en">SITE</dt><dd lang="en">src/rows.c:207&nbsp;→ 212</dd></div>
+            <div><dt lang="en">TRIGGER</dt><dd lang="en">width&nbsp;0x40000001&nbsp;· bpp&nbsp;4</dd></div>
+            <div><dt lang="en">STATUS</dt><dd><span class="ko">사람&nbsp;검토&nbsp;대기</span>&nbsp;· <span lang="en">human&nbsp;review</span></dd></div>
+          </dl>
+        </div>
+
+        <div class="cells">
+          <div class="cell c-a">
+            <h4 class="cell-h" id="c-a-h"><span class="label" lang="en">A</span><span class="ct">가설</span></h4>
+            <div class="hyps" role="radiogroup" aria-label="가설 선택 · 샘플">
+              <button type="button" class="hyp" role="radio" aria-checked="true" tabindex="0" data-h="h1"><span class="id" lang="en">H1</span><span class="q">copy_rows()가 헤더의 width 값을 검증&nbsp;없이 신뢰한다</span><span class="why"><span class="st st-ok" lang="en">Confirmed</span>경로&nbsp;5단계&nbsp;· 재현&nbsp;3/3</span></button>
+              <button type="button" class="hyp is-rej" role="radio" aria-checked="false" tabindex="-1" data-h="h2"><span class="id" lang="en">H2</span><span class="q">팔레트 인덱스가 배열 경계를 넘는다</span><span class="why"><span class="st st-rej" lang="en">Rejected</span>read_palette()에서 경계&nbsp;검사&nbsp;확인&nbsp;·&nbsp;<span class="mono">01:37</span></span></button>
+              <button type="button" class="hyp is-rej" role="radio" aria-checked="false" tabindex="-1" data-h="h3"><span class="id" lang="en">H3</span><span class="q">inflate_block()의 출력 버퍼가 넘친다</span><span class="why"><span class="st st-rej" lang="en">Rejected</span>출력 버퍼 크기가 고정됨&nbsp;·&nbsp;<span class="mono">02:28</span></span></button>
+              <button type="button" class="hyp is-hold" role="radio" aria-checked="false" tabindex="-1" data-h="h4"><span class="id" lang="en">H4</span><span class="q">validate_len()의 부호 비교가 뒤집혀 있다</span><span class="why"><span class="st st-hold" lang="en">On hold</span>입력&nbsp;샘플&nbsp;부족&nbsp;· 다음&nbsp;세션</span></button>
+            </div>
+          </div>
+
+          <div class="cell c-b">
+            <h4 class="cell-h" id="c-b-h"><span class="label" lang="en">B</span><span class="ct">근본 원인</span><span class="label lc" lang="en">src/rows.c</span></h4>
+            <pre class="code" tabindex="0" aria-label="샘플 코드: src/rows.c 205–214행"><code lang="en"><span class="l"><span class="n">205</span><span class="c"><span class="kw">int</span> copy_rows(img_t *im, hdr_t *h, <span class="kw">const</span> u8 *src)</span></span><span class="l"><span class="n">206</span><span class="c">{</span></span><span class="l hot root"><span class="n">207</span><span class="c">  u32 stride = <span class="u"><span class="nw">h-&gt;width</span> * <span class="nw">h-&gt;bpp</span></span>;<span class="cm">   // u32 overflow</span></span></span><span class="l"><span class="n">208</span><span class="c">  u8 *row = malloc(stride);</span></span><span class="l"><span class="n">209</span><span class="c">  <span class="kw">if</span> (!row) <span class="kw">return</span> -1;</span></span><span class="l"><span class="n">210</span><span class="c">  <span class="kw">for</span> (u32 y = 0; y &lt; <span class="nw">h-&gt;height</span>; y++) {</span></span><span class="l"><span class="n">211</span><span class="c">    <span class="kw">const</span> u8 *s = src + (size_t)y * <span class="nw">h-&gt;pitch</span>;</span></span><span class="l hot sink"><span class="n">212</span><span class="c">    memcpy(row, s, <span class="u nw">(size_t)h-&gt;width * h-&gt;bpp</span>);</span></span><span class="l"><span class="n">213</span><span class="c">    emit_row(im, y, row);</span></span><span class="l"><span class="n">214</span><span class="c">  }</span></span></code></pre>
+            <ul class="lnotes">
+              <li class="root"><span class="at" lang="en">207</span><span>32비트 곱셈이 넘쳐 4바이트 버퍼만 할당됩니다.</span></li>
+              <li class="sink"><span class="at" lang="en">212</span><span>64비트로 다시 계산한 길이만큼 복사해 힙 경계를 넘어 씁니다.</span></li>
+            </ul>
+          </div>
+
+          <div class="cell c-c">
+            <h4 class="cell-h" id="c-c-h"><span class="label" lang="en">C</span><span class="ct">재현</span></h4>
+            <div class="rep-big"><b lang="en">3<small>/3</small></b><span>격리 환경<br>재현 성공</span></div>
+            <ol class="runs" lang="en">
+              <li><span class="rn">RUN 1</span><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.5 L5 9 L10 3"/></svg><span class="t">0.41 s · rows.c:212</span></li>
+              <li><span class="rn">RUN 2</span><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.5 L5 9 L10 3"/></svg><span class="t">0.39 s · rows.c:212</span></li>
+              <li><span class="rn">RUN 3</span><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.5 L5 9 L10 3"/></svg><span class="t">0.40 s · rows.c:212</span></li>
+            </ol>
+            <p class="env"><span lang="en">x86_64&nbsp;· ASan</span>&nbsp;· 고정&nbsp;시드&nbsp;· 매&nbsp;실행마다&nbsp;새&nbsp;<span lang="en">VM</span></p>
+          </div>
+
+          <div class="cell c-d">
+            <h4 class="cell-h" id="c-d-h"><span class="label" lang="en">D</span><span class="ct">세션 기록</span><span class="label" lang="en">00:00 – 06:00</span></h4>
+            <div class="sr" role="img" data-sel="h1" aria-label="샘플 세션 기록. 00:00부터 읽기와 가설을 거쳐 세 번의 추적 구간이 이어집니다. 1분 37초에 H2, 2분 28초에 H3가 기각되고, 2분 46초에 H4가 보류됩니다. 두 번의 입력 시도는 크래시 없이 끝났고, 이어진 재현 3회가 모두 성공해 4분 12초에 발견 F-01이 확인되었습니다. 이후 구간은 아직 진행되지 않았습니다.">
+              <span class="sr-track"></span>
+              <span class="sr-future" style="--at:70%;--len:30%"></span>
+              <span class="sr-seg" style="--at:0%;--len:10%"></span>
+              <span class="sr-seg" style="--at:10%;--len:4%"></span>
+              <span class="sr-seg is-b m" data-h="h1" style="--at:14%;--len:13%"></span>
+              <span class="sr-seg" style="--at:27%;--len:3%"></span>
+              <span class="sr-seg is-b m" data-h="h1" style="--at:30%;--len:11%"></span>
+              <span class="sr-seg" style="--at:41%;--len:5%"></span>
+              <span class="sr-seg is-b m" data-h="h1" style="--at:46%;--len:12%"></span>
+              <span class="sr-seg is-b m" data-h="h1" style="--at:63%;--len:7%"></span>
+              <span class="sr-stub" data-h="h2" style="--at:27%"><span class="sr-lab">H2 <span class="ko">기각</span> · 01:37</span></span>
+              <span class="sr-stub r2" data-h="h3" style="--at:41%"><span class="sr-lab">H3 <span class="ko">기각</span> · 02:28</span></span>
+              <span class="sr-stub is-hold" data-h="h4" style="--at:46%"><span class="sr-lab">H4 <span class="ko">보류</span> · 02:46</span></span>
+              <span class="sr-ring m" data-h="h1" style="--at:60%"></span>
+              <span class="sr-ring m" data-h="h1" style="--at:62%"></span>
+              <span class="sr-lab r2 ring" style="--at:60%"><span class="ko">입력</span> 1–2 · <span class="ko">크래시 없음</span></span>
+              <span class="sr-tick m" data-h="h1" style="--at:63.5%"></span>
+              <span class="sr-tick m" data-h="h1" style="--at:65.5%"></span>
+              <span class="sr-tick m" data-h="h1" style="--at:67.5%"></span>
+              <span class="sr-lab r1 rep" style="--at:64%"><span class="ko">재현</span> 3/3</span>
+              <span class="sr-play" style="--at:70%"><span class="sr-lab">T+04:12</span></span>
+              <span class="sr-find m" data-h="h1" style="--at:70%"></span>
+              <span class="sr-axis"><span style="--at:0%">00:00</span><span class="odd" style="--at:16.667%">01:00</span><span style="--at:33.333%">02:00</span><span class="odd" style="--at:50%">03:00</span><span style="--at:66.667%">04:00</span><span class="odd" style="--at:83.333%">05:00</span><span style="--at:100%">06:00</span></span>
+            </div>
+            <p class="sr-legend"><span><i class="lg lg-trace"></i><span class="ko">추적 · 재현</span></span><span><i class="lg lg-read"></i><span class="ko">읽기 · 가설</span></span><span><i class="lg lg-rej"></i><span class="ko">기각</span></span><span><i class="lg lg-hold"></i><span class="ko">보류</span></span><span><i class="lg lg-ring"></i><span class="ko">입력 시도</span></span><span><i class="lg lg-find"></i><span class="ko">발견</span> <span class="mono" lang="en">F-01</span></span></p>
+          </div>
+        </div>
+
+        <div class="plate-foot">
+          <p>모든 발견은 사람의 검토를 거쳐 보고서가 됩니다.</p>
+          <a class="btn btn-shell" href="#access">대기자 명단 등록<span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ 03 Report ═══ -->
+  <section class="report" id="report" aria-labelledby="report-title">
+    <div class="wrap">
+      <div class="sec-head g12">
+        <p class="eyebrow label"><span lang="en">03 — Report</span><span class="sep" aria-hidden="true">/</span><span class="ko">보고서</span></p>
+        <h2 class="d2" id="report-title"><span class="ln">보고서는</span> <span class="ln">증거로 말합니다.</span></h2>
+        <p class="lede">발견 하나에 보고서 하나. 결론을 먼저 쓰고 근거를 채우지 않습니다. 읽는&nbsp;사람이 같은 순서로 확인하고, 같은 결과를 직접 재현할 수 있도록 씁니다.</p>
+      </div>
+
+      <article class="report-sheet" aria-labelledby="r-title">
+        <div class="report-grid g12">
+          <div class="part p0">
+            <div class="p0-row"><p class="label" lang="en">Report · F-01 · Draft</p><span class="chip"><span class="ko">샘플 보고서</span> · <span lang="en">Illustrative</span></span></div>
+            <h3 class="r-title" id="r-title">copy_rows()의 행 길이 계산에서 정수 오버플로</h3>
+            <p class="r-meta" lang="en"><span class="grp"><span class="nw">sample-imgcodec 2.4</span><span class="sep"> · </span><span class="nw">src/rows.c:207 → 212</span></span><span class="sep"> · </span><span class="grp"><span class="nw">CWE-190 → CWE-122</span><span class="sep"> · </span><span class="nw">2026-09-26</span></span></p>
+          </div>
+
+          <div class="part p1">
+            <p class="part-h label"><span class="n">01</span><span lang="en">Summary</span><span class="ko">요약</span></p>
+            <p class="part-b">조작된 이미지 헤더의 width 값이 32비트 곱셈에서 넘쳐 행 버퍼가 실제보다 작게 할당되고, 이어지는 memcpy()가 힙 경계를 넘어 씁니다.</p>
+          </div>
+          <p class="note"><span class="label">01</span>첫 문단은 한 문장으로 끝납니다. 무엇이, 어디서, 왜.</p>
+
+          <div class="part p2">
+            <p class="part-h label"><span class="n">02</span><span lang="en">Impact</span><span class="ko">영향</span></p>
+            <p class="part-b">조작된 이미지 한 장으로 힙 버퍼 뒤쪽 메모리를 덮어쓸 수 있습니다. <span class="est">(추정 · 검토 필요)</span></p>
+          </div>
+          <p class="note"><span class="label">02</span>추정은 추정이라고 씁니다. 확인된 사실과 섞지 않습니다.</p>
+
+          <div class="part p3">
+            <p class="part-h label"><span class="n">03</span><span lang="en">Root cause</span><span class="ko">근본 원인</span></p>
+            <p class="part-b rc">
+              <span class="rc-a" aria-hidden="true"></span><span><span class="mono" lang="en">src/rows.c:207</span> stride를 32비트로 계산</span>
+              <span class="rc-a mono" aria-hidden="true">→</span><span><span class="mono" lang="en">src/rows.c:212</span> 64비트로 다시 계산한 길이만큼 복사.</span>
+            </p>
+          </div>
+          <p class="note"><span class="label">03</span>모든 주장에는 코드 위치가 붙습니다.</p>
+
+          <div class="part p4">
+            <p class="part-h label"><span class="n">04</span><span lang="en">Reproduce</span><span class="ko">재현</span></p>
+            <div class="part-b">
+              <p class="cmd" lang="en"><span>$ ./repro --seed 7f2a poc-f01.img</span><span>ASan: <span class="nw">heap-buffer-overflow&nbsp;·</span> rows.c:212</span></p>
+              <p class="cmd-note">격리 <span lang="en">VM</span>에서 3회 모두 같은 위치에서 중단됩니다.</p>
+            </div>
+          </div>
+          <p class="note"><span class="label">04</span>재현 절차는 복사해서 그대로 실행할&nbsp;수&nbsp;있어야 합니다.</p>
+
+          <div class="part p5">
+            <p class="part-h label"><span class="n">05</span><span lang="en">Fix</span><span class="ko">수정 방향</span></p>
+            <ol class="part-b diff" aria-label="수정 제안 diff (샘플)">
+              <li class="rm"><span class="sg" aria-hidden="true">−</span><span><span class="sr-only">삭제: </span><span lang="en">u32 stride = <span class="nw">h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>;</span></span></li>
+              <li class="ad"><span class="sg" aria-hidden="true">+</span><span><span class="sr-only">추가: </span><span lang="en"><span class="nw">if (h-&gt;width</span> &gt; MAX_W) return -1;</span></span></li>
+              <li class="ad"><span class="sg" aria-hidden="true">+</span><span><span class="sr-only">추가: </span><span lang="en">size_t stride = <span class="nw">(size_t)h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>;</span></span></li>
+            </ol>
+          </div>
+          <p class="note"><span class="label">05</span>수정은 제안일 뿐입니다. 적용은 사람이 결정합니다.</p>
+
+          <div class="part p6">
+            <p class="part-h label"><span class="n">06</span><span lang="en">Review</span><span class="ko">검토</span></p>
+            <p class="part-b rv"><span class="pair"><span class="k">검토자</span><span class="blank" role="img" aria-label="비어 있음"></span></span><span class="dot" aria-hidden="true">·</span><span class="pair"><span class="k">상태</span><span>초안 · 사람 검토 대기</span></span></p>
+          </div>
+          <p class="note"><span class="label">06</span>검토 칸이 채워지기 전에는 밖으로 나가지 않습니다.</p>
+        </div>
+        <ol class="notes-m" aria-label="보고서 작성 규칙">
+          <li><span class="label">01</span><span>첫 문단은 한 문장으로 끝납니다. 무엇이, 어디서, 왜.</span></li>
+          <li><span class="label">02</span><span>추정은 추정이라고 씁니다. 확인된 사실과 섞지 않습니다.</span></li>
+          <li><span class="label">03</span><span>모든 주장에는 코드 위치가 붙습니다.</span></li>
+          <li><span class="label">04</span><span>재현 절차는 복사해서 그대로 실행할&nbsp;수&nbsp;있어야 합니다.</span></li>
+          <li><span class="label">05</span><span>수정은 제안일 뿐입니다. 적용은 사람이 결정합니다.</span></li>
+          <li><span class="label">06</span><span>검토 칸이 채워지기 전에는 밖으로 나가지 않습니다.</span></li>
+        </ol>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ 04 Principles ═══ -->
+  <section class="principles" id="principles" aria-labelledby="principles-title">
+    <div class="wrap">
+      <div class="sec-head g12">
+        <p class="eyebrow label"><span lang="en">04 — Principles</span><span class="sep" aria-hidden="true">/</span><span class="ko">원칙</span></p>
+        <h2 class="d2" id="principles-title"><span class="ln">많이 찾기보다,</span> <span class="ln">확실히 찾습니다.</span></h2>
+      </div>
+      <ol class="plist">
+        <li class="g12"><span class="pn label" lang="en">P1</span><h3>허가받은 대상만 봅니다.</h3><p>소유자나 권한자가 승인한 범위 안에서만 분석하고 실행합니다. 범위&nbsp;밖의&nbsp;주소, 저장소, 바이너리에는 손대지 않습니다.</p></li>
+        <li class="g12"><span class="pn label" lang="en">P2</span><h3>격리된 곳에서만 재현합니다.</h3><p>재현은 매번 새로 만든 일회용 샌드박스 안에서 실행하고, 실행 기록은 보고서에 첨부합니다.</p></li>
+        <li class="g12"><span class="pn label" lang="en">P3</span><h3>재현되지 않으면 발견이 아닙니다.</h3><p>추측은 가설로 남기고, 보고서에는 쓰지 않습니다.</p></li>
+        <li class="g12"><span class="pn label" lang="en">P4</span><h3>버린 가설도 기록합니다.</h3><p>무엇을 왜 버렸는지가 다음 연구를 빠르게 만듭니다. 틀린 길을 아는&nbsp;것도 증거입니다.</p></li>
+        <li class="g12"><span class="pn label" lang="en">P5</span><h3>혼자 공개하지 않습니다.</h3><p>보고서는 사람의 검토를 거친&nbsp;뒤에만 밖으로 나갑니다. 제보&nbsp;채널과 공개&nbsp;시점은 사람이 정하고, 조율된&nbsp;<span class="nw">공개(<span lang="en">coordinated disclosure</span>)를</span> 기본으로&nbsp;합니다.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══ 05 Research notes ═══ -->
+  <section class="notes" id="notes" aria-labelledby="notes-title">
+    <div class="wrap">
+      <div class="sec-head g12">
+        <p class="eyebrow label"><span lang="en">05 — Research notes</span></p><!-- the Korean half is the h2 itself; repeating 연구 노트 twice stacked read as unfinished -->
+        <h2 class="d2" id="notes-title">연구 노트</h2>
+        <p class="lede">KKACHI를 만들며 배운 것을 짧은 노트로 정리하고 있습니다. 첫 노트는 연구&nbsp;프리뷰와 함께 공개합니다.</p>
+      </div>
+      <ol class="nlist">
+        <li class="g12"><span class="nid label" lang="en">N-01</span><h3>가설을 버리는 기술: 기각 기록이 발견을 빠르게 만드는 이유</h3><span class="chip chip-draft"><span class="ko">준비 중</span> · <span lang="en">Draft</span></span></li>
+        <li class="g12"><span class="nid label" lang="en">N-02</span><h3>재현 3/3의 의미: 격리 환경, 고정 시드, 새 <span lang="en">VM</span></h3><span class="chip chip-draft"><span class="ko">준비 중</span> · <span lang="en">Draft</span></span></li>
+        <li class="g12"><span class="nid label" lang="en">N-03</span><h3>호출 그래프는 지도일 뿐: 추적이 멈추는 지점 기록하기</h3><span class="chip chip-draft"><span class="ko">준비 중</span> · <span lang="en">Draft</span></span></li>
+      </ol>
+      <p class="after"><a class="qlink" href="#access">노트가 나오면 알림 받기<span class="arr" aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <!-- ═══ Access ═══ -->
+  <section class="access" id="access" aria-labelledby="access-title">
+    <div class="wrap">
+      <p class="eyebrow label"><span lang="en">Access</span><span class="sep" aria-hidden="true">/</span><span class="ko">대기자 명단</span></p>
+      <div class="g12">
+        <h2 class="d1 ax-h" id="access-title"><span class="ln l1">반가운 소식만</span> <span class="ln l2">가져오겠습니다<span class="sr-only">.</span><svg class="stop" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 0L10 5L5 10L0 5Z" fill="var(--finding)"/></svg></span></h2>
+      </div>
+      <div class="ax-body g12">
+        <div class="ax-l">
+          <p class="lede">KKACHI는 아직 연구 프리뷰 단계입니다. 대기자&nbsp;명단에 남겨 주시면 공개&nbsp;일정이 정해지는 대로, 검증된 소식만 가끔 전하겠습니다.</p>
+          <form class="ax" action="#access" method="get" novalidate>
+            <div class="ax-row">
+              <div class="fld fld-email">
+                <label for="ax-email">이메일 <span lang="en" class="en">Email</span></label>
+                <input id="ax-email" type="email" autocomplete="email" inputmode="email" required placeholder="예: name@team.dev" aria-describedby="ax-hint">
+              </div>
+              <div class="fld fld-org">
+                <label for="ax-org">소속 <span class="opt">(선택)</span></label>
+                <input id="ax-org" type="text" autocomplete="organization">
+              </div>
+              <button class="btn btn-primary" type="submit">대기자 명단 등록<span class="arr" aria-hidden="true">→</span></button>
+            </div>
+            <p id="ax-err" class="err" role="alert"></p>
+            <p id="ax-hint">프로토타입 화면입니다. 입력한 정보는 어디에도 전송되거나 저장되지 않습니다.</p>
+            <p id="ax-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <div class="ax-r">
+          <p class="label"><span lang="en">Name</span> / <span class="ko">이름</span></p>
+          <p class="gloss"><strong>까치</strong> — 반가운 소식을 먼저 전한다는 길조(吉鳥). 흑백으로 보이는 깃은 빛을 받으면 청록과 자줏빛으로 반짝입니다. 흑칠&nbsp;위의 자개처럼.</p>
+          <dl class="lex">
+            <div><dt>흑칠<span class="label" lang="en">Lacquer</span></dt><dd>코드베이스. 대부분은 조용하고, 조용해야 합니다.</dd></div>
+            <div><dt>끊음질<span class="label" lang="en">Cut-shell line</span></dt><dd>호출 경로. KKACHI의 모든 그림은 이&nbsp;가는 선으로 그립니다.</dd></div>
+            <div><dt>자개<span class="label" lang="en">Shell</span></dt><dd>증거. 올바른 각도에서만 빛나고, 재현으로 다시 확인합니다.</dd></div>
+            <div><dt>반가운 소식<span class="label" lang="en">Good news</span></dt><dd>재현되고, 사람이 검토한 발견.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-row g12">
+      <nav class="foot-nav" aria-label="바닥글 메뉴">
+        <ul>
+          <li><a href="#method">작동 원리</a></li>
+          <li><a href="#console">콘솔</a></li>
+          <li><a href="#report">보고서</a></li>
+          <li><a href="#principles">원칙</a></li>
+          <li><a href="#notes">연구 노트</a></li>
+          <li><a href="#access">대기자 명단</a></li>
+        </ul>
+      </nav>
+      <div class="foot-txt">
+        <p>화면의 대상, 경로, 수치, 기록은 모두 설명을 위한&nbsp;샘플&nbsp;데이터입니다. 실제 고객, 성과, 벤치마크를 나타내지 않습니다.</p>
+        <p lang="en">Colour values referenced from <span class="nw">Seoul Museum of Craft Art</span> collection pages.</p>
+      </div>
+      <p class="foot-c"><b lang="en">© 2026 KKACHI</b><br><span lang="en">Prototype by SEORY0</span></p>
+    </div>
+    <div class="closing" role="img" aria-label="KKACHI">
+      <div class="closing-lockup"><span class="brand-sym">
+<!-- kk-logo:closing:start -->
+<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15 3H45V33H36V12H15ZM3 15H33V45H24V24H3Z"/></svg>
+<!-- kk-logo:closing:end -->
+</span><span class="brand-word" aria-hidden="true"><span class="bw">ACHI</span></span></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var d = document, root = d.documentElement;
+  var motion = root.classList.contains('motion');
+
+  /* 1 · menu disclosure (≤900px) */
+  var menuBtn = d.querySelector('.menu-btn'), nav = d.getElementById('nav');
+  if (menuBtn && nav) {
+    var setOpen = function (open, refocus) {
+      nav.classList.toggle('is-open', open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (!open && refocus) menuBtn.focus();
+    };
+    menuBtn.addEventListener('click', function () { setOpen(menuBtn.getAttribute('aria-expanded') !== 'true'); });
+    nav.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) setOpen(false); });
+    d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('is-open')) setOpen(false, true); });
+    d.addEventListener('click', function (e) {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) setOpen(false);
+    });
+  }
+
+  /* 2 · the lid: one trace, played once when first seen, replayable */
+  var slab = d.getElementById('slab');
+  if (slab && motion) {
+    var clock = slab.querySelector('.clock');
+    var END = 3012, FINAL = 252, timer = 0, raf = 0;
+    var fmt = function (s) { s = Math.round(s); var m = Math.floor(s / 60), r = s % 60; return 'T+' + (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r; };
+    var run = function () {
+      clearTimeout(timer); cancelAnimationFrame(raf);
+      slab.classList.remove('is-live', 'is-done');
+      void slab.offsetWidth;
+      slab.classList.add('is-armed', 'is-live');
+      var t0 = performance.now();
+      var tick = function (now) {
+        var p = Math.min(1, Math.max(0, (now - t0) / END));
+        if (clock) clock.textContent = fmt(p * FINAL);
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      tick(t0);
+      timer = setTimeout(function () {
+        slab.classList.add('is-done');
+        if (clock) clock.textContent = fmt(FINAL);
+        /* once the sheen and ticks have settled, drop the animations: the static styles are the same final state */
+        timer = setTimeout(function () { slab.classList.remove('is-live'); }, 700);
+      }, END);
+    };
+    var fs = slab.querySelectorAll('.finding');
+    if ('IntersectionObserver' in window && fs.length) {
+      /* plays once F-01 (ring + ticks, ≈66px) of the displayed graph is fully on screen, so the
+         payoff is always seen; the display:none graph's finding never intersects */
+      var io = new IntersectionObserver(function (es) {
+        for (var i = 0; i < es.length; i++) if (es[i].intersectionRatio >= .98) { io.disconnect(); run(); return; }
+      }, { threshold: .98 });
+      for (var i = 0; i < fs.length; i++) io.observe(fs[i]);
+      if (clock) clock.textContent = fmt(0);
+      slab.classList.add('is-armed');
+    }
+    var replay = slab.querySelector('.replay');
+    if (replay) replay.addEventListener('click', run);
+
+    /* 3 · tilt: fine pointers only */
+    var fine = false;
+    try { fine = matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) {}
+    if (fine) {
+      /* --tilt goes on the consumers only (lustre, glint, the sheen rects), never on #slab, so a
+         pointer frame restyles four leaves instead of the whole lid */
+      var tiltEls = slab.querySelectorAll('.lustre, .glint, .f-sheen');
+      var tv = 0.62, rf = 0, rect = null;
+      var apply = function () { rf = 0; var v = tv.toFixed(3); for (var i = 0; i < tiltEls.length; i++) tiltEls[i].style.setProperty('--tilt', v); };
+      slab.addEventListener('pointerenter', function () { rect = slab.getBoundingClientRect(); });
+      slab.addEventListener('pointermove', function (e) {
+        var r = rect || (rect = slab.getBoundingClientRect());
+        if (!r.width) return;
+        tv = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        if (!rf) rf = requestAnimationFrame(apply);
+      });
+      slab.addEventListener('pointerleave', function () {
+        if (rf) { cancelAnimationFrame(rf); rf = 0; }
+        rect = null;
+        for (var i = 0; i < tiltEls.length; i++) tiltEls[i].style.removeProperty('--tilt');
+      });
+      window.addEventListener('scroll', function () { rect = null; }, { passive: true });
+    }
+  }
+
+  /* 4 · hypotheses radiogroup ↔ session ruler */
+  var group = d.querySelector('.hyps'), ruler = d.querySelector('.sr');
+  if (group) {
+    var radios = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    var check = function (el, focus) {
+      radios.forEach(function (r) { var on = r === el; r.setAttribute('aria-checked', on ? 'true' : 'false'); r.tabIndex = on ? 0 : -1; });
+      if (ruler) ruler.setAttribute('data-sel', el.getAttribute('data-h') || 'h1');
+      if (focus) el.focus();
+    };
+    radios.forEach(function (r, i) {
+      r.addEventListener('click', function () { check(r, false); });
+      r.addEventListener('keydown', function (e) {
+        var n = null, k = e.key, len = radios.length;
+        if (k === 'ArrowDown' || k === 'ArrowRight') n = radios[(i + 1) % len];
+        else if (k === 'ArrowUp' || k === 'ArrowLeft') n = radios[(i - 1 + len) % len];
+        else if (k === 'Home') n = radios[0];
+        else if (k === 'End') n = radios[len - 1];
+        if (n) { e.preventDefault(); check(n, true); }
+      });
+    });
+  }
+
+  /* 5 · access form: validates, sends nothing */
+  var form = d.querySelector('form.ax');
+  if (form) {
+    var email = d.getElementById('ax-email'), err = d.getElementById('ax-err'), status = d.getElementById('ax-status');
+    var valid = function (v) { return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(v); };
+    /* #ax-err (role=alert) and #ax-status (role=status) are always rendered; they are emptied, then
+       refilled a tick later, so a repeated identical message is announced again */
+    var announce = 0;
+    var say = function (el, fill) { if (!el) return; clearTimeout(announce); el.textContent = ''; announce = setTimeout(function () { fill(el); }, 60); };
+    var clearErr = function () {
+      if (!email) return;
+      email.removeAttribute('aria-invalid');
+      email.setAttribute('aria-describedby', 'ax-hint');
+      if (err) err.textContent = '';
+    };
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!email) return;
+      if (!valid(email.value.trim())) {
+        email.setAttribute('aria-invalid', 'true');
+        email.setAttribute('aria-describedby', 'ax-err ax-hint');
+        if (status) status.textContent = '';
+        say(err, function (el) { el.textContent = '이메일 주소를 확인해 주세요.'; });
+        if (d.activeElement !== email) email.focus();
+        return;
+      }
+      clearErr();
+      say(status, function (el) {
+        el.textContent = '이름을 올렸습니다. 검증된 소식만, 가끔 전하겠습니다.';
+        var s = d.createElement('small');
+        s.textContent = '(프로토타입 · 실제로 전송되지 않았습니다)';
+        el.appendChild(s);
+      });
+    });
+    if (email) email.addEventListener('input', function () { if (email.getAttribute('aria-invalid') === 'true' && valid(email.value.trim())) clearErr(); });
+  }
+})();
+</script>
+</body>
+</html>
