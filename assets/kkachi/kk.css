@@ -1,0 +1,282 @@
+/* ============================================================
+   KKACHI — the home's sheet (/kkachi/home/). Home spec: docs/superpowers/specs/2026-09-28-kkachi-home-design.md
+   (§4 colours, §5 tile contract, §9 brand bans, §10 responsive, §11 a11y, §13 nacre).
+
+   Sections 1-5, 9-11 were moved verbatim from the home <style> (their numbers are kept so the two files cross-reference);
+   the home is pixel-identical after the move.
+     1 tokens · 2 base · 3 stage · 4 grid · 5 inlay canvas (+ ㄲ logo) · 9 buttons · 10 intro column · 11 motion off
+   Page-only CSS (온주화 +, label, trace, the six glyphs) stays in the home's <style>, which loads after this sheet.
+   The five other KKACHI pages are white scrolling pages on their own sheet, assets/kkachi/kk-paper.css
+   (docs/superpowers/specs/2026-09-30-kkachi-paper-pages-design.md). 2026-10-01: the content-tile primitives (§12) and
+   the helpers the old dark one-screen subpages shared (.nw, .nb, .ko, .intro--page, .eyebrow, .intro-title,
+   .tile-link) were removed with those pages; the home used none of them and is pixel-identical after the removal.
+
+   Contrast on lacquer #292623 (measured): --ink 13.3:1 · --ink-2 7.2:1 · --ink-3 5.5:1 · --ink-dim 3.9:1 · violet 3.3:1.
+   So: text is --ink / --ink-2 / --ink-3 only. --ink-dim and violet are for lines, marks and edges (3:1 non-text), or for
+   large text (>= 24px, or >= 18.66px bold). On graphite (hover face) --ink-3 is 4.8:1, --ink-2 6.3:1.
+   ============================================================ */
+
+/* ── 1. tokens (shared tile contract, spec §4–§5) ── */
+:root {
+  --bg: #292623;                        /* lacquer black */
+  --ink: #EDF1F5;                       /* shell white */
+  --ink-dim: rgba(237,241,245,.45);
+  --line: rgba(237,241,245,.22);
+  --graphite: #363333;
+  --smoke: #424041;
+  --violet: #96688D;                    /* state colour only: the '확인' / found moments (A apex, ✓ F-01, I's lit 49) */
+  /* najeon plugin tile (spec §13); nacre is a texture, never a gradient. The path is written so it resolves to the same
+     file from this sheet (/assets/kkachi/) and from a page (/kkachi/<slug>/): engines differ on which base a url() inside
+     a custom property uses, and both are two levels deep. */
+  --nacre: url(../../assets/najeon/tiles/najeon-512.webp);
+  --ink-2: rgba(237,241,245,.7);        /* secondary text, >= 4.5:1 on --bg */
+  --ink-3: rgba(237,241,245,.58);       /* dim text: rejected / on hold (5.5:1 on --bg, 4.8:1 on graphite) */
+
+  --sans: 'Portfolio Sans', 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'Portfolio Sans', ui-monospace, Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.2,.7,.2,1);
+
+  /* viewport units: dvh / cqw where supported (cqw = body width without scrollbar) */
+  --vh: 100vh;
+  --vw: calc(100vw - 16px);
+
+  /* layout (desktop, >= 1000px) */
+  --gap: 14px;
+  --pad-x: 40px;
+  --pad-y: 48px;
+  --col: 248px;                         /* text column */
+  --col-gap: 60px;
+  /* spec §5: clamp(120px, (100dvh - 96px - 42px) / 4, 176px), also capped by the width so nothing overflows */
+  --tile: min(
+    clamp(120px, (var(--vh) - 2 * var(--pad-y) - 3 * var(--gap)) / 4, 176px),
+    (var(--vw) - 2 * var(--pad-x) - var(--col) - var(--col-gap) - 3 * var(--gap)) / 4
+  );
+  --grid-w: calc(4 * var(--tile) + 3 * var(--gap));
+
+  /* type scale inside tiles (home §8 buttons; every tile text uses one of these, so the pages read as one family).
+     Resolved here on :root, so they follow the global --tile (a tile cannot rescale them locally). */
+  --fs-idx: max(9px, calc(var(--tile) * .064));                 /* mono index number: 01 … 05, P1, H1 */
+  --fs-arr: max(11px, calc(var(--tile) * .092));                /* → */
+  --fs-ko: clamp(11.5px, calc(var(--tile) * .098), 17px);       /* Korean title, 600 */
+  --fs-en: max(9px, calc(var(--tile) * .062));                  /* English mono label, meta line, code */
+  --fs-tag: max(7px, calc(var(--tile) * .045));                 /* SAMPLE tag (home trace tag) */
+  --fs-body: clamp(11.5px, calc(var(--tile) * .074), 13px);     /* one-line body: Korean floor = --fs-ko floor, cap = intro note */
+  --fs-num: clamp(19px, calc(var(--tile) * .16), 28px);         /* large figure, 700: always "large text" (3:1 rule) */
+  --pad-tile: calc(var(--tile) * .085);                         /* inner padding of buttons and content tiles */
+}
+@supports (height: 100dvh) { :root { --vh: 100dvh; } }
+@supports (width: 1cqw)    { :root { --vw: 100cqw; } }
+
+/* spec §10: < 1000px — text below, grid max 560px, 4 columns kept */
+@media (max-width: 999.98px) {
+  :root {
+    --pad-x: 24px;
+    --pad-y: 40px;
+    --tile: calc((min(var(--vw), 560px) - 2 * var(--pad-x) - 3 * var(--gap)) / 4);
+  }
+}
+/* spec §10: < 420px — gap 8px, English button labels hidden */
+@media (max-width: 419.98px) {
+  :root { --gap: 8px; --pad-x: 18px; --pad-y: 28px; }
+}
+/* opt-in only: the default .22 button line (spec §4) stays; "more contrast" users get 3:1+ tile edges and dim text */
+@media (prefers-contrast: more) {
+  :root { --line: rgba(237,241,245,.5); --ink-dim: rgba(237,241,245,.62); --ink-3: rgba(237,241,245,.7); }
+}
+
+/* ── 2. base ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); color-scheme: dark; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 15px/1.7 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  container-type: inline-size;          /* lets --vw resolve to 100cqw */
+  overflow-x: hidden;
+}
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ── 3. stage: one dark screen ── */
+.stage {
+  min-height: var(--vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--col-gap);
+  padding: var(--pad-y) var(--pad-x);
+}
+@media (max-width: 999.98px) {
+  .stage { flex-direction: column; gap: clamp(36px, 7vw, 56px); }
+}
+
+/* ── 4. grid (spec §3: DOM order = reading order) ── */
+.grid {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(4, var(--tile));
+  grid-auto-rows: minmax(var(--tile), auto);   /* square by default; a row grows (never clips) under text-only zoom */
+  gap: var(--gap);
+}
+.tile { position: relative; min-width: 0; }
+
+/* ── 5. ㄲ logo tile: real nacre inlaid in the lacquer (spec §7, §13) ──
+   One najeon shader canvas per inlay (assets/kkachi/inlay.js), cut to the unmodified path(s) by a CSS mask.
+   The canvas's own background is the najeon tile, so the emblems are nacre before and without JS; without WebGL the
+   runtime falls back to that same tile by itself. A canvas.inlay with no --inlay-mask is an unmasked nacre panel. */
+.t-logo { display: grid; place-items: center; }
+.inlay {
+  display: block;
+  height: auto;
+  aspect-ratio: 1;
+  background: var(--nacre) 50% 50% / cover no-repeat;
+  -webkit-mask-image: var(--inlay-mask);
+          mask-image: var(--inlay-mask);
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
+/* ㄲ: the C′1 master path, viewBox 3 3 42 42 at 50% of the tile — exactly where the solid mark sat */
+.logo-inlay {
+  width: 50%;
+  --inlay-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 42 42'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E");
+}
+
+/* ── 9. buttons (spec §8) ── */
+.btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--pad-tile);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease);
+}
+.btn-top { display: flex; justify-content: space-between; align-items: baseline; line-height: 1; }
+.btn-idx {
+  font: 400 var(--fs-idx)/1 var(--mono);
+  letter-spacing: .06em;
+  color: var(--ink-2);
+}
+.btn-arr {
+  font: 400 var(--fs-arr)/1 var(--mono);
+  transition: transform .4s var(--ease);
+}
+.btn-txt { display: flex; flex-direction: column; gap: .35em; }
+.btn-ko {
+  font: 600 var(--fs-ko)/1.25 var(--sans);
+  letter-spacing: -.01em;
+  word-break: keep-all;
+  text-wrap: balance;                   /* a long label (노트가 나오면 알림 받기) never leaves one word on its last line */
+}
+.btn-en {
+  font: 400 var(--fs-en)/1 var(--mono);
+  letter-spacing: .06em;
+  color: var(--ink-2);
+}
+.btn:hover { background-color: var(--graphite); border-color: var(--ink); }
+.btn:hover .btn-arr { transform: translateX(calc(var(--tile) * .022 + 1px)); }
+.btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.btn:focus:not(:focus-visible) { outline: none; }
+
+/* primary: shell-white face, lacquer-black type. Hover raises a lacquer band along the bottom edge with a nacre line
+   inlaid in it — nacre only ever sits on lacquer (spec §13); laid straight on the white face it reads as a hologram sticker. */
+.btn--primary { position: relative; background: var(--ink); border-color: var(--ink); color: var(--bg); }   /* relative: the seam's box, also for a <button> that is not a .tile */
+.btn--primary .btn-idx,
+.btn--primary .btn-en { color: rgba(41,38,35,.74); }
+.btn--primary::after {
+  content: "";
+  position: absolute; left: -1px; right: -1px; bottom: -1px;      /* over the 1px border too: flush with the edge */
+  height: calc(max(2px, var(--tile) * .018) + max(2px, var(--tile) * .02));
+  border-top: max(2px, calc(var(--tile) * .018)) solid var(--bg); /* lacquer seam: the nacre never touches the white face */
+  background: var(--bg) var(--nacre) 50% 71% / 100% auto no-repeat padding-box;
+  clip-path: inset(100% 0 0 0);                                  /* parked below the edge; rises on hover */
+  transition: clip-path .45s var(--ease);
+}
+.btn--primary:hover { background-color: var(--ink); border-color: var(--ink); }
+.btn--primary:hover::after { clip-path: inset(0); }
+
+@media (max-width: 419.98px) {
+  .btn-en { display: none; }
+}
+/* way tiles are always squares (tile contract): a button never stretches into a tall face; content taller than the
+   square (text-only zoom) still grows the tile, never clips. */
+.grid > .btn { align-self: start; aspect-ratio: 1; }
+
+/* ── 10. intro column (spec §3) ── */
+.intro {
+  flex: none;
+  width: var(--col);
+  font-size: 15px;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.intro p { margin: 0; }
+.intro p + p { margin-top: 1.05em; }
+.intro strong { font-weight: 700; letter-spacing: .01em; }
+.intro-note {
+  padding-top: .45em;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.intro-note .mono {
+  display: block;
+  margin-bottom: .2em;
+  font: 400 11.5px/1.7 var(--mono);
+  letter-spacing: .12em;
+}
+/* pause control (WCAG 2.2.2): a real checkbox, no JS. Shown only where :has() lets it act (section 11). */
+.still { display: none; margin-top: .75em; }
+@supports selector(:has(*)) { .still { display: flex; } }
+.still-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .55em;
+  min-height: 24px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color .3s var(--ease);
+}
+.still-en { font: 400 11.5px/1 var(--mono); letter-spacing: .06em; }
+.still-box { flex: none; display: grid; place-items: center; width: 11px; height: 11px; border: 1px solid currentColor; }
+.still-box::after { content: ""; width: 5px; height: 5px; border: 2.5px solid currentColor; opacity: 0; transition: opacity .3s var(--ease); }  /* a border, so forced-colors keeps it */
+.still-label:hover,
+.still-input:checked + .still-label { color: var(--ink); }
+.still-input:checked + .still-label .still-box::after { opacity: 1; }
+.still-input:focus-visible + .still-label { color: var(--ink); outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (max-width: 999.98px) {
+  .intro { width: var(--grid-w); max-width: 100%; }
+}
+@media (max-width: 419.98px) {
+  .intro { font-size: 14.5px; }
+}
+
+/* ── 11. motion off: on-page pause (checkbox) + reduced motion ── */
+/* pause freezes every loop where it is (resumes from there). A page adds its own composed frame where a paused loop
+   would sit empty (home: the trace log shows whole). */
+.stage:has(#kk-still:checked) .grid *,
+.stage:has(#kk-still:checked) .grid *::before,
+.stage:has(#kk-still:checked) .grid *::after { animation-play-state: paused !important; }
+
+/* reduced motion: every animation off, composed static frame (the pause control has nothing to do, so it hides) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .still { display: none !important; }
+}
