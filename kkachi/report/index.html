@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 보고서</title>
+<meta name="description" content="발견 하나에 보고서 하나. KKACHI의 보고서는 증거로 말합니다. 읽는 사람이 같은 순서로 확인하고, 같은 결과를 직접 재현할 수 있도록 씁니다.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F0F0F0">
+<meta property="og:title" content="KKACHI — 보고서">
+<meta property="og:description" content="발견 하나에 보고서 하나. KKACHI의 보고서는 증거로 말합니다. 읽는 사람이 같은 순서로 확인하고, 같은 결과를 직접 재현할 수 있도록 씁니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seory0.github.io/kkachi/report/">
+<link rel="canonical" href="https://seory0.github.io/kkachi/report/">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<!-- kk-transition:start (assets/kkachi/transition.js) -->
+<style>html.kk-arriving{color-scheme:dark;scrollbar-color:#363333 #292623}html.kk-arriving::after{content:"";position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#292623 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='136'%3E%3Cpath id='k' fill='%23363333' transform='translate(14 112)' d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3Cuse href='%23k' y='-136'/%3E%3Cuse href='%23k' x='38' y='-68'/%3E%3Cuse href='%23k' x='-38' y='-68'/%3E%3C/svg%3E") 0 34px/76px 136px;animation:kk-failsafe .3s 3s forwards}@keyframes kk-failsafe{to{opacity:0;visibility:hidden}}</style>
+<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<4e3&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
+<!-- kk-transition:end -->
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<link rel="stylesheet" href="../../assets/kkachi/kk-paper.css">
+<!-- without JS the rules toggle cannot work: the writing rules then stay shown and the button goes -->
+<noscript><style>.p-report-rule[hidden] { display: block; } .p-report-toggle, .p-report-now { visibility: hidden; }</style></noscript>
+<style>
+/* ============================================================
+   KKACHI — 보고서 (Report) · /kkachi/report/ — page CSS only
+   Specs: docs/superpowers/specs/2026-09-30-kkachi-paper-pages-design.md (§3 frame, §4 "03 보고서"), home spec §9 / §13.
+   The frame is ../../assets/kkachi/kk-paper.css (its header lists every pp- primitive). Classes, custom properties and
+   @keyframes of this page start with p-report-, ids with report-. Colour only through the roles (--fg, --fg-2, --edge,
+   --hair, --hair-2, --bg) and --violet.
+
+   Content: the prototype's #report section (kkachi/index.html) in full — the lede, the sample report F-01 (cover and
+   01 요약 … 06 검토) and its six writing rules — laid out as a document:
+     · a framed sheet (the cover, then one framed part per section) with the rules in its right margin (>= 1000px) or
+       under each part (narrower). The margin column is always reserved, so showing the rules never moves the sheet;
+     · a sticky strip over the sheet: the parts 01–06 (in-page links; the one being read is aria-current) and the
+       '작성 규칙 보기' toggle (aria-pressed; it shows / hides the six rules, each drawn in with a leader line);
+     · 03 근본 원인 draws the bug (FIG. 1: the row buffer sized by the 32-bit stride, the 64-bit copy running past the
+       heap edge); 04 재현 has the command with a copy button (result in a role=status) and FIG. 2 (three runs, all
+       stopping at rows.c:212); 05 is the fix as a − / + diff; 06 is the unsigned review block (awaiting a human).
+   Violet (confirm / found only): the cover's F-01 edge mark and the three stops of the confirmed repro (3/3).
+   Drawings: the hero sheet draws on arrival (.pp-draw--load); FIG. 1, FIG. 2 and the diff play once when they scroll
+   into view ([data-pp-in], paper.js). With no JS, under reduced motion, or already on screen at load: static, drawn.
+   No loops.
+   ============================================================ */
+
+/* Figure text is HTML (never SVG text), so labels keep their size at 320px. The hero drawing is decorative
+   (aria-hidden); FIG. 1 / FIG. 2 repeat facts that the report text states, so their drawings are aria-hidden too and
+   their captions are read. */
+
+/* ── hero ── */
+.p-report-ln { display: inline-block; }                /* the h1 breaks only between its two phrases */
+
+/* ── the document ── */
+.p-report-doc {
+  --p-report-cg: clamp(32px, 4vw, 56px);               /* sheet ↔ margin */
+  --p-report-px: clamp(20px, 4.4vw, 56px);             /* sheet inset */
+  --p-report-py: clamp(30px, 3.6vw, 48px);
+  --p-report-strip-h: var(--p-report-strip-m, 57px);  /* the sticky strip incl. its hairline: 57px as drawn; the page
+                                                          script writes its real height (large text wraps it) to -m */
+  margin-top: clamp(48px, 7vw, 104px);
+}
+/* the strip: parts 01–06 (left), the rules toggle (over the margin it fills) */
+.p-report-strip {
+  position: sticky; top: var(--bar-h); z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 16px;
+  min-height: 56px;
+  margin-bottom: clamp(16px, 2.2vw, 28px);
+  background: var(--bg);
+  border-bottom: 1px solid var(--hair);
+}
+@media (min-width: 1000px) {                          /* sheet | margin: the strip, and every part, on the same two columns */
+  .p-report-strip, .p-report-part { display: grid; grid-template-columns: minmax(0, 17fr) minmax(0, 7fr); column-gap: var(--p-report-cg); }
+}
+@media (max-height: 479.98px) { .p-report-strip { position: static; } .p-report-doc { --p-report-strip-h: 0px; } }
+.p-report-toc { min-width: 0; }
+.p-report-toc ol { display: flex; flex-wrap: wrap; margin-left: -9px; }
+.p-report-toc a {
+  position: relative;
+  display: inline-flex; align-items: baseline; gap: 6px;
+  min-height: 44px; min-width: 40px; padding: 12px 9px; justify-content: center;
+  color: var(--fg-2); text-decoration: none;
+  font: 500 13.5px/20px var(--sans); letter-spacing: -.005em; white-space: nowrap;
+  transition: color .3s var(--ease);
+}
+.p-report-toc .p-report-toc-n { font: 400 11.5px/20px var(--mono); letter-spacing: .06em; }
+.p-report-toc a::after {                               /* the part being read: a line on the strip's bottom edge */
+  content: ""; position: absolute; left: 9px; right: 9px; bottom: -7px;
+  height: 2px; background: var(--fg);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .45s var(--ease);
+}
+.p-report-toc a:hover { color: var(--fg); }
+.p-report-toc a:hover::after { transform: scaleX(.35); }
+.p-report-toc a[aria-current] { color: var(--fg); }
+.p-report-toc a[aria-current]::after { transform: none; }
+.p-report-now { display: none; font: 400 var(--fs-label)/20px var(--mono); letter-spacing: .08em; color: var(--fg-2); white-space: nowrap; }
+.p-report-now b { font-weight: 400; color: var(--fg); margin-right: 8px; }
+.p-report-strip .pp-toggle { flex: none; justify-self: start; margin-block: 4px; }
+@media (max-width: 819.98px) {                         /* numbers only (labels stay for screen readers) */
+  .p-report-toc-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (max-width: 599.98px) {                         /* no room for six links: a quiet "where am I" instead */
+  .p-report-toc { display: none; }
+  .p-report-now { display: block; }
+}
+@media (max-width: 379.98px) { .p-report-strip .pp-toggle .pp-en { display: none; } }
+
+/* the sheet: framed parts. Narrow: the frame is on the part (the rule sits inside it, under the text);
+   >= 1000px: the frame is on the part's body (column 1) and the rule hangs in column 2 */
+.p-report-part {
+  scroll-margin-top: calc(var(--p-report-strip-h) - 4px);   /* + the page's scroll-padding (bar + 20px): lands 16px under the strip */
+  border-inline: 1px solid var(--hair-2);
+  border-top: 1px solid var(--hair);
+}
+.p-report-part:last-child { border-bottom: 1px solid var(--hair-2); }
+@media (max-width: 999.98px) { .p-report-part { display: flow-root; } }   /* the rule's bottom margin stays inside the frame */
+.p-report-body { position: relative; min-width: 0; padding: var(--p-report-py) var(--p-report-px); }
+@media (min-width: 1000px) {
+  .p-report-part { border: 0; }
+  .p-report-part:last-child { border: 0; }
+  .p-report-body { border-inline: 1px solid var(--hair-2); border-top: 1px solid var(--hair); }
+  .p-report-part:last-child .p-report-body { border-bottom: 1px solid var(--hair-2); }
+  .p-report-cover .p-report-body { border-top-color: var(--hair-2); }
+}
+.p-report-cover { border-top-color: var(--hair-2); }
+.p-report-cover .p-report-body { padding-top: calc(var(--p-report-py) + 6px); padding-bottom: calc(var(--p-report-py) + 6px); }
+.p-report-cover .p-report-body::before {             /* F-01 is a finding: the violet edge mark (as the prototype's sheet) */
+  content: ""; position: absolute; left: var(--p-report-px); top: -1px; width: 56px; height: 2px; background: var(--violet);
+}
+
+/* cover */
+.p-report-cover-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
+.p-report-id { font: 400 var(--fs-label)/1.6 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg); }
+.p-report-title { margin: clamp(18px, 2.4vw, 28px) 0 clamp(24px, 3vw, 36px); max-width: 17em; font-size: var(--fs-h2); line-height: 1.25; letter-spacing: -.03em; }
+.p-report-meta { display: flex; flex-wrap: wrap; gap: 6px clamp(16px, 2.2vw, 32px); padding-top: 12px; border-top: 1px solid var(--hair); }
+.p-report-meta > div { flex: none; min-width: 0; }
+.p-report-meta dt { font: 400 11px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-2); }
+.p-report-meta dd { margin-top: 2px; font: 400 13px/1.6 var(--mono); letter-spacing: .01em; white-space: nowrap; }
+@media (max-width: 459.98px) {                        /* one key / value per line, the keys in one column */
+  .p-report-meta { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: baseline; gap: 8px 14px; }
+  .p-report-meta > div { display: contents; }
+  .p-report-meta dd { margin: 0; font-size: 12.5px; white-space: normal; overflow-wrap: anywhere; }
+}
+
+/* part heading: index · 한글 · English */
+.p-report-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; margin-bottom: 16px; font-size: var(--fs-h3); line-height: 1.45; letter-spacing: -.015em; }
+.p-report-n { min-width: 2em; font: 400 var(--fs-label)/1 var(--mono); letter-spacing: .06em; color: var(--fg-2); }
+.p-report-en { font: 400 var(--fs-label)/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-2); }
+.p-report-sec > .p-report-body > :not(.p-report-h) { margin-left: 38px; }   /* the text hangs under the 한글 title */
+@media (max-width: 559.98px) { .p-report-sec > .p-report-body > :not(.p-report-h) { margin-left: 0; } }
+.p-report-sec > .p-report-body > * + * + * { margin-top: 20px; }
+.p-report-lead { max-width: 28em; font-size: clamp(19px, 1rem + .5vw, 23px); line-height: 1.62; letter-spacing: -.015em; }
+.p-report-txt { max-width: var(--measure); }
+.p-report-est {                                       /* an estimate, said as one: dashed like the unconfirmed in drawings */
+  color: var(--fg-2); white-space: nowrap;
+  text-decoration: underline dashed var(--fg-2) 1px; text-underline-offset: .3em;
+}
+.p-report-loc { font: 400 13.5px/1.6 var(--mono); letter-spacing: .01em; white-space: nowrap; margin-right: 10px; }
+
+/* 03 root cause: two code locations joined by a hairline (207 → 212) */
+.p-report-rc { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 14px 14px; max-width: var(--measure); }
+.p-report-rc-a { position: relative; align-self: stretch; }
+.p-report-rc-a::before {                              /* the node at the first location (a hollow diamond) */
+  content: ""; position: absolute; left: 2px; top: calc(.85em - 5px); width: 10px; height: 10px;
+  background: var(--fg); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.p-report-rc-a::after {
+  content: ""; position: absolute; left: 3.5px; top: calc(.85em - 3.5px); width: 7px; height: 7px;
+  background: var(--bg); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.p-report-rc-a + span { position: relative; }
+.p-report-rc-a:first-child + span::before {          /* the hairline down to the second location */
+  content: ""; position: absolute; left: -21.5px; top: calc(.85em + 7px); bottom: calc(-14px - .85em + 9px);
+  width: 1px; background: var(--fg);
+}
+.p-report-rc-to { font: 400 14px/1.7 var(--mono); text-align: center; background: var(--bg); position: relative; z-index: 1; align-self: start; }
+
+/* FIG. 1: the bug as a memory drawing (HTML, so its labels keep their size) */
+.p-report-fig { margin-top: 32px; display: grid; gap: 14px; max-width: 40em; }
+.p-report-mem { --p-report-edge: 58%; position: relative; display: grid; gap: 8px; padding-bottom: 30px; }
+.p-report-mem-l { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; font-size: 13.5px; line-height: 1.5; color: var(--fg-2); }
+.p-report-mem-l b { font: 400 12px/1.5 var(--mono); letter-spacing: .06em; color: var(--fg); }
+.p-report-mem-l > *, .p-report-mem-k { position: relative; z-index: 1; background: var(--bg); box-shadow: 0 0 0 3px var(--bg); }  /* the edge line passes behind the labels */
+.p-report-mem-l + .p-report-mem-bar { margin-bottom: 10px; }
+.p-report-mem-bar { position: relative; height: 26px; }
+.p-report-mem-a { width: var(--p-report-edge); border: 1px solid var(--fg); background: var(--hair); }
+.p-report-mem-b { display: grid; grid-template-columns: var(--p-report-edge) minmax(0, 1fr); }
+.p-report-mem-in { border: 1px solid var(--fg); border-right: 0; }
+.p-report-mem-out {
+  border: 1px dashed var(--fg); border-left: 0;
+  background: repeating-linear-gradient(90deg, var(--hair-2) 0 1px, transparent 1px 7px);
+}
+.p-report-mem-edge {                                   /* the heap edge */
+  position: absolute; left: var(--p-report-edge); top: 0; bottom: 22px; width: 0;
+  border-left: 2px solid var(--fg); margin-left: -1px;
+}
+.p-report-mem-k { position: absolute; bottom: 0; font: 400 11.5px/16px var(--mono); letter-spacing: .06em; color: var(--fg-2); white-space: nowrap; }
+.p-report-mem-k .ko { font-size: 12.5px; }
+.p-report-mem-k--edge { left: var(--p-report-edge); transform: translateX(-50%); color: var(--fg); }
+.p-report-mem-k--out { right: 0; }
+/* play once in view: the buffer is allotted, the edge drops, then the copy runs on past it */
+@media (prefers-reduced-motion: no-preference) {
+  .p-report-mem.is-armed :is(.p-report-mem-a, .p-report-mem-b) { clip-path: inset(0 100% 0 0); }
+  .p-report-mem.is-armed .p-report-mem-edge { transform: scaleY(0); transform-origin: 50% 0; }
+  .p-report-mem.is-armed :is(.p-report-mem-k, .p-report-mem-l) { opacity: 0; }
+  .p-report-mem.is-armed.is-in :is(.p-report-mem-a, .p-report-mem-b) { clip-path: inset(0); }
+  .p-report-mem.is-armed.is-in .p-report-mem-a { transition: clip-path .9s var(--ease) .1s; }
+  .p-report-mem.is-armed.is-in .p-report-mem-edge { transform: none; transition: transform .6s var(--ease) .9s; }
+  .p-report-mem.is-armed.is-in .p-report-mem-b { transition: clip-path 1.7s cubic-bezier(.45,.1,.3,1) 1.3s; }
+  .p-report-mem.is-armed.is-in :is(.p-report-mem-k, .p-report-mem-l) { opacity: 1; transition: opacity .6s var(--ease) .3s; }
+  .p-report-mem.is-armed.is-in .p-report-mem-k--edge { transition-delay: 1.2s; }
+  .p-report-mem.is-armed.is-in .p-report-mem-k--out { transition-delay: 2.6s; }
+}
+
+/* 04 reproduce: the command (copy) and its output */
+.p-report-cmd .pp-code { font-size: 13.5px; }
+.p-report-ps { color: var(--fg-2); user-select: none; -webkit-user-select: none; }
+.p-report-out { color: var(--fg-2); }
+.p-report-cmd .pp-copy-btn { min-height: 44px; }
+
+/* FIG. 2: three runs, all stopping at the same place */
+.p-report-runs { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 16px; max-width: 34em; }
+.p-report-run-l { grid-column: 1; font: 400 11.5px/32px var(--mono); letter-spacing: .08em; color: var(--fg-2); }
+.p-report-run-t { grid-column: 2; position: relative; height: 1px; margin-right: 4px; background: var(--fg); }
+.p-report-run-t::after {                              /* where it stopped: a confirmed mark */
+  content: ""; position: absolute; right: -9px; top: -5px; width: 11px; height: 11px;
+  background: var(--violet); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.p-report-run-stop { grid-column: 2; grid-row: 1 / 4; justify-self: end; align-self: stretch; width: 1px; margin: 4px 0; background: var(--fg); }
+.p-report-runs .pp-stat { grid-column: 3; grid-row: 1 / 4; padding-left: 14px; }
+.p-report-runs .pp-stat span { white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .p-report-runs.is-armed .p-report-run-t { transform: scaleX(0); transform-origin: 0 50%; }
+  .p-report-runs.is-armed .p-report-run-t::after { opacity: 0; }
+  .p-report-runs.is-armed .p-report-run-stop { transform: scaleY(0); }
+  .p-report-runs.is-armed .pp-stat { opacity: 0; }
+  .p-report-runs.is-armed.is-in .p-report-run-stop { transform: none; transition: transform .5s var(--ease) .1s; }
+  .p-report-runs.is-armed.is-in .p-report-run-t { transform: none; transition: transform 1s cubic-bezier(.45,.1,.3,1) calc(.4s + var(--i) * .45s); }
+  .p-report-runs.is-armed.is-in .p-report-run-t::after { opacity: 1; transition: opacity .3s var(--ease) calc(1.35s + var(--i) * .45s); }
+  .p-report-runs.is-armed.is-in .pp-stat { opacity: 1; transition: opacity .6s var(--ease) 2.5s; }
+}
+
+/* 05 fix: the proposal as a diff */
+.p-report-diff { padding: 10px 0; border: 1px solid var(--hair); font: 400 13.5px/1.75 var(--mono); max-width: 40em; }
+.p-report-diff li { position: relative; display: grid; grid-template-columns: 2.6em minmax(0, 1fr); padding: 4px 18px 4px 0; }
+.p-report-sg { text-align: center; color: var(--fg-2); user-select: none; -webkit-user-select: none; }
+.p-report-code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.p-report-rm { color: var(--fg-2); }
+.p-report-rm::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 2px dashed var(--fg-2); }   /* taken out */
+.p-report-ad { background: color-mix(in srgb, var(--hair) 50%, transparent); box-shadow: inset 2px 0 0 var(--fg); }  /* put in */
+.p-report-ad .p-report-sg { color: var(--fg); }
+@media (prefers-reduced-motion: no-preference) {
+  .p-report-diff.is-armed .p-report-rm { color: var(--fg); }
+  .p-report-diff.is-armed .p-report-rm::before { opacity: 0; }
+  .p-report-diff.is-armed .p-report-ad { clip-path: inset(0 100% 0 0); }
+  .p-report-diff.is-armed.is-in .p-report-rm { color: var(--fg-2); transition: color .6s var(--ease) .3s; }
+  .p-report-diff.is-armed.is-in .p-report-rm::before { opacity: 1; transition: opacity .6s var(--ease) .3s; }
+  .p-report-diff.is-armed.is-in .p-report-ad { clip-path: inset(0); transition: clip-path .9s var(--ease) calc(.7s + var(--i) * .25s); }
+}
+
+/* 06 review: the unsigned block, waiting for a person */
+.p-report-rvw { display: flex; align-items: flex-end; gap: 24px; }
+.p-report-rv { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px clamp(28px, 4vw, 56px); min-width: 0; }
+.p-report-rv > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; }   /* large text: the blank and the status wrap, never push past */
+.p-report-rv dt { font-size: 14px; line-height: 1.5; color: var(--fg-2); }
+.p-report-rv dd { font-size: 16px; line-height: 1.6; }
+.p-report-blank { display: block; width: 10em; max-width: 100%; height: 1.6em; border-bottom: 1px solid var(--fg); }
+.p-report-wait { display: inline-flex; align-items: center; gap: 10px; }
+.p-report-wait::before { content: ""; flex: none; width: 9px; height: 9px; border: 1px solid var(--fg); }   /* open: not yet confirmed */
+.p-report-seal { flex: none; width: 56px; height: 56px; margin-left: auto; border: 1px dashed var(--fg-2); }       /* nothing stamped yet */
+@media (max-width: 559.98px) { .p-report-seal { display: none; } }
+
+/* what each rule points at in the report (the estimate, the code locations, the command, the word 제안, the blank):
+   marked like a highlighter while the rules are shown */
+.p-report-ref {
+  background: linear-gradient(var(--hair), var(--hair)) 0 92% / 0% 42% no-repeat;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  transition: background-size .6s var(--ease) .25s;
+}
+.p-report-doc.is-rules .p-report-ref { background-size: 100% 42%; }
+.p-report-blank.p-report-ref { background-position: 0 0; background-size: 0% 100%; }       /* the empty field itself */
+.p-report-doc.is-rules .p-report-blank.p-report-ref { background-size: 100% 100%; }
+@media (prefers-reduced-motion: reduce) { .p-report-ref { transition: none; } }
+
+/* the writing rules: under each part (narrow) or in the margin with a leader to the part (>= 1000px) */
+.p-report-rule { margin: calc(var(--p-report-py) * -.4) var(--p-report-px) var(--p-report-py); }
+.p-report-rule-in { padding: 2px 0 2px 16px; border-left: 2px solid var(--fg); font-size: var(--fs-small); line-height: 1.65; color: var(--fg-2); }
+.p-report-rule-n { font: 400 var(--fs-label)/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg); }
+@media (min-width: 1000px) {
+  .p-report-rule { position: relative; grid-column: 2; align-self: start; margin: calc(var(--p-report-py) + 4px) 0 0; }
+  .p-report-rule-in { max-width: 21em; padding: 0; border: 0; }
+  .p-report-rule::before {                            /* the leader: from the sheet's edge to the note */
+    content: ""; position: absolute; top: 9.5px; right: 100%; width: calc(var(--p-report-cg) - 12px); margin-right: 12px;
+    height: 1px; background: var(--fg); transform-origin: 0 50%;
+  }
+  .p-report-rule::after {                             /* its foot on the sheet's edge */
+    content: ""; position: absolute; top: 7.5px; left: calc(var(--p-report-cg) * -1 - 2.5px); width: 5px; height: 5px; background: var(--fg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .p-report-rule:not([hidden]) .p-report-rule-in { animation: p-report-in .5s var(--ease) calc(.12s + var(--i) * 60ms) backwards; }
+  .p-report-rule:not([hidden])::before { animation: p-report-lead .45s var(--ease) calc(var(--i) * 60ms) backwards; }
+  .p-report-rule:not([hidden])::after { animation: p-report-fade .3s var(--ease) calc(var(--i) * 60ms) backwards; }
+}
+@keyframes p-report-in { from { opacity: 0; transform: translateX(-6px); } }
+@keyframes p-report-lead { from { transform: scaleX(0); } }
+@keyframes p-report-fade { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .p-report-toc a, .p-report-toc a::after { transition: none; }
+}
+</style>
+</head>
+<body class="pp">
+<a class="pp-skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="pp-bar">
+  <div class="pp-bar-in">
+    <a class="pp-home" href="../home/" aria-label="KKACHI 홈"><span class="pp-chip" aria-hidden="true"><span class="pp-chip-k"></span></span><span class="pp-word" aria-hidden="true">KKACHI</span></a>
+    <nav class="pp-nav" aria-label="KKACHI 페이지">
+      <ol>
+        <li><a href="../method/"><span class="pp-nav-n">01</span> <span class="pp-nav-t">작동 원리</span></a></li>
+        <li><a href="../console/"><span class="pp-nav-n">02</span> <span class="pp-nav-t">콘솔</span></a></li>
+        <li><a href="../report/" aria-current="page"><span class="pp-nav-n">03</span> <span class="pp-nav-t">보고서</span></a></li>
+        <li><a href="../notes/"><span class="pp-nav-n">04</span> <span class="pp-nav-t">연구 노트</span></a></li>
+        <li><a href="../waitlist/"><span class="pp-nav-n">05</span> <span class="pp-nav-t">대기자 명단</span></a></li>
+      </ol>
+    </nav>
+  </div>
+  <span class="pp-progress" aria-hidden="true"></span>
+</header>
+
+<main id="main" tabindex="-1" class="pp-wrap">
+
+  <header class="pp-hero">
+    <div class="pp-hero-text">
+      <p class="pp-eyebrow"><span lang="en">03 — Report</span> / <span class="ko">보고서</span></p>
+      <h1 class="pp-h1"><span class="p-report-ln">보고서는</span> <span class="p-report-ln">증거로 말합니다.</span></h1>
+      <p class="pp-lede">발견 하나에 보고서 하나. 결론을 먼저 쓰고 근거를 채우지 않습니다. 읽는&nbsp;사람이 같은 순서로 확인하고, 같은 결과를 직접 재현할 수 있도록 씁니다.</p>
+    </div>
+    <!-- the report sheet: cover, six parts (the estimate dashed, 207 → 212, the command, − / +, the empty seal), and in
+         its margin the six writing rules -->
+    <figure class="pp-hero-art" aria-hidden="true">
+      <svg class="pp-art pp-draw pp-draw--load" viewBox="0 0 372 400" focusable="false">
+        <path class="pp-stroke is-strong" pathLength="1" style="--i:0" d="M20 16H260V384H20Z"/>
+        <g class="is-hair">
+          <path class="pp-stroke" pathLength="1" style="--i:2" d="M20 114H260"/>
+          <path class="pp-stroke" pathLength="1" style="--i:3" d="M20 154H260"/>
+          <path class="pp-stroke" pathLength="1" style="--i:4" d="M20 194H260"/>
+          <path class="pp-stroke" pathLength="1" style="--i:5" d="M20 238H260"/>
+          <path class="pp-stroke" pathLength="1" style="--i:6" d="M20 290H260"/>
+          <path class="pp-stroke" pathLength="1" style="--i:7" d="M20 342H260"/>
+        </g>
+        <!-- cover -->
+        <path class="pp-stroke" pathLength="1" style="--i:1" d="M44 38H104"/>
+        <path class="pp-stroke is-hair" pathLength="1" style="--i:1" d="M200 32H236V44H200Z"/>
+        <path class="pp-stroke is-strong" pathLength="1" style="--i:2" d="M44 62H232"/>
+        <path class="pp-stroke is-strong" pathLength="1" style="--i:2" d="M44 76H170"/>
+        <path class="pp-stroke is-hair" pathLength="1" style="--i:3" d="M44 96H80M88 96H128M136 96H176M184 96H206"/>
+        <!-- 01 summary · 02 impact (the estimate dashed) -->
+        <path class="pp-stroke" pathLength="1" style="--i:3" d="M44 130H52M64 130H236"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4" d="M64 142H190"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4" d="M44 170H52M64 170H172"/>
+        <path class="pp-stroke is-dash" pathLength="1" style="--i:5" d="M178 170H224"/>
+        <!-- 03 root cause: 207 → 212 -->
+        <path class="pp-stroke" pathLength="1" style="--i:5" d="M44 210H52M80 210H188"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6" d="M68 214V224M80 228H212"/>
+        <!-- 04 reproduce: the command -->
+        <path class="pp-stroke" pathLength="1" style="--i:6" d="M44 254H52M64 246H236V266H64Z"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7" d="M72 256H172M64 278H196"/>
+        <!-- 05 fix: − / + / + -->
+        <path class="pp-stroke" pathLength="1" style="--i:7" d="M44 304H52M64 304H72M80 304H180"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8" d="M64 316H72M68 312V320M80 316H216"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8" d="M64 328H72M68 324V332M80 328H206"/>
+        <!-- 06 review: a blank to sign, an empty seal -->
+        <path class="pp-stroke" pathLength="1" style="--i:9" d="M44 358H52M64 368H136"/>
+        <path class="pp-stroke is-dash" pathLength="1" style="--i:9" d="M204 350H230V376H204Z"/>
+        <!-- the rules in the margin -->
+        <g class="is-hair">
+          <path class="pp-stroke" pathLength="1" style="--i:10" d="M260 130H278M286 130H350M286 138H328"/>
+          <path class="pp-stroke" pathLength="1" style="--i:10" d="M260 170H278M286 170H346M286 178H320"/>
+          <path class="pp-stroke" pathLength="1" style="--i:11" d="M260 210H278M286 210H340"/>
+          <path class="pp-stroke" pathLength="1" style="--i:11" d="M260 254H278M286 254H352M286 262H334"/>
+          <path class="pp-stroke" pathLength="1" style="--i:12" d="M260 304H278M286 304H348M286 312H316"/>
+          <path class="pp-stroke" pathLength="1" style="--i:12" d="M260 358H278M286 358H344M286 366H326"/>
+        </g>
+        <g class="pp-pop" style="--i:8">
+          <path class="is-fill is-violet" d="M44 15H84V17H44Z"/>
+          <path class="is-paper" d="M68 205L73 210L68 215L63 210Z"/>
+          <path class="is-fill" d="M68 223L73 228L68 233L63 228Z"/>
+          <g class="is-fill" style="opacity:.45"><path d="M277 128h4v4h-4Z"/><path d="M277 168h4v4h-4Z"/><path d="M277 208h4v4h-4Z"/><path d="M277 252h4v4h-4Z"/><path d="M277 302h4v4h-4Z"/><path d="M277 356h4v4h-4Z"/></g>
+        </g>
+      </svg>
+    </figure>
+  </header>
+
+  <!-- the sample report F-01 as a document: a framed sheet, the writing rules in its margin -->
+  <article class="p-report-doc" id="report-doc" aria-labelledby="report-title">
+
+    <div class="p-report-strip" id="report-strip">
+      <nav class="p-report-toc" aria-label="보고서 목차">
+        <ol>
+          <li><a data-pp-jump href="#report-s1"><span class="p-report-toc-n">01</span> <span class="p-report-toc-t">요약</span></a></li>
+          <li><a data-pp-jump href="#report-s2"><span class="p-report-toc-n">02</span> <span class="p-report-toc-t">영향</span></a></li>
+          <li><a data-pp-jump href="#report-s3"><span class="p-report-toc-n">03</span> <span class="p-report-toc-t">근본 원인</span></a></li>
+          <li><a data-pp-jump href="#report-s4"><span class="p-report-toc-n">04</span> <span class="p-report-toc-t">재현</span></a></li>
+          <li><a data-pp-jump href="#report-s5"><span class="p-report-toc-n">05</span> <span class="p-report-toc-t">수정 방향</span></a></li>
+          <li><a data-pp-jump href="#report-s6"><span class="p-report-toc-n">06</span> <span class="p-report-toc-t">검토</span></a></li>
+        </ol>
+      </nav>
+      <p class="p-report-now" id="report-now" aria-hidden="true"><b>F-01</b><span class="ko">표지</span></p>
+      <button class="pp-toggle p-report-toggle" id="report-rules-btn" type="button" aria-pressed="false" aria-controls="report-r1 report-r2 report-r3 report-r4 report-r5 report-r6"><span class="pp-box" aria-hidden="true"></span>작성 규칙 보기 <span class="pp-en" lang="en">Rules</span></button>
+    </div>
+
+    <header class="p-report-part p-report-cover" id="report-s0" data-p-report-now="표지">
+      <div class="p-report-body">
+        <div class="p-report-cover-top"><p class="p-report-id" lang="en">Report · F-01 · Draft</p><span class="pp-tag"><span class="ko">샘플 보고서</span> · <span lang="en">Illustrative</span></span></div>
+        <h2 class="p-report-title" id="report-title"><span lang="en">copy_rows()</span>의 행 길이 계산에서 정수 오버플로</h2>
+        <dl class="p-report-meta" lang="en">
+          <div><dt>Target</dt><dd>sample-imgcodec 2.4</dd></div>
+          <div><dt>Location</dt><dd><span class="nw">src/rows.c:207</span> <span class="nw">→ 212</span></dd></div>
+          <div><dt>CWE</dt><dd><span class="nw">CWE-190</span> <span class="nw">→ CWE-122</span></dd></div>
+          <div><dt>Date</dt><dd>2026-09-26</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="p-report-part p-report-sec" id="report-s1" aria-labelledby="report-s1-h" data-p-report-now="요약">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s1-h"><span class="p-report-n">01</span> <span>요약</span> <span class="p-report-en" lang="en">Summary</span></h3>
+        <p class="p-report-lead">조작된 이미지 헤더의 width 값이 32비트 곱셈에서 넘쳐 행 버퍼가 실제보다 작게 할당되고, 이어지는 <span class="nw">memcpy()가</span> 힙 경계를 넘어 씁니다.</p>
+      </div>
+      <div class="p-report-rule" id="report-r1" role="note" hidden style="--i:0"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 01</p><p>첫 문단은 한 문장으로 끝납니다. 무엇이, 어디서, 왜.</p></div></div>
+    </section>
+
+    <section class="p-report-part p-report-sec" id="report-s2" aria-labelledby="report-s2-h" data-p-report-now="영향">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s2-h"><span class="p-report-n">02</span> <span>영향</span> <span class="p-report-en" lang="en">Impact</span></h3>
+        <p class="p-report-txt">조작된 이미지 한 장으로 힙 버퍼 뒤쪽 메모리를 덮어쓸 수 있습니다. <span class="p-report-est p-report-ref">(추정&nbsp;·&nbsp;검토 필요)</span></p>
+      </div>
+      <div class="p-report-rule" id="report-r2" role="note" hidden style="--i:1"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 02</p><p>추정은 추정이라고 씁니다. 확인된 사실과 섞지 않습니다.</p></div></div>
+    </section>
+
+    <section class="p-report-part p-report-sec" id="report-s3" aria-labelledby="report-s3-h" data-p-report-now="근본 원인">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s3-h"><span class="p-report-n">03</span> <span>근본 원인</span> <span class="p-report-en" lang="en">Root cause</span></h3>
+        <p class="p-report-rc">
+          <span class="p-report-rc-a" aria-hidden="true"></span><span><span class="p-report-loc p-report-ref" lang="en">src/rows.c:207</span> stride를 32비트로 계산</span>
+          <span class="p-report-rc-to" aria-hidden="true">→</span><span><span class="p-report-loc p-report-ref" lang="en">src/rows.c:212</span> 64비트로 다시 계산한 길이만큼 복사.</span>
+        </p>
+        <figure class="p-report-fig">
+          <div class="p-report-mem" data-pp-in aria-hidden="true">
+            <p class="p-report-mem-l"><b>207</b><span>32비트 stride → 행 버퍼 할당</span></p>
+            <div class="p-report-mem-bar p-report-mem-a"></div>
+            <p class="p-report-mem-l"><b>212</b><span>64비트 길이 → <span class="nw">memcpy()</span></span></p>
+            <div class="p-report-mem-bar p-report-mem-b"><span class="p-report-mem-in"></span><span class="p-report-mem-out"></span></div>
+            <span class="p-report-mem-edge"></span>
+            <span class="p-report-mem-k p-report-mem-k--edge"><span class="ko">힙 경계</span></span>
+            <span class="p-report-mem-k p-report-mem-k--out"><span class="ko">넘어 씀</span></span>
+          </div>
+          <figcaption class="pp-cap">FIG. 1 — <span class="ko">행 버퍼는 32비트로, 복사 길이는 64비트로 계산됩니다</span></figcaption>
+        </figure>
+      </div>
+      <div class="p-report-rule" id="report-r3" role="note" hidden style="--i:2"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 03</p><p>모든 주장에는 코드 위치가 붙습니다.</p></div></div>
+    </section>
+
+    <section class="p-report-part p-report-sec" id="report-s4" aria-labelledby="report-s4-h" data-p-report-now="재현">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s4-h"><span class="p-report-n">04</span> <span>재현</span> <span class="p-report-en" lang="en">Reproduce</span></h3>
+        <div class="pp-copy p-report-cmd">
+          <pre class="pp-code pp-code--wrap" lang="en"><code><span class="p-report-ps" aria-hidden="true">$ </span><span class="p-report-ref" id="report-cmd">./repro --seed 7f2a poc-f01.img</span>
+<span class="p-report-out">ASan: <span class="nw">heap-buffer-overflow&nbsp;·</span> rows.c:212</span></code></pre>
+          <div class="pp-copy-row">
+            <button class="pp-copy-btn" type="button" data-p-report-copy="report-cmd" hidden>명령 복사 <span class="pp-en" lang="en">Copy</span></button>
+            <span class="pp-copy-status" id="report-copy-status" role="status" aria-live="polite"></span>
+          </div>
+        </div>
+        <p class="p-report-txt">격리 <span lang="en">VM</span>에서 3회 모두 같은 위치에서 중단됩니다.</p>
+        <figure class="p-report-fig">
+          <div class="p-report-runs" data-pp-in aria-hidden="true">
+            <span class="p-report-run-l" lang="en" style="grid-row:1">RUN 1</span><span class="p-report-run-t" style="--i:0;grid-row:1"></span>
+            <span class="p-report-run-l" lang="en" style="grid-row:2">RUN 2</span><span class="p-report-run-t" style="--i:1;grid-row:2"></span>
+            <span class="p-report-run-l" lang="en" style="grid-row:3">RUN 3</span><span class="p-report-run-t" style="--i:2;grid-row:3"></span>
+            <span class="p-report-run-stop"></span>
+            <p class="pp-stat"><b>3/3</b><span lang="en">rows.c:212</span></p>
+          </div>
+          <figcaption class="pp-cap">FIG. 2 — <span class="ko">격리 VM 재현 3회, 모두 rows.c:212에서 중단</span></figcaption>
+        </figure>
+      </div>
+      <div class="p-report-rule" id="report-r4" role="note" hidden style="--i:3"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 04</p><p>재현 절차는 복사해서 그대로 실행할&nbsp;수&nbsp;있어야 합니다.</p></div></div>
+    </section>
+
+    <section class="p-report-part p-report-sec" id="report-s5" aria-labelledby="report-s5-h" data-p-report-now="수정 방향">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s5-h"><span class="p-report-n">05</span> <span>수정 방향</span> <span class="p-report-en" lang="en">Fix</span></h3>
+        <figure class="p-report-fig p-report-fix">
+          <ol class="p-report-diff" data-pp-in aria-labelledby="report-diff-cap">
+            <li class="p-report-rm"><span class="p-report-sg" aria-hidden="true">−</span><span class="p-report-code" lang="en"><span class="sr-only" lang="ko">삭제: </span>u32 stride = <span class="nw">h-&gt;width</span> * <span class="nw">h-&gt;bpp;</span></span></li>
+            <li class="p-report-ad" style="--i:0"><span class="p-report-sg" aria-hidden="true">+</span><span class="p-report-code" lang="en"><span class="sr-only" lang="ko">추가: </span><span class="nw">if (h-&gt;width</span> &gt; MAX_W) return -1;</span></li>
+            <li class="p-report-ad" style="--i:1"><span class="p-report-sg" aria-hidden="true">+</span><span class="p-report-code" lang="en"><span class="sr-only" lang="ko">추가: </span>size_t stride = <span class="nw">(size_t)h-&gt;width</span> * <span class="nw">h-&gt;bpp;</span></span></li>
+          </ol>
+          <figcaption class="pp-cap" id="report-diff-cap"><span class="ko">수정 <span class="p-report-ref">제안</span> diff (샘플)</span></figcaption>
+        </figure>
+      </div>
+      <div class="p-report-rule" id="report-r5" role="note" hidden style="--i:4"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 05</p><p>수정은 제안일 뿐입니다. 적용은 사람이 결정합니다.</p></div></div>
+    </section>
+
+    <section class="p-report-part p-report-sec" id="report-s6" aria-labelledby="report-s6-h" data-p-report-now="검토">
+      <div class="p-report-body">
+        <h3 class="p-report-h" id="report-s6-h"><span class="p-report-n">06</span> <span>검토</span> <span class="p-report-en" lang="en">Review</span></h3>
+        <div class="p-report-rvw">
+        <dl class="p-report-rv">
+          <div><dt>검토자</dt><dd><span class="p-report-blank p-report-ref" role="img" aria-label="비어 있음"></span></dd></div>
+          <div><dt>상태</dt><dd><span class="p-report-wait">초안&nbsp;·&nbsp;사람 검토 대기</span></dd></div>
+        </dl>
+        <span class="p-report-seal" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="p-report-rule" id="report-r6" role="note" hidden style="--i:5"><div class="p-report-rule-in"><p class="p-report-rule-n"><span lang="en" aria-hidden="true">Rule</span><span class="sr-only">보고서 작성 규칙</span> 06</p><p>검토 칸이 채워지기 전에는 밖으로 나가지&nbsp;않습니다.</p></div></div>
+    </section>
+  </article>
+
+  <nav class="pp-end" aria-label="다음 페이지">
+    <a class="pp-tile pp-tile--next" href="../notes/">
+      <span class="pp-tile-top"><span class="pp-tile-idx">NEXT · 04</span><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">연구 노트</span><span class="pp-tile-en" lang="en">Notes</span></span>
+    </a>
+    <a class="pp-tile pp-tile--home" href="../home/">
+      <span class="pp-tile-top"><svg class="pp-tile-k" viewBox="3 3 42 42" aria-hidden="true" focusable="false"><path d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/></svg><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">KKACHI 홈</span><span class="pp-tile-en" lang="en">Home</span></span>
+    </a>
+  </nav>
+</main>
+
+<footer class="pp-wrap">
+  <div class="pp-foot">
+    <p class="pp-foot-c"><span class="mono" lang="en">© 2026 KKACHI</span><span lang="en">Prototype by SEORY0</span></p>
+    <div class="pp-foot-txt">
+      <p>보고서 F-01의 대상, 경로, 명령, 기록은 모두 설명을 위한 샘플입니다.</p>
+      <p>화면의 대상, 경로, 수치, 기록은 모두 설명을 위한&nbsp;샘플&nbsp;데이터입니다. 실제 고객, 성과, 벤치마크를 나타내지 않습니다.</p>
+      <p lang="en">Colour values referenced from Seoul Museum of Craft Art collection pages.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="../../assets/kkachi/transition.js"></script>
+<script type="module" src="../../assets/kkachi/paper.js"></script>
+<script type="module">
+/* Page script: the rules toggle, the reading position in the strip, and copy. */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const doc = $('#report-doc'), strip = $('#report-strip'), parts = $$('.p-report-part', doc);
+
+// the part at the reading line: the last one whose top has passed a line a little below the strip
+function partAtLine() {
+  const line = strip.getBoundingClientRect().bottom + Math.min(innerHeight * 0.15, 120);
+  let at = 0;
+  parts.forEach((p, i) => { if (p.getBoundingClientRect().top <= line) at = i; });
+  return at;
+}
+
+// rules toggle (aria-pressed): shows / hides the six rules. Narrow screens put them inline, so keep the part being
+// read where it is on screen (the rules above it grow).
+const toggle = $('#report-rules-btn'), rules = $$('.p-report-rule', doc);
+toggle.addEventListener('click', () => {
+  const on = toggle.getAttribute('aria-pressed') !== 'true';
+  const keep = parts[partAtLine()], before = keep.getBoundingClientRect().top;
+  toggle.setAttribute('aria-pressed', String(on));
+  doc.classList.toggle('is-rules', on);
+  for (const r of rules) r.hidden = !on;
+  const d = keep.getBoundingClientRect().top - before;
+  if (Math.abs(d) >= 1) scrollBy({ left: 0, top: d, behavior: 'instant' });
+});
+
+// reading position: the part being read is aria-current in the strip's outline (and named in the narrow readout)
+const links = $$('.p-report-toc a'), now = $('#report-now');
+let cur = -1, raf = 0;
+function spy() {
+  raf = 0;
+  const at = partAtLine();
+  if (at === cur) return;
+  cur = at;
+  links.forEach((a, i) => {                            // links are parts 1–6 (part 0 is the cover)
+    if (i + 1 === at) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+  });
+  now.innerHTML = `<b>${at ? String(at).padStart(2, '0') : 'F-01'}</b><span class="ko">${parts[at].dataset.pReportNow}</span>`;
+}
+const ask = () => { if (!raf) raf = requestAnimationFrame(spy); };
+addEventListener('scroll', ask, { passive: true });
+addEventListener('resize', ask);
+spy();
+
+// the strip's real height (large text can wrap it to two rows): the parts' jump offset follows it
+const measure = () => {
+  const h = strip.getBoundingClientRect().height;
+  if (h > 0) doc.style.setProperty('--p-report-strip-m', `${Math.round(h * 100) / 100}px`);
+};
+measure();
+if ('ResizeObserver' in window) new ResizeObserver(measure).observe(strip); else addEventListener('resize', measure);
+
+// copy: the command alone (no prompt, no output), so it runs as pasted; the result is announced politely
+for (const b of $$('[data-p-report-copy]')) {
+  const src = document.getElementById(b.dataset.pReportCopy), status = $('#report-copy-status');
+  let clear;
+  b.hidden = false;                                  // it ships hidden: without JS it would do nothing
+  b.addEventListener('click', async () => {
+    const text = src.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      status.textContent = '재현 명령을 복사했습니다.';
+    } catch (err) {
+      getSelection().selectAllChildren(src);
+      status.textContent = '복사하지 못했습니다. 선택된 명령을 직접 복사하세요.';
+    }
+    clearTimeout(clear);
+    clear = setTimeout(() => { status.textContent = ''; }, 4000);
+  });
+}
+</script>
+</body>
+</html>

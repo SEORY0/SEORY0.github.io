@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 연구 노트</title>
+<meta name="description" content="KKACHI를 만들며 배운 것을 짧은 노트로 정리합니다. 가설을 버리는 기술, 재현 3/3의 의미, 추적이 멈추는 지점 기록하기. 첫 노트는 연구 프리뷰와 함께 공개합니다.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F0F0F0">
+<meta property="og:title" content="KKACHI — 연구 노트">
+<meta property="og:description" content="KKACHI를 만들며 배운 것을 짧은 노트로 정리합니다. 가설을 버리는 기술, 재현 3/3의 의미, 추적이 멈추는 지점 기록하기. 첫 노트는 연구 프리뷰와 함께 공개합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seory0.github.io/kkachi/notes/">
+<link rel="canonical" href="https://seory0.github.io/kkachi/notes/">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<!-- kk-transition:start (assets/kkachi/transition.js) -->
+<style>html.kk-arriving{color-scheme:dark;scrollbar-color:#363333 #292623}html.kk-arriving::after{content:"";position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#292623 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='136'%3E%3Cpath id='k' fill='%23363333' transform='translate(14 112)' d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3Cuse href='%23k' y='-136'/%3E%3Cuse href='%23k' x='38' y='-68'/%3E%3Cuse href='%23k' x='-38' y='-68'/%3E%3C/svg%3E") 0 34px/76px 136px;animation:kk-failsafe .3s 3s forwards}@keyframes kk-failsafe{to{opacity:0;visibility:hidden}}</style>
+<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<4e3&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
+<!-- kk-transition:end -->
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<link rel="stylesheet" href="../../assets/kkachi/kk-paper.css">
+<!-- without JS the replay buttons would do nothing (keep their place, hide them) and the key is a plain legend -->
+<noscript><style>.p-notes-replay { visibility: hidden; } .p-notes-keyhint { display: none; }</style></noscript>
+<style>
+/* ============================================================
+   KKACHI — 연구 노트 (Notes) · /kkachi/notes/ — page CSS only
+   Specs: docs/superpowers/specs/2026-09-30-kkachi-paper-pages-design.md (§3 frame, §4 "04 연구 노트"), home spec §9 / §13.
+   The frame is ../../assets/kkachi/kk-paper.css (its header lists every pp- primitive). Classes, custom properties and
+   @keyframes of this page start with p-notes-, ids with notes-. Colour only through the roles (--fg, --fg-2, --edge,
+   --hair, --hair-2, --bg) and --violet.
+
+   The page: hero (a ruled note sheet with three entries: the titles written, the bodies still dashed = drafts), then the
+   three drafts N-01–N-03. A draft is not a link (no card face, no pointer): each is a row with its number, 준비 중 · Draft,
+   the title, and a drawing of its subject that plays once when it scrolls into view (and again from the 다시 그리기
+   button). Then the one action (노트가 나오면 알림 받기 → the waitlist, through the transition) and the end tiles.
+
+   The drawings (.p-notes-art, 480 × 260 viewBoxes): the resting frame is the finished drawing — without JS, under reduced
+   motion and for a drawing already on screen when the page opens nothing moves. paper.js (data-pp-in="half") arms a
+   drawing below the fold (.is-armed: the animations sit paused at their first frame) and plays it once half of it is in
+   view (.is-in);
+   the replay button restarts it (.is-play). Every timing is a --d (delay) / --t (duration) on the element; no drawing
+   loops, each plays under 5 s, so there is no pause switch.
+     N-01 가설을 버리는 기술 — the stem grows left to right; at each node a branch (a hypothesis) grows and is cut: a bar at
+          the cut, the stub stays, the severed part slips off and stays dashed (the record). The stem reaches the end
+          node, 발견 (violet: a found moment). 4.2 s.
+     N-02 재현 3/3의 의미 — three VM slots; run by run a new VM is drawn, the same seed sits in the same place, a mark
+          falls to the one spot and a ring closes round it. The third ring turns the spot violet: 3/3 (a confirm
+          moment). 3.9 s.
+     N-03 호출 그래프는 지도일 뿐 — the call graph is already there (the map, hairlines); the trace follows it node by
+          node, stops part-way down an edge: a bar marks the stop, the rest of that edge is dashed. 2.6 s.
+   Each drawing has a key (what the marks mean, in the words of the title), beside it >= 1000px and under it below.
+   The key entries are buttons: one
+   pressed keeps that part of the drawing in ink and steps the rest back to hairline (.is-keyed / .is-hi, set from the
+   elements' data-k), so the reader can find 기각 기록, 고정 시드 or the stop in the picture.
+   Violet appears twice, only where the drawing reaches a finding (N-01) or a confirmation (N-02).
+   Figure labels are HTML (11px at every width), placed in % of the drawing; the drawings themselves carry no text.
+   ============================================================ */
+
+/* ── hero: the note sheet ── */
+.p-notes-sheet { position: relative; }
+.p-notes-sheet .p-notes-words { stroke-dasharray: 11 5 6 5 15 5 8 5; }    /* dashed "words": a body not yet written */
+.p-notes-sheet-n {
+  position: absolute; left: 18.5%;
+  transform: translate(-50%, -50%);
+  font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--fg-2);
+  white-space: nowrap;
+}
+
+/* ── the list of drafts ── */
+.p-notes-list { border-bottom: 1px solid var(--hair); }
+.p-notes-item {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-areas: "text fig" "notes fig";
+  grid-template-rows: auto 1fr;
+  gap: 32px calc(var(--gap) * 2);
+  padding-block: clamp(40px, 5.4vw, 80px);
+  border-top: 1px solid var(--hair);
+}
+.p-notes-text { grid-area: text; }
+.p-notes-fig { grid-area: fig; min-width: 0; }
+.p-notes-notes { grid-area: notes; align-self: end; }
+@media (max-width: 999.98px) {
+  .p-notes-item { grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "fig" "notes"; grid-template-rows: auto; gap: 28px; }
+  .p-notes-fig { max-width: 680px; }
+}
+
+.p-notes-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.p-notes-id { font: 400 13px/1 var(--mono); letter-spacing: .08em; color: var(--fg); }
+.p-notes-title {
+  margin-top: 20px;
+  font-size: clamp(23px, 1rem + 1.1vw, 32px); line-height: 1.34; letter-spacing: -.025em;
+}
+.p-notes-sub {                          /* the part after the colon: one step down, still the title (inside the h3) */
+  display: block;
+  margin-top: .5em;
+  font: 400 var(--fs-lede)/1.6 var(--sans); letter-spacing: -.01em;
+  color: var(--fg-2);
+}
+
+/* reading the drawing: caption, one sentence, a key */
+.p-notes-desc { max-width: 30em; font-size: 15px; line-height: 1.7; color: var(--fg-2); }
+/* the key is also a control: press an entry and the drawing keeps only that part in ink (the rest goes to hairline);
+   press it again (or another) to change. Buttons ship disabled: without JS the key is a plain legend, no dead tab stops. */
+.p-notes-keycap { margin-top: 20px; }
+.p-notes-key { display: grid; justify-items: start; gap: 6px; margin-top: 10px; }
+.p-notes-k {
+  display: inline-flex; align-items: center; gap: 12px;
+  min-height: 36px; padding: 0 14px 0 9px;
+  border: 1px solid var(--edge); background: transparent; color: var(--fg);     /* control edge >= 3:1 */
+  font: 400 var(--fs-small)/1.35 var(--sans); text-align: left;
+  cursor: pointer;
+  transition: background-color .3s var(--ease), color .3s var(--ease);
+}
+.p-notes-k:hover { background: var(--hair); }
+.p-notes-k[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.p-notes-k[aria-pressed="true"] .p-notes-glyph .is-ghost { stroke: currentColor; }
+.p-notes-k[aria-pressed="true"] .p-notes-glyph .is-hair { stroke: currentColor; opacity: .5; }
+.p-notes-k:disabled { cursor: default; border-color: transparent; }
+.p-notes-k:disabled:hover { background: transparent; }
+@media (max-width: 999.98px) { .p-notes-key { display: flex; flex-wrap: wrap; gap: 8px; } }   /* under the drawing: a row */
+.p-notes-glyph {
+  flex: none; display: block; width: 28px; height: 16px; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 1.2;
+}
+.p-notes-glyph .is-strong { stroke-width: 1.9; }
+.p-notes-glyph .is-hair { stroke: var(--hair-2); }
+.p-notes-glyph .is-ghost { stroke: var(--fg-2); stroke-width: 1; stroke-dasharray: 2.5 2.5; }
+.p-notes-glyph .is-fill { fill: currentColor; stroke: none; }
+.p-notes-glyph .is-violet { fill: var(--violet); stroke: none; }
+.p-notes-glyph .is-paper { fill: var(--bg); }
+
+/* the figure: the drawing, then a hairline bar with its number and the replay button */
+.p-notes-art { position: relative; color: var(--fg); --pp-sw: 1.05; }
+@media (max-width: 719.98px) { .p-notes-art { --pp-sw: 1.55; } }       /* the drawing is ~0.6× there: keep the lines ~1px */
+.p-notes-art .is-ghost { stroke: var(--fg-2); stroke-width: var(--pp-sw); stroke-dasharray: 3 3.5; }
+.p-notes-art .is-map { stroke: var(--hair-2); }
+.p-notes-art .p-notes-dr { stroke-dasharray: 1 2; }                  /* drawn on (pathLength="1") */
+.p-notes-art .p-notes-cut { stroke-dasharray: 1 2; opacity: 0; }       /* drawn on, then cut away */
+.p-notes-art .p-notes-fall { opacity: 0; }                            /* a falling mark: gone once it lands */
+.p-notes-art .p-notes-grow { transform-box: fill-box; transform-origin: center; }
+.p-notes-lab {
+  position: absolute; left: var(--x); top: var(--y);
+  transform: translate(-50%, -50%);
+  font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--fg-2);
+  white-space: nowrap;
+}
+.p-notes-lab--r { transform: translate(0, -50%); }
+.p-notes-lab.is-on { color: var(--fg); }
+.p-notes-figbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
+  margin-top: clamp(14px, 2vw, 22px); padding-top: 12px;
+  border-top: 1px solid var(--hair);
+}
+.p-notes-replay {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--edge); background: transparent; color: var(--fg);
+  font: 500 var(--fs-small)/1.3 var(--sans);
+  cursor: pointer;
+  transition: background-color .3s var(--ease);
+}
+.p-notes-replay:hover { background: var(--hair); }
+.p-notes-replay svg { flex: none; width: 10px; height: 12px; fill: currentColor; }
+.p-notes-replay .pp-en { font: 400 11.5px/1 var(--mono); letter-spacing: .06em; color: var(--fg-2); }
+/* reduced motion: the drawings stay still, so there is nothing to replay (the place is kept: no shift) */
+@media (prefers-reduced-motion: reduce) { .p-notes-replay { visibility: hidden; } }
+
+/* keyed: one part of the drawing stays in ink, everything else steps back to hairline (colour only, so it works while
+   the drawing plays and under reduced motion; opacity is left to the animations) */
+.p-notes-art.is-keyed svg :not(g):not(.is-hi) { stroke: var(--hair-2); }
+.p-notes-art.is-keyed svg .is-fill:not(.is-hi) { fill: var(--hair-2); }
+.p-notes-art.is-keyed svg .is-hi:not(.is-fill) { stroke: var(--fg); }
+.p-notes-art.is-keyed .p-notes-lab:not(.is-hi) { color: var(--fg-2); }
+.p-notes-art.is-keyed .p-notes-lab.is-hi { color: var(--fg); }
+@media (prefers-reduced-motion: no-preference) {
+  .p-notes-art svg :not(g) { transition: stroke .35s var(--ease), fill .35s var(--ease); }
+}
+
+.p-notes-cta { margin-top: clamp(40px, 5vw, 64px); }
+
+/* ── the drawings play (never under reduced motion: the resting frame is the finished drawing) ── */
+@media (prefers-reduced-motion: no-preference) {
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-dr { animation: p-notes-draw var(--t, .3s) var(--e, var(--ease)) var(--d, 0s) both; }
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-pp { animation: p-notes-pop var(--t, .3s) var(--ease) var(--d, 0s) both; }
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-cut {
+    animation: p-notes-draw var(--t, .18s) var(--ease) var(--d, 0s) both, p-notes-out .3s var(--ease) var(--d2, 0s) both;
+  }
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-slip { animation: p-notes-slip .42s var(--ease) var(--d, 0s) both; }
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-fall { animation: p-notes-fall var(--t, .45s) cubic-bezier(.5,0,.8,.4) var(--d, 0s) both; }
+  .p-notes-art:is(.is-armed, .is-play) .p-notes-grow { animation: p-notes-grow .42s var(--ease) var(--d, 0s) both; }
+  .p-notes-art.is-armed:not(.is-in):not(.is-play) * { animation-play-state: paused; }
+}
+@keyframes p-notes-draw { from { stroke-dashoffset: 1.01; } to { stroke-dashoffset: 0; } }
+@keyframes p-notes-pop { from { opacity: 0; } to { opacity: 1; } }
+@keyframes p-notes-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes p-notes-slip { from { opacity: 0; transform: translate(var(--sx, 0), var(--sy, 0)); } to { opacity: 1; transform: none; } }
+@keyframes p-notes-fall {
+  0% { opacity: 0; transform: none; }
+  3% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, 0)); }
+}
+@keyframes p-notes-grow { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .p-notes-replay, .p-notes-k { transition: none; } }
+/* forced colours: the pressed key entry is a fill there (dropped): a system colour instead */
+@media (forced-colors: active) {
+  .p-notes-k[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; border-color: Highlight; color: HighlightText; }
+}
+</style>
+</head>
+<body class="pp">
+<a class="pp-skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="pp-bar">
+  <div class="pp-bar-in">
+    <a class="pp-home" href="../home/" aria-label="KKACHI 홈"><span class="pp-chip" aria-hidden="true"><span class="pp-chip-k"></span></span><span class="pp-word" aria-hidden="true">KKACHI</span></a>
+    <nav class="pp-nav" aria-label="KKACHI 페이지">
+      <ol>
+        <li><a href="../method/"><span class="pp-nav-n">01</span> <span class="pp-nav-t">작동 원리</span></a></li>
+        <li><a href="../console/"><span class="pp-nav-n">02</span> <span class="pp-nav-t">콘솔</span></a></li>
+        <li><a href="../report/"><span class="pp-nav-n">03</span> <span class="pp-nav-t">보고서</span></a></li>
+        <li><a href="../notes/" aria-current="page"><span class="pp-nav-n">04</span> <span class="pp-nav-t">연구 노트</span></a></li>
+        <li><a href="../waitlist/"><span class="pp-nav-n">05</span> <span class="pp-nav-t">대기자 명단</span></a></li>
+      </ol>
+    </nav>
+  </div>
+  <span class="pp-progress" aria-hidden="true"></span>
+</header>
+
+<main id="main" tabindex="-1" class="pp-wrap">
+
+  <header class="pp-hero">
+    <div class="pp-hero-text">
+      <p class="pp-eyebrow"><span lang="en">04 — Notes</span> / <span class="ko">연구 노트</span></p>
+      <h1 class="pp-h1">연구 노트</h1>
+      <p class="pp-lede"><span lang="en">KKACHI</span>를 만들며 배운 것을 짧은 노트로 정리하고 있습니다. 첫 노트는 연구&nbsp;프리뷰와 함께 공개합니다.</p>
+    </div>
+    <!-- a ruled note sheet: three entries, the titles written (solid), the bodies still dashed (drafts) -->
+    <figure class="pp-hero-art" aria-hidden="true">
+      <div class="p-notes-sheet pp-draw pp-draw--load">
+        <svg class="pp-art" viewBox="0 0 400 440" focusable="false">
+          <g class="is-hair">
+            <path class="pp-stroke" pathLength="1" style="--i:1" d="M104 68H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:1.4" d="M104 100H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:1.8" d="M104 132H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:2.2" d="M104 164H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:2.6" d="M104 196H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:3" d="M104 228H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:3.4" d="M104 260H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:3.8" d="M104 292H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:4.2" d="M104 324H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:4.6" d="M104 356H364"/>
+            <path class="pp-stroke" pathLength="1" style="--i:5" d="M104 388H364"/>
+          </g>
+          <path class="pp-stroke" pathLength="1" style="--i:0" d="M44 20H364V420H44Z"/>
+          <path class="pp-stroke" pathLength="1" style="--i:2" d="M104 20V420"/>
+          <path class="pp-stroke is-strong" pathLength="1" style="--i:6" d="M122 100H312"/>
+          <path class="pp-stroke is-strong" pathLength="1" style="--i:7" d="M122 228H296"/>
+          <path class="pp-stroke is-strong" pathLength="1" style="--i:8" d="M122 356H320"/>
+          <g class="pp-pop" style="--i:8">
+            <path class="p-notes-words" d="M122 132H338"/>
+            <path class="p-notes-words" style="stroke-dashoffset:16" d="M122 164H268"/>
+            <path class="p-notes-words" style="stroke-dashoffset:47" d="M122 260H342"/>
+            <path class="p-notes-words" style="stroke-dashoffset:27" d="M122 292H250"/>
+            <path class="p-notes-words" style="stroke-dashoffset:47" d="M122 388H300"/>
+          </g>
+          <g class="pp-pop" style="--i:5">
+            <path class="is-paper" d="M104 94L110 100L104 106L98 100Z"/>
+            <path class="is-paper" d="M104 222L110 228L104 234L98 228Z"/>
+            <path class="is-paper" d="M104 350L110 356L104 362L98 356Z"/>
+          </g>
+        </svg>
+        <span class="p-notes-sheet-n pp-pop" style="--i:5; top: 22.73%">N-01</span>
+        <span class="p-notes-sheet-n pp-pop" style="--i:6; top: 51.82%">N-02</span>
+        <span class="p-notes-sheet-n pp-pop" style="--i:7; top: 80.91%">N-03</span>
+      </div>
+    </figure>
+  </header>
+
+  <section class="pp-sec" id="notes-drafts" aria-labelledby="notes-drafts-h">
+    <header class="pp-sec-head">
+      <p class="pp-label"><span class="pp-idx">04.1</span><span><span lang="en">Drafts</span> / <span class="ko">준비 중</span></span></p>
+      <h2 class="pp-h2" id="notes-drafts-h">준비 중인 노트 세 편</h2>
+      <p class="pp-intro">아직 공개된 노트는 없습니다. 노트마다 붙인 그림은 노트 주제를 나타낸 설명용 도식으로, 화면에 들어오면 한&nbsp;번 그려집니다.</p>
+    </header>
+
+    <ol class="p-notes-list">
+
+      <!-- N-01 · 가설을 버리는 기술 -->
+      <li class="p-notes-item" id="notes-n1">
+        <div class="p-notes-text">
+          <p class="p-notes-meta"><span class="p-notes-id" lang="en">N-01</span><span class="pp-tag"><span><span class="ko">준비 중</span>&nbsp;·&nbsp;<span lang="en">Draft</span></span></span></p>
+          <h3 class="p-notes-title" id="notes-n1-h">가설을 버리는 기술: <span class="p-notes-sub">기각 기록이 발견을 빠르게 만드는 이유</span></h3>
+        </div>
+        <div class="p-notes-fig">
+          <div class="p-notes-art" id="notes-n1-art" role="img" aria-labelledby="notes-n1-d" data-p-notes-art data-pp-in="half">
+            <svg class="pp-art" viewBox="0 20 480 260" aria-hidden="true" focusable="false">
+              <path class="is-hair" d="M36 150H437"/>
+              <!-- the stem, node to node -->
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:.1s" d="M40 150H100"/>
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:.8s;--t:.28s" d="M100 150H168"/>
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:1.48s;--t:.28s" d="M168 150H236"/>
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:2.16s;--t:.28s" d="M236 150H304"/>
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:2.84s;--t:.28s" d="M304 150H372"/>
+              <path class="is-strong p-notes-dr" pathLength="1" style="--d:3.52s" d="M372 150H437"/>
+              <!-- five branches (hypotheses): stub stays, the cut part goes, its dashed record stays, a bar at the cut -->
+              <path class="p-notes-dr" data-k="hyp" pathLength="1" style="--d:.42s;--t:.18s" d="M100 150L117.26 113.91"/>
+              <path class="p-notes-cut" data-k="hyp" pathLength="1" style="--d:.6s;--d2:.88s" d="M117.26 113.91L144 58"/>
+              <path class="is-ghost p-notes-slip" data-k="hyp cut" style="--d:.86s;--sx:-3.02px;--sy:6.31px" d="M120.28 107.6L147.02 51.69"/>
+              <path class="is-strong p-notes-dr" data-k="cut" pathLength="1" style="--d:.8s;--t:.12s" d="M110.04 110.46L124.48 117.37"/>
+
+              <path class="p-notes-dr" data-k="hyp" pathLength="1" style="--d:1.1s;--t:.18s" d="M168 150L185.26 186.09"/>
+              <path class="p-notes-cut" data-k="hyp" pathLength="1" style="--d:1.28s;--d2:1.56s" d="M185.26 186.09L212 242"/>
+              <path class="is-ghost p-notes-slip" data-k="hyp cut" style="--d:1.54s;--sx:-3.02px;--sy:-6.31px" d="M188.28 192.4L215.02 248.31"/>
+              <path class="is-strong p-notes-dr" data-k="cut" pathLength="1" style="--d:1.48s;--t:.12s" d="M192.48 182.63L178.04 189.54"/>
+
+              <path class="p-notes-dr" data-k="hyp" pathLength="1" style="--d:1.78s;--t:.18s" d="M236 150L253.26 113.91"/>
+              <path class="p-notes-cut" data-k="hyp" pathLength="1" style="--d:1.96s;--d2:2.24s" d="M253.26 113.91L280 58"/>
+              <path class="is-ghost p-notes-slip" data-k="hyp cut" style="--d:2.22s;--sx:-3.02px;--sy:6.31px" d="M256.28 107.6L283.02 51.69"/>
+              <path class="is-strong p-notes-dr" data-k="cut" pathLength="1" style="--d:2.16s;--t:.12s" d="M246.04 110.46L260.48 117.37"/>
+
+              <path class="p-notes-dr" data-k="hyp" pathLength="1" style="--d:2.46s;--t:.18s" d="M304 150L321.26 186.09"/>
+              <path class="p-notes-cut" data-k="hyp" pathLength="1" style="--d:2.64s;--d2:2.92s" d="M321.26 186.09L348 242"/>
+              <path class="is-ghost p-notes-slip" data-k="hyp cut" style="--d:2.9s;--sx:-3.02px;--sy:-6.31px" d="M324.28 192.4L351.02 248.31"/>
+              <path class="is-strong p-notes-dr" data-k="cut" pathLength="1" style="--d:2.84s;--t:.12s" d="M328.48 182.63L314.04 189.54"/>
+
+              <path class="p-notes-dr" data-k="hyp" pathLength="1" style="--d:3.14s;--t:.18s" d="M372 150L389.26 113.91"/>
+              <path class="p-notes-cut" data-k="hyp" pathLength="1" style="--d:3.32s;--d2:3.6s" d="M389.26 113.91L416 58"/>
+              <path class="is-ghost p-notes-slip" data-k="hyp cut" style="--d:3.58s;--sx:-3.02px;--sy:6.31px" d="M392.28 107.6L419.02 51.69"/>
+              <path class="is-strong p-notes-dr" data-k="cut" pathLength="1" style="--d:3.52s;--t:.12s" d="M382.04 110.46L396.48 117.37"/>
+              <!-- nodes: the root, five branch points, the end (발견) -->
+              <rect class="is-paper" x="32" y="146" width="8" height="8"/>
+              <path class="is-paper p-notes-pp" style="--d:.38s;--t:.2s" d="M100 145.5L104.5 150L100 154.5L95.5 150Z"/>
+              <path class="is-paper p-notes-pp" style="--d:1.06s;--t:.2s" d="M168 145.5L172.5 150L168 154.5L163.5 150Z"/>
+              <path class="is-paper p-notes-pp" style="--d:1.74s;--t:.2s" d="M236 145.5L240.5 150L236 154.5L231.5 150Z"/>
+              <path class="is-paper p-notes-pp" style="--d:2.42s;--t:.2s" d="M304 145.5L308.5 150L304 154.5L299.5 150Z"/>
+              <path class="is-paper p-notes-pp" style="--d:3.1s;--t:.2s" d="M372 145.5L376.5 150L372 154.5L367.5 150Z"/>
+              <path class="is-fill is-violet p-notes-grow" data-k="find" style="--d:3.8s" d="M444 142L452 150L444 158L436 150Z"/>
+            </svg>
+          </div>
+          <div class="p-notes-figbar">
+            <p class="pp-cap" aria-hidden="true">FIG. N-01</p>
+            <button class="p-notes-replay" type="button" aria-controls="notes-n1-art" data-p-notes-replay><svg viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0H1.5V12H0ZM3 0L10 6L3 12Z"/></svg>다시 그리기<span class="sr-only"> — N-01 그림</span> <span class="pp-en" lang="en">Replay</span></button>
+          </div>
+        </div>
+        <div class="p-notes-notes">
+          <p class="p-notes-desc" id="notes-n1-d">가설이 가지처럼 자라다 끊깁니다. 끊은 자리는 기록으로 남고, 줄기는 발견까지 나아갑니다.</p>
+          <p class="pp-cap p-notes-keycap" id="notes-n1-kc"><span lang="en">KEY</span><span class="p-notes-keyhint"> · <span class="ko">누르면 그림에서 그 부분을 짚어 보여 줍니다</span></span></p>
+          <ul class="p-notes-key" aria-labelledby="notes-n1-kc" data-p-notes-key="notes-n1-art">
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n1-art" value="hyp" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path d="M4 14L14 2"/></svg><span>가설</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n1-art" value="cut" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path d="M1 8H11"/><path class="is-strong" d="M11 2.5V13.5"/><path class="is-ghost" d="M15 8H27"/></svg><span>기각 기록</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n1-art" value="find" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path class="is-violet" d="M14 2L20 8L14 14L8 8Z"/></svg><span>발견</span></button></li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- N-02 · 재현 3/3의 의미 -->
+      <li class="p-notes-item" id="notes-n2">
+        <div class="p-notes-text">
+          <p class="p-notes-meta"><span class="p-notes-id" lang="en">N-02</span><span class="pp-tag"><span><span class="ko">준비 중</span>&nbsp;·&nbsp;<span lang="en">Draft</span></span></span></p>
+          <h3 class="p-notes-title" id="notes-n2-h">재현 3/3의 의미: <span class="p-notes-sub">격리 환경, 고정&nbsp;시드, 새&nbsp;<span lang="en">VM</span></span></h3>
+        </div>
+        <div class="p-notes-fig">
+          <div class="p-notes-art" id="notes-n2-art" role="img" aria-labelledby="notes-n2-d" data-p-notes-art data-pp-in="half">
+            <svg class="pp-art" viewBox="0 10 480 260" aria-hidden="true" focusable="false">
+              <!-- the slots: three VMs, three paths to one spot -->
+              <g class="is-map">
+                <path d="M94 34H146V78H94Z"/><path d="M214 34H266V78H214Z"/><path d="M334 34H386V78H334Z"/>
+                <path d="M120 78L227.66 223.34"/><path d="M240 78V211"/><path d="M360 78L252.34 223.34"/>
+              </g>
+              <!-- run 1 -->
+              <path class="p-notes-dr" data-k="vm" pathLength="1" style="--d:.15s;--t:.4s" d="M94 34H146V78H94Z"/>
+              <path class="is-fill p-notes-pp" data-k="seed" style="--d:.5s;--t:.2s" d="M107 42.5L110.5 46L107 49.5L103.5 46Z"/>
+              <path class="p-notes-dr" data-k="rep" pathLength="1" style="--d:.65s;--t:.45s;--e:cubic-bezier(.5,0,.8,.4)" d="M120 78L227.66 223.34"/>
+              <path class="is-fill p-notes-fall" data-k="rep" style="--d:.65s;--t:.47s;--dx:120px;--dy:162px" d="M120 74.5L123.5 78L120 81.5L116.5 78Z"/>
+              <!-- run 2 -->
+              <path class="p-notes-dr" data-k="vm" pathLength="1" style="--d:1.3s;--t:.4s" d="M214 34H266V78H214Z"/>
+              <path class="is-fill p-notes-pp" data-k="seed" style="--d:1.65s;--t:.2s" d="M227 42.5L230.5 46L227 49.5L223.5 46Z"/>
+              <path class="p-notes-dr" data-k="rep" pathLength="1" style="--d:1.8s;--t:.45s;--e:cubic-bezier(.5,0,.8,.4)" d="M240 78V211"/>
+              <path class="is-fill p-notes-fall" data-k="rep" style="--d:1.8s;--t:.47s;--dx:0px;--dy:162px" d="M240 74.5L243.5 78L240 81.5L236.5 78Z"/>
+              <!-- run 3 -->
+              <path class="p-notes-dr" data-k="vm" pathLength="1" style="--d:2.45s;--t:.4s" d="M334 34H386V78H334Z"/>
+              <path class="is-fill p-notes-pp" data-k="seed" style="--d:2.8s;--t:.2s" d="M347 42.5L350.5 46L347 49.5L343.5 46Z"/>
+              <path class="p-notes-dr" data-k="rep" pathLength="1" style="--d:2.95s;--t:.45s;--e:cubic-bezier(.5,0,.8,.4)" d="M360 78L252.34 223.34"/>
+              <path class="is-fill p-notes-fall" data-k="rep" style="--d:2.95s;--t:.47s;--dx:-120px;--dy:162px" d="M360 74.5L363.5 78L360 81.5L356.5 78Z"/>
+              <!-- the spot, and a ring round it per landing; the third makes it 3/3 -->
+              <path class="is-paper" data-k="rep" d="M240 234L246 240L240 246L234 240Z"/>
+              <path class="p-notes-grow" data-k="rep" style="--d:1.1s" d="M240 227L253 240L240 253L227 240Z"/>
+              <path class="p-notes-grow" data-k="rep" style="--d:2.25s" d="M240 220L260 240L240 260L220 240Z"/>
+              <path class="p-notes-grow" data-k="rep" style="--d:3.4s" d="M240 213L267 240L240 267L213 240Z"/>
+              <path class="is-fill is-violet p-notes-grow" data-k="rep" style="--d:3.46s" d="M240 234L246 240L240 246L234 240Z"/>
+            </svg>
+            <span class="p-notes-lab p-notes-pp" data-k="vm" aria-hidden="true" style="--x:25%;--y:4.6%;--d:.2s" lang="en">RUN 1</span>
+            <span class="p-notes-lab p-notes-pp" data-k="vm" aria-hidden="true" style="--x:50%;--y:4.6%;--d:1.35s" lang="en">RUN 2</span>
+            <span class="p-notes-lab p-notes-pp" data-k="vm" aria-hidden="true" style="--x:75%;--y:4.6%;--d:2.5s" lang="en">RUN 3</span>
+            <span class="p-notes-lab p-notes-lab--r is-on p-notes-pp" data-k="rep" aria-hidden="true" style="--x:59.2%;--y:88.46%;--d:3.55s">3/3</span>
+          </div>
+          <div class="p-notes-figbar">
+            <p class="pp-cap" aria-hidden="true">FIG. N-02</p>
+            <button class="p-notes-replay" type="button" aria-controls="notes-n2-art" data-p-notes-replay><svg viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0H1.5V12H0ZM3 0L10 6L3 12Z"/></svg>다시 그리기<span class="sr-only"> — N-02 그림</span> <span class="pp-en" lang="en">Replay</span></button>
+          </div>
+        </div>
+        <div class="p-notes-notes">
+          <p class="p-notes-desc" id="notes-n2-d">격리된 새 환경에서 고정된 입력으로 세&nbsp;번 재현합니다. 한&nbsp;번이라도 어긋나면 발견이 아닙니다.</p>
+          <p class="pp-cap p-notes-keycap" id="notes-n2-kc"><span lang="en">KEY</span><span class="p-notes-keyhint"> · <span class="ko">누르면 그림에서 그 부분을 짚어 보여 줍니다</span></span></p>
+          <ul class="p-notes-key" aria-labelledby="notes-n2-kc" data-p-notes-key="notes-n2-art">
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n2-art" value="vm" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path d="M6 2.5H22V13.5H6Z"/></svg><span>새&nbsp;<span lang="en">VM</span> · 격리 환경</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n2-art" value="seed" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path class="is-hair" d="M6 2.5H22V13.5H6Z"/><path class="is-fill" d="M11 5L13.5 7.5L11 10L8.5 7.5Z"/></svg><span>고정 시드</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n2-art" value="rep" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path d="M14 1L21 8L14 15L7 8Z"/><path d="M14 4.5L17.5 8L14 11.5L10.5 8Z"/><path class="is-violet" d="M14 6.4L15.6 8L14 9.6L12.4 8Z"/></svg><span>재현 3/3</span></button></li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- N-03 · 호출 그래프는 지도일 뿐 -->
+      <li class="p-notes-item" id="notes-n3">
+        <div class="p-notes-text">
+          <p class="p-notes-meta"><span class="p-notes-id" lang="en">N-03</span><span class="pp-tag"><span><span class="ko">준비 중</span>&nbsp;·&nbsp;<span lang="en">Draft</span></span></span></p>
+          <h3 class="p-notes-title" id="notes-n3-h">호출 그래프는 지도일 뿐: <span class="p-notes-sub">추적이 멈추는 지점 기록하기</span></h3>
+        </div>
+        <div class="p-notes-fig">
+          <div class="p-notes-art" id="notes-n3-art" role="img" aria-labelledby="notes-n3-d" data-p-notes-art data-pp-in="half">
+            <svg class="pp-art" viewBox="0 20 480 260" aria-hidden="true" focusable="false">
+              <!-- the map: a call graph, left to right -->
+              <path class="is-map" data-k="map" d="M40 150L140 90M40 150L140 210M140 90L240 44M140 90L240 150M140 210L240 150M140 210L240 256M240 44L340 90M240 150L340 90M240 150L340 190M240 256L340 190M240 256L340 262M340 90L440 48M340 90L440 140M340 190L440 140M340 190L440 232M340 262L440 232"/>
+              <g class="is-paper is-map" data-k="map">
+                <rect x="36" y="146" width="8" height="8"/>
+                <rect x="136" y="86" width="8" height="8"/><rect x="136" y="206" width="8" height="8"/>
+                <rect x="236" y="40" width="8" height="8"/><rect x="236" y="146" width="8" height="8"/><rect x="236" y="252" width="8" height="8"/>
+                <rect x="336" y="86" width="8" height="8"/><rect x="336" y="186" width="8" height="8"/><rect x="336" y="258" width="8" height="8"/>
+                <rect x="436" y="44" width="8" height="8"/><rect x="436" y="136" width="8" height="8"/><rect x="436" y="228" width="8" height="8"/>
+              </g>
+              <!-- the trace: node by node, then part-way down an edge -->
+              <path class="is-strong p-notes-dr" data-k="trace" pathLength="1" style="--d:.3s;--t:.38s" d="M40 150L140 90"/>
+              <path class="is-strong p-notes-dr" data-k="trace" pathLength="1" style="--d:.76s;--t:.38s" d="M140 90L240 150"/>
+              <path class="is-strong p-notes-dr" data-k="trace" pathLength="1" style="--d:1.22s;--t:.36s" d="M240 150L340 190"/>
+              <path class="is-strong p-notes-dr" data-k="trace" pathLength="1" style="--d:1.66s;--t:.34s" d="M340 190L388 210.16"/>
+              <rect class="is-paper p-notes-pp" data-k="trace" style="--d:.15s;--t:.2s" x="36" y="146" width="8" height="8"/>
+              <rect class="is-paper p-notes-pp" data-k="trace" style="--d:.66s;--t:.2s" x="136" y="86" width="8" height="8"/>
+              <rect class="is-paper p-notes-pp" data-k="trace" style="--d:1.12s;--t:.2s" x="236" y="146" width="8" height="8"/>
+              <rect class="is-paper p-notes-pp" data-k="trace" style="--d:1.56s;--t:.2s" x="336" y="186" width="8" height="8"/>
+              <!-- the stop: a bar where the trace ended; beyond it the edge stays a dashed map -->
+              <path class="is-strong p-notes-dr" data-k="stop" pathLength="1" style="--d:2.02s;--t:.16s" d="M391.49 201.86L384.51 218.46"/>
+              <path class="is-ghost p-notes-pp" data-k="stop" style="--d:2.2s;--t:.4s" d="M392.61 212.1L435.39 230.06"/>
+            </svg>
+            <span class="p-notes-lab p-notes-pp" data-k="trace" aria-hidden="true" style="--x:8.33%;--y:58.46%;--d:.15s" lang="en">ENTRY</span>
+            <span class="p-notes-lab p-notes-lab--r is-on p-notes-pp" data-k="stop" aria-hidden="true" style="--x:83.3%;--y:66.4%;--d:2.15s" lang="en">STOP</span>
+          </div>
+          <div class="p-notes-figbar">
+            <p class="pp-cap" aria-hidden="true">FIG. N-03</p>
+            <button class="p-notes-replay" type="button" aria-controls="notes-n3-art" data-p-notes-replay><svg viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0H1.5V12H0ZM3 0L10 6L3 12Z"/></svg>다시 그리기<span class="sr-only"> — N-03 그림</span> <span class="pp-en" lang="en">Replay</span></button>
+          </div>
+        </div>
+        <div class="p-notes-notes">
+          <p class="p-notes-desc" id="notes-n3-d">추적이 호출 그래프를 따라가다 멈춥니다. 어디까지 따라갔는지, 멈춘 지점에 표시를 남깁니다.</p>
+          <p class="pp-cap p-notes-keycap" id="notes-n3-kc"><span lang="en">KEY</span><span class="p-notes-keyhint"> · <span class="ko">누르면 그림에서 그 부분을 짚어 보여 줍니다</span></span></p>
+          <ul class="p-notes-key" aria-labelledby="notes-n3-kc" data-p-notes-key="notes-n3-art">
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n3-art" value="map" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path class="is-hair" d="M1 12L9.5 4L18.5 12L27 4"/></svg><span>호출 그래프 · 지도</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n3-art" value="trace" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path class="is-strong" d="M1 8H27"/></svg><span>추적</span></button></li>
+            <li><button class="p-notes-k" type="button" aria-pressed="false" aria-controls="notes-n3-art" value="stop" disabled><svg class="p-notes-glyph" viewBox="0 0 28 16" aria-hidden="true" focusable="false"><path class="is-strong" d="M1 8H12"/><path class="is-strong" d="M12 2.5V13.5"/><path class="is-ghost" d="M15 8H27"/></svg><span>추적이 멈춘 지점</span></button></li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+
+    <p class="p-notes-cta"><a class="pp-btn pp-btn--solid" href="../waitlist/">노트가 나오면 알림 받기 <span class="pp-arr" aria-hidden="true">→</span></a></p>
+  </section>
+
+  <nav class="pp-end" aria-label="다음 페이지">
+    <a class="pp-tile pp-tile--next" href="../waitlist/">
+      <span class="pp-tile-top"><span class="pp-tile-idx">NEXT · 05</span><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">대기자 명단</span><span class="pp-tile-en" lang="en">Waitlist</span></span>
+    </a>
+    <a class="pp-tile pp-tile--home" href="../home/">
+      <span class="pp-tile-top"><svg class="pp-tile-k" viewBox="3 3 42 42" aria-hidden="true" focusable="false"><path d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/></svg><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">KKACHI 홈</span><span class="pp-tile-en" lang="en">Home</span></span>
+    </a>
+  </nav>
+</main>
+
+<footer class="pp-wrap">
+  <div class="pp-foot">
+    <p class="pp-foot-c"><span class="mono" lang="en">© 2026 KKACHI</span><span lang="en">Prototype by SEORY0</span></p>
+    <div class="pp-foot-txt">
+      <p>노트는 모두 준비 중입니다. 그림은 노트 주제를 나타낸 설명용 도식입니다.</p>
+      <p>화면의 대상, 경로, 수치, 기록은 모두 설명을 위한&nbsp;샘플&nbsp;데이터입니다. 실제 고객, 성과, 벤치마크를 나타내지 않습니다.</p>
+      <p lang="en">Colour values referenced from Seoul Museum of Craft Art collection pages.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="../../assets/kkachi/transition.js"></script>
+<script type="module" src="../../assets/kkachi/paper.js"></script>
+<script type="module">
+/* Page script: each key entry, pressed, keeps its part of the drawing in ink; the 다시 그리기 button replays a drawing.
+   The drawings play once when half of one is in view: paper.js (data-pp-in="half") arms a drawing below the fold
+   (.is-armed) and adds .is-in; a drawing on screen (or above it) when the page opens is left drawn, so nothing flashes.
+   Under reduced motion nothing is armed and the replay buttons do nothing (CSS hides them); the key works as ever. */
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+const arts = $$('[data-p-notes-art]');
+
+// motion switched off while the page is open: every drawing shows its finished frame
+reduce.addEventListener('change', () => {
+  if (!reduce.matches) return;
+  for (const a of arts) a.classList.remove('is-armed', 'is-in', 'is-play');
+});
+
+// the key: one entry pressed at a time (or none); the drawing keeps that part in ink
+for (const ul of $$('[data-p-notes-key]')) {
+  const art = document.getElementById(ul.dataset.pNotesKey);
+  if (!art) continue;
+  const parts = $$('svg :not(g), .p-notes-lab', art).map((el) => [el, (el.closest('[data-k]')?.dataset.k || '').split(' ')]);
+  const buttons = $$('button', ul);
+  for (const b of buttons) b.disabled = false;
+  ul.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    for (const x of buttons) x.setAttribute('aria-pressed', String(on && x === b));
+    art.classList.toggle('is-keyed', on);
+    for (const [el, ks] of parts) el.classList.toggle('is-hi', on && ks.includes(b.value));
+  });
+}
+
+// replay: drop the running state, let the style settle, start again from the first frame
+for (const b of $$('[data-p-notes-replay]')) {
+  const art = document.getElementById(b.getAttribute('aria-controls'));
+  b.addEventListener('click', () => {
+    if (reduce.matches || !art) return;
+    art.classList.remove('is-armed', 'is-in', 'is-play');   // (if paper.js still watches it, its late .is-in changes nothing)
+    void art.offsetWidth;
+    art.classList.add('is-play');
+  });
+}
+</script>
+</body>
+</html>

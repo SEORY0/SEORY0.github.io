@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 대기자 명단</title>
+<meta name="description" content="KKACHI는 아직 연구 프리뷰 단계입니다. 대기자 명단 안내와 함께, 까치·흑칠·끊음질·자개·반가운 소식이라는 이름에 담긴 뜻을 모았습니다.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F0F0F0">
+<meta property="og:title" content="KKACHI — 대기자 명단">
+<meta property="og:description" content="KKACHI는 아직 연구 프리뷰 단계입니다. 대기자 명단 안내와 함께, 까치·흑칠·끊음질·자개·반가운 소식이라는 이름에 담긴 뜻을 모았습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seory0.github.io/kkachi/waitlist/">
+<link rel="canonical" href="https://seory0.github.io/kkachi/waitlist/">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<!-- kk-transition:start (assets/kkachi/transition.js) -->
+<style>html.kk-arriving{color-scheme:dark;scrollbar-color:#363333 #292623}html.kk-arriving::after{content:"";position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#292623 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='136'%3E%3Cpath id='k' fill='%23363333' transform='translate(14 112)' d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3Cuse href='%23k' y='-136'/%3E%3Cuse href='%23k' x='38' y='-68'/%3E%3Cuse href='%23k' x='-38' y='-68'/%3E%3C/svg%3E") 0 34px/76px 136px;animation:kk-failsafe .3s 3s forwards}@keyframes kk-failsafe{to{opacity:0;visibility:hidden}}</style>
+<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<4e3&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
+<!-- kk-transition:end -->
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<link rel="stylesheet" href="../../assets/kkachi/kk-paper.css">
+<!-- without JS the legend buttons do nothing (they lose their box and read as plain terms) and the nacre piece is the
+     still tile (so the tilt note goes too) -->
+<noscript><style>html .p-waitlist-legend-hint, html .p-waitlist-tilt { display: none; }</style></noscript>
+<style>
+/* ============================================================
+   KKACHI — 대기자 명단 (Waitlist) · /kkachi/waitlist/ — page CSS only
+   Specs: docs/superpowers/specs/2026-09-30-kkachi-paper-pages-design.md (§3 frame, §4 "05"), home spec §9 / §13.
+   The frame is ../../assets/kkachi/kk-paper.css (its header lists every pp- primitive). Page classes start with
+   p-waitlist-, ids with waitlist-. Colour only through the roles (--fg, --fg-2, --edge, --hair, --hair-2, --bg; they
+   flip inside .pp-inset) and --violet.
+   Content: the prototype's #access section (kkachi/index.html), all of it.
+
+   Page:  hero — eyebrow, h1 (its full stop is the violet found-mark, as in the prototype), lede, the register form
+          (the page's one action, in the first screen), a magpie tail feather drawn in hairlines (on arrival).
+          05.1 Name — 까치 (h2 + gloss), then the 흑칠 plate: a lacquer inset where the four names are one picture —
+          흑칠 the quiet code lines, 끊음질 the call path laid in cut strips, 자개 the nacre piece at its end (the najeon
+          shader, inlay.js; the pointer is the viewing angle), 반가운 소식 the violet ring that confirms it. Its legend
+          (the glossary, a <dl>) has one toggle button per name: the parts that are on light up, the rest step back.
+          End tiles (NEXT · 01 작동 원리, home) and the footer.
+   Form:  checks the email and says what happened. It sends nothing and stores nothing: method="dialog" outside a
+          <dialog> goes nowhere even without JS, the fields have no name, and the script only reads the email's value.
+          The error (role=alert) and the result (role=status) share one reserved cell under the hint, so a message
+          never moves anything on the page.
+   Nacre: only inside the lacquer plate (and the top bar chip). The piece is scale 1.5 (about the size of the home's ㄲ).
+          Its angle 2.8 was picked by the plugin's criterion (chroma-weighted hue histogram, L1 to ref-1, mint sparse),
+          sweeping 0–3 at 1440 × 900, DPR 2: at rest L1 .34, mint 2.6%; at the screen corners L1 <= .84, mint <= 8.2%.
+   Motion: the feather and the plate draw once (kk-paper .pp-draw--load / .pp-draw); no loops. Reduced motion: all
+          drawn, the legend switches without fading, the nacre keeps its colour (inlay.js).
+   ============================================================ */
+
+/* ── hero ── */
+/* the h1 is always two lines, as in the prototype (its lines were spans .ln); the small corner feather under 540px relies on it */
+.p-waitlist-ln { display: block; }
+/* the h1's full stop: the prototype's violet diamond (a found-mark; the '.' is there for screen readers) */
+.p-waitlist-stop { display: inline-block; width: max(10px, .2em); height: max(10px, .2em); margin-left: .08em; vertical-align: baseline; fill: var(--violet); }
+.p-waitlist-hero .pp-hero-art { max-width: 330px; }
+.p-waitlist-feather { --pp-sw: 1.05; --pp-draw-t: .9s; }
+.p-waitlist-feather .is-strong { --pp-draw-t: 1.5s; }
+/* 540–999: the hero keeps two columns (kk-paper stacks it under 1000px), the feather beside the heading and form;
+   under 540 a small feather sits in the corner beside the eyebrow and the h1 (kept short enough to clear the lede) */
+@media (min-width: 540px) and (max-width: 999.98px) {
+  .p-waitlist-hero { grid-template-columns: minmax(0, 1fr) clamp(140px, 22vw, 210px); }
+  .p-waitlist-hero .pp-hero-art { justify-self: end; }
+}
+@media (max-width: 539.98px) {
+  .p-waitlist-hero { position: relative; }
+  .p-waitlist-hero .pp-hero-art { position: absolute; right: 0; top: calc(var(--bar-h) + clamp(56px, 9vw, 128px) - 6px); width: clamp(56px, 30vw - 40px, 84px); }
+  .p-waitlist-feather { --pp-sw: 2.4; }                /* drawn at ~1/4 size: ~0.5px lines, a hairline like the other motifs (1.05 vanished) */
+}
+
+/* the form's head: a hairline and the prototype's "Access" label (the family's section head, in small) */
+.p-waitlist-form-h { margin-top: clamp(32px, 3.8vw, 48px); padding-top: 14px; border-top: 1px solid var(--hair); }
+/* the form: email, organisation, submit in one row when there is room (container widths, so it follows the column) */
+.p-waitlist-form { margin-top: 22px; container-type: inline-size; }
+.p-waitlist-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: end; }
+.p-waitlist-row .pp-field > label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.p-waitlist-en { font: 400 11.5px/1 var(--mono); letter-spacing: .06em; color: var(--fg-2); }
+.p-waitlist-opt { font-weight: 400; color: var(--fg-2); }
+.p-waitlist-submit { justify-self: start; min-height: 48px; }
+@container (min-width: 440px) {
+  .p-waitlist-row { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  .p-waitlist-submit { grid-column: 1 / -1; }
+}
+@container (min-width: 620px) {
+  .p-waitlist-row { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) auto; }
+  .p-waitlist-submit { grid-column: auto; }
+}
+.p-waitlist-form .pp-hint { margin-top: 14px; max-width: 34em; }
+/* error and result share one cell, reserved for the longer of them (the result: 2 lines, 3 on a narrow column) */
+.p-waitlist-say { display: grid; margin-top: 12px; min-height: 4.9em; font-size: 15px; line-height: 1.6; }
+@container (min-width: 440px) { .p-waitlist-say { min-height: 3.3em; } }
+.p-waitlist-say > * { grid-area: 1 / 1; font-size: 15px; }
+.p-waitlist-status { color: var(--fg-2); max-width: 34em; }
+.p-waitlist-status:not(:empty) { padding-left: 14px; border-left: 2px solid var(--fg); }
+.p-waitlist-status strong { display: block; font-weight: 650; color: var(--fg); }
+.p-waitlist-input:-webkit-autofill { -webkit-text-fill-color: var(--fg); box-shadow: inset 0 0 0 100px var(--bg); }
+
+/* ── 05.1 name ── */
+.p-waitlist-h2-gloss { font-weight: 400; }
+.p-waitlist-name { align-items: start; }               /* the plate's top meets the legend's first rule */
+
+/* the plate: a lacquer inset; the drawing and the nacre piece share one box (the piece is placed in viewBox %) */
+.p-waitlist-plate { touch-action: pan-y pinch-zoom; }        /* a sideways drag on a touch screen tilts the piece */
+.p-waitlist-stage { position: relative; }
+.p-waitlist-art { --pp-sw: 1.2; }
+.p-waitlist-code { stroke: var(--hair-2); }
+.p-waitlist-cut { stroke: var(--fg); stroke-width: 3; --pp-draw-t: .5s; }
+.p-waitlist-ring { stroke: var(--violet); stroke-width: 1.5; }
+.p-waitlist-halo, .p-waitlist-set { opacity: 0; }
+.p-waitlist-code, .p-waitlist-cut, .p-waitlist-ring, .p-waitlist-halo, .p-waitlist-set {
+  transition: stroke .45s var(--ease), stroke-width .45s var(--ease), opacity .45s var(--ease);
+}
+.p-waitlist-halo { stroke: var(--violet); }
+.p-waitlist-set { stroke: var(--fg); }
+/* the piece: a diamond of shell at the path's end, centred (386,117), half-diagonal 48 in the 480 x 300 viewBox */
+.p-waitlist-piece { position: absolute; left: 70.4167%; top: 23%; width: 20%; }
+.p-waitlist-piece canvas.inlay { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+/* drawn on scroll: once the cut line reaches it, the piece is set from its left corner (paper.js [data-pp-in]) */
+.p-waitlist-stage.is-armed .p-waitlist-piece canvas.inlay { clip-path: polygon(0 50%, 0 50%, 0 50%, 0 50%); }
+.p-waitlist-stage.is-armed.is-in .p-waitlist-piece canvas.inlay { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); transition: clip-path .8s var(--ease) 1.25s; }
+/* the legend lights the names that are on; the other parts step back (the nacre is never dimmed) */
+.p-waitlist-stage[data-p-waitlist-on] .p-waitlist-code { opacity: .5; }
+.p-waitlist-stage[data-p-waitlist-on] .p-waitlist-cut,
+.p-waitlist-stage[data-p-waitlist-on] .p-waitlist-ring { opacity: .3; }
+.p-waitlist-stage[data-p-waitlist-on~="lacquer"] .p-waitlist-code { opacity: 1; stroke: var(--fg-2); stroke-width: 1.5; }
+.p-waitlist-stage[data-p-waitlist-on~="cut"] .p-waitlist-cut { opacity: 1; stroke-width: 4; }
+.p-waitlist-stage[data-p-waitlist-on~="shell"] .p-waitlist-set { opacity: 1; }
+.p-waitlist-stage[data-p-waitlist-on~="news"] .p-waitlist-ring { opacity: 1; stroke-width: 2.6; }
+.p-waitlist-stage[data-p-waitlist-on~="news"] .p-waitlist-halo { opacity: 1; }
+.p-waitlist-fig .pp-cap { display: grid; gap: 4px; }
+.p-waitlist-tilt { font-family: var(--sans); font-size: 13px; letter-spacing: 0; }
+.p-waitlist-tilt--touch { display: none; }
+@media (hover: none) and (pointer: coarse) { .p-waitlist-tilt--pointer { display: none; } .p-waitlist-tilt--touch { display: inline; } }
+
+/* the legend: the glossary as a <dl>; each term is a button that lights its part of the plate */
+.p-waitlist-lex { border-top: 1px solid var(--hair); }
+.p-waitlist-lex > div { padding-bottom: 20px; border-bottom: 1px solid var(--hair); }
+.p-waitlist-term {
+  display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap;
+  width: 100%; min-height: 56px; padding: 16px 0 8px;
+  border: 0; background: none; color: var(--fg); text-align: left;
+  cursor: pointer;
+}
+.p-waitlist-term .pp-idx { font: 400 var(--fs-label)/1 var(--mono); letter-spacing: .06em; color: var(--fg-2); min-width: 2.4em; }
+.p-waitlist-ko { font: 650 var(--fs-h3)/1.35 var(--sans); letter-spacing: -.015em; }
+.p-waitlist-term .p-waitlist-en { font-size: var(--fs-label); letter-spacing: .1em; }
+.p-waitlist-term .pp-box { margin-left: auto; align-self: center; }
+.p-waitlist-term:enabled:hover .p-waitlist-ko { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+/* the terms ship disabled and without aria-pressed: without JS they are a plain glossary (the script makes them toggles) */
+.p-waitlist-term:disabled { cursor: default; }
+.p-waitlist-term:disabled .pp-box { display: none; }
+.p-waitlist-term[aria-pressed="true"] .pp-box::after { opacity: 1; }
+.p-waitlist-lex dd { margin: 0; padding-left: calc(2.4 * var(--fs-label) + 14px); max-width: var(--measure); color: var(--fg-2); }
+.p-waitlist-legend-hint { margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .p-waitlist-code, .p-waitlist-cut, .p-waitlist-ring, .p-waitlist-halo, .p-waitlist-set { transition: none; }
+  .p-waitlist-stage.is-armed.is-in .p-waitlist-piece canvas.inlay { transition: none; }
+  .p-waitlist-fig .p-waitlist-tilt { display: none; }   /* inlay.js keeps the colour still: the pointer no longer tilts it */
+}
+</style>
+</head>
+<body class="pp">
+<a class="pp-skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="pp-bar">
+  <div class="pp-bar-in">
+    <a class="pp-home" href="../home/" aria-label="KKACHI 홈"><span class="pp-chip" aria-hidden="true"><span class="pp-chip-k"></span></span><span class="pp-word" aria-hidden="true">KKACHI</span></a>
+    <nav class="pp-nav" aria-label="KKACHI 페이지">
+      <ol>
+        <li><a href="../method/"><span class="pp-nav-n">01</span> <span class="pp-nav-t">작동 원리</span></a></li>
+        <li><a href="../console/"><span class="pp-nav-n">02</span> <span class="pp-nav-t">콘솔</span></a></li>
+        <li><a href="../report/"><span class="pp-nav-n">03</span> <span class="pp-nav-t">보고서</span></a></li>
+        <li><a href="../notes/"><span class="pp-nav-n">04</span> <span class="pp-nav-t">연구 노트</span></a></li>
+        <li><a href="../waitlist/" aria-current="page"><span class="pp-nav-n">05</span> <span class="pp-nav-t">대기자 명단</span></a></li>
+      </ol>
+    </nav>
+  </div>
+  <span class="pp-progress" aria-hidden="true"></span>
+</header>
+
+<main id="main" tabindex="-1" class="pp-wrap">
+
+  <header class="pp-hero p-waitlist-hero">
+    <div class="pp-hero-text">
+      <p class="pp-eyebrow"><span lang="en">05 — Waitlist</span> / <span class="ko">대기자 명단</span></p>
+      <h1 class="pp-h1"><span class="p-waitlist-ln">반가운 소식만</span> <span class="p-waitlist-ln">가져오겠습니<span class="nw">다<span class="sr-only">.</span><svg class="p-waitlist-stop" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 0L10 5L5 10L0 5Z"/></svg></span></span></h1>
+      <p class="pp-lede"><span lang="en">KKACHI</span>는 아직 연구 프리뷰 단계입니다. 대기자&nbsp;명단에 남겨 주시면 공개&nbsp;일정이 정해지는 대로, 검증된 소식만 가끔 전하겠습니다.</p>
+
+      <!-- the register form (prototype): checks the email, sends nothing, stores nothing. method="dialog" outside a
+           <dialog> goes nowhere even without JS; the fields have no name, so nothing could ride along in a URL. -->
+      <h2 class="pp-label p-waitlist-form-h" id="waitlist-form-h"><span lang="en">Access</span> / <span class="ko">대기자 명단 등록</span></h2>
+      <form class="p-waitlist-form" id="waitlist-form" method="dialog" aria-labelledby="waitlist-form-h">
+        <div class="p-waitlist-row">
+          <div class="pp-field">
+            <label for="waitlist-email">이메일 <span class="p-waitlist-en" lang="en">Email</span></label>
+            <input class="pp-input p-waitlist-input" id="waitlist-email" type="email" autocomplete="email" inputmode="email" required placeholder="예: name@team.dev" aria-describedby="waitlist-hint">
+          </div>
+          <div class="pp-field">
+            <label for="waitlist-org">소속 <span class="p-waitlist-opt">(선택)</span></label>
+            <input class="pp-input p-waitlist-input" id="waitlist-org" type="text" autocomplete="organization">
+          </div>
+          <button class="pp-btn pp-btn--solid p-waitlist-submit" type="submit">대기자 명단 등록 <span class="pp-arr" aria-hidden="true">→</span></button>
+        </div>
+        <p class="pp-hint" id="waitlist-hint">프로토타입 화면입니다. 입력한 정보는 어디에도 전송되거나 저장되지 않습니다.</p>
+        <div class="p-waitlist-say">
+          <p class="pp-err p-waitlist-err" id="waitlist-err" role="alert"></p>
+          <p class="p-waitlist-status" id="waitlist-status" role="status"></p>
+        </div>
+      </form>
+    </div>
+    <figure class="pp-hero-art" aria-hidden="true">
+      <!-- a magpie tail feather: the shaft draws from the quill, each barb as the shaft passes it -->
+      <svg class="pp-art pp-draw pp-draw--load p-waitlist-feather" viewBox="26 0 346 472" focusable="false">
+        <path class="pp-stroke is-strong" pathLength="1" style="--i:0" d="M34 466Q169.9 234.5 326 16"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.44" d="M66.9 410.6Q81.2 413.6 92.2 405.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.44" d="M66.9 410.6Q61.4 404 62.5 396"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.64" d="M71.6 402.9Q86.6 406.1 98.3 397.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.64" d="M71.6 402.9Q65.7 395.9 66.9 387.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.84" d="M76.2 395.2Q93.5 398.9 106.9 389.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:1.84" d="M76.2 395.2Q69.5 387.1 70.8 377.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.05" d="M80.9 387.4Q101.6 391.8 117.6 380.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.05" d="M80.9 387.4Q73 377.7 74.6 366.2"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.25" d="M85.6 379.7Q110.4 385 129.5 371.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.25" d="M85.6 379.7Q76.1 368.1 78 354.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.45" d="M90.3 372.1Q119.5 378.4 142.2 362.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.45" d="M90.3 372.1Q79.1 358.3 81.4 342"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.65" d="M95 364.4Q128.9 371.8 155.1 353.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.65" d="M95 364.4Q82 348.5 84.7 329.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.85" d="M99.7 356.8Q138 365.1 167.7 344.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:2.85" d="M99.7 356.8Q85 338.7 88.1 317.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.05" d="M104.4 349.1Q146.6 358.4 179.3 335.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.05" d="M104.4 349.1Q88.3 329.2 91.7 305.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.25" d="M109.2 341.5Q154.3 351.5 189.5 327"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.25" d="M109.2 341.5Q91.9 320.1 95.6 294.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.45" d="M113.9 333.8Q160.9 344.3 197.6 318.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.45" d="M113.9 333.8Q96 311.5 99.9 285.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.65" d="M118.7 326.2Q166.1 336.9 203.1 311.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.65" d="M118.7 326.2Q100.6 303.7 104.6 277.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.85" d="M123.4 318.6Q170.7 329.3 207.7 303.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:3.85" d="M123.4 318.6Q105.4 296.1 109.5 269.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.06" d="M128.2 311Q175.4 321.8 212.3 296.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.06" d="M128.2 311Q110.3 288.5 114.3 262.2"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.26" d="M133.1 303.3Q180.1 314.1 217 288.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.26" d="M133.1 303.3Q115.2 280.8 119.3 254.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.46" d="M137.8 295.7Q184.8 306.5 221.7 281.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.46" d="M137.8 295.7Q120.1 273.2 124.2 247"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.66" d="M142.7 288.1Q189.5 299 226.4 273.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.66" d="M142.7 288.1Q124.9 265.6 129.1 239.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.86" d="M147.5 280.5Q194.2 291.5 231 266.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:4.86" d="M147.5 280.5Q129.8 258.1 134 232"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.06" d="M152.3 272.9Q199 283.9 235.7 259.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.06" d="M152.3 272.9Q134.7 250.5 139 224.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.26" d="M157.2 265.3Q203.7 276.4 240.4 251.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.26" d="M157.2 265.3Q139.7 243 143.9 217"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.47" d="M162 257.8Q208.4 268.9 245.1 244.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.47" d="M162 257.8Q144.6 235.4 148.9 209.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.67" d="M166.9 250.2Q213.2 261.4 249.8 236.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.67" d="M166.9 250.2Q149.5 227.9 153.8 202.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.87" d="M171.8 242.7Q218 253.9 254.6 229.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:5.87" d="M171.8 242.7Q154.5 220.4 158.8 194.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.07" d="M176.7 235Q222.8 246.3 259.4 222"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.07" d="M176.7 235Q159.5 212.7 163.9 187"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.27" d="M181.6 227.5Q227.6 238.8 264.1 214.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.27" d="M181.6 227.5Q164.5 205.2 168.9 179.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.47" d="M186.5 220Q232.4 231.3 268.9 207.2"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.47" d="M186.5 220Q169.4 197.7 173.9 172.2"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.68" d="M191.5 212.5Q237.2 223.9 273.6 199.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.68" d="M191.5 212.5Q174.4 190.2 178.9 164.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.88" d="M196.4 205Q242 216.4 278.4 192.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:6.88" d="M196.4 205Q179.4 182.7 183.9 157.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.08" d="M201.3 197.5Q246.9 208.9 283.2 185.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.08" d="M201.3 197.5Q184.5 175.3 189 149.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.28" d="M206.3 190Q251.7 201.5 288 177.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.28" d="M206.3 190Q189.5 167.8 194 142.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.48" d="M211.3 182.5Q256.6 194 292.8 170.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.48" d="M211.3 182.5Q194.5 160.3 199.1 135"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.68" d="M216.2 175Q261.4 186.6 297.7 163.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.68" d="M216.2 175Q199.6 152.9 204.2 127.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.88" d="M221.2 167.5Q266.3 179.2 302.5 155.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:7.88" d="M221.2 167.5Q204.6 145.4 209.2 120.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.08" d="M226.3 159.9Q271.3 171.6 307.4 148.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.08" d="M226.3 159.9Q209.8 137.9 214.4 112.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.29" d="M231.3 152.5Q276.2 164.2 312.3 141.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.29" d="M231.3 152.5Q214.9 130.4 219.5 105.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.49" d="M236.3 145Q281.1 156.8 317.2 133.8"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.49" d="M236.3 145Q219.9 123 224.7 98"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.69" d="M241.4 137.6Q286 149.4 322 126.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.69" d="M241.4 137.6Q225 115.6 229.8 90.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.89" d="M246.4 130.2Q290.9 142 326.9 119.2"/>
+        <path class="pp-stroke" pathLength="1" style="--i:8.89" d="M246.4 130.2Q230.2 108.2 234.9 83.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.09" d="M251.5 122.7Q295.9 134.6 331.8 111.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.09" d="M251.5 122.7Q235.3 100.8 240.1 76"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.29" d="M256.6 115.3Q300.9 127.3 336.8 104.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.29" d="M256.6 115.3Q240.4 93.4 245.2 68.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.49" d="M261.6 107.9Q305.8 119.9 341.7 97.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.49" d="M261.6 107.9Q245.6 86 250.4 61.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.69" d="M266.7 100.5Q310.8 112.5 346.6 90.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.69" d="M266.7 100.5Q250.7 78.6 255.6 54"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.89" d="M271.8 93.1Q315.6 105.1 351.2 82.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:9.89" d="M271.8 93.1Q256 71.3 260.9 46.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.1" d="M277 85.7Q320.1 97.6 355.2 75.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.1" d="M277 85.7Q261.3 64.2 266.2 40.1"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.3" d="M282.2 78.2Q324.3 89.9 358.7 68.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.3" d="M282.2 78.2Q266.9 57.2 271.7 33.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.5" d="M287.3 70.8Q328.1 82.2 361.5 61.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.5" d="M287.3 70.8Q272.6 50.4 277.2 27.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.7" d="M292.4 63.5Q331.6 74.4 363.6 54.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.7" d="M292.4 63.5Q278.4 43.9 282.9 22"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.9" d="M297.6 56.1Q334.6 66.5 364.9 47.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:10.9" d="M297.6 56.1Q284.3 37.6 288.6 16.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.1" d="M302.8 48.7Q337.1 58.5 365.2 41.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.1" d="M302.8 48.7Q290.5 31.5 294.5 12.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.3" d="M308 41.4Q338.9 50.2 364.4 34.7"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.3" d="M308 41.4Q296.9 25.8 300.5 8.5"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.5" d="M313.2 34Q339.9 41.7 361.9 28.4"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.5" d="M313.2 34Q303.6 20.6 306.8 5.6"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.71" d="M318.4 26.7Q339.4 32.8 356.8 22.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.71" d="M318.4 26.7Q310.8 16.1 313.4 4.3"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.91" d="M323.6 19.4Q335.7 22.9 345.7 16.9"/>
+        <path class="pp-stroke" pathLength="1" style="--i:11.91" d="M323.6 19.4Q319.3 13.3 320.7 6.5"/>
+      </svg>
+    </figure>
+  </header>
+
+  <section class="pp-sec" id="waitlist-name" aria-labelledby="waitlist-name-h">
+    <header class="pp-sec-head">
+      <p class="pp-label"><span class="pp-idx">05.1</span><span><span lang="en">Name</span> / <span class="ko">이름</span></span></p>
+      <h2 class="pp-h2" id="waitlist-name-h">까치 <span class="p-waitlist-h2-gloss">— 반가운 소식을 먼저 전한다는 길조(吉鳥).</span></h2>
+      <p class="pp-intro">흑백으로 보이는 깃은 빛을 받으면 청록과 자줏빛으로 반짝입니다. 흑칠&nbsp;위의 자개처럼.</p>
+    </header>
+
+    <div class="pp-split p-waitlist-name">
+      <figure class="pp-fig p-waitlist-fig">
+        <div class="pp-inset p-waitlist-plate">
+          <div class="p-waitlist-stage" data-p-waitlist-stage data-pp-in>
+            <svg class="pp-art pp-draw p-waitlist-art" viewBox="0 0 480 300" aria-hidden="true" focusable="false">
+              <g class="p-waitlist-code">
+                <path class="pp-stroke" pathLength="1" style="--i:0.00" d="M20 29H262"/>
+                <path class="pp-stroke" pathLength="1" style="--i:0.25" d="M38 51H440"/>
+                <path class="pp-stroke" pathLength="1" style="--i:0.50" d="M56 73H236"/>
+                <path class="pp-stroke" pathLength="1" style="--i:0.75" d="M56 95H296"/>
+                <path class="pp-stroke" pathLength="1" style="--i:1.00" d="M38 117H300"/>
+                <path class="pp-stroke" pathLength="1" style="--i:1.25" d="M56 139H268"/>
+                <path class="pp-stroke" pathLength="1" style="--i:1.50" d="M74 161H214"/>
+                <path class="pp-stroke" pathLength="1" style="--i:1.75" d="M74 183H292"/>
+                <path class="pp-stroke" pathLength="1" style="--i:2.00" d="M56 205H250"/>
+                <path class="pp-stroke" pathLength="1" style="--i:2.25" d="M56 227H432"/>
+                <path class="pp-stroke" pathLength="1" style="--i:2.50" d="M38 249H318"/>
+                <path class="pp-stroke" pathLength="1" style="--i:2.75" d="M20 271H132"/>
+              </g>
+              <g class="p-waitlist-cut">
+                <path class="pp-stroke" pathLength="1" style="--i:2.60" d="M20 271L44.2 271"/>
+                <path class="pp-stroke" pathLength="1" style="--i:3.00" d="M46.7 271L70.8 271"/>
+                <path class="pp-stroke" pathLength="1" style="--i:3.40" d="M73.3 271L97.5 271"/>
+                <path class="pp-stroke" pathLength="1" style="--i:3.80" d="M96 267L96 247.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:4.20" d="M96 245L96 225.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:4.60" d="M96 223L96 203.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:5.00" d="M100 205L120.5 205"/>
+                <path class="pp-stroke" pathLength="1" style="--i:5.40" d="M123 205L143.5 205"/>
+                <path class="pp-stroke" pathLength="1" style="--i:5.80" d="M146 205L166.5 205"/>
+                <path class="pp-stroke" pathLength="1" style="--i:6.20" d="M169 205L189.5 205"/>
+                <path class="pp-stroke" pathLength="1" style="--i:6.60" d="M188 201L188 181.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:7.00" d="M188 179L188 159.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:7.40" d="M188 157L188 137.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:7.80" d="M188 135L188 115.5"/>
+                <path class="pp-stroke" pathLength="1" style="--i:8.20" d="M192 117L215.4 117"/>
+                <path class="pp-stroke" pathLength="1" style="--i:8.60" d="M217.9 117L241.3 117"/>
+                <path class="pp-stroke" pathLength="1" style="--i:9.00" d="M243.8 117L267.2 117"/>
+                <path class="pp-stroke" pathLength="1" style="--i:9.40" d="M269.7 117L293.1 117"/>
+                <path class="pp-stroke" pathLength="1" style="--i:9.80" d="M295.6 117L319 117"/>
+              </g>
+              <path class="p-waitlist-set" d="M386 63L440 117L386 171L332 117Z"/>
+              <g class="pp-pop" style="--i:10.2">
+                <path class="p-waitlist-ring" d="M386 55L448 117L386 179L324 117Z"/>
+                <path class="p-waitlist-halo" d="M386 43L460 117L386 191L312 117Z"/>
+              </g>
+            </svg>
+            <div class="pp-nacre p-waitlist-piece"><canvas class="inlay" width="88" height="88" data-scale="1.5" data-angle="2.8" aria-hidden="true"></canvas></div>
+          </div>
+        </div>
+        <figcaption class="pp-cap"><span>FIG. 1 — <span class="ko">흑칠 위의 끊음질과 자개</span></span><span class="p-waitlist-tilt p-waitlist-tilt--pointer">포인터를 움직이면 자개를 보는 각도가 바뀝니다.</span><span class="p-waitlist-tilt p-waitlist-tilt--touch">그림을 옆으로 끌면 자개를 보는 각도가 바뀝니다.</span></figcaption>
+      </figure>
+
+      <div class="p-waitlist-legend">
+        <dl class="p-waitlist-lex">
+          <div>
+            <dt><button class="p-waitlist-term" type="button" aria-describedby="waitlist-legend-hint" value="lacquer" data-p-waitlist-term disabled><span class="pp-idx" aria-hidden="true">01</span><span class="p-waitlist-ko">흑칠</span><span class="p-waitlist-en" lang="en">Lacquer</span><span class="pp-box" aria-hidden="true"></span></button></dt>
+            <dd>코드베이스. 대부분은 조용하고, 조용해야 합니다.</dd>
+          </div>
+          <div>
+            <dt><button class="p-waitlist-term" type="button" aria-describedby="waitlist-legend-hint" value="cut" data-p-waitlist-term disabled><span class="pp-idx" aria-hidden="true">02</span><span class="p-waitlist-ko">끊음질</span><span class="p-waitlist-en" lang="en">Cut-shell line</span><span class="pp-box" aria-hidden="true"></span></button></dt>
+            <dd>호출 경로. <span lang="en">KKACHI</span>의 모든 그림은 이&nbsp;가는 선으로 그립니다.</dd>
+          </div>
+          <div>
+            <dt><button class="p-waitlist-term" type="button" aria-describedby="waitlist-legend-hint" value="shell" data-p-waitlist-term disabled><span class="pp-idx" aria-hidden="true">03</span><span class="p-waitlist-ko">자개</span><span class="p-waitlist-en" lang="en">Shell</span><span class="pp-box" aria-hidden="true"></span></button></dt>
+            <dd>증거. 올바른 각도에서만 빛나고, 재현으로 다시 확인합니다.</dd>
+          </div>
+          <div>
+            <dt><button class="p-waitlist-term" type="button" aria-describedby="waitlist-legend-hint" value="news" data-p-waitlist-term disabled><span class="pp-idx" aria-hidden="true">04</span><span class="p-waitlist-ko">반가운 소식</span><span class="p-waitlist-en" lang="en">Good news</span><span class="pp-box" aria-hidden="true"></span></button></dt>
+            <dd>재현되고, 사람이 검토한 발견.</dd>
+          </div>
+        </dl>
+        <p class="pp-hint p-waitlist-legend-hint" id="waitlist-legend-hint">낱말을 누르면 그림에서 그 부분이 밝아집니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="pp-end" aria-label="다음 페이지">
+    <a class="pp-tile pp-tile--next" href="../method/">
+      <span class="pp-tile-top"><span class="pp-tile-idx">NEXT · 01</span><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">작동 원리</span><span class="pp-tile-en" lang="en">Method</span></span>
+    </a>
+    <a class="pp-tile pp-tile--home" href="../home/">
+      <span class="pp-tile-top"><svg class="pp-tile-k" viewBox="3 3 42 42" aria-hidden="true" focusable="false"><path d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/></svg><span class="pp-tile-arr" aria-hidden="true">→</span></span>
+      <span class="pp-tile-txt"><span class="pp-tile-ko">KKACHI 홈</span><span class="pp-tile-en" lang="en">Home</span></span>
+    </a>
+  </nav>
+</main>
+
+<footer class="pp-wrap">
+  <div class="pp-foot">
+    <p class="pp-foot-c"><span class="mono" lang="en">© 2026 KKACHI</span><span lang="en">Prototype by SEORY0</span></p>
+    <div class="pp-foot-txt">
+      <p>이 화면의 등록 폼은 아무것도 전송하지 않습니다.</p>
+      <p>화면의 대상, 경로, 수치, 기록은 모두 설명을 위한&nbsp;샘플&nbsp;데이터입니다. 실제 고객, 성과, 벤치마크를 나타내지 않습니다.</p>
+      <p lang="en">Colour values referenced from Seoul Museum of Craft Art collection pages.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="../../assets/kkachi/transition.js"></script>
+<script type="module" src="../../assets/kkachi/paper.js"></script>
+<script type="module" src="../../assets/kkachi/inlay.js"></script>
+<script type="module">
+/* 대기자 명단 page script (paper-pages spec §4 "05"): the register form and the plate legend.
+   The form checks the email and says what happened. It makes no network request and writes no storage. */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+// ── the form ──
+const form = $('#waitlist-form'), email = $('#waitlist-email'), err = $('#waitlist-err'), status = $('#waitlist-status');
+form.noValidate = true;                                   // our own messages replace the browser's bubbles
+const ok = (v) => /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(v);
+// both live regions stay in the tree; empty both, then fill one a tick later, so a repeated message is announced again
+let timer = 0;
+const say = (el, fill) => { clearTimeout(timer); err.textContent = ''; status.textContent = ''; timer = setTimeout(() => fill(el), 60); };
+const calm = () => { email.removeAttribute('aria-invalid'); email.setAttribute('aria-describedby', 'waitlist-hint'); err.textContent = ''; };
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = email.value.trim();
+  if (!ok(v)) {
+    email.setAttribute('aria-invalid', 'true');
+    email.setAttribute('aria-describedby', 'waitlist-err waitlist-hint');
+    say(err, (el) => { el.textContent = v ? '이메일 주소를 확인해 주세요. 예: name@team.dev' : '이메일을 입력해 주세요.'; });
+    if (document.activeElement !== email) email.focus();
+    return;
+  }
+  calm();
+  say(status, (el) => {
+    const b = document.createElement('strong');
+    b.textContent = '실제로 전송되지 않았습니다 (프로토타입).';
+    el.append(b, ' 이메일 형식만 확인했고, 어디에도 보내거나 저장하지 않았습니다.');
+  });
+});
+email.addEventListener('input', () => { if (email.getAttribute('aria-invalid') === 'true' && ok(email.value.trim())) calm(); });
+// a result belongs to the submission it answers: editing a field clears it
+form.addEventListener('input', () => { if (status.textContent) { clearTimeout(timer); status.textContent = ''; } });
+
+// ── the plate legend: each name is a toggle; the plate lights the parts that are on, the rest steps back ──
+const stage = $('[data-p-waitlist-stage]'), terms = $$('[data-p-waitlist-term]');
+for (const b of terms) {
+  b.setAttribute('aria-pressed', 'false');
+  b.disabled = false;
+  b.addEventListener('click', () => {
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    const on = terms.filter((x) => x.getAttribute('aria-pressed') === 'true').map((x) => x.value);
+    if (on.length) stage.dataset.pWaitlistOn = on.join(' '); else delete stage.dataset.pWaitlistOn;
+  });
+}
+</script>
+</body>
+</html>
