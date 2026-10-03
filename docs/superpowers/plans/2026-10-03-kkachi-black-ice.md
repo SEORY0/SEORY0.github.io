@@ -130,3 +130,17 @@
       visible.
 - [ ] `check-page.mjs` passes in both runs; screenshots at 1440 × 900, 1024 × 768, 1920 × 1080, 390 × 844.
 - [ ] Rebuild the OG image. Commit: "Replace the KKACHI hero with the wordmark set in lacquer".
+
+### Task 8: Hero revision — "Dithered nacre" (spec §4.1, revised again)
+
+**Files:** `kkachi/index.html` (logo in the header, hero markup), `assets/kkachi/site.css`, `assets/kkachi/site.js`,
+`docs/kkachi/build-art.py` (drop `hero-bevel`, add `logo`), `assets/kkachi/og/kkachi-og.png`.
+
+**Interfaces:** `.hero-field` holds `canvas.field-nacre.nacre` (the shader, shown only through the lens mask) and
+`canvas.field-dots` (the dither); `.lens-ring` and `.lens-read` follow `--lx`/`--ly` on `.hero`. `<!-- art:logo -->`
+is the header wordmark.
+
+- [ ] Replace the wordmark hero with the field, lens, and header logo; remove the bevel, sheen, and scroll dim.
+- [ ] Dither pass: sample → Bayer 8 × 8 + wave → ImageData (2 × 2 per cell) → scaled draw; lens dissolve in the threshold.
+- [ ] Fallbacks (no WebGL, no JS, reduced motion, off screen); `check-page.mjs` passes both runs; screenshots at
+      1440 × 900, 1024 × 768, 1920 × 1080, 390 × 844; rebuild OG; commit.

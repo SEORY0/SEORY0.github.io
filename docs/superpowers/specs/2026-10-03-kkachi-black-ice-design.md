@@ -21,7 +21,7 @@ The v4 state is kept in commit `171fe6d` for reference only.
 ## 2. Concept
 
 Gibson's cyberspace is lines of light in black nonspace. Najeon is light set into black lacquer. On this page
-**the matrix is najeon**: the hero wordmark, the one proven finding, the deck screen, the cyberspace grid, and the footer
+**the matrix is najeon**: the hero's focus lens and logo, the one proven finding, the deck screen, the cyberspace grid, and the footer
 mark are nacre.
 Everything else is lacquer and ink.
 
@@ -40,7 +40,7 @@ No quotations from the novel are used.
 | `--hatch` | `#6E6E76` | line art hatching, chip borders |
 | `--text` | `#F2F2F3` | headings, body |
 | `--dim` | `#A7A7AE` | secondary text (≥ 7:1 on `--char`) |
-| nacre | `assets/najeon/` shader and tile | the one accent: hero wordmark, proven cell, deck screen, grid, footer mark |
+| nacre | `assets/najeon/` shader and tile | the one accent: hero lens and logo, proven cell, deck screen, grid, footer mark |
 
 No hue anywhere except nacre: no coloured text, rules, chips, or buttons. Focus ring: 2px `--text`.
 
@@ -58,14 +58,20 @@ Light `--line` strokes and `--hatch` shading on dark; HUD marks on the nacre len
 
 Nav (top right, condensed caps, like ls.bot): `Static · Signal · Products · Contact`.
 
-### 4.1 Hero (`--void`) — revised 2026-10-03: "Set in lacquer"
-The Neuromancer figure was dropped from the hero; everything below it stays as written.
-- Art: the KKACHI wordmark, about 86% of the width (92% on phones), in the upper middle (ls.bot's logo position), cut
-  out of black lacquer. Through the letters runs the live najeon shader (`najeon()`, still frame, the pointer changes
-  the viewing angle); without WebGL, the tile. The cut reads as inlay: a dark inner shadow along the letter edges and a
-  thin light edge on the lower sides. Every few seconds a soft white sheen crosses the letters (neutral, so it also
-  moves on touch screens). Scrolling out of the hero, the wordmark rises a little slower than the page and dims, as if
-  lacquer closed over it. No figure, cables, scanlines or ICE.
+### 4.1 Hero (`--void`) — revised again 2026-10-03: "Dithered nacre"
+The Neuromancer figure and then the lacquer wordmark were dropped from the hero; everything below it stays as written.
+Reference: Ghost (ghostsecurity.com), 1-bit dither imagery (research board: `.scratch/neuro/sec/board.png`).
+- Logo: a small KKACHI wordmark at the top left (the ㄲ inlaid with the nacre tile, ACHI in `--text`), linking to
+  `#top`. The nav stays at the top right.
+- Field: full-bleed behind the copy, fading out toward the left so the copy area stays calm (on phones it sits above
+  the copy and fades downward). The najeon shader is sampled on a grid (pitch 6 px) and turned into 1-bit grey dots by
+  an 8 × 8 Bayer threshold; a slow wave moves through the threshold so the dots ripple.
+- Focus lens: around the pointer (eased), the dots dissolve and the real, full-colour nacre shows through a soft round
+  mask; a thin ring and a small mono readout `[ x , y ]` follow it. Moving the pointer turns the shader's viewing
+  angle, so the nacre and the dot pattern both shift. Without a pointer (touch, or the pointer outside the hero) the
+  lens drifts slowly over the right side.
+- Fallbacks: no WebGL → the nacre tile is the dither source and the lens image; no JS → a CSS dot mask over the tile;
+  reduced motion → one still frame, lens parked; off screen → nothing draws.
 - Headline, bottom left (ls.bot position): **The one finding that holds. / Reproduced before it's reported.**
 - Copy:
   > KKACHI builds a frontier agent harness and the autonomous vulnerability research agent that runs on it.
@@ -130,19 +136,18 @@ Anchor links, a large ㄲ mark inlaid with nacre over the wordmark, and `© 2026
 |---|---|
 | `kkachi/index.html` | the page: head, inline art, content |
 | `assets/kkachi/site.css` | tokens, layout, components, motion |
-| `assets/kkachi/site.js` | ES module: hero nacre wordmark and scroll dimming, nacre drift (proven cell, footer), static flicker, cyberspace grid |
+| `assets/kkachi/site.js` | ES module: hero dither field and focus lens, nacre drift (proven cell, footer), static flicker, cyberspace grid |
 | `assets/kkachi/fonts/*.woff2` + OFL texts | Newsreader, Big Shoulders Display, Fragment Mono |
-| `docs/kkachi/build-art.py` | writes the hero bevel, interlude, diagram, and footer SVG into the page markers |
+| `docs/kkachi/build-art.py` | writes the logo, interlude, diagram, and footer SVG into the page markers |
 | `docs/kkachi/build-og.mjs` | rebuilds `assets/kkachi/og/kkachi-og.png` from the page's hero |
 
 - Najeon: `assets/najeon/najeon.js` is imported unchanged (it falls back to its PNG tile without WebGL). The hero
-  wordmark is a canvas masked by `assets/kkachi/brand/kkachi-wordmark.svg` (CSS `mask`), the tile painted under it so
-  it shows without WebGL or JS. The proven cell, the deck screen, and the footer mark use the tile in SVG `<image>`
-  under a `clipPath`.
+  creates the shader's WebGL context first with `preserveDrawingBuffer` so the dither pass can read the last frame.
+  The logo, the proven cell, the deck screen, and the footer mark use the tile in SVG `<image>` under a `clipPath`.
 - Motion: everything animated pauses off screen (IntersectionObserver) and stops under `prefers-reduced-motion`.
 - Accessibility: art is `aria-hidden`. The wordmark has the accessible name "KKACHI". Chips are `<button>` elements with
   `aria-describedby` tooltips shown on hover and focus. Diagrams have text captions. Visible focus ring in `--text`.
-- Responsive: one column under 820 px. The wordmark spans the width above the copy. Cards stack.
+- Responsive: one column under 820 px. The dither field sits above the copy. Cards stack.
 - Head: title `KKACHI — The one finding that holds`, meta description, OG and Twitter tags, the existing favicons.
 
 ## 6. Removal
