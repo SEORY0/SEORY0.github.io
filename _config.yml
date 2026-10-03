@@ -73,18 +73,3 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-  -
-    scope:
-      path: "kkachi/system"
-    values:
-      sitemap: false
-  -
-    scope:
-      path: "kkachi/dashboard"        # a prefix: also kkachi/dashboard/finding/ and kkachi/dashboard/session/
-    values:
-      sitemap: false
-  -
-    scope:
-      path: "kkachi/drafts"           # noindex sketches, never linked
-    values:
-      sitemap: false
