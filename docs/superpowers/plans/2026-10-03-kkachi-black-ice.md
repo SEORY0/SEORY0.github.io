@@ -154,3 +154,18 @@ is the header wordmark.
 - [x] Remove the dither field; keep the header logo; nav trims to Contact under 560 px.
 - [x] `check-page.mjs` passes both runs; screenshots at 1440 × 900, 1280 × 720, 1920 × 1080, 1024 × 768, 820 × 1180,
       390 × 844; rebuild OG; commit.
+
+### Task 10: Pages — Keel, KKACHI Code, KKACHI Web, About, Resources (spec §8)
+
+**Files:** Create `kkachi/{keel,code,web,about,resources}/index.html`, `docs/kkachi/build-pages.py`.
+Modify `kkachi/index.html` (partials, hero sentence, products cards), `assets/kkachi/site.css` (menu, sheet, sub-page
+hero, steps, cards), `assets/kkachi/site.js` (menu), `docs/kkachi/build-art.py` (logo and footer move to build-pages),
+`docs/kkachi/check-page.mjs` (all pages), `docs/kkachi/README.md`.
+
+**Interfaces:** markers `<!-- part:head|header|footer:start/end -->` in every page; `build-pages.py` imports `logo()`
+and `foot()` from `build-art.py`; menu: `button.menu-btn[aria-controls=menu-products]`, `button.nav-toggle`, `.nav.open`.
+
+- [ ] Extend `check-page.mjs` to every page; run it: the new pages fail (404).
+- [ ] Write `build-pages.py` and the five pages; update the home.
+- [ ] CSS and JS for the menu, the sheet, and the sub-page components.
+- [ ] `check-page.mjs` passes; screenshots of every page at 1440 × 900 and 390 × 844; commit.

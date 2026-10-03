@@ -166,3 +166,37 @@ Anchor links, a large ㄲ mark inlaid with nacre over the wordmark, and `© 2026
 - Visible copy, tooltips included, is at most 550 words.
 - No console errors. Works with WebGL off (tile fallback) and with reduced motion (still frames).
 - `bundle exec jekyll build` succeeds. `/kkachi/` is the only KKACHI page in `_site/`.
+
+## 8. Pages (added 2026-10-03)
+
+The site grows from one page to six. Every page shares the head, header, and footer; the home sections above stay as
+written except the products section and the hero's first sentence.
+
+**Navigation** (all pages): logo top left → `/kkachi/`; right: `Products ▾` (Keel, KKACHI Code, KKACHI Web, each with a
+one-line descriptor) · `About` · `Resources` · `Contact` (→ the footer, `#contact`). The current page carries
+`aria-current="page"`. Under 820 px the links collapse behind a `Menu` button that opens a full-width sheet with the
+products listed open. The dropdown opens on click (and hover where hover exists), closes on Escape and outside click.
+
+**Footer** (all pages): Products (Keel, KKACHI Code, KKACHI Web) · Company (About, Resources) · Contact (email, early
+access); the nacre-inlaid wordmark; `© 2026 Project KKACHI.`
+
+**Products** — Keel is the frontier agent harness; KKACHI Code researches source code and binaries; KKACHI Web tests
+live web applications and APIs. Code and Web run on Keel.
+
+| Page | Eyebrow | H1 | Sections |
+|---|---|---|---|
+| `/kkachi/keel/` | Keel — agent harness | The harness under every agent. | Why a harness · What Keel does (Durable sessions, Borrowed compute, Full replay, Model-agnostic) · Built to carry KKACHI |
+| `/kkachi/code/` | KKACHI Code — source and binary research | Every input, followed to where it breaks. | How it works (Read, Suspect, Trace, Reproduce, Report) · In every report (Root cause, Reproduction, Fix direction, Rejection log) · Where it runs |
+| `/kkachi/web/` | KKACHI Web — live web application testing | Your live app, tested the way an attacker would. | How it works (Map, Suspect, Probe, Prove, Report) · Guardrails (Approved scope only, Rate limits, No destructive actions, Human sign-off) · Pairs with KKACHI Code |
+| `/kkachi/about/` | About | We only report what holds. | Principles (Proof over volume, Keep what was ruled out, People decide, Approved scope only) · The name (까치, najeon) · Contact |
+| `/kkachi/resources/` | Resources | Research, notes, and docs. | Three columns (Research, Notes, Docs), each empty: "Nothing published yet." |
+
+- Sub-page heroes are text only (Linear-like): eyebrow in mono with a small nacre square, a large serif H1, a lede, the
+  CTA line. No photographs or illustrations below the home page's.
+- Length: each sub-page at most 450 words, tooltips included. English only. No invented facts (no team, customers,
+  numbers, or dates).
+- Home: the hero's first sentence names the products; "Built at KKACHI" becomes three cards (Keel, KKACHI Code, KKACHI
+  Web) linking to their pages, subtitle "Three products. One stack."
+- Build: `docs/kkachi/build-pages.py` writes the shared `part:head`, `part:header`, `part:footer` blocks into every
+  page (absolute paths, so depth does not matter); `build-art.py` keeps only the home's art blocks.
+  `check-page.mjs` checks every page (console, colour rule, fonts, length; the home's section ids; the menu opens).
