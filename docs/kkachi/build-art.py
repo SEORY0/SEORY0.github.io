@@ -306,7 +306,7 @@ def figure_front(uid, rng):
     o.append(shape(closed(bezel), FILL, LINE, 1.4))
     o.append(f'<clipPath id="lens-{uid}"><path d="{closed(lens)}"/></clipPath>')
     o.append(f'<g class="lens nacre" clip-path="url(#lens-{uid})">'
-             f'<image class="lens-drift" href="{TILE}" x="-215" y="96" width="430" height="430" preserveAspectRatio="none"/>'
+             f'<g class="lens-par"><image class="lens-drift" href="{TILE}" x="-235" y="80" width="470" height="470" preserveAspectRatio="none"/></g>'
              f'<path d="M-170 176H170V196H-170Z" fill="{VOID}" opacity=".28"/>'
              f'<path d="M-120 250L-60 176M-96 250L-36 176M70 250L118 190" stroke="#fff" stroke-width="2" opacity=".35"/></g>')
     o.append(stroke(closed(lens), LINE, 1.5))

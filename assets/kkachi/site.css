@@ -121,14 +121,13 @@ h2 { font: 450 clamp(44px, 5.2vw, 70px)/1.04 var(--serif); letter-spacing: -.012
 .use p { font-size: 17px; line-height: 1.55; color: var(--dim); margin: 0; }
 
 /* cyberspace: nacre seen only through the grid */
-.cyber { position: relative; overflow: hidden; background: var(--void); min-height: 100vh; min-height: 100svh; padding: clamp(110px, 13vw, 168px) var(--pad-x) clamp(320px, 42vh, 460px); isolation: isolate; }
+.cyber { position: relative; overflow: hidden; background: var(--void); padding: clamp(110px, 13vw, 168px) var(--pad-x) clamp(440px, 64vh, 620px); isolation: isolate; }
 .cyber canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .cyber-nacre { z-index: 0; background: url("nacre-512.webp") center / 512px; }
 .cyber-grid { z-index: 1; background: var(--void); }
 .cyber-copy { position: relative; z-index: 2; text-align: center; }
-.cyber-copy::before { content: ""; position: absolute; inset: -80px -140px; z-index: -1; background: radial-gradient(closest-side, rgba(5, 5, 6, .92), rgba(5, 5, 6, .6) 60%, transparent); }
 .cyber-copy p { text-align: center; }
-.js .cyber-grid { background: transparent; }
+.cyber-grid.live { background: transparent; }
 
 /* footer */
 .foot { background: var(--black); padding: clamp(80px, 9vw, 120px) var(--pad-x) 56px; }
