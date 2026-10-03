@@ -9,7 +9,7 @@ Serve the repository root first (`python3 -m http.server 8765 --bind 127.0.0.1`)
 
 | File | Makes / checks | Command (repository root) |
 |---|---|---|
-| `build-art.py` | the line art inlined in `kkachi/index.html` between `<!-- art:NAME:start/end -->` (hero wide and tall, the two Static panels, the cyberdeck, the footer wordmark) | `python3 docs/kkachi/build-art.py` |
+| `build-art.py` | the SVG inlined in `kkachi/index.html` between `<!-- art:NAME:start/end -->` (the hero wordmark's bevel, the two Static panels, the cyberdeck, the footer wordmark) | `python3 docs/kkachi/build-art.py` |
 | `check-page.mjs` | `/kkachi/` against spec §7: sections present, ≤ 550 words with tooltips, no colour outside `.nacre`, fonts loaded, no console errors; run twice (default, and WebGL off with reduced motion) | `node docs/kkachi/check-page.mjs` |
 | `build-og.mjs` | `assets/kkachi/og/kkachi-og.png` (1200 × 630) from the page's own hero | `node docs/kkachi/build-og.mjs` (`CHROME=` picks a browser) |
 | `build-wordmark.py` | `assets/kkachi/brand/kkachi-wordmark.svg` and `kkachi-mark.svg` | `python3 docs/kkachi/build-wordmark.py` — needs the cut Wanted Sans `assets/kkachi/fonts/kk-sans.woff2`, removed in the rebuild: `git show 171fe6d:assets/kkachi/fonts/kk-sans.woff2 > assets/kkachi/fonts/kk-sans.woff2` |

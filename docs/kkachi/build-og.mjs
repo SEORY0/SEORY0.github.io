@@ -1,5 +1,5 @@
-// KKACHI OG image: the hero of /kkachi/ itself at 1200 x 630 (wordmark, figure, headline; the nav, the paragraphs and
-// the CTA hidden) → assets/kkachi/og/kkachi-og.png. Build time only.
+// KKACHI OG image: the hero of /kkachi/ itself at 1200 x 630 (the wordmark set in lacquer and the headline; the nav,
+// the paragraphs and the CTA hidden) → assets/kkachi/og/kkachi-og.png. Build time only.
 //   python3 -m http.server 8765 --bind 127.0.0.1 &          (the repository root)
 //   PLAYWRIGHT=/path/to/node_modules/playwright/index.mjs node docs/kkachi/build-og.mjs
 // (PLAYWRIGHT defaults to the 'playwright' package; CHROME picks a browser binary.) DPR 1, reduced motion, after fonts.

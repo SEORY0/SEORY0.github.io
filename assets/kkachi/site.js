@@ -1,6 +1,7 @@
-/* KKACHI — Black ICE page motion (spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md §5).
-   - nacre drift: the tile clipped into the visor lens, the proven cell and the footer ㄲ moves slowly; the lens also
-     follows the pointer.
+/* KKACHI — Black ICE page motion (spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md §4.1, §5).
+   - hero: the najeon shader through the wordmark cut into the lacquer (the pointer turns the viewing angle); scrolling
+     out, the wordmark lags and dims (--p on .hero, 0…1).
+   - nacre drift: the tile clipped into the proven cell and the footer ㄲ moves slowly.
    - static: cells of the scanner panel flicker like a dead channel.
    - cyberspace: the najeon shader under a lacquer canvas with a perspective grid cut out of it, drifting toward
      the viewer; the ㄲ stands on the horizon as a construct.
@@ -28,22 +29,36 @@ function drift(selector, path, duration) {
   }
 }
 
-function lensParallax() {
-  const hero = document.querySelector('.hero');
-  const groups = [...document.querySelectorAll('.lens-par')];
-  if (!hero || !groups.length) return;
-  let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
-  const step = () => {
-    x += (tx - x) * 0.08; y += (ty - y) * 0.08;
-    for (const g of groups) g.style.transform = `translate(${(x * -22).toFixed(2)}px, ${(y * -12).toFixed(2)}px)`;
-    raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.002 ? requestAnimationFrame(step) : 0;
+/* ── hero ────────────────────────────────────────────────────────────────── */
+let najeonModule = null;
+function loadNajeon() {
+  najeonModule ||= import('../najeon/najeon.js');
+  return najeonModule;
+}
+
+function hero() {
+  const section = document.querySelector('.hero');
+  const canvas = section && section.querySelector('.hero-nacre');
+  if (!canvas) return;
+  let shader = null, visible = false;
+  whenVisible(section, () => {
+    visible = true;
+    loadNajeon().then((m) => {
+      if (visible && !shader) shader = m.najeon(canvas, { animate: false, interactive: !reduced, scale: 1.15, pixelBudget: 900000, tileUrl });
+    }).catch(() => {});
+  }, () => {
+    visible = false;
+    if (shader) { shader.destroy(); shader = null; }
+  }, '0px');
+  if (reduced) return;
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const h = section.offsetHeight || 1;
+    section.style.setProperty('--p', Math.min(1, Math.max(0, scrollY / h)).toFixed(3));
   };
-  hero.addEventListener('pointermove', (e) => {
-    const r = hero.getBoundingClientRect();
-    tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5;
-    if (!raf) raf = requestAnimationFrame(step);
-  }, { passive: true });
-  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(step); });
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+  update();
 }
 
 /* ── the static panel ────────────────────────────────────────────────────── */
@@ -170,11 +185,10 @@ function cyberspace() {
   };
 
   let nacre = null;
-  let najeonMod = null;
   const startNacre = () => {
-    const make = (m) => { if (visible && !nacre) nacre = m.najeon(nacreCanvas, { animate: false, interactive: !reduced, scale: 1.1, pixelBudget: 700000, tileUrl }); };
-    if (najeonMod) make(najeonMod);
-    else import('../najeon/najeon.js').then((m) => { najeonMod = m; make(m); }).catch(() => {});
+    loadNajeon().then((m) => {
+      if (visible && !nacre) nacre = m.najeon(nacreCanvas, { animate: false, interactive: !reduced, scale: 1.1, pixelBudget: 700000, tileUrl });
+    }).catch(() => {});
   };
 
   new ResizeObserver(resize).observe(canvas);
@@ -193,10 +207,9 @@ function cyberspace() {
 }
 
 if (!reduced) {
-  drift('.lens-drift', [[0, 0], [-30, 12], [18, -10], [-12, 20]], 26000);
   drift('.cell-drift', [[0, 0], [-24, -18], [10, -30]], 14000);
   drift('.mark-drift', [[0, 0], [-34, -22], [-12, -40]], 30000);
-  lensParallax();
   staticPanel();
 }
+hero();
 cyberspace();

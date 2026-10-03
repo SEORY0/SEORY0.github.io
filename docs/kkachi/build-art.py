@@ -4,13 +4,13 @@
 Spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md (§3 line art, §4 page). Run from anywhere:
     python3 docs/kkachi/build-art.py
 Deterministic (seeded). Blocks:
-    hero-wide / hero-tall  the wordmark, the cables, and the jacked-in figure with the nacre lens (wide: 1440×900, art
-                           fills the hero; tall: 800×1000, art above the copy)
+    hero-bevel             the walls of the wordmark cut into the hero's lacquer (inner shadow, lower edge light); the
+                           nacre itself is a canvas under it (site.js, masked by the wordmark SVG)
     panel-noise / -proof   The Static diagram: a grid of static, and the same grid with one traced path to one nacre cell
     deck                   the interlude: a cyberdeck in isometric view with trodes and cables
     foot                   the wordmark with the ㄲ inlaid in nacre
 Colour: neutral only. Nacre is the tile (assets/kkachi/nacre-512.webp) clipped into shapes; those groups carry class
-"nacre" (the page check skips them). The figure is symmetric: each feature is drawn as its right half and mirrored.
+"nacre" (the page check skips them).
 """
 import math
 import random
@@ -48,49 +48,6 @@ def pt(p, sx=1):
     return f'{n(p[0] * sx)} {n(p[1])}'
 
 
-class Half:
-    """An open path given as its right half; mirror with sx=-1."""
-
-    def __init__(self, start):
-        self.start, self.segs = start, []
-
-    def L(self, *ps):
-        for p in ps:
-            self.segs.append(('L', p))
-        return self
-
-    def C(self, c1, c2, p):
-        self.segs.append(('C', c1, c2, p))
-        return self
-
-    def d(self, sx=1, move=True):
-        s = f'M{pt(self.start, sx)}' if move else ''
-        for seg in self.segs:
-            s += f'L{pt(seg[1], sx)}' if seg[0] == 'L' else 'C' + ' '.join(pt(q, sx) for q in seg[1:])
-        return s
-
-    def reversed(self):
-        ends = [self.start] + [seg[-1] for seg in self.segs]
-        r = Half(ends[-1])
-        for k in range(len(self.segs) - 1, -1, -1):
-            seg = self.segs[k]
-            if seg[0] == 'L':
-                r.L(ends[k])
-            else:
-                r.C(seg[2], seg[1], ends[k])
-        return r
-
-
-def both(h):
-    """Right half and its mirror, as two subpaths."""
-    return h.d(1) + h.d(-1)
-
-
-def closed(h):
-    """A closed symmetric outline from a right half running from (0, top) to (0, bottom)."""
-    return h.d(1) + h.reversed().d(-1, move=False) + 'Z'
-
-
 def poly(points, close=False):
     return 'M' + 'L'.join(pt(p) for p in points) + ('Z' if close else '')
 
@@ -118,27 +75,6 @@ def stroke(d, color=LINE, w=1.6, extra=''):
 
 def shape(d, fill=FILL, color=LINE, w=1.6, extra=''):
     return f'<path d="{d}" fill="{fill}" stroke="{color}" stroke-width="{n(w)}"{extra}/>'
-
-
-def hatch_along(p0, p1, p2, p3, count, gap, t0=0.15, t1=0.85, shrink=0.06, side=1, color=HATCH, w=1.0):
-    """Engraving-style hatching: copies of a curve offset along its normal, each a little shorter."""
-    out = []
-    for k in range(1, count + 1):
-        a, b = t0 + shrink * k, t1 - shrink * k
-        if b - a < 0.05:
-            break
-        pts = []
-        for i in range(13):
-            t = a + (b - a) * i / 12
-            x, y = bez(p0, p1, p2, p3, t)
-            dx, dy = unit(bez_d(p0, p1, p2, p3, t))
-            pts.append((x - dy * gap * k * side, y + dx * gap * k * side))
-        out.append(stroke(poly(pts), color, w))
-    return ''.join(out)
-
-
-def mirrored(svg):
-    return f'{svg}<g transform="scale(-1 1)">{svg}</g>'
 
 
 # ── cables ──────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -170,210 +106,30 @@ def cable(S, E, away, w, rng, rib=False, plug=True, sway=0.0):
     return ''.join(g)
 
 
-# ── the figure (local coordinates: x = 0 is the centre line, skull top at y ≈ 0, collar crop at y ≈ 760) ─────────
-SCALP = ((0, -6), (72, -6), (134, 30), (147, 104))
-SCALP_T = (0.0, 0.3, 0.58, 0.84)     # where cables leave the scalp (and their mirrors)
-PORTS = (42, 98)                     # visor top sockets, x (and mirrors); y = VISOR_TOP
-VISOR_TOP = 136
+# ── the hero: the wordmark set in lacquer ──────────────────────────────────────────────────────────────────────────
+def hero_bevel():
+    """Lies over the nacre canvas (masked by the same wordmark): the cut's walls. Light comes from the top left, so the
+    inner top-left rim falls in shadow and the inner bottom-right rim catches a thin light; a faint lip runs around the
+    cut on the lacquer. Filters work on the letters' filled alpha, so the overlapping pieces of A and H read as one
+    shape. Wordmark units; the box has the wordmark's aspect ratio, so preserveAspectRatio="none" is exact."""
+    letters = f'<path transform="translate(-3 -3)" d="{WM_K}"/><path d="{WM_ACHI}"/>'
 
+    def rim(fid, dx, dy, blur, color, alpha):
+        return (f'<filter id="{fid}" x="-2%" y="-10%" width="104%" height="120%">'
+                f'<feOffset in="SourceAlpha" dx="{dx}" dy="{dy}"/><feGaussianBlur stdDeviation="{blur}" result="moved"/>'
+                f'<feComposite in="SourceAlpha" in2="moved" operator="out" result="rim"/>'
+                f'<feFlood flood-color="{color}" flood-opacity="{alpha}"/><feComposite in2="rim" operator="in"/></filter>')
 
-def scalp_points():
-    pts = []
-    for t in SCALP_T:
-        x, y = bez(*SCALP, t)
-        dx, dy = unit(bez_d(*SCALP, t))
-        nrm = (dy, -dx)                       # outward (up/right) normal of the right half
-        if nrm[1] > 0:
-            nrm = (-nrm[0], -nrm[1])
-        pts.append(((x, y), nrm))
-        if x > 1:
-            pts.append(((-x, y), (-nrm[0], nrm[1])))
-    for x in PORTS:
-        for sx in (1, -1):
-            pts.append(((x * sx, VISOR_TOP - 1), (0, -1)))
-    return pts
-
-
-def figure_back():
-    head = Half(SCALP[0]).C(SCALP[1], SCALP[2], SCALP[3]).L((150, 150))
-    out = [shape(closed(Half((0, -6)).C(SCALP[1], SCALP[2], SCALP[3]).L((150, 300)).L((0, 300))), FILL, 'none', 0)]
-    out.append(stroke(both(head), LINE, 1.8))
-    out.append(hatch_along(*SCALP, 5, 6, t0=.45, t1=1.0, shrink=.05, side=1))
-    out.append('<g transform="scale(-1 1)">' + hatch_along(*SCALP, 3, 6, t0=.6, t1=1.0, shrink=.08, side=1, color='#4A4A51') + '</g>')
-    for (x, y), nrm in scalp_points():
-        if y < VISOR_TOP - 4:
-            ang = math.degrees(math.atan2(nrm[1], nrm[0])) - 90
-            out.append(f'<g transform="translate({n(x)} {n(y)}) rotate({n(ang)})">'
-                       f'<path d="M-11 2C-11 -5 11 -5 11 2Z" fill="{FILL}" stroke="{LINE}" stroke-width="1.3"/></g>')
-    return ''.join(out)
-
-
-def face_outline():
-    return Half((146, 278)).C((151, 322), (143, 374), (127, 416)).C((111, 454), (73, 484), (38, 494)).C((24, 498), (10, 499), (0, 499))
-
-
-def figure_front(uid, rng):
-    o = []
-    # cable from each ear pod, down behind the collar
-    for sx in (1, -1):
-        o.append(f'<g transform="scale({sx} 1)">' + cable((300, 900), (232, 268), (0.15, 1), 11, rng, rib=True) + '</g>')
-    # neck
-    neck_side = Half((98, 446)).C((96, 500), (100, 548), (112, 596))
-    o.append(shape(closed(Half((0, 440)).L((98, 446))
-                          .C((96, 500), (100, 548), (112, 596)).L((0, 610))), FILL, 'none', 0))
-    o.append(stroke(both(neck_side), LINE, 1.6))
-    o.append(stroke(both(Half((86, 500)).C((66, 540), (42, 566), (24, 584))), SOFT, 1.1))
-    o.append(stroke('M-10 544C-6 535 6 535 10 544', SOFT, 1.2))
-    o.append(hatch_along((98, 446), (96, 500), (100, 548), (112, 596), 4, -5, t0=.05, t1=.9, shrink=.08))
-    # turtleneck band
-    top = Half((0, 588)).C((42, 588), (86, 580), (112, 566))
-    bot = Half((0, 630)).C((50, 630), (98, 620), (126, 604))
-    o.append(shape(closed(Half((0, 588)).C((42, 588), (86, 580), (112, 566)).L((126, 604))
-                          .C((98, 620), (50, 630), (0, 630))), FILL, 'none', 0))
-    o.append(stroke(both(top), LINE, 1.6) + stroke(both(bot), LINE, 1.6))
-    for i in range(1, 12):
-        t = i / 12
-        a, b = bez((0, 588), (42, 588), (86, 580), (112, 566), t), bez((0, 630), (50, 630), (98, 620), (126, 604), t)
-        o.append(mirrored(stroke(poly([(a[0], a[1] + 3), (b[0], b[1] - 3)]), HATCH, 1.0)))
-    # coat: popped collar and lapels
-    collar = Half((112, 566)).L((150, 472)).C((196, 474), (246, 504), (272, 534)).L((316, 700)).L((246, 742)).L((126, 604))
-    o.append(mirrored(shape(collar.d() + 'Z', FILL, LINE, 1.7)))
-    lapel = Half((126, 604)).L((246, 742)).L((214, 800)).L((96, 800)).L((60, 700))
-    o.append(mirrored(shape(lapel.d() + 'Z', FILL, LINE, 1.7)))
-    o.append(mirrored(stroke('M140 560L176 500M168 548L230 520M150 590L276 600', HATCH, 1.0)))
-    o.append(mirrored(hatch_along((150, 472), (196, 474), (246, 504), (272, 534), 6, 6, t0=.1, t1=.95, shrink=.05)))
-    o.append(mirrored(stroke('M316 700C360 716 400 742 440 800', LINE, 1.7) + stroke('M300 720C320 760 330 780 334 800', SOFT, 1.1)))
-    o.append(mirrored(hatch_along((126, 604), (180, 668), (230, 720), (246, 742), 5, -6, t0=.1, t1=.95, shrink=.06)))
-    o.append(stroke('M-60 700L0 760L60 700', LINE, 1.5) + stroke('M0 760V800', SOFT, 1.1))
-    # face
-    o.append(shape(closed(Half((0, 262)).L((146, 270)).L((146, 278)).C((151, 322), (143, 374), (127, 416))
-                          .C((111, 454), (73, 484), (38, 494)).C((24, 498), (10, 499), (0, 499))), FILL, 'none', 0))
-    o.append(stroke(both(face_outline()), LINE, 1.8))
-    o.append(hatch_along((146, 278), (151, 322), (143, 374), (127, 416), 6, 5.5, t0=.05, t1=1.0, shrink=.07))
-    o.append('<g transform="scale(-1 1)">' + hatch_along((146, 278), (151, 322), (143, 374), (127, 416), 3, 5.5, t0=.2, t1=1.0, shrink=.1, color='#4A4A51') + '</g>')
-    o.append(hatch_along((127, 416), (111, 454), (73, 484), (38, 494), 4, 5, t0=.0, t1=.95, shrink=.08))
-    # nose
-    o.append(stroke(both(Half((15, 266)).C((16, 286), (20, 304), (26, 318))), SOFT, 1.3))
-    o.append(stroke(both(Half((25, 316)).C((37, 318), (42, 337), (31, 345))), LINE, 1.6))
-    o.append(stroke(both(Half((27, 348)).C((22, 351), (14, 351), (8, 348))), LINE, 1.4))
-    o.append(stroke('M8 348C4 351 -4 351 -8 348', LINE, 1.4))
-    o.append(stroke('M-6 333C-2 330 2 330 6 333', SOFT, 1.1))
-    o.append(hatch_along((15, 266), (16, 286), (20, 304), (26, 318), 3, 4, t0=.1, t1=1.0, shrink=.1))
-    o.append(stroke(both(Half((45, 344)).C((57, 358), (64, 376), (63, 396))), SOFT, 1.2))
-    # mouth
-    o.append(stroke(both(Half((6, 356)).L((8, 375))), HATCH, 1.1))
-    o.append(stroke(both(Half((0, 379)).C((3, 377), (7, 373), (12, 375)).C((24, 380), (40, 386), (54, 392))), LINE, 1.5))
-    o.append(stroke(both(Half((0, 392)).C((16, 391), (36, 392), (57, 393))), LINE, 2.2))
-    o.append(stroke(both(Half((45, 397)).C((37, 408), (18, 413), (0, 413))), LINE, 1.5))
-    for x in range(-24, 25, 4):
-        o.append(stroke(f'M{x} 418L{x * 1.1:.1f} {426 - abs(x) / 6:.1f}', HATCH, 1.0))
-    o.append(stroke(both(Half((30, 455)).C((24, 466), (12, 471), (0, 471))), SOFT, 1.2))
-    # stubble: stipple on the jaw, chin and upper lip
-    dots = []
-    for _ in range(520):
-        x, y = rng.uniform(-128, 128), rng.uniform(352, 496)
-        inside = abs(x) < (146 - max(0, y - 380) * 0.95 if y > 380 else 140)
-        lips = abs(x) < 58 and 372 < y < 416
-        nose = abs(x) < 48 and y < 352
-        if inside and not lips and not nose and (y > 418 or abs(x) < 44 or abs(x) > 70):
-            dots.append(f'M{n(x)} {n(y)}h.1')
-    o.append(f'<path d="{"".join(dots)}" stroke="{SOFT}" stroke-width="1.5" stroke-linecap="round"/>')
-    # a plaster on the right cheek (the cover's)
-    o.append('<g transform="translate(-98 330) rotate(-24)">'
-             f'<rect x="-19" y="-8" width="38" height="16" rx="5" fill="{FILL}" stroke="{LINE}" stroke-width="1.4"/>'
-             f'<rect x="-7" y="-5" width="14" height="10" rx="2" fill="none" stroke="{SOFT}" stroke-width="1"/>'
-             f'<path d="M-15 -3h.1M-15 3h.1M15 -3h.1M15 3h.1" stroke="{SOFT}" stroke-width="1.6" stroke-linecap="round"/></g>')
-    # visor
-    body = Half((0, VISOR_TOP)).L((150, VISOR_TOP), (198, 154), (216, 176), (218, 252), (200, 276), (52, 280), (32, 266), (0, 266))
-    o.append(shape(closed(body), FILL, LINE, 2.0))
-    pod = 'M202 168L240 178L246 254L216 270L206 262Z'
-    o.append(mirrored(shape(pod, FILL, LINE, 1.7)))
-    o.append(mirrored(stroke('M216 196H238M216 203H239M216 210H240M216 217H240', SOFT, 1.1)))
-    o.append(stroke('M232 184L242 252M226 186L236 256', HATCH, 1.0))
-    o.append(stroke(both(Half((0, 150)).L((150, 150), (194, 166))), SOFT, 1.2))
-    o.append(stroke(both(Half((60, 268)).L((196, 266))), SOFT, 1.1))
-    o.append(mirrored(stroke('M118 150V171M186 164V184M128 266V279', SOFT, 1.1)))
-    for (x, y) in ((70, 143), (128, 143), (96, 273), (170, 271), (226, 244)):
-        o.append(mirrored(f'<circle cx="{x}" cy="{y}" r="3.2" fill="{FILL}" stroke="{LINE}" stroke-width="1.1"/>'
-                          f'<path d="M{x - 2} {y}h4" stroke="{LINE}" stroke-width="1"/>'))
-    for x in PORTS:
-        o.append(mirrored(f'<rect x="{x - 10}" y="{VISOR_TOP - 4}" width="20" height="8" fill="{FILL}" stroke="{LINE}" stroke-width="1.2"/>'))
-    for i in range(6):   # shade on the lower band, right side of the face only
-        o.append(stroke(f'M{150 + i * 9} 278L{172 + i * 9} 258', HATCH, 1.0))
-    # lens: nacre, clipped
-    lens = Half((0, 176)).L((140, 176), (166, 190), (170, 238), (150, 256), (36, 258), (26, 250), (0, 250))
-    bezel = Half((0, 169)).L((143, 169), (175, 186), (179, 242), (154, 264), (40, 265), (28, 257), (0, 257))
-    o.append(shape(closed(bezel), FILL, LINE, 1.4))
-    o.append(f'<clipPath id="lens-{uid}"><path d="{closed(lens)}"/></clipPath>')
-    o.append(f'<g class="lens nacre" clip-path="url(#lens-{uid})">'
-             f'<g class="lens-par"><image class="lens-drift" href="{TILE}" x="-235" y="80" width="470" height="470" preserveAspectRatio="none"/></g>'
-             f'<path d="M-170 176H170V196H-170Z" fill="{VOID}" opacity=".28"/>'
-             f'<path d="M-120 250L-60 176M-96 250L-36 176M70 250L118 190" stroke="#fff" stroke-width="2" opacity=".35"/></g>')
-    o.append(stroke(closed(lens), LINE, 1.5))
-    # HUD, engraved into the nacre
-    hud = [f'<path d="M-144 200V232M-135 200V232M-126 200V232M-117 200V232M-152 224L-108 206" stroke="{ENGRAVE}" stroke-width="3"/>',
-           f'<path d="M-90 204L-70 216L-90 228Z" fill="none" stroke="{ENGRAVE}" stroke-width="3" stroke-linejoin="round"/>',
-           f'<path d="M-156 186H-146M-156 186V194M156 186H146M156 186V194M-156 246H-146M-156 246V238M156 246H146M156 246V238" stroke="{ENGRAVE}" stroke-width="2"/>',
-           f'<path d="M-52 236H40" stroke="{ENGRAVE}" stroke-width="1.6" stroke-dasharray="3 4"/>',
-           f'<g transform="translate(96 194) scale(.86) translate(-3 -3)"><path d="{MARK}" fill="{ENGRAVE}"/></g>']
-    o.append(f'<g class="hud nacre" opacity=".84">{"".join(hud)}</g>')
-    return ''.join(o)
-
-
-# ── the hero compositions ───────────────────────────────────────────────────────────────────────────────────────────
-def hero(uid, W, H, wm_x, wm_y, wm_w, fx, fy, fs, starts, loose, aspect):
-    rng = random.Random(7 + len(uid))
-    s = wm_w / WM_W
-    defs = (f'<mask id="cables-{uid}" maskUnits="userSpaceOnUse" x="0" y="-60" width="{W}" height="{H + 120}">'
-            f'<rect class="cable-reveal" x="0" y="-60" width="{W}" height="{H + 120}" fill="#fff"/></mask>')
-    tf = f'translate({n(fx)} {n(fy)}) scale({fs})'
-    fade = ''
-    if aspect == 'tall':   # the copy follows the art: let the art sink into the void
-        defs += (f'<linearGradient id="sink-{uid}" x1="0" y1="0" x2="0" y2="1">'
-                 f'<stop offset="0" stop-color="{VOID}" stop-opacity="0"/><stop offset="1" stop-color="{VOID}"/></linearGradient>')
-        fade = f'<rect x="0" y="{H - 200}" width="{W}" height="200" fill="url(#sink-{uid})"/>'
-
-    def g(p):
-        return (fx + p[0] * fs, fy + p[1] * fs)
-
-    # loose cables behind the figure: from the top edge to off the bottom
-    back = []
-    for (sx, ex, ey, w) in loose:
-        back.append(cable((sx, -40), (ex, ey), (0, -1), w, rng, rib=rng.random() < .5, plug=False, sway=rng.uniform(-60, 60)))
-    # cables into the scalp and the visor sockets
-    ends = scalp_points()
-    ends.sort(key=lambda e: -abs(e[0][0]))   # outer ones first: inner cables overlap them
-    front = []
-    for i, ((x, y), nrm) in enumerate(ends):
-        E = g((x, y))
-        S = (starts[i % len(starts)], -40)
-        w = (9 + (i * 7) % 6) * fs * 1.15
-        front.append(cable(S, E, nrm, w, rng, rib=(i % 3 == 0), sway=rng.uniform(-40, 40)))
-    wm = (f'<g class="wm" transform="translate({n(wm_x)} {n(wm_y - WM_Y0 * s)}) scale({s:.4f})">'
-          f'<g fill="{TEXT}" stroke="{VOID}" stroke-width="{round(8 / s, 2)}" paint-order="stroke" stroke-linejoin="round">'
-          f'<path transform="translate(-3 -3)" d="{WM_K}"/><path d="{WM_ACHI}"/></g></g>')
-    return (f'<svg class="art-{aspect}" viewBox="0 0 {W} {H}" preserveAspectRatio="{"xMidYMin slice" if aspect == "wide" else "xMidYMin meet"}" '
-            f'focusable="false" stroke-linecap="round" stroke-linejoin="round">'
-            f'<defs>{defs}</defs>'
-            f'<g mask="url(#cables-{uid})">{"".join(back)}</g>'
-            f'<g class="figure" transform="{tf}">{figure_back()}</g>'
-            f'<g mask="url(#cables-{uid})">{"".join(front)}</g>'
-            f'<g class="figure" transform="{tf}">{figure_front(uid, rng)}</g>'
-            f'{wm}{fade}</svg>')
-
-
-def hero_wide():
-    return hero('w', 1440, 900, wm_x=290, wm_y=62, wm_w=860, fx=1112, fy=384, fs=0.84,
-                starts=[1460, 1330, 1250, 1190, 1120, 1060, 990, 930, 880, 1400, 1020, 960, 1290, 1160],
-                loose=[(1420, 1520, 940, 12), (1300, 1480, 960, 9), (1200, 1260, 980, 14), (1350, 1400, 990, 8), (900, 960, 1000, 10)],
-                aspect='wide')
-
-
-def hero_tall():
-    return hero('t', 800, 1040, wm_x=60, wm_y=150, wm_w=680, fx=400, fy=468, fs=0.9,
-                starts=[790, 20, 700, 110, 620, 190, 540, 260, 470, 330, 430, 370, 400, 600],
-                loose=[(30, -40, 1060, 11), (770, 840, 1060, 11), (150, 120, 1080, 8), (660, 700, 1080, 9)],
-                aspect='tall')
+    lip = ('<filter id="wm-lip" x="-2%" y="-10%" width="104%" height="120%">'
+           '<feMorphology in="SourceAlpha" operator="dilate" radius=".22" result="grown"/>'
+           '<feComposite in="grown" in2="SourceAlpha" operator="out" result="ring"/>'
+           '<feFlood flood-color="#fff" flood-opacity=".16"/><feComposite in2="ring" operator="in"/></filter>')
+    return (f'<svg viewBox="0 {WM_Y0} {WM_W} {WM_H}" preserveAspectRatio="none" focusable="false" aria-hidden="true">'
+            f'<defs>{rim("wm-shade", .6, .75, .5, "#000", .82)}{rim("wm-shade-near", .16, .2, .08, "#000", .6)}'
+            f'{rim("wm-light", -.3, -.36, .06, "#fff", .55)}{lip}</defs>'
+            f'<g fill="#fff">'
+            f'<g filter="url(#wm-shade)">{letters}</g><g filter="url(#wm-shade-near)">{letters}</g>'
+            f'<g filter="url(#wm-light)">{letters}</g><g filter="url(#wm-lip)">{letters}</g></g></svg>')
 
 
 # ── The Static: two panels ──────────────────────────────────────────────────────────────────────────────────────────
@@ -546,8 +302,7 @@ def foot():
 
 
 BLOCKS = {
-    'hero-wide': hero_wide,
-    'hero-tall': hero_tall,
+    'hero-bevel': hero_bevel,
     'panel-noise': panel_noise,
     'panel-proof': panel_proof,
     'deck': deck,
