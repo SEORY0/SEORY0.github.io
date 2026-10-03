@@ -4,8 +4,7 @@
 Spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md (§3 line art, §4 page). Run from anywhere:
     python3 docs/kkachi/build-art.py
 Deterministic (seeded). Blocks:
-    hero-bevel             the walls of the wordmark cut into the hero's lacquer (inner shadow, lower edge light); the
-                           nacre itself is a canvas under it (site.js, masked by the wordmark SVG)
+    logo                   the header wordmark (the ㄲ inlaid with nacre); the hero's dithered nacre is drawn by site.js
     panel-noise / -proof   The Static diagram: a grid of static, and the same grid with one traced path to one nacre cell
     deck                   the interlude: a cyberdeck in isometric view with trodes and cables
     foot                   the wordmark with the ㄲ inlaid in nacre
@@ -106,30 +105,13 @@ def cable(S, E, away, w, rng, rib=False, plug=True, sway=0.0):
     return ''.join(g)
 
 
-# ── the hero: the wordmark set in lacquer ──────────────────────────────────────────────────────────────────────────
-def hero_bevel():
-    """Lies over the nacre canvas (masked by the same wordmark): the cut's walls. Light comes from the top left, so the
-    inner top-left rim falls in shadow and the inner bottom-right rim catches a thin light; a faint lip runs around the
-    cut on the lacquer. Filters work on the letters' filled alpha, so the overlapping pieces of A and H read as one
-    shape. Wordmark units; the box has the wordmark's aspect ratio, so preserveAspectRatio="none" is exact."""
-    letters = f'<path transform="translate(-3 -3)" d="{WM_K}"/><path d="{WM_ACHI}"/>'
-
-    def rim(fid, dx, dy, blur, color, alpha):
-        return (f'<filter id="{fid}" x="-2%" y="-10%" width="104%" height="120%">'
-                f'<feOffset in="SourceAlpha" dx="{dx}" dy="{dy}"/><feGaussianBlur stdDeviation="{blur}" result="moved"/>'
-                f'<feComposite in="SourceAlpha" in2="moved" operator="out" result="rim"/>'
-                f'<feFlood flood-color="{color}" flood-opacity="{alpha}"/><feComposite in2="rim" operator="in"/></filter>')
-
-    lip = ('<filter id="wm-lip" x="-2%" y="-10%" width="104%" height="120%">'
-           '<feMorphology in="SourceAlpha" operator="dilate" radius=".22" result="grown"/>'
-           '<feComposite in="grown" in2="SourceAlpha" operator="out" result="ring"/>'
-           '<feFlood flood-color="#fff" flood-opacity=".16"/><feComposite in2="ring" operator="in"/></filter>')
-    return (f'<svg viewBox="0 {WM_Y0} {WM_W} {WM_H}" preserveAspectRatio="none" focusable="false" aria-hidden="true">'
-            f'<defs>{rim("wm-shade", .6, .75, .5, "#000", .82)}{rim("wm-shade-near", .16, .2, .08, "#000", .6)}'
-            f'{rim("wm-light", -.3, -.36, .06, "#fff", .55)}{lip}</defs>'
-            f'<g fill="#fff">'
-            f'<g filter="url(#wm-shade)">{letters}</g><g filter="url(#wm-shade-near)">{letters}</g>'
-            f'<g filter="url(#wm-light)">{letters}</g><g filter="url(#wm-lip)">{letters}</g></g></svg>')
+# ── the header logo ────────────────────────────────────────────────────────────────────────────────────────────────
+def logo():
+    """The small wordmark at the top left: the ㄲ inlaid with the nacre tile, ACHI in TEXT (the footer's treatment)."""
+    return (f'<svg viewBox="0 {WM_Y0} {WM_W} {WM_H}" focusable="false" aria-hidden="true">'
+            f'<clipPath id="logo-k"><path transform="translate(-3 -3)" d="{WM_K}"/></clipPath>'
+            f'<g class="nacre" clip-path="url(#logo-k)"><image href="{TILE}" x="-20" y="-24" width="90" height="90"/></g>'
+            f'<path d="{WM_ACHI}" fill="{TEXT}"/></svg>')
 
 
 # ── The Static: two panels ──────────────────────────────────────────────────────────────────────────────────────────
@@ -302,7 +284,7 @@ def foot():
 
 
 BLOCKS = {
-    'hero-bevel': hero_bevel,
+    'logo': logo,
     'panel-noise': panel_noise,
     'panel-proof': panel_proof,
     'deck': deck,

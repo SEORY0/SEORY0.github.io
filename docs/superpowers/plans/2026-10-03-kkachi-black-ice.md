@@ -144,3 +144,13 @@ is the header wordmark.
 - [ ] Dither pass: sample → Bayer 8 × 8 + wave → ImageData (2 × 2 per cell) → scaled draw; lens dissolve in the threshold.
 - [ ] Fallbacks (no WebGL, no JS, reduced motion, off screen); `check-page.mjs` passes both runs; screenshots at
       1440 × 900, 1024 × 768, 1920 × 1080, 390 × 844; rebuild OG; commit.
+
+### Task 9: Hero revision — "One cinematic photograph" (spec §4.1, final; replaces Task 8)
+
+**Files:** `kkachi/index.html` (`.hero-photo` with a `<picture>`), `assets/kkachi/site.css`, `assets/kkachi/site.js`
+(`heroPhoto()` parallax only), `assets/kkachi/hero/hero-wide.webp`, `hero-tall.webp`, `assets/kkachi/og/kkachi-og.png`.
+
+- [x] Convert the owner's two GPT images to WebP; picture + scrim + push-in + breathing beam + parallax.
+- [x] Remove the dither field; keep the header logo; nav trims to Contact under 560 px.
+- [x] `check-page.mjs` passes both runs; screenshots at 1440 × 900, 1280 × 720, 1920 × 1080, 1024 × 768, 820 × 1180,
+      390 × 844; rebuild OG; commit.

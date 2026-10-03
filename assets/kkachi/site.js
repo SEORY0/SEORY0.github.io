@@ -1,6 +1,5 @@
 /* KKACHI — Black ICE page motion (spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md §4.1, §5).
-   - hero: the najeon shader through the wordmark cut into the lacquer (the pointer turns the viewing angle); scrolling
-     out, the wordmark lags and dims (--p on .hero, 0…1).
+   - hero: the photograph drifts a few pixels against the pointer (the slow push-in and the beam's breathing are CSS).
    - nacre drift: the tile clipped into the proven cell and the footer ㄲ moves slowly.
    - static: cells of the scanner panel flicker like a dead channel.
    - cyberspace: the najeon shader under a lacquer canvas with a perspective grid cut out of it, drifting toward
@@ -36,29 +35,25 @@ function loadNajeon() {
   return najeonModule;
 }
 
-function hero() {
-  const section = document.querySelector('.hero');
-  const canvas = section && section.querySelector('.hero-nacre');
-  if (!canvas) return;
-  let shader = null, visible = false;
-  whenVisible(section, () => {
-    visible = true;
-    loadNajeon().then((m) => {
-      if (visible && !shader) shader = m.najeon(canvas, { animate: false, interactive: !reduced, scale: 1.15, pixelBudget: 900000, tileUrl });
-    }).catch(() => {});
-  }, () => {
-    visible = false;
-    if (shader) { shader.destroy(); shader = null; }
-  }, '0px');
-  if (reduced) return;
-  let raf = 0;
-  const update = () => {
-    raf = 0;
-    const h = section.offsetHeight || 1;
-    section.style.setProperty('--p', Math.min(1, Math.max(0, scrollY / h)).toFixed(3));
+function heroPhoto() {
+  const hero = document.querySelector('.hero');
+  const photo = hero && hero.querySelector('.hero-photo');
+  if (!photo || reduced) return;
+  // a few pixels of depth: the photo drifts against the pointer, eased; nothing moves without a mouse
+  let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+  const step = () => {
+    x += (tx - x) * 0.06; y += (ty - y) * 0.06;
+    photo.style.setProperty('--px', `${(x * -14).toFixed(2)}px`);
+    photo.style.setProperty('--py', `${(y * -9).toFixed(2)}px`);
+    raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.001 ? requestAnimationFrame(step) : 0;
   };
-  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-  update();
+  hero.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const r = hero.getBoundingClientRect();
+    tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5;
+    if (!raf) raf = requestAnimationFrame(step);
+  }, { passive: true });
+  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(step); });
 }
 
 /* ── the static panel ────────────────────────────────────────────────────── */
@@ -211,5 +206,5 @@ if (!reduced) {
   drift('.mark-drift', [[0, 0], [-34, -22], [-12, -40]], 30000);
   staticPanel();
 }
-hero();
+heroPhoto();
 cyberspace();
