@@ -12,8 +12,8 @@ The v4 state is kept in commit `171fe6d` for reference only.
 - **Reference:** https://ls.bot/ for structure, rhythm, and amount of copy. Neuromancer (the attached Josan Gonzalez
   cover) for line-art style, composition, and vocabulary.
 - **Direction B, "Black ICE", with ls.bot's restraint:** every section is dark and neutral (black, charcoal, white,
-  grey). **Nacre is the only colour on the page.** Neuromancer comes through the line-art style, the jacked-in figure
-  and cables, the dead-channel static, the cyberspace grid, and the word ICE — not through the cover's pink and yellow.
+  grey). **Nacre is the only colour on the page.** Neuromancer comes through the line-art style, the dead-channel static,
+  the cyberdeck, and the cyberspace grid — not through the cover's pink and yellow, and not in the hero (§4.1).
 - **Language:** English only. **Length:** at most ls.bot's visible copy. Target about 500 words, tooltips included.
 - **One page:** `/kkachi/`. All other KKACHI pages are deleted.
 - **Contact:** `mailto:seory0@outlook.kr` (already public in `_config.yml`).
@@ -21,10 +21,10 @@ The v4 state is kept in commit `171fe6d` for reference only.
 ## 2. Concept
 
 Gibson's cyberspace is lines of light in black nonspace. Najeon is light set into black lacquer. On this page
-**the matrix is najeon**: the visor lens, the one proven finding, the cyberspace grid, and the footer mark are nacre.
+**the matrix is najeon**: the hero wordmark, the one proven finding, the deck screen, the cyberspace grid, and the footer
+mark are nacre.
 Everything else is lacquer and ink.
 
-The copy uses Neuromancer's word for defensive software, **ICE**: KKACHI breaks your own ICE before someone else does.
 No quotations from the novel are used.
 
 ## 3. Visual system
@@ -40,7 +40,7 @@ No quotations from the novel are used.
 | `--hatch` | `#6E6E76` | line art hatching, chip borders |
 | `--text` | `#F2F2F3` | headings, body |
 | `--dim` | `#A7A7AE` | secondary text (≥ 7:1 on `--char`) |
-| nacre | `assets/najeon/` shader and tile | the one accent: visor lens, proven cell, grid, footer mark |
+| nacre | `assets/najeon/` shader and tile | the one accent: hero wordmark, proven cell, deck screen, grid, footer mark |
 
 No hue anywhere except nacre: no coloured text, rules, chips, or buttons. Focus ring: 2px `--text`.
 
@@ -58,12 +58,15 @@ Light `--line` strokes and `--hatch` shading on dark; HUD marks on the nacre len
 
 Nav (top right, condensed caps, like ls.bot): `Static · Signal · Products · Contact`.
 
-### 4.1 Hero (`--void`)
-- Art: the KKACHI wordmark in white, wide across the top like the cover title. Cables hang from the letters down to a
-  frontal figure (symmetric: visor, nose, mouth, jaw, coat collar) in light line art. The visor lens is nacre (the
-  tile, clipped, drifting slowly and following the pointer) with dark engraved HUD marks: tally lines, ▷, and the ㄲ.
-  Faint scanlines over the void.
-- Headline, bottom left (ls.bot position): **Break your own ICE. / Before someone else does.**
+### 4.1 Hero (`--void`) — revised 2026-10-03: "Set in lacquer"
+The Neuromancer figure was dropped from the hero; everything below it stays as written.
+- Art: the KKACHI wordmark, about 86% of the width (92% on phones), in the upper middle (ls.bot's logo position), cut
+  out of black lacquer. Through the letters runs the live najeon shader (`najeon()`, still frame, the pointer changes
+  the viewing angle); without WebGL, the tile. The cut reads as inlay: a dark inner shadow along the letter edges and a
+  thin light edge on the lower sides. Every few seconds a soft white sheen crosses the letters (neutral, so it also
+  moves on touch screens). Scrolling out of the hero, the wordmark rises a little slower than the page and dims, as if
+  lacquer closed over it. No figure, cables, scanlines or ICE.
+- Headline, bottom left (ls.bot position): **The one finding that holds. / Reproduced before it's reported.**
 - Copy:
   > KKACHI builds a frontier agent harness and the autonomous vulnerability research agent that runs on it.
   >
@@ -127,18 +130,20 @@ Anchor links, a large ㄲ mark inlaid with nacre over the wordmark, and `© 2026
 |---|---|
 | `kkachi/index.html` | the page: head, inline art, content |
 | `assets/kkachi/site.css` | tokens, layout, components, motion |
-| `assets/kkachi/site.js` | ES module: nacre (hero lens, footer), static flicker, cyberspace grid, pointer parallax |
+| `assets/kkachi/site.js` | ES module: hero nacre wordmark and scroll dimming, nacre drift (proven cell, footer), static flicker, cyberspace grid |
 | `assets/kkachi/fonts/*.woff2` + OFL texts | Newsreader, Big Shoulders Display, Fragment Mono |
-| `docs/kkachi/build-art.py` | writes the hero, interlude, and diagram SVG into the page markers |
-| `docs/kkachi/og.html`, `build-og.mjs` | rebuilt `assets/kkachi/og/kkachi-og.png` from the new hero |
+| `docs/kkachi/build-art.py` | writes the hero bevel, interlude, diagram, and footer SVG into the page markers |
+| `docs/kkachi/build-og.mjs` | rebuilds `assets/kkachi/og/kkachi-og.png` from the page's hero |
 
-- Najeon: `assets/najeon/najeon.js` is imported unchanged (it falls back to its PNG tile without WebGL). The hero lens
-  and footer mark use the tile in SVG `<image>` under a `clipPath`, so they render without WebGL or JS.
+- Najeon: `assets/najeon/najeon.js` is imported unchanged (it falls back to its PNG tile without WebGL). The hero
+  wordmark is a canvas masked by `assets/kkachi/brand/kkachi-wordmark.svg` (CSS `mask`), the tile painted under it so
+  it shows without WebGL or JS. The proven cell, the deck screen, and the footer mark use the tile in SVG `<image>`
+  under a `clipPath`.
 - Motion: everything animated pauses off screen (IntersectionObserver) and stops under `prefers-reduced-motion`.
 - Accessibility: art is `aria-hidden`. The wordmark has the accessible name "KKACHI". Chips are `<button>` elements with
   `aria-describedby` tooltips shown on hover and focus. Diagrams have text captions. Visible focus ring in `--text`.
-- Responsive: one column under 820 px. The figure moves under the wordmark and the headline follows it. Cards stack.
-- Head: title `KKACHI — Break your own ICE`, meta description, OG and Twitter tags, the existing favicons.
+- Responsive: one column under 820 px. The wordmark spans the width above the copy. Cards stack.
+- Head: title `KKACHI — The one finding that holds`, meta description, OG and Twitter tags, the existing favicons.
 
 ## 6. Removal
 
@@ -154,7 +159,7 @@ Anchor links, a large ㄲ mark inlaid with nacre over the wordmark, and `© 2026
 ## 7. Done when
 
 - Desktop (1440 × 900) and mobile (390 × 844) screenshots read as the same family as ls.bot (dark, cinematic, sparse)
-  with unmistakable Neuromancer line art and motifs, and nacre is the only colour on screen.
+  with Neuromancer line art and motifs below the hero, and nacre is the only colour on screen.
 - Visible copy, tooltips included, is at most 550 words.
 - No console errors. Works with WebGL off (tile fallback) and with reduced motion (still frames).
 - `bundle exec jekyll build` succeeds. `/kkachi/` is the only KKACHI page in `_site/`.

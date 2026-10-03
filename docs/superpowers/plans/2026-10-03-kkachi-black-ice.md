@@ -108,3 +108,25 @@
 - [ ] Rebuild the OG image from the hero art.
 - [ ] Update `docs/kkachi/README.md` for the new build sources, and note that `build-wordmark.py` needs `kk-sans.woff2` restored from `171fe6d`.
 - [ ] Run `check-page.mjs` one last time. Commit: "Polish the KKACHI page and rebuild its share image".
+
+---
+
+### Task 7: Hero revision — "Set in lacquer" (spec §4.1, revised)
+
+**Files:**
+- Modify: `kkachi/index.html` (head title and OG text, hero markup, headline), `assets/kkachi/site.css` (hero rules),
+  `assets/kkachi/site.js` (hero nacre, sheen, scroll dimming; remove the lens drift and parallax),
+  `docs/kkachi/build-art.py` (drop the figure, cables and `hero-wide`/`hero-tall`; add `hero-bevel`)
+- Regenerate: `assets/kkachi/og/kkachi-og.png`
+
+**Interfaces:**
+- Produces: `.hero-mark` (box with the wordmark's aspect ratio 193.25 / 43.62), inside it `canvas.hero-nacre.nacre`
+  (masked by the wordmark SVG) and the `<!-- art:hero-bevel -->` SVG (inner shadow and lower edge light, clipped to the
+  letters) and `.hero-sheen` (a white band, masked by the wordmark, moved by CSS).
+- Consumes: `najeon(canvas, { animate: false, interactive, scale, pixelBudget, tileUrl })` → `{ destroy() }`.
+
+- [ ] Remove the figure, cables, scanlines, ICE abbr, lens drift and lens parallax.
+- [ ] Add the masked nacre canvas, bevel SVG, sheen and scroll dimming; create the shader only while the hero is
+      visible.
+- [ ] `check-page.mjs` passes in both runs; screenshots at 1440 × 900, 1024 × 768, 1920 × 1080, 390 × 844.
+- [ ] Rebuild the OG image. Commit: "Replace the KKACHI hero with the wordmark set in lacquer".
