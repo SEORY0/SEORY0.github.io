@@ -4,10 +4,9 @@
 Spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md (§3 line art, §4 page). Run from anywhere:
     python3 docs/kkachi/build-art.py
 Deterministic (seeded). Blocks:
-    logo                   the header wordmark (the ㄲ inlaid with nacre); the hero's dithered nacre is drawn by site.js
+    logo, foot             the header and footer wordmarks (the ㄲ inlaid with nacre), used by build-pages.py
     panel-noise / -proof   The Static diagram: a grid of static, and the same grid with one traced path to one nacre cell
     deck                   the interlude: a cyberdeck in isometric view with trodes and cables
-    foot                   the wordmark with the ㄲ inlaid in nacre
 Colour: neutral only. Nacre is the tile (assets/kkachi/nacre-512.webp) clipped into shapes; those groups carry class
 "nacre" (the page check skips them).
 """
@@ -19,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PAGE = ROOT / 'kkachi/index.html'
 BRAND = ROOT / 'assets/kkachi/brand'
-TILE = '../assets/kkachi/nacre-512.webp'   # relative to kkachi/index.html
+TILE = '/assets/kkachi/nacre-512.webp'   # absolute: the logo and footer appear on every page
 
 LINE = '#E6E6E9'    # strokes
 SOFT = '#9C9CA4'    # secondary strokes
@@ -284,11 +283,9 @@ def foot():
 
 
 BLOCKS = {
-    'logo': logo,
     'panel-noise': panel_noise,
     'panel-proof': panel_proof,
     'deck': deck,
-    'foot': foot,
 }
 
 

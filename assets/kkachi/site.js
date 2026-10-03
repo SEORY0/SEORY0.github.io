@@ -1,4 +1,5 @@
-/* KKACHI — Black ICE page motion (spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md §4.1, §5).
+/* KKACHI — Black ICE page motion (spec: docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md §4.1, §5, §8).
+   - navigation: the Products menu (click, hover, Escape, outside click) and the phone sheet.
    - hero: the photograph drifts a few pixels against the pointer (the slow push-in and the beam's breathing are CSS).
    - nacre drift: the tile clipped into the proven cell and the footer ㄲ moves slowly.
    - static: cells of the scanner panel flicker like a dead channel.
@@ -26,6 +27,48 @@ function drift(selector, path, duration) {
     anim.pause();
     whenVisible(svg, () => anim.play(), () => anim.pause());
   }
+}
+
+/* ── navigation: the Products menu and the phone sheet ────────────────── */
+function navigation() {
+  const header = document.querySelector('.nav');
+  if (!header) return;
+  const btn = header.querySelector('.menu-btn');
+  const menu = header.querySelector('.menu');
+  const toggle = header.querySelector('.nav-toggle');
+  const setMenu = (open) => btn && btn.setAttribute('aria-expanded', String(open));
+  const setSheet = (open) => {
+    if (!toggle) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.textContent = open ? 'Close' : 'Menu';
+    header.classList.toggle('open', open);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  };
+  if (btn) {
+    let hoverOpened = 0;   // a click right after hover opened the menu keeps it open instead of closing it
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      if (open && performance.now() - hoverOpened < 1200) { hoverOpened = 0; return; }
+      setMenu(!open);
+    });
+    menu.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse' || !matchMedia('(min-width: 821px)').matches) return;
+      if (btn.getAttribute('aria-expanded') !== 'true') hoverOpened = performance.now();
+      setMenu(true);
+    });
+    menu.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && matchMedia('(min-width: 821px)').matches) setMenu(false); });
+    menu.addEventListener('focusout', (e) => { if (!menu.contains(e.relatedTarget)) setMenu(false); });
+  }
+  if (toggle) toggle.addEventListener('click', () => setSheet(toggle.getAttribute('aria-expanded') !== 'true'));
+  header.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => { setMenu(false); setSheet(false); }));
+  document.addEventListener('click', (e) => { if (!header.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (btn && btn.getAttribute('aria-expanded') === 'true') { setMenu(false); btn.focus(); }
+    if (toggle && toggle.getAttribute('aria-expanded') === 'true') { setSheet(false); toggle.focus(); }
+  });
+  matchMedia('(min-width: 821px)').addEventListener('change', () => setSheet(false));
 }
 
 /* ── hero ────────────────────────────────────────────────────────────────── */
@@ -206,5 +249,6 @@ if (!reduced) {
   drift('.mark-drift', [[0, 0], [-34, -22], [-12, -40]], 30000);
   staticPanel();
 }
+navigation();
 heroPhoto();
 cyberspace();
