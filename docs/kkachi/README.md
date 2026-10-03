@@ -1,21 +1,21 @@
 # KKACHI build-time sources (not published: Jekyll excludes `docs/`)
 
-Everything here regenerates a committed KKACHI asset. Nothing runs on the site. Specs:
-`docs/superpowers/specs/2026-10-02-kkachi-v4-symbol-system-design.md` (v4: symbols, lines, lights-out colour, nacre) on top of
-`docs/superpowers/specs/2026-10-02-kkachi-v3-unified-design.md`.
+Everything here regenerates or checks a committed KKACHI asset. Nothing runs on the site. Spec:
+`docs/superpowers/specs/2026-10-03-kkachi-black-ice-design.md` (the one-page "Black ICE" site at `/kkachi/`).
+Earlier concepts (v1–v4) were removed; their last state is commit `171fe6d`.
 
-| File | Makes | Command (repository root) |
+Serve the repository root first (`python3 -m http.server 8765 --bind 127.0.0.1`). Playwright scripts take
+`PLAYWRIGHT=/path/to/node_modules/playwright/index.mjs`.
+
+| File | Makes / checks | Command (repository root) |
 |---|---|---|
-| `build-fonts.py` | `assets/kkachi/fonts/kk-sans.woff2`, `kk-sans-ext.woff2`, `kk-mono.woff2`, `characters.txt`, and the `unicode-range` lines in `assets/kkachi/kk-system.css` | `python3 docs/kkachi/build-fonts.py` (`--check` lists missing characters) |
-| `font-words.txt` | words the subset should hold before a page uses them | read by `build-fonts.py` |
-| `build-wordmark.py` | `assets/kkachi/brand/kkachi-wordmark.svg` and `kkachi-mark.svg` | `python3 docs/kkachi/build-wordmark.py` (needs the cut font from `build-fonts.py`) |
+| `build-art.py` | the line art inlined in `kkachi/index.html` between `<!-- art:NAME:start/end -->` (hero wide and tall, the two Static panels, the cyberdeck, the footer wordmark) | `python3 docs/kkachi/build-art.py` |
+| `check-page.mjs` | `/kkachi/` against spec §7: sections present, ≤ 550 words with tooltips, no colour outside `.nacre`, fonts loaded, no console errors; run twice (default, and WebGL off with reduced motion) | `node docs/kkachi/check-page.mjs` |
+| `build-og.mjs` | `assets/kkachi/og/kkachi-og.png` (1200 × 630) from the page's own hero | `node docs/kkachi/build-og.mjs` (`CHROME=` picks a browser) |
+| `build-wordmark.py` | `assets/kkachi/brand/kkachi-wordmark.svg` and `kkachi-mark.svg` | `python3 docs/kkachi/build-wordmark.py` — needs the cut Wanted Sans `assets/kkachi/fonts/kk-sans.woff2`, removed in the rebuild: `git show 171fe6d:assets/kkachi/fonts/kk-sans.woff2 > assets/kkachi/fonts/kk-sans.woff2` |
 | `build-marks.py` | the sibling marks `assets/kkachi/brand/kkachi-shield-foundry.svg` and `kkachi-talon.svg` | `python3 docs/kkachi/build-marks.py` (`--check` prints the gaps between pieces) |
-| `template.html` | a new dark marketing page (v4: lead hero, session line, input → output, trust bar, matrix, gate ledger, funnel, evidence rows): copy it to `kkachi/<slug>/index.html` and replace every `[[…]]` (head order, bar, CTA, end tiles, footer, scripts; how a page adds its own CSS and JS). Working copy: `.scratch/v4/template-site.html` | — |
-| `template-app.html` | a dashboard page (v4 shell: nav, two-row app bar with search, time control, agent capsule, sample chip, theme, autonomy strip; a table filled from `assets/kkachi/dash-data.js`): copy it to `kkachi/dashboard/<slug>/index.html` | — |
-| `build-symbols.py` | `assets/kkachi/symbols.svg` (the v4 symbol sprite), the symbol registry block of `kkachi/system/index.html`, and the 16 / 32 px legibility sheet `.scratch/v4/system/legibility.html` | `python3 docs/kkachi/build-symbols.py` |
-| `og.html`, `build-og.mjs` | `assets/kkachi/og/kkachi-og.png` (1200 × 630) | serve the root on :8765, then `PLAYWRIGHT=…/playwright/index.mjs node docs/kkachi/build-og.mjs` |
 
-Details: `assets/kkachi/fonts/README.md` (fonts, fallbacks, loading) and the header of each script.
+The page's fonts and their licences: `assets/kkachi/fonts/README.md`.
 
 ## The wordmark
 
@@ -38,7 +38,7 @@ shape and size and only turns in 90° steps and moves; neighbouring pieces keep 
 construction. To add a mark, add an entry to `MARKS` in `build-marks.py` (each piece is `(turn, x, y)`, with the ㄱ's
 outer corner at `(x, y)`).
 
-- **Shield Foundry** (4 pieces): the cross (`kkachi/drafts/d-cross-spaced.svg`, corners in) reversed, with the corners
+- **Shield Foundry** (4 pieces): the cross (`kkachi/drafts/d-cross-spaced.svg` in `171fe6d`, corners in) reversed, with the corners
   out. Each ㄱ keeps its cross cell and turns 180° in it, so the 63 box and the gap of 3 (at the side midpoints) stay the
   cross's. The inside forms a four-pointed star.
 - **Talon** (3 pieces): three ㄱ as written, hanging like claws. The ㄲ is two ㄱ, and Talon is three. The drop is

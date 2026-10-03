@@ -254,9 +254,9 @@ def figure_front(uid, rng):
     o.append(hatch_along((127, 416), (111, 454), (73, 484), (38, 494), 4, 5, t0=.0, t1=.95, shrink=.08))
     # nose
     o.append(stroke(both(Half((15, 266)).C((16, 286), (20, 304), (26, 318))), SOFT, 1.3))
-    o.append(stroke(both(Half((26, 315)).C((41, 317), (47, 340), (33, 347))), LINE, 1.6))
-    o.append(stroke(both(Half((29, 350)).C((23, 353), (14, 353), (8, 349))), LINE, 1.6))
-    o.append(stroke('M8 349C4 352 -4 352 -8 349', LINE, 1.6))
+    o.append(stroke(both(Half((25, 316)).C((37, 318), (42, 337), (31, 345))), LINE, 1.6))
+    o.append(stroke(both(Half((27, 348)).C((22, 351), (14, 351), (8, 348))), LINE, 1.4))
+    o.append(stroke('M8 348C4 351 -4 351 -8 348', LINE, 1.4))
     o.append(stroke('M-6 333C-2 330 2 330 6 333', SOFT, 1.1))
     o.append(hatch_along((15, 266), (16, 286), (20, 304), (26, 318), 3, 4, t0=.1, t1=1.0, shrink=.1))
     o.append(stroke(both(Half((45, 344)).C((57, 358), (64, 376), (63, 396))), SOFT, 1.2))
