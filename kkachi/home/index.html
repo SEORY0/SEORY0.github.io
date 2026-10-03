@@ -3,329 +3,470 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KKACHI — 까치 · 자율 취약점 연구 에이전트</title>
-<meta name="description" content="KKACHI(까치)는 자율 취약점 연구 에이전트입니다. 코드와 바이너리를 읽고 가설을 세운 뒤 호출 경로를 끝까지 따라가, 재현으로 입증된 것만 발견으로 보고합니다.">
+<title>KKACHI — 모든 경로를 따라가, 확인된 하나를 가져옵니다</title>
+<meta name="description" content="KKACHI(까치)는 기업 보안팀을 위한 자율 취약점 연구 에이전트입니다. 소스 코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 확인되지 않은 경고 대신 재현으로 입증된 취약점만 보고합니다.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#292623">
-<meta property="og:title" content="KKACHI — 까치 · 자율 취약점 연구 에이전트">
-<meta property="og:description" content="코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 재현으로 입증된 것만 발견으로 보고합니다. 까치가 반가운 소식을 물어 오듯, 확인된 하나만 가져옵니다.">
+<meta property="og:title" content="KKACHI — 모든 경로를 따라가, 확인된 하나를 가져옵니다">
+<meta property="og:description" content="기업 보안팀을 위한 자율 취약점 연구 에이전트. 소스 코드와 바이너리를 읽고, 재현으로 입증된 취약점만 보고합니다. 까치가 반가운 소식을 물어 오듯, 확인된 하나만 가져옵니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://seory0.github.io/kkachi/home/">
+<meta property="og:site_name" content="KKACHI">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://seory0.github.io/assets/kkachi/og/kkachi-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="옻칠 바탕 위의 KKACHI 워드마크와 ‘많이 찾기보다, 확실히 찾습니다.’">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://seory0.github.io/assets/kkachi/og/kkachi-og.png">
 <link rel="canonical" href="https://seory0.github.io/kkachi/home/">
 <!-- kk-favicon:start -->
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/kkachi/icons/kk-32.png">
+<link rel="apple-touch-icon" href="../../assets/kkachi/icons/kk-180.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
 <link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
 <!-- kk-favicon:end -->
 <!-- kk-transition:start (assets/kkachi/transition.js) -->
 <style>html.kk-arriving{color-scheme:dark;scrollbar-color:#363333 #292623}html.kk-arriving::after{content:"";position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#292623 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='136'%3E%3Cpath id='k' fill='%23363333' transform='translate(14 112)' d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3Cuse href='%23k' y='-136'/%3E%3Cuse href='%23k' x='38' y='-68'/%3E%3Cuse href='%23k' x='-38' y='-68'/%3E%3C/svg%3E") 0 34px/76px 136px;animation:kk-failsafe .3s 3s forwards}@keyframes kk-failsafe{to{opacity:0;visibility:hidden}}</style>
-<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<4e3&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
+<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<(k[2]||4e3)&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
 <!-- kk-transition:end -->
-<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
-<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<!-- kk-fonts: Wanted Sans and Fragment Mono (kk-system.css §0). The mono subset is preloaded only where the I (a hex
+     dump) shows in the first screen: from 520px (below that the I steps aside). kk-sans-ext.woff2 is never preloaded. -->
+<link rel="preload" href="../../assets/kkachi/fonts/kk-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/kkachi/fonts/kk-mono.woff2" as="font" type="font/woff2" crossorigin media="(min-width: 520px)">
+<!-- p-home-first: the home's once-per-session entrance of the five letters (section 12 below). Not on a 금문 arrival (kk-arriving, set by the
+     transition snippet above), not under reduced motion, not without JS; the flag is set on every home load. It ends at
+     1.8 s, on the pause switch, or when the page is left (so a page restored from the bfcache is never mid-entrance).
+     p-home-settle: on a 금문 arrival the loops hold still under the curtain and through its lift (+450 ms after kk:reveal;
+     section 11), so the lift's frames are not spent starting the letters' compositor animations. -->
+<script>try{var r=document.documentElement,s=sessionStorage;document.addEventListener("kk:reveal",function(){r.classList.add("p-home-settle");setTimeout(function(){r.classList.remove("p-home-settle")},450)});if(!s.getItem("kk-home")){s.setItem("kk-home","1");if(!r.classList.contains("kk-arriving")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){r.classList.add("p-home-first");var x=function(){r.classList.remove("p-home-first")};setTimeout(x,1800);addEventListener("pagehide",x);document.addEventListener("change",function(e){e.target&&e.target.id=="kk-still"&&x()})}}}catch(e){}</script>
+<link rel="stylesheet" href="../../assets/kkachi/kk-system.css">
 <link rel="stylesheet" href="../../assets/kkachi/kk.css">
 <style>
 /* ============================================================
-   KKACHI home — page shell
-   Spec: docs/superpowers/specs/2026-09-28-kkachi-home-design.md
-   The shared frame — 1 tokens, 2 base, 3 stage, 4 grid, 5 inlay canvas + ㄲ logo, 9 buttons, 10 intro column,
-   11 motion off, responsive and prefers-contrast — is ../../assets/kkachi/kk.css (same section numbers), and the
-   inlay shader module is ../../assets/kkachi/inlay.js. This sheet keeps the home-only tiles.
+   KKACHI home (v4) — page sheet
+   Specs: docs/superpowers/specs/2026-10-02-kkachi-v4-symbol-system-design.md (§0 home, §2 nacre and lines, §3 home)
+   with docs/superpowers/research/2026-10-02-kkachi-dashboard-research.md §5–§8, over the v3 spec and the home spec
+   (§5 tile contract, §9 brand bans, §13 nacre). The frame (tokens, stage, grid, ways, column, motion off) is
+   ../../assets/kkachi/kk.css (same section numbers); symbols are ../../assets/kkachi/symbols.svg.
+
+   What the first screen says (v4 §3: who · what · why · proof · next):
+     the message tile (top left, 2 × 2)  who + what + why — the wordmark with its ㄲ inlaid (the one najeon shader on
+                                         the page, inlay.js), the headline, one line naming 기업 보안팀, what KKACHI
+                                         reads and what it reports instead of unconfirmed alerts — and next: the
+                                         waitlist button, there from the first frame, one line at every width;
+     the session-line tile (4 wide)      proof — session 7F2A as the five lying strips of the system's session line,
+                                         each with its number and its word in the one session-line vocabulary of every
+                                         page (1,284 읽기 · 함수 → 4 가설 → 1 추적 · 경로, 기각 2 · 보류 1 → 3/3 재현 →
+                                         F-01 보고 · 초안 → 사람 차례 검토 대기), labelled 샘플 데이터 once, and a text
+                                         link into the same session on the why page (세션 7F2A 자세히 보기 →);
+     five letters                        the art (k1 끊음질 strips, k2 outline, A call graph, C halftone, I hex dump),
+                                         chosen from the v3 thirteen for their craft and for what they say (A: a path
+                                         to one confirmed sink; I: the bytes of a binary); under 520px only the K K
+                                         pair shows, so a narrow screen never spells a cut name;
+     the three ways                      왜 KKACHI인가 · 연구 노트 · 대기자 명단, each with its page's tagline at rest
+                                         where the tile has room (kk.css section 9);
+     the column                          why in one line (the why page's sentence), then what goes in, where it runs,
+                                         what comes out and who decides, as symbol rows; the name — from the top, level
+                                         with the wordmark; the honesty note and the pause switch at the foot.
+   Nacre means one thing (proven): the ㄲ inlay (brand) and, in the session line, the three strips of 재현 3/3 and the
+   F-01 tablet — nowhere else, not on a letter, a hover or a button. Violet is 재현 확인 only: the 3/3 and the A's sink.
+   Nothing turns; no diamond, no ×; the 금문 pattern is the transition's alone.
    ============================================================ */
 
-/* ── 4. grid: home-only tiles ── */
-.t-label { grid-column: span 2; }
+/* ── 4a. the message tile ──
+   Its words start level with the letters' cap tops beside it (16 of the tile's 120 units) and its button ends level
+   with their baseline (104 of 120): the wordmark and the headline at the top, the line and the button at the foot.
+   Below 1000px it is the grid's whole width and as tall as its words. */
+.p-home-msg {
+  grid-column: span 2; grid-row: span 2;
+  display: flex; flex-direction: column; justify-content: space-between; gap: calc(var(--p-home-tile) * .1);
+  padding: calc(var(--p-home-tile) * 16 / 120) 0 calc(var(--p-home-tile) * 15 / 120);
+  min-width: 0;
+}
+.p-home-h1 {
+  margin: 0;
+  font: var(--w-bold) var(--p-home-fs-title)/1.2 var(--font-sans);
+  letter-spacing: -.02em;                 /* the system's headline tracking (kk-system.css §5) */
+  color: var(--fg-1);
+  word-break: keep-all;
+}
+.p-home-ln { display: block; }
+/* the wordmark: the system's .kk-wm (inline, so it is the same shape with or without the font) with its ㄲ inlaid by
+   the najeon shader (the system's shader option, kk-system.css §3: canvas.inlay over the mark, cut by --mark; the
+   canvas paints the najeon tile itself before the shader and without JS or WebGL); under it the SVG mark is --fg-3 */
+.p-home-wm { --wm-h: var(--p-home-wm-h); margin-bottom: calc(var(--p-home-fs-title) * .78); }
+.p-home-lede {
+  margin: 0;
+  max-width: 30em;
+  font-size: var(--p-home-fs-lede);
+  line-height: 1.62;
+  color: var(--fg-2);
+  word-break: keep-all;
+  text-wrap: pretty;
+}
+.p-home-lede strong { font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-home-cta { margin: calc(var(--p-home-fs-lede) * 1.25) 0 0; }
+.p-home-cta .kk-btn { --kk-btn-h: clamp(44px, calc(var(--p-home-tile) * .26), 64px); --kk-btn-px: clamp(20px, calc(var(--p-home-tile) * .12), 32px); --kk-btn-fs: clamp(15px, calc(var(--p-home-tile) * .085), 20px); }
+@media (max-width: 999.98px) {
+  .p-home-msg { grid-column: 1 / -1; grid-row: auto; padding: 0 0 clamp(20px, 5vw, 32px); justify-content: flex-start; gap: 0; }
+  .p-home-h1 { margin-bottom: .55em; }
+  .p-home-cta .kk-btn { --kk-btn-h: 48px; --kk-btn-fs: 16px; }
+}
 
-/* letter tiles — techniques are assembled below the marker at the end of this sheet */
-.tile--glyph { color: var(--ink); }
+/* ── 4b. the session-line tile (proof) ──
+   The system's session line (kk-system.css §25: lying strips 읽기 · 가설 · 추적 · 재현 · 보고, the ring at the end, drops
+   hanging under their stage, the 3/3 as three nacre pieces on a lacquer bed with a violet edge) drawn at the tile's
+   scale: the numbers are the type here (they are the proof), the words under them. Every word is always visible and
+   is the content (an ordered list); the strips, bed, pieces and marks are drawing.
+   One 14 s lap: the finished line rests for 6 s (the first frame, and the frame under reduced motion, the pause switch
+   and a 금문 arrival), then rewinds to the waiting line (a faint hairline) and is drawn again, stage by stage — the
+   drops fall off at 추적 (⊣ 기각 2, a dotted tail 보류 1), the reproduction bed takes three shell pieces one by one and
+   then, on the third, all three turn to nacre together, 80 ms apart (v4 §2: 2/3 is not nacre), the F-01 tablet comes
+   in and the ring closes the line (사람 차례). Text never animates; every motion is a transform or an opacity. */
+.p-home-sl {
+  --sh: max(6px, calc(var(--p-home-tile) * .036));              /* a strip: 6.8px at 190 */
+  --row: calc(var(--sh) * 2.3);                                 /* the strip row (the bed's height) */
+  --nfs: clamp(21px, calc(var(--p-home-tile) * .158), 46px);    /* the numbers: 30px at 190, 23px at 145 */
+  --lfs: clamp(12.5px, calc(var(--p-home-tile) * .072), 19px);  /* words: 13.7px at 190 */
+  grid-column: 1 / -1;
+  margin: 0;
+  display: flex; flex-direction: column; justify-content: center; gap: calc(var(--p-home-tile) * .09);
+  min-width: 0;
+}
+/* the caption: 세션 7F2A · 4분 12초 and the one 샘플 데이터 chip (the figure's name), then the way into the session on
+   the why page — a text link, not the whole tile (the strips are not a control). It is the system's arrow link set as
+   tall as its words, so the caption row and the focus ring stay tight; its 44px target is a ::before reaching into the
+   gaps around it, where nothing else is a control. Where the row has room the link stands at its right end, over the
+   ring; under 520px it takes its own line, from the left. */
+.p-home-sl-cap {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
+  font: var(--w-medium) var(--lfs)/1.4 var(--font-sans);
+  color: var(--fg-2);
+}
+.p-home-sl-cap b { font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-home-sl-id > .kk-sample { margin-left: 8px; }
+.p-home-sl-more { position: relative; min-height: 0; margin-left: auto; }
+.p-home-sl-more::before { content: ""; position: absolute; inset: calc((var(--lfs) * 1.4 - 44px) / 2) -4px; }
+.p-home-sl-track {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) max-content; column-gap: 3px;
+}
+.p-home-sl-st {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  min-width: 0;
+  padding: calc(var(--row) + var(--p-home-tile) * .055) 10px 0 0;
+}
+.p-home-sl-st::before {                 /* the strip */
+  content: ""; position: absolute; left: 0; right: 0; top: calc((var(--row) - var(--sh)) / 2); height: var(--sh);
+  background: var(--fg-1);
+  transform-origin: 0 50%;
+}
+.p-home-sl-st:not(.p-home-sl-end)::after {   /* the waiting line: there only while the line is drawn again */
+  content: ""; position: absolute; left: 0; right: -3px; top: calc(var(--row) / 2 - .75px); height: 1.5px;
+  background: var(--line-2); opacity: 0;
+}
+.p-home-sl-n {
+  display: flex; align-items: center; gap: .2em;
+  font: var(--w-bold) var(--nfs)/1.1 var(--font-sans);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+  color: var(--fg-1);
+  white-space: nowrap;
+}
+.p-home-sl-l {
+  margin-top: .3em;
+  font: var(--w-medium) var(--lfs)/1.35 var(--font-sans);
+  color: var(--fg-2);
+  word-break: keep-all;
+}
+/* 재현 3/3: the lacquer bed with its violet edge (::before), a neutral edge over it until the third pass, three pieces
+   (shell, then nacre). The stage word 재현 and its finished 3/3 take the violet text tone (재현 확인 is the violet state). */
+.p-home-sl-st[data-s="proven"]::before { top: 0; height: var(--row); background: var(--lacquer); box-shadow: inset 0 0 0 1px var(--confirm); }
+.p-home-sl-st[data-s="proven"] :is(.p-home-sl-n, .p-home-sl-l) { color: var(--confirm-t); }
+.p-home-sl-edge { position: absolute; left: 0; right: 0; top: 0; height: var(--row); box-shadow: inset 0 0 0 1px var(--fg-3); opacity: 0; }
+.p-home-sl-pc {
+  --pw: calc((100% - 14px) / 3);
+  position: absolute; top: calc(var(--row) * .24); height: calc(var(--row) * .52);
+  left: calc(4px + var(--k) * (var(--pw) + 3px)); width: var(--pw);
+}
+.p-home-sl-pc::before, .p-home-sl-pc::after { content: ""; position: absolute; inset: 0; }
+.p-home-sl-pc::before { background: var(--fg-1); }
+.p-home-sl-pc::after { background: var(--nacre) calc(28% + var(--k) * 22%) 62% / 320px auto no-repeat; }
+.p-home-sl-f01 { --kk-sym-h: max(18px, calc(var(--nfs) * .74)); --kk-sym-sw: 1; }
+/* the end: the ring (a person's turn), then its words */
+.p-home-sl-end { padding-left: 14px; padding-right: 0; }
+.p-home-sl-end::before {
+  left: 14px; right: auto; top: calc((var(--row) - var(--ring)) / 2); --ring: max(14px, calc(var(--row) * 1.1));
+  width: var(--ring); height: var(--ring); box-sizing: border-box;
+  border: max(1.25px, calc(var(--p-home-tile) * .008)) solid var(--fg-1); border-radius: 50%; background: none;
+  transform-origin: 50% 50%;
+}
+.p-home-sl-end .p-home-sl-n { font-size: calc(var(--nfs) * .62); line-height: 1.774; }   /* the numbers' line box (1.1 / .62) */
+/* the drops hang under 추적 on a hairline branch, side by side; each ends in its mark (sprite: kk-s-end-rejected ⊣,
+   kk-s-end-hold, the dotted tail). They may reach under the next stage, where nothing else sits. */
+.p-home-sl-drop {
+  list-style: none; margin: .5em 0 0; padding: 2px 0 1px 9px;
+  border-left: var(--lw-1) solid var(--line-2);
+  display: flex; gap: 2px 14px; width: max-content;
+  font: var(--w-medium) var(--lfs)/1.4 var(--font-sans); color: var(--fg-2);
+}
+.p-home-sl-drop > li { display: flex; align-items: center; gap: 5px; }
+.p-home-sl-drop .kk-sym { --kk-sym-h: calc(var(--lfs) * .95); color: var(--fg-1); }
+
+/* the lap (keyframes generated by .scratch/v4/home/build.py; times in its table T). Every piece moves by transform or
+   opacity only — the F-01 plate (.p-home-sl-f01) included: it keeps its box through the lap, so F-01 never shifts. */
+.p-home-sl-st:nth-child(1)::before { animation: p-home-sl-s1 14s linear infinite; }
+.p-home-sl-st:nth-child(2)::before { animation: p-home-sl-s2 14s linear infinite; }
+.p-home-sl-st:nth-child(3)::before { animation: p-home-sl-s3 14s linear infinite; }
+.p-home-sl-st:nth-child(5)::before { animation: p-home-sl-s5 14s linear infinite; }
+.p-home-sl-st[data-s="proven"]::before { animation: p-home-sl-bed 14s linear infinite; }
+.p-home-sl-st:not(.p-home-sl-end)::after { animation: p-home-sl-wait 14s linear infinite; }
+.p-home-sl-edge { animation: p-home-sl-edge 14s linear infinite; }
+.p-home-sl-pc::before { animation: 14s linear infinite; }
+.p-home-sl-pc:nth-of-type(2)::before { animation-name: p-home-sl-w1; }
+.p-home-sl-pc:nth-of-type(3)::before { animation-name: p-home-sl-w2; }
+.p-home-sl-pc:nth-of-type(4)::before { animation-name: p-home-sl-w3; }
+.p-home-sl-pc::after { animation: 14s linear infinite; }
+.p-home-sl-pc:nth-of-type(2)::after { animation-name: p-home-sl-n1; }
+.p-home-sl-pc:nth-of-type(3)::after { animation-name: p-home-sl-n2; }
+.p-home-sl-pc:nth-of-type(4)::after { animation-name: p-home-sl-n3; }
+.p-home-sl-drop { animation: p-home-sl-rej 14s linear infinite; }   /* the branch and ⊣ 기각 2 come together */
+.p-home-sl-drop > li:nth-child(2) { animation: p-home-sl-hold 14s linear infinite; }
+.p-home-sl-f01 { animation: p-home-sl-f01 14s linear infinite; }
+.p-home-sl-end::before { animation: p-home-sl-ring 14s linear infinite; }
+@keyframes p-home-sl-s1{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,47.857%{opacity:1;transform:scaleX(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}51.786%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s2{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,52.143%{opacity:1;transform:scaleX(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}56.071%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s3{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,56.429%{opacity:1;transform:scaleX(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}60.357%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s5{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,78.571%{opacity:1;transform:scaleX(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}82.5%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s1v{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,47.857%{opacity:1;transform:scaleY(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}51.786%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s2v{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,52.143%{opacity:1;transform:scaleY(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}56.071%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s3v{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,56.429%{opacity:1;transform:scaleY(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}60.357%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-s5v{0%,42.857%{opacity:1;transform:none}45.357%{opacity:0;transform:none}45.714%,78.571%{opacity:1;transform:scaleY(0);animation-timing-function:cubic-bezier(.45,0,.25,1)}82.5%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-rej{0%,42.857%{opacity:1;transform:none}45.357%,59.643%{opacity:0;transform:translateY(-4px);animation-timing-function:cubic-bezier(.2,.7,.2,1)}61.429%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-hold{0%,42.857%{opacity:1;transform:none}45.357%,61.429%{opacity:0;transform:translateY(-4px);animation-timing-function:cubic-bezier(.2,.7,.2,1)}63.214%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-bed{0%,42.857%{opacity:1}45.357%,62.5%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}64.286%,100%{opacity:1}}
+@keyframes p-home-sl-w1{0%,42.857%{opacity:1;transform:none}45.357%,65.357%{opacity:0;transform:scaleY(.2);animation-timing-function:cubic-bezier(.2,.7,.2,1)}66.357%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-w2{0%,42.857%{opacity:1;transform:none}45.357%,68.571%{opacity:0;transform:scaleY(.2);animation-timing-function:cubic-bezier(.2,.7,.2,1)}69.571%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-w3{0%,42.857%{opacity:1;transform:none}45.357%,71.786%{opacity:0;transform:scaleY(.2);animation-timing-function:cubic-bezier(.2,.7,.2,1)}72.786%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-n1{0%,42.857%{opacity:1}45.357%,74.643%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}75.214%,100%{opacity:1}}
+@keyframes p-home-sl-n2{0%,42.857%{opacity:1}45.357%,75.214%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}75.786%,100%{opacity:1}}
+@keyframes p-home-sl-n3{0%,42.857%{opacity:1}45.357%,75.786%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}76.357%,100%{opacity:1}}
+@keyframes p-home-sl-f01{0%,42.857%{opacity:1;transform:none}45.357%,81.786%{opacity:0;transform:scale(.6);animation-timing-function:cubic-bezier(.2,.7,.2,1)}83.929%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-ring{0%,42.857%{opacity:1;transform:none}45.357%,83.571%{opacity:0;transform:scale(.6);animation-timing-function:cubic-bezier(.2,.7,.2,1)}85.714%,100%{opacity:1;transform:none}}
+@keyframes p-home-sl-edge{0%,62.5%{opacity:0}64.286%,74.643%{opacity:1}75.357%,100%{opacity:0}}
+@keyframes p-home-sl-wait{0%,42.857%{opacity:0}45.357%,83.571%{opacity:1}86.429%,100%{opacity:0}}
+/* paused: the finished line (the lap's first frame), not a frame mid-way */
+.stage:has(#kk-still:checked) .p-home-sl *,
+.stage:has(#kk-still:checked) .p-home-sl *::before,
+.stage:has(#kk-still:checked) .p-home-sl *::after { animation-name: none !important; }
+
+@media (max-width: 999.98px) {
+  .p-home-sl { --sh: 6px; --nfs: clamp(20px, 3.4vw, 26px); --lfs: clamp(12.5px, 1.9vw, 14.5px); gap: 14px; padding: 6px 0 4px; }
+  .p-home-sl-st { padding-top: calc(var(--row) + 10px); padding-right: 6px; }
+}
+/* < 520px the line turns and runs down the left edge (as the system's session line does under 520px), so each number
+   keeps its own row at a size that reads: the strips stand (scaleY), the bed and its pieces stand, the ring ends the
+   line; number and word share a baseline, the drops sit under 추적. */
+@media (max-width: 519.98px) {
+  .p-home-sl { --sh: 6px; --row: 14px; --nfs: clamp(20px, 6vw, 24px); --lfs: 13.5px; gap: 12px; padding: 0; }
+  .p-home-sl-track { grid-template-columns: minmax(0, 1fr); }
+  .p-home-sl-st { display: grid; grid-template-columns: 5em minmax(0, 1fr); align-items: baseline; column-gap: 8px; padding: 4px 0 11px 30px; }   /* 5em: room for the plate and F-01 */
+  .p-home-sl-st::before { left: 4px; right: auto; top: 0; bottom: 3px; width: var(--sh); height: auto; transform-origin: 50% 0; }
+  .p-home-sl-st:not(.p-home-sl-end)::after { left: 6.25px; right: auto; top: 0; bottom: -3px; width: 1.5px; height: auto; }
+  .p-home-sl-st:nth-child(1)::before { animation-name: p-home-sl-s1v; }
+  .p-home-sl-st:nth-child(2)::before { animation-name: p-home-sl-s2v; }
+  .p-home-sl-st:nth-child(3)::before { animation-name: p-home-sl-s3v; }
+  .p-home-sl-st:nth-child(5)::before { animation-name: p-home-sl-s5v; }
+  .p-home-sl-l { margin-top: 0; }
+  .p-home-sl-drop { grid-column: 1 / -1; margin-top: 6px; }
+  .p-home-sl-st[data-s="proven"]::before, .p-home-sl-edge { left: 0; right: auto; top: 0; bottom: 3px; width: var(--row); height: auto; }
+  .p-home-sl-pc { --ph: calc((100% - 3px - 14px) / 3); left: calc(var(--row) * .24); width: calc(var(--row) * .52); top: calc(4px + var(--k) * (var(--ph) + 3px)); height: var(--ph); }
+  .p-home-sl-end { padding: 2px 0 0 30px; }
+  .p-home-sl-end::before { left: 0; top: 3px; bottom: auto; width: var(--ring); height: var(--ring); --ring: 14px; }
+  .p-home-sl-end .p-home-sl-n { font-size: var(--lfs); line-height: inherit; }
+  .p-home-sl-more { margin-left: 0; }
+}
+/* forced colours: the strips are fills, so they take CanvasText; the bed stays the page's Canvas with a Highlight edge
+   and its pieces Highlight (the find keeps a colour of its own, as in kk.css section 11) */
+@media (forced-colors: active) {
+  .p-home-sl-st::before, .p-home-sl-pc::before, .p-home-sl-pc::after, .p-home-sl-edge { forced-color-adjust: none; }
+  .p-home-sl-st::before { background: CanvasText; }
+  .p-home-sl-st[data-s="proven"]::before { background: Canvas; box-shadow: inset 0 0 0 1px Highlight; }
+  .p-home-sl-pc::before, .p-home-sl-pc::after { background: Highlight; }
+  .p-home-sl-edge { display: none; }
+  .p-home-sl-end::before { forced-color-adjust: none; border-color: CanvasText; background: none; }
+}
+
+/* ── 4c. the letters (below 520px only the K K pair shows: kk.css section 4) ── */
+.tile--glyph { color: var(--fg-1); }
 .tile--glyph .glyph { width: 100%; height: 100%; display: block; overflow: visible; }
 
-/* ── 5. 온주화 + tile (the ㄲ logo tile and the .inlay canvas are shared: kk.css §5; inlay.js draws both) ── */
-.t-cross { display: grid; place-items: center; }
+/* ── 10. the column: why, the facts as symbol rows, the name ── */
+.intro .p-home-why {
+  margin: 0 0 .6em;
+  font: var(--w-semibold) var(--p-home-fs-why)/1.4 var(--font-sans);
+  letter-spacing: -.015em;
+  color: var(--fg-1);
+  word-break: keep-all;
+  text-wrap: balance;
+}
+.p-home-facts { margin: 1.25em 0 0; display: grid; }
+.p-home-facts > div {
+  display: grid; grid-template-columns: 5.4em minmax(0, 1fr); gap: 0 .9em; align-items: baseline;
+  padding: .55em 0;
+  border-top: var(--lw-0) solid var(--line);
+}
+.p-home-facts > div:last-child { border-bottom: var(--lw-0) solid var(--line); }
+.p-home-facts dt { font-size: var(--p-home-fs-note); line-height: 1.5; color: var(--fg-3); }
+.p-home-facts dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; color: var(--fg-1); }
+.p-home-facts { --kk-sig-fs: var(--p-home-fs-intro); --kk-sig-lh: 1.6; --kk-sig-gap: 7px; }   /* the system's size hook (kk-system.css §23) */
+.p-home-facts .kk-sym { color: var(--fg-2); }
+.p-home-facts small { flex-basis: 100%; font-size: var(--p-home-fs-note); line-height: 1.5; color: var(--fg-3); }
+.intro .p-home-name { margin-top: 1.1em; color: var(--fg-2); }
+/* a word that keeps its particle: Chrome breaks between Latin and Hangul even under keep-all (KKACHI / 인가) */
+.p-home-word { white-space: nowrap; }
 
-/* ── 6. 온주화 + (spaced version; arms breathe along the diagonals, never rotate) ──
-   The four arms of d-cross-spaced.svg, one mask layer each (sw, nw, ne, se). The emblem keeps its 66 units at 46% of
-   the tile; the canvas is 72 units so an arm can move out (breath .9 + hover 1.6 per axis) without leaving it.
-   Without @property (Firefox < 128, Safari < 16.4) the + holds still at rest (--cross-o is unset there, so --d is invalid
-   and the masks sit at 0 0), and hover snaps the arms out 1.6 units, then steps .9 every 4.5 s. Kept that way on purpose:
-   a `, 0` fallback would make the rest state twitch 1.1 px every 4.5 s instead of holding still. */
-@property --cross-b { syntax: '<number>'; inherits: false; initial-value: 0; }
-@property --cross-o { syntax: '<number>'; inherits: false; initial-value: 0; }
-.cross-inlay {
-  --u: calc(var(--tile) * .46 / 66);                                /* one viewBox unit */
-  --d: calc(var(--u) * (var(--cross-b) + var(--cross-o)));          /* outward shift per axis */
-  width: calc(var(--u) * 72);
-  --inlay-mask:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-36 -36 72 72'%3E%3Cpath d='M-31.5 1.5L-1.5 1.5L-1.5 31.5C-4 21.25 -10.5 28.25 -10.5 15L-10.5 10.5L-15 10.5C-28.25 10.5 -21.25 4 -31.5 1.5Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-36 -36 72 72'%3E%3Cpath d='M-1.5 -31.5L-1.5 -1.5L-31.5 -1.5C-21.25 -4 -28.25 -10.5 -15 -10.5L-10.5 -10.5L-10.5 -15C-10.5 -28.25 -4 -21.25 -1.5 -31.5Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-36 -36 72 72'%3E%3Cpath d='M31.5 -1.5L1.5 -1.5L1.5 -31.5C4 -21.25 10.5 -28.25 10.5 -15L10.5 -10.5L15 -10.5C28.25 -10.5 21.25 -4 31.5 -1.5Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-36 -36 72 72'%3E%3Cpath d='M1.5 31.5L1.5 1.5L31.5 1.5C21.25 4 28.25 10.5 15 10.5L10.5 10.5L10.5 15C10.5 28.25 4 21.25 1.5 31.5Z'/%3E%3C/svg%3E");
-  -webkit-mask-position: calc(-1 * var(--d)) var(--d), calc(-1 * var(--d)) calc(-1 * var(--d)), var(--d) calc(-1 * var(--d)), var(--d) var(--d);
-          mask-position: calc(-1 * var(--d)) var(--d), calc(-1 * var(--d)) calc(-1 * var(--d)), var(--d) calc(-1 * var(--d)), var(--d) var(--d);
-  animation: cross-breathe 9s ease-in-out -2.25s infinite;
-  transition: --cross-o .7s var(--ease);
-}
-@keyframes cross-breathe {
-  0%, 100% { --cross-b: 0; }
-  50%      { --cross-b: .9; }
-}
-.t-cross:hover .cross-inlay { --cross-o: 1.6; }
+/* ── 8.5 touch: a finger lights the letters ──
+   A finger has no hover. Under (hover: none) a pointerdown on a letter lights it for 1.6 s (.is-lit: every hover look
+   below is written :is(:hover, .is-lit); a re-tap restarts the time; the script is at the end of the body). Reduced
+   motion and the pause switch: the lit look is the still frame (no loop runs). */
 
-/* ── 7. label tile: K K A C H I / 4B 4B 41 43 48 49 ── */
-.t-label {
-  display: grid;
-  place-content: center;
-  font-family: var(--mono);
-}
-.label {
-  --label-w: calc(2 * var(--tile) + var(--gap));
-  display: grid;
-  width: var(--label-w);
-  row-gap: calc(var(--tile) * .07);
-}
-.label-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  text-align: center;
-  line-height: 1;
-}
-.label-row--ch { grid-area: 1 / 1; font-size: max(11px, calc(var(--tile) * .1)); }
-.label-row--by { grid-area: 2 / 1; font-size: max(9.5px, calc(var(--tile) * .074)); letter-spacing: .06em; }
-.label-base.label-row--ch { color: var(--ink); transition: color .5s var(--ease); }
-.label-base.label-row--by { color: var(--ink-dim); }
-.label-hi > span { opacity: 0; }
-.label-hi--slow  { color: var(--ink); transition: opacity .5s var(--ease); }
-.label-hi--slow > span { animation: label-step 10.2s linear infinite; animation-delay: calc(var(--i) * 1.7s - 10.2s); }
-.label-hi--hover { color: var(--ink); opacity: 0; transition: opacity .5s var(--ease); }
-.label-hi--hover > span { animation: label-step 4.2s linear infinite; animation-delay: calc(var(--i) * .7s - 4.2s); }
-/* the hover step lights each character in nacre: one tile laid across the whole label (each cell shows its own slice) */
-@supports (-webkit-background-clip: text) or (background-clip: text) {
-  .label-hi--hover > span {
-    color: transparent;
-    background: var(--nacre) calc(var(--i) * var(--label-w) / -6) var(--label-ny) / var(--label-w) auto no-repeat;
-    -webkit-background-clip: text;
-            background-clip: text;
-  }
-  /* slices where all six cells catch colour (per-glyph okC ~.03-.055, pearl, not candy); the rows do not share one */
-  .label-hi--hover.label-row--ch { --label-ny: calc(var(--label-w) * -.39); }
-  .label-hi--hover.label-row--by { --label-ny: calc(var(--label-w) * -.30); }
-}
-.label-row > span:nth-child(1) { --i: 0; }
-.label-row > span:nth-child(2) { --i: 1; }
-.label-row > span:nth-child(3) { --i: 2; }
-.label-row > span:nth-child(4) { --i: 3; }
-.label-row > span:nth-child(5) { --i: 4; }
-.label-row > span:nth-child(6) { --i: 5; }
-@keyframes label-step {
-  0%, 13%  { opacity: 1; }
-  17%, 96% { opacity: 0; }
-  100%     { opacity: 1; }
-}
-.t-label:hover .label-base.label-row--ch { color: var(--ink-dim); }
-.t-label:hover .label-hi--slow { opacity: 0; }
-.t-label:hover .label-hi--hover { opacity: 1; }
-/* the fast hover rows idle while invisible; their six steps keep their relative offsets */
-.t-label .label-hi--hover > span { animation-play-state: paused; }
-.t-label:hover .label-hi--hover > span { animation-play-state: running; }
+/* ── 11. motion off (home part; the rest is kk.css §11) ──
+   On a 금문 arrival the loops hold still while the curtain is closed (kk-arriving / kk-veiled, transition.js) and while
+   it lifts (p-home-settle, the head script: 450 ms from kk:reveal), then start from their first frame. */
+html:is(.kk-arriving, .kk-veiled, .p-home-settle) .grid *,
+html:is(.kk-arriving, .kk-veiled, .p-home-settle) .grid *::before,
+html:is(.kk-arriving, .kk-veiled, .p-home-settle) .grid *::after { animation-play-state: paused !important; }
+/* a tile wholly outside the viewport (the home scrolls on short screens) holds its loops (.is-off, an
+   IntersectionObserver at the end of the body); back in view each loop takes up its old start time, so it stands where
+   it would have stood had it never stopped and the page's loops keep their phases. A tile on screen always moves. */
+.grid > .is-off *, .grid > .is-off *::before, .grid > .is-off *::after { animation-play-state: paused !important; }
 
-/* ── 8. trace-log tile (sample) ── */
-.t-trace {
-  display: grid;
-  place-items: center;
-  font-family: var(--mono);
-  font-size: max(6.5px, calc(var(--tile) * .062));
-  line-height: 1.6;
-  color: var(--ink-2);
-  white-space: nowrap;
-  overflow: hidden;                     /* scaled-up sample text never spills over a neighbouring link */
+/* ── 12. first visit: the once-per-session entrance of the letters ──
+   html.p-home-first is set by the head script on the session's first home load, unless it is a 금문 arrival, motion is
+   reduced or JS is off; it is removed after 1.8 s, on the pause switch, or when the page is left. The letters come in
+   reading order, K -> K -> A -> C -> I, each in a gesture of its own: k1's strips are laid left to right (scaleX), k2's
+   outlines are uncovered left to right, the A's graph from its bottom nodes up to the apex, the C's dots from the top
+   terminal down the bowl (a lacquer cover, the tile's own ground, slides away: .p-home-cover, only present during the
+   entrance), the I's rows page in one at a time (steps). The message tile, the session line and the three ways are
+   whole from the first frame (v4 §3: the next step shows at 0 ms). Every piece is a transform or opacity on ONE clock. */
+.p-home-cover { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  html.p-home-first .tile--glyph .glyph { overflow: hidden; }
+  html.p-home-first .p-home-cover { display: inline; }
+  html.p-home-first .t-k1 .k1-s { transform-box: view-box; transform-origin: 16px 0; animation: p-home-k1 1.3s linear backwards; }
+  html.p-home-first .t-k2 .p-home-cover { animation: p-home-k2 1.3s linear both; }
+  html.p-home-first .t-a .p-home-cover { animation: p-home-a 1.3s linear both; }
+  html.p-home-first .t-c .p-home-cover { animation: p-home-c 1.3s linear both; }
+  html.p-home-first .t-i .i-rows { animation: p-home-i 1.3s linear backwards; }
 }
-.trace-body { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--tile) * .07); }
-.trace-tag {
-  font-size: max(7px, calc(var(--tile) * .045));   /* 7px floor everywhere (was 6px; 6.5-6.7px at 1024-1280 desktop) */
-  letter-spacing: .18em;
-  line-height: 1;
-  padding: .45em .5em .4em .7em;
-  border: 1px solid var(--line);
-  color: var(--ink-dim);
-}
-.trace-log { list-style: none; margin: 0; padding: 0; }
-.trace-log li { opacity: 1; }
-.trace-head { color: var(--ink); }
-.trace-arrow { color: var(--ink-dim); transition: color .5s var(--ease); }   /* colour change only where the nacre copy is unsupported */
-/* hover: each arrow turns to nacre — a copy of the glyph filled with the tile fades in over it (one tile down the log) */
-@supports (-webkit-background-clip: text) or (background-clip: text) {
-  .trace-arrow { position: relative; display: inline-block; }
-  .trace-arrow::after {
-    content: "→";
-    position: absolute; inset: 0;
-    color: transparent;
-    background: var(--nacre) calc(var(--tile) * -.18) calc(var(--tile) * -.12 - var(--l) * 1.6em) / var(--tile) auto;
-    -webkit-background-clip: text;
-            background-clip: text;
-    opacity: 0;
-    transition: opacity .5s var(--ease);
-  }
-  .trace-log li:nth-child(2) { --l: 1; }
-  .trace-log li:nth-child(3) { --l: 2; }
-  .trace-log li:nth-child(4) { --l: 3; }
-  .trace-log li:nth-child(5) { --l: 4; }
-  .t-trace:hover .trace-arrow::after { opacity: 1; }
-}
-.trace-ok { color: var(--violet); }
-.trace-log li:nth-child(1) { animation: trace-l1 12s linear -8s infinite; }
-.trace-log li:nth-child(2) { animation: trace-l2 12s linear -8s infinite; }
-.trace-log li:nth-child(3) { animation: trace-l3 12s linear -8s infinite; }
-.trace-log li:nth-child(4) { animation: trace-l4 12s linear -8s infinite; }
-.trace-log li:nth-child(5) { animation: trace-l5 12s linear -8s infinite; }
-.trace-log li:nth-child(6) { animation: trace-l6 12s linear -8s infinite; }
-/* lines appear 1 s apart, hold, then clear together (12 s loop) */
-@keyframes trace-l1 { 0%, 3.3%  { opacity: 0; } 5.8%, 86.7%  { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@keyframes trace-l2 { 0%, 11.7% { opacity: 0; } 14.2%, 86.7% { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@keyframes trace-l3 { 0%, 20%   { opacity: 0; } 22.5%, 86.7% { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@keyframes trace-l4 { 0%, 28.3% { opacity: 0; } 30.8%, 86.7% { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@keyframes trace-l5 { 0%, 36.7% { opacity: 0; } 39.2%, 86.7% { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@keyframes trace-l6 { 0%, 46.7% { opacity: 0; } 49.2%, 86.7% { opacity: 1; } 91.7%, 100% { opacity: 0; } }
-@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
-  .t-trace:hover .trace-arrow { color: var(--ink); }
-}
-/* < 1000px the tile is at most 117.5px: 8px log floor (was 6.5-7.3px), and fewer lines where the tile gets short */
-@media (max-width: 999.98px) {
-  .t-trace { font-size: max(8px, calc(var(--tile) * .068)); line-height: 1.45; }
-}
-@media (max-width: 559.98px) {
-  .trace-log li:nth-child(3),
-  .trace-log li:nth-child(4) { display: none; }       /* trace 7F2A → decode_image → copy_rows → ✓ */
-}
-@media (max-width: 359.98px) {
-  .trace-log li:nth-child(2) { display: none; }       /* tile < 75px: "→ decode_image" (72px at 8px) no longer fits */
-}
+@keyframes p-home-k1 { 0% { transform: scaleX(0); animation-timing-function: cubic-bezier(.2,.7,.2,1); } 40%, 100% { transform: scaleX(1); } }
+@keyframes p-home-k2 { 0%, 9% { transform: translateX(0); animation-timing-function: cubic-bezier(.45,0,.25,1); } 56%, 100% { transform: translateX(160px); } }
+@keyframes p-home-a  { 0%, 18% { transform: translateY(0); animation-timing-function: cubic-bezier(.45,0,.25,1); } 64%, 100% { transform: translateY(-160px); } }
+@keyframes p-home-c  { 0%, 28% { transform: translateY(0); animation-timing-function: cubic-bezier(.45,0,.25,1); } 72%, 100% { transform: translateY(160px); } }
+@keyframes p-home-i  { 0%, 38% { transform: translateY(88px); animation-timing-function: steps(12, end); } 80%, 100% { transform: translateY(0); } }
 
-/* ── 11. motion off (home part; the rest is kk.css §11) ── */
-/* paused, the trace shows its whole log instead of an empty frame */
-.stage:has(#kk-still:checked) .trace-log li { animation: none; }
+/* === glyph styles (the five letters, from the v3 home with the v4 changes noted in each) === */
+/* hover-only loops that no visible layer keeps time with (k2's inner comet) idle while the tile is not hovered;
+   --p-home-hp switches them to running at once on hover and back to paused only after the fade-out (a discrete
+   transition with a delay, Chromium 117+; elsewhere they pause at once). */
+@property --p-home-hp{syntax:'running | paused';inherits:true;initial-value:paused}
+.t-k2{--p-home-hp:paused;transition:--p-home-hp 0s .7s;transition-behavior:allow-discrete}
+.t-k2:is(:hover,.is-lit){--p-home-hp:running;transition:--p-home-hp 0s}
 
-/* === glyph styles (assembled) === */
-/* Assembly tuning (page-level, differs from the raw parts):
-   k2 loop 11s -> 11.8s (rev 5.5 -> 5.9) so it never locks with c (11s); k2 insets .24/.13 -> .30/.17;
-   a outline group .15 -> .22 and edges .5 -> .6 for optical weight next to the filled letters.
-   Loop periods across the page: cross 9, a 9.6, label 10.2, k1 10.4, c 11, k2 11.8, trace 12, h 13, i 15 (s).
-   The ㄲ and + nacre (najeon shader) is drawn still and only follows the pointer (viewing angle); it has no loop.
-   Review pass 2026-09-29 (page-level only; the parts were not re-assembled):
-   - c: the 107-dot hover copy (.c-nacre) is folded into the ink dots. Its per-dot fills are now --n on each ink dot,
-     and hover drives registered --c-peak (1.42 -> 1.72) / --c-mix (0 -> 100%) that c-wave reads, so the tinted crest
-     stays locked to the wave; c-crest (which also animated fill) is gone. At rest the tile is pixel-identical.
-   - hover-only loops with no phase link to a visible layer idle until hover: a .a-rp, i .i-f, label hover rows,
-     logo hover sweep (56 animations). k1-b2, k2-long/k2-in, a-tr and h-b keep running so hover never jumps phase.
-     Result: 336 -> 229 animations, 173 ticking at rest; main-thread task ~625 -> ~475 ms/s (headless Chromium).
-   - shell: on-page pause checkbox #kk-still (WCAG 2.2.2; :has(), hidden where unsupported and under reduced motion),
-     trace 8px / SAMPLE 7px / label 11 + 9.5px floors, rows grow instead of clipping under text-only zoom
-     (.btn no longer overflow:hidden; .t-trace clips), prefers-contrast: more raises --line / --ink-dim.
-   Najeon pass 2026-09-29 (phase 1): the ㄲ logo and the spaced + are real nacre inlays (spec §13) — the logo sheen
-     sweeps, the + tint gradient and the four per-arm SVG breaths are gone (229 -> 224 animations).
-   Najeon pass 2026-09-29 (phase 2): every other najeon imitation is the real tile (assets/najeon/tiles/najeon-512.webp);
-     the jade -> violet gradients and the --najeon / --jade / --sage / --lilac tokens are gone. Violet stays only as the
-     found / verified state (A apex a-v + a-ring, ✓ F-01, I's lit 49). Letters at rest are unchanged (pixel-identical
-     apart from k1's passing band).
-     - SVG: one <pattern id="<id>-nacre" patternUnits="userSpaceOnUse"> per letter, each on its own region of the tile
-       (tile px (tx,ty) under the glyph centre, S units per tile): k1 (360,190) S140, k2 (470,170) S140,
-       a (40,320) S130, h (350,370) S150, i (256,300) S90 (= one scroll lap, so chips keep their shell through the loop).
-     - The shell never slides: k1's band is a soft white mask (k1-light) sweeping over a fixed nacre rect cut to the
-       strips; h's hover lines are a mask (h-m) over a fixed nacre rect. k2 / a strokes only move their dashes.
-     - Nacre is never dimmed into the lacquer (material rule): a's unlit hover nodes are whole shell, lit ones stay white
-       light; i's chips are whole shell with lacquer digits and the sweep is a shell-white glint (i-gl) instead of an
-       opacity pulse. Same 224 animations; the 36 glints idle until hover like the chips they replace.
-     - c: --n re-sampled from the tile under each dot (see the c comment), so the hover crest is a halftone of the shell.
-     - HTML text: label hover rows and trace arrows take the tile through background-clip:text (arrows: a nacre copy
-       ::after fades in; the label lays one tile across both rows). Fallback without background-clip:text: ink.
-     - primary button: nacre only on lacquer, so hover raises a lacquer seam + nacre line flush with the bottom edge
-       (clip-path reveal; the button no longer needs overflow:hidden).
-   Nacre review pass 2026-09-29 (page-level):
-     - inlays: animate:false always (no time drift: shell changes colour with the viewing angle only; interactive off under
-       reduced motion / pause). The shared viewing angle is read across a board 6x the viewport, centred, so screen corner to
-       corner slides ±.05 of the locus instead of .63. Base angles by the plugin's own criterion (chroma-weighted hue
-       histogram, L1 to ref-1) with mint kept sparse: logo 0 (L1 .41, mint <1% at rest), + 1.32 (was 1.1, magenta at rest;
-       now L1 .46-.48, mint <1%); at the screen corners mint stays <= 11%. No rAF loop at all (0 rAF/s at rest).
-     - k2 tracers and a ripples: every nacre stroke at opacity 1 (the .3-.5 layers read khaki). k2's tail is a stepped
-       taper (1 / 1.15 / 1.3 / 1.4 units; inner 1 / 1.4); a's ripples drain by dash length (halves drawn up from the bottom
-       vertex, drained into the top) at scale .72 -> 1. Same 224 animations.
-     - i: the violet 49 hides while hovered, so the KKACHI matches read as one material.
-     - label hover slices: letters .39, bytes .30 (was .24 / .36: the first K and the I lit in near-white pearl).
-     - canvases carry width/height 88 (square without aspect-ratio too); only a failed module load is swallowed; a
-       restored context gets the last pointer position again.
-   Shared frame pass 2026-09-30: sections 1-5, 9-11 moved to assets/kkachi/kk.css and the inlay module to
-     assets/kkachi/inlay.js (canvases carry data-scale / data-angle) for the subpages; pixel-identical before/after. */
 /* glyph:k1 */
-/* the light band is a soft white mask (k1-light) sweeping over a fixed nacre layer (k1-nacre) cut to the strips:
-   the shell stays put and the light passing over it reveals it */
+/* 끊음질: thin strips fill the K. A soft band of light (k1-light) sweeps over the strips: they rest at .56 and the band
+   lights them to full shell (v4: nacre means proven, so the band is white light, never nacre). Compositor-only: the band
+   mask is still and travels with its group (.k1-band: translateX + opacity, 10.4 s), the light layer inside counter-travels
+   (.k1-ctr, same timing, opposite sign), so nothing inside a <mask> moves. Hover: a second band half a lap behind
+   (.k1-b2) and the strips part (k1-o / k1-e, hover transitions). */
 .t-k1 .k1-light stop{stop-color:#fff}
+.t-k1 .k1-s{opacity:.56}
 .t-k1 .k1-tint{opacity:.85;transition:opacity .6s ease}
-.t-k1:hover .k1-tint{opacity:1}
+.t-k1:is(:hover,.is-lit) .k1-tint{opacity:1}
 .t-k1 .k1-band{opacity:0;animation:k1-sweep 10.4s linear infinite}
-.t-k1 .k1-band2{animation-delay:-5.2s}
+.t-k1 .k1-ctr{animation:k1-counter 10.4s linear infinite}
+.t-k1 .k1-band2,.t-k1 .k1-ctr2{animation-delay:-5.2s}
 .t-k1 .k1-b2{opacity:0;transition:opacity .6s ease}
-.t-k1:hover .k1-b2{opacity:1}
+.t-k1:is(:hover,.is-lit) .k1-b2{opacity:1}
 @keyframes k1-sweep{0%,22%{transform:translateX(-42px);opacity:0;animation-timing-function:cubic-bezier(.37,0,.63,1)}39%,61%{opacity:1}78%,100%{transform:translateX(42px);opacity:0}}
+@keyframes k1-counter{0%,22%{transform:translateX(42px);animation-timing-function:cubic-bezier(.37,0,.63,1)}78%,100%{transform:translateX(-42px)}}
 @media (prefers-reduced-motion:no-preference){
 .t-k1 .k1-o,.t-k1 .k1-e{transition:transform .7s cubic-bezier(.3,0,.2,1) calc((17 - var(--k1-i,0)) * 22ms)}
-.t-k1:hover .k1-o{transform:translateX(1.2px);transition-delay:calc(var(--k1-i,0) * 22ms)}
-.t-k1:hover .k1-e{transform:translateX(-1.2px);transition-delay:calc(var(--k1-i,0) * 22ms)}
+.t-k1:is(:hover,.is-lit) .k1-o{transform:translateX(1.2px);transition-delay:calc(var(--k1-i,0) * 22ms)}
+.t-k1:is(:hover,.is-lit) .k1-e{transform:translateX(-1.2px);transition-delay:calc(var(--k1-i,0) * 22ms)}
 }
 @media (prefers-reduced-motion:reduce){
 .t-k1 .k1-band{animation:none;opacity:1;transform:translateX(2px)}
+.t-k1 .k1-ctr{animation:none;transform:translateX(-2px)}
 .t-k1 .k1-tint,.t-k1 .k1-b2{transition:none}
 .t-k1 .k1-b2{visibility:hidden}
 .t-k1 .k1-tint{opacity:.55}
-.t-k1:hover .k1-tint{opacity:1}
+.t-k1:is(:hover,.is-lit) .k1-tint{opacity:1}
 }
 
 /* glyph:k2 */
-/* hover tracers (k2-in, k2-long) are stroked with the nacre pattern k2-nacre: the travelling dash picks up the shell under it.
-   Every nacre dash is whole shell (opacity 1; nacre dimmed into the lacquer turns khaki): the tail is drawn by length and
-   a stepped taper instead, the stacked dashes getting thinner towards the tail end (never under 1 unit). */
+/* Outline K: a bright comet runs the outline ("follows the path"). Compositor-only: each straight
+   edge is a wedge (a band cut by the miter bisectors, clipped once); in it the comet is a straight piece that only
+   translates (one linear translateX per lap, wrapping while the piece is away from its edge), so corners keep the
+   mitred join the dashed stroke had. The white trail's five stacked dashes (.1/.18/.3/.5/1) are one line with a
+   stepped gradient of the same alphas. Hover: brighter comets (outer: stepped taper 1 / 1.15 / 1.3 / 1.4 units, inner:
+   reverse, 1 / 1.4) replace the trail and the inner outline runs too (v4: no nacre on a letter). Periods 11.8 s (outer) and
+   5.9 s (inner); reduced motion holds the frame at t=0. */
 .t-k2 .k2-c{stroke-linejoin:miter;transition:stroke .5s ease,opacity .5s ease}
-.t-k2 .k2-c0{stroke:var(--ink-dim,rgba(237,241,245,.45));stroke-width:1.2}
-.t-k2 .k2-c1{stroke:var(--ink,#EDF1F5);stroke-width:1.1;opacity:.3}
-.t-k2 .k2-c2{stroke:var(--ink,#EDF1F5);stroke-width:1.1;opacity:.17}
-.t-k2 .k2-t path{stroke-width:1.4;stroke-linecap:butt;stroke-linejoin:miter}
-.t-k2 .k2-long path:nth-child(1),.t-k2 .k2-in path:nth-child(1){stroke-width:1}
-.t-k2 .k2-long path:nth-child(2){stroke-width:1.15}
-.t-k2 .k2-long path:nth-child(3){stroke-width:1.3}
-.t-k2 .k2-w{stroke:var(--ink,#EDF1F5)}
-.t-k2 .k2-f{animation:k2-fwd 11.8s linear infinite}
-.t-k2 .k2-r{animation:k2-rev 5.9s linear infinite}
-.t-k2 .k2-trail{transition:opacity .5s ease}
-.t-k2 .k2-long,.t-k2 .k2-in{opacity:0;transition:opacity .5s ease}
-.t-k2:hover .k2-c0{stroke:var(--ink,#EDF1F5);opacity:.56}
-.t-k2:hover .k2-c1{opacity:.4}
-.t-k2:hover .k2-c2{opacity:.23}
-.t-k2:hover .k2-trail{opacity:0}
-.t-k2:hover .k2-long,.t-k2:hover .k2-in{opacity:1}
-@keyframes k2-fwd{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
-@keyframes k2-rev{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
+.t-k2 .k2-c0{stroke:var(--p-home-dim,rgba(237,241,245,.45));stroke-width:1.2}
+.t-k2 .k2-c1{stroke:var(--fg-1,#EDF1F5);stroke-width:1.1;opacity:.3}
+.t-k2 .k2-c2{stroke:var(--fg-1,#EDF1F5);stroke-width:1.1;opacity:.17}
+.t-k2 .k2-t path{stroke-width:1.4;stroke-linecap:butt}
+.t-k2 #k2-tg stop{stop-color:var(--fg-1,#EDF1F5)}
+.t-k2 .k2-n{stroke:var(--fg-1,#EDF1F5)}
+.t-k2 .k2-tip{stroke:var(--fg-1,#EDF1F5)}
+.t-k2 .k2-run{transform:translateX(var(--h0));animation:k2-run linear var(--d) infinite}
+.t-k2 .k2-cnt{transform:translateX(calc(-1 * var(--h0)));animation:k2-cnt linear var(--d) infinite}
+.t-k2 .k2-ro .k2-run,.t-k2 .k2-ro .k2-cnt{animation-duration:11.8s}
+.t-k2 .k2-ri .k2-run,.t-k2 .k2-ri .k2-cnt{animation-duration:5.9s;animation-play-state:var(--p-home-hp)}
+@keyframes k2-run{from{transform:translateX(var(--a))}to{transform:translateX(var(--b))}}
+@keyframes k2-cnt{from{transform:translateX(calc(-1 * var(--a)))}to{transform:translateX(calc(-1 * var(--b)))}}
+.t-k2 .k2-trl{transition:opacity .5s ease}
+.t-k2 .k2-hv{opacity:0;transition:opacity .5s ease}
+.t-k2:is(:hover,.is-lit) .k2-c0{stroke:var(--fg-1,#EDF1F5);opacity:.56}
+.t-k2:is(:hover,.is-lit) .k2-c1{opacity:.4}
+.t-k2:is(:hover,.is-lit) .k2-c2{opacity:.23}
+.t-k2:is(:hover,.is-lit) .k2-trl{opacity:0}
+.t-k2:is(:hover,.is-lit) .k2-hv{opacity:1}
 @media (prefers-reduced-motion:reduce){
-.t-k2 .k2-f,.t-k2 .k2-r{animation:none}
-.t-k2 .k2-c,.t-k2 .k2-trail,.t-k2 .k2-long,.t-k2 .k2-in{transition:none}
+.t-k2 .k2-run,.t-k2 .k2-cnt{animation:none}
+.t-k2 .k2-c,.t-k2 .k2-trl,.t-k2 .k2-hv{transition:none}
 }
 
 /* glyph:a */
-/* hover: trace, ripples and node fills are the nacre pattern a-nacre (whole shell, never dimmed into the lacquer); nodes the
-   pulse has lit stay white light over it; violet stays the verification state (a-v, a-ring).
-   Ripples fade by length, not opacity: each diamond is two halves (bottom -> right -> top, bottom -> left -> top, each
-   running 1 unit past both vertices so the corners stay mitred; the dash restarts per subpath), drawn up from the bottom
-   vertex, then drained into the top one as it grows (.72 -> 1, so the 1.4 stroke never drops under 1 unit). */
+/* Compositor-only (no stroke-dashoffset at rest, which would run on the main thread): a pulse is its dash (10-unit
+   tail at .45, 3.6-unit head) as a straight piece that translates along its edge, clipped to the edge; the hover trace
+   is a window that travels along each straight run (a-tw) over a still stroke that counter-travels (a-tc). */
+/* v4: every node is a square (a code location), unrotated; the sink at the apex is a claim tablet (3:2) that turns
+   violet when the pulse reaches it (재현 확인, the one violet on this tile) with a tablet halo (the v3 ring was a circle,
+   and in v4 a circle is a person); the rejected branch keeps its single slash. Hover: the path is traced in shell and
+   square ripples rise from the nodes (no nacre). Ripples fade by length, not opacity: each square is two halves drawn
+   up from the bottom middle and drained into the top middle as it grows (.72 -> 1). */
 .t-a .glyph{fill:none}
 .t-a .a-sw{opacity:.22;transition:opacity .6s ease}
-.t-a .a-sil{stroke:var(--ink,#EDF1F5);stroke-width:1.1;opacity:.7;animation:a-sil 9.6s infinite}
-.t-a .a-e{stroke:var(--ink,#EDF1F5);stroke-width:1.2;opacity:.6;transition:opacity .6s ease}
+.t-a .a-sil{stroke:var(--fg-1,#EDF1F5);stroke-width:1.1;opacity:.7;animation:a-sil 9.6s infinite}
+.t-a .a-e{stroke:var(--fg-1,#EDF1F5);stroke-width:1.2;opacity:.6;transition:opacity .6s ease}
 .t-a .a-hyp{animation:a-hyp 9.6s infinite}
 .t-a .a-tr{opacity:0;stroke-width:1.3;transition:opacity .6s ease}
-.t-a .a-tr path{stroke-dasharray:100 110;stroke-dashoffset:100}
-.t-a .a-tr path,.t-a .a-rp path{stroke:url(#a-nacre)}
-.t-a .a-tr-m{animation:a-tr-m 9.6s infinite,a-to-m 9.6s infinite}
-.t-a .a-tr-h{animation:a-tr-h 9.6s infinite,a-to-h 9.6s infinite}
-.t-a .a-p path{stroke-width:1.4;stroke-dashoffset:11}
-.t-a .a-tl{stroke-dasharray:10 210;opacity:.45}
-.t-a .a-hd{stroke-dasharray:0 6.4 3.6 210}
-.t-a .a-p path{stroke:var(--ink,#EDF1F5)}
+.t-a .a-tr path,.t-a .a-rp path{stroke:var(--fg-1,#EDF1F5)}
+.t-a .a-tr .a-sq{stroke-linecap:square}
+.t-a .a-to-m{animation:a-to-m 9.6s infinite}
+.t-a .a-to-h{animation:a-to-h 9.6s infinite}
+.t-a .a-tw-m{animation:a-tw-m 9.6s infinite}
+.t-a .a-tc-m{animation:a-tc-m 9.6s infinite}
+.t-a .a-tw-h1{animation:a-tw-h1 9.6s infinite}
+.t-a .a-tc-h1{animation:a-tc-h1 9.6s infinite}
+.t-a .a-tw-h2{animation:a-tw-h2 9.6s infinite}
+.t-a .a-tc-h2{animation:a-tc-h2 9.6s infinite}
+.t-a .a-p path{stroke-width:1.4;stroke:var(--fg-1,#EDF1F5)}
+.t-a .a-tl{opacity:.45}
 .t-a .a-p-e1{animation:a-p-e1 9.6s infinite}
 .t-a .a-p-h1{animation:a-p-h1 9.6s infinite}
 .t-a .a-p-h2{animation:a-p-h2 9.6s infinite}
@@ -337,12 +478,11 @@
 .t-a .a-rp .a-r0{animation-delay:0s}
 .t-a .a-rp .a-r1{animation-delay:.32s}
 .t-a .a-rp .a-r2{animation-delay:.64s}
-.t-a .a-ring{stroke:var(--violet,#96688D);stroke-width:1.1;opacity:0;transform-box:fill-box;transform-origin:center;animation:a-ring 9.6s infinite}
-.t-a .a-n>g{color:var(--ink,#EDF1F5)}
+.t-a .a-ring{fill:none;stroke:var(--violet,#96688D);stroke-width:1.1;opacity:0;transform-box:fill-box;transform-origin:center;animation:a-ring 9.6s infinite}
+.t-a .a-n>g{color:var(--fg-1,#EDF1F5)}
 .t-a .a-b{fill:var(--bg,#292623)}
-.t-a .a-tn{fill:url(#a-nacre);opacity:0;transition:opacity .6s ease}
 .t-a .a-lit{fill:currentColor;opacity:0}
-.t-a .a-o{stroke:var(--ink,#EDF1F5);stroke-width:1.2}
+.t-a .a-o{stroke:var(--fg-1,#EDF1F5);stroke-width:1.2}
 .t-a .a-lit-l0{animation:a-lit-l0 9.6s infinite}
 .t-a .a-lit-l1{animation:a-lit-l1 9.6s infinite}
 .t-a .a-lit-l2{animation:a-lit-l2 9.6s infinite}
@@ -350,18 +490,11 @@
 .t-a .a-lit-r1{animation:a-lit-r1 9.6s infinite}
 .t-a .a-x{stroke:currentColor;stroke-width:1.2;opacity:0;animation:a-x 9.6s infinite}
 .t-a .a-v{fill:var(--violet,#96688D);opacity:0;animation:a-v 9.6s infinite}
-.t-a:hover .a-e{opacity:.85}
-.t-a:hover .a-sw{opacity:.3}
-.t-a:hover .a-tr,.t-a:hover .a-rp{opacity:1}
+.t-a:is(:hover,.is-lit) .a-e{opacity:.85}
+.t-a:is(:hover,.is-lit) .a-sw{opacity:.3}
+.t-a:is(:hover,.is-lit) .a-tr,.t-a:is(:hover,.is-lit) .a-rp{opacity:1}
 .t-a .a-rp path{animation-play-state:paused}
-.t-a:hover .a-rp path{animation-play-state:running}
-.t-a:hover .a-tn{opacity:1}
-@keyframes a-p-e1{0%{stroke-dashoffset:11}7%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}15.5%{stroke-dashoffset:-27.86}100%{stroke-dashoffset:-27.86}}
-@keyframes a-p-h1{0%{stroke-dashoffset:11}18.5%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}24.5%{stroke-dashoffset:-25.3}100%{stroke-dashoffset:-25.3}}
-@keyframes a-p-h2{0%{stroke-dashoffset:11}25.5%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}31.5%{stroke-dashoffset:-25.3}100%{stroke-dashoffset:-25.3}}
-@keyframes a-p-h3{0%{stroke-dashoffset:11}32.5%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}39.5%{stroke-dashoffset:-27.86}100%{stroke-dashoffset:-27.86}}
-@keyframes a-p-e2{0%{stroke-dashoffset:11}46.5%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}55%{stroke-dashoffset:-27.86}100%{stroke-dashoffset:-27.86}}
-@keyframes a-p-e3{0%{stroke-dashoffset:11}56%{stroke-dashoffset:11;animation-timing-function:cubic-bezier(.45,0,.3,1)}64.5%{stroke-dashoffset:-27.86}100%{stroke-dashoffset:-27.86}}
+.t-a:is(:hover,.is-lit) .a-rp path{animation-play-state:running}
 @keyframes a-lit-l0{0%{opacity:0}3.5%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}5.3%{opacity:1}80%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}90%{opacity:0}100%{opacity:0}}
 @keyframes a-lit-l1{0%{opacity:0}11.37%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}13.17%{opacity:1}80%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}90%{opacity:0}100%{opacity:0}}
 @keyframes a-lit-m{0%{opacity:0}21.51%{opacity:0;animation-timing-function:cubic-bezier(.2,.7,.2,1)}23.31%{opacity:1}42.5%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}49.5%{opacity:0}100%{opacity:0}}
@@ -372,282 +505,347 @@
 @keyframes a-hyp{0%{opacity:1}42.5%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}49.5%{opacity:.36}80%{opacity:.36;animation-timing-function:cubic-bezier(.45,0,.3,1)}90%{opacity:1}100%{opacity:1}}
 @keyframes a-sil{0%{opacity:.7}60.37%{opacity:.7;animation-timing-function:cubic-bezier(.45,0,.3,1)}68.37%{opacity:1}82%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}92%{opacity:.7}100%{opacity:.7}}
 @keyframes a-ring{0%{opacity:0;transform:scale(.6)}60.37%{opacity:0;transform:scale(.6);animation-timing-function:cubic-bezier(.2,.7,.2,1)}67.37%{opacity:1;transform:scale(1);animation-timing-function:linear}82%{opacity:.9;transform:scale(1.05);animation-timing-function:ease-in-out}92%{opacity:0;transform:scale(1.14)}93%{opacity:0;transform:scale(.6)}100%{opacity:0;transform:scale(.6)}}
-@keyframes a-tr-m{0%{stroke-dashoffset:100}7%{stroke-dashoffset:100;animation-timing-function:cubic-bezier(.45,0,.3,1)}15.5%{stroke-dashoffset:66.67}46.5%{stroke-dashoffset:66.67;animation-timing-function:cubic-bezier(.45,0,.3,1)}55%{stroke-dashoffset:33.33}56%{stroke-dashoffset:33.33;animation-timing-function:cubic-bezier(.45,0,.3,1)}64.5%{stroke-dashoffset:0}93%{stroke-dashoffset:0}94%{stroke-dashoffset:100}100%{stroke-dashoffset:100}}
 @keyframes a-to-m{0%{opacity:1}80%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}90%{opacity:0}94.5%{opacity:0}95%{opacity:1}100%{opacity:1}}
-@keyframes a-tr-h{0%{stroke-dashoffset:100}18.5%{stroke-dashoffset:100;animation-timing-function:cubic-bezier(.45,0,.3,1)}24.5%{stroke-dashoffset:67.8}25.5%{stroke-dashoffset:67.8;animation-timing-function:cubic-bezier(.45,0,.3,1)}31.5%{stroke-dashoffset:35.6}32.5%{stroke-dashoffset:35.6;animation-timing-function:cubic-bezier(.45,0,.3,1)}39.5%{stroke-dashoffset:0}93%{stroke-dashoffset:0}94%{stroke-dashoffset:100}100%{stroke-dashoffset:100}}
 @keyframes a-to-h{0%{opacity:1}42.5%{opacity:1;animation-timing-function:cubic-bezier(.45,0,.3,1)}49.5%{opacity:.3}80%{opacity:.3;animation-timing-function:cubic-bezier(.45,0,.3,1)}90%{opacity:0}94.5%{opacity:0}95%{opacity:1}100%{opacity:1}}
+@keyframes a-p-e1{0%,7%{transform:translate(-3.848px,10.305px);animation-timing-function:cubic-bezier(.45,0,.3,1)}15.5%,100%{transform:translate(9.747px,-26.099px)}}
+@keyframes a-p-h1{0%,18.5%{transform:translate(-11px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}24.5%,100%{transform:translate(25.3px,0px)}}
+@keyframes a-p-h2{0%,25.5%{transform:translate(-11px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}31.5%,100%{transform:translate(25.3px,0px)}}
+@keyframes a-p-h3{0%,32.5%{transform:translate(-3.848px,-10.305px);animation-timing-function:cubic-bezier(.45,0,.3,1)}39.5%,100%{transform:translate(9.747px,26.099px)}}
+@keyframes a-p-e2{0%,46.5%{transform:translate(-3.85px,10.304px);animation-timing-function:cubic-bezier(.45,0,.3,1)}55%,100%{transform:translate(9.75px,-26.098px)}}
+@keyframes a-p-e3{0%,56%{transform:translate(-3.848px,10.305px);animation-timing-function:cubic-bezier(.45,0,.3,1)}64.5%,100%{transform:translate(9.747px,-26.099px)}}
+@keyframes a-tw-m{0%{transform:translate(0px,0px)}7%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}15.5%{transform:translate(9.4px,-25.167px)}46.5%{transform:translate(9.4px,-25.167px);animation-timing-function:cubic-bezier(.45,0,.3,1)}55%{transform:translate(18.8px,-50.333px)}56%{transform:translate(18.8px,-50.333px);animation-timing-function:cubic-bezier(.45,0,.3,1)}64.5%{transform:translate(28.2px,-75.5px)}93%{transform:translate(28.2px,-75.5px)}94%,100%{transform:translate(0px,0px)}}
+@keyframes a-tc-m{0%{transform:translate(0px,0px)}7%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}15.5%{transform:translate(-9.4px,25.167px)}46.5%{transform:translate(-9.4px,25.167px);animation-timing-function:cubic-bezier(.45,0,.3,1)}55%{transform:translate(-18.8px,50.333px)}56%{transform:translate(-18.8px,50.333px);animation-timing-function:cubic-bezier(.45,0,.3,1)}64.5%{transform:translate(-28.2px,75.5px)}93%{transform:translate(-28.2px,75.5px)}94%,100%{transform:translate(0px,0px)}}
+@keyframes a-tw-h1{0%{transform:translate(0px,0px)}18.5%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}24.5%{transform:translate(24.3px,0px)}25.5%{transform:translate(24.3px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}31.5%{transform:translate(49.6px,0px)}93%{transform:translate(49.6px,0px)}94%,100%{transform:translate(0px,0px)}}
+@keyframes a-tc-h1{0%{transform:translate(0px,0px)}18.5%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}24.5%{transform:translate(-24.3px,0px)}25.5%{transform:translate(-24.3px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}31.5%{transform:translate(-49.6px,0px)}93%{transform:translate(-49.6px,0px)}94%,100%{transform:translate(0px,0px)}}
+@keyframes a-tw-h2{0%{transform:translate(0px,0px)}32.5%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}39.5%{transform:translate(9.4px,25.17px)}93%{transform:translate(9.4px,25.17px)}94%,100%{transform:translate(0px,0px)}}
+@keyframes a-tc-h2{0%{transform:translate(0px,0px)}32.5%{transform:translate(0px,0px);animation-timing-function:cubic-bezier(.45,0,.3,1)}39.5%{transform:translate(-9.4px,-25.17px)}93%{transform:translate(-9.4px,-25.17px)}94%,100%{transform:translate(0px,0px)}}
 @keyframes a-rp{0%{stroke-dashoffset:50;transform:scale(.72);animation-timing-function:linear}5%{stroke-dashoffset:0;transform:scale(.76);animation-timing-function:cubic-bezier(.25,.6,.45,1)}50%{stroke-dashoffset:-50;transform:scale(1)}100%{stroke-dashoffset:-50;transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.t-a .glyph *{animation:none!important}.t-a .a-sil,.t-a .a-lit-l0,.t-a .a-lit-l1,.t-a .a-lit-l2,.t-a .a-v,.t-a .a-ring{opacity:1}.t-a .a-ring{transform:none}.t-a .a-tr .a-tr-m{stroke-dashoffset:0}.t-a .a-tr-h,.t-a .a-rp,.t-a .a-p{display:none}}
+@media (prefers-reduced-motion:reduce){.t-a .glyph *{animation:none!important}.t-a .a-sil,.t-a .a-lit-l0,.t-a .a-lit-l1,.t-a .a-lit-l2,.t-a .a-v,.t-a .a-ring{opacity:1}.t-a .a-ring{transform:none}.t-a .a-tw-m{transform:translate(28.201px,-75.502px)}.t-a .a-tc-m{transform:translate(-28.201px,75.502px)}.t-a .a-to-h,.t-a .a-rp,.t-a .a-p{display:none}}
 
 /* glyph:c */
 /* C · 점각 halftone. A square dot grid (pitch 6.29, symmetric about the C's axis) sized by how much of each cell
-   the C master covers. A calm scale wave travels the way a C is written (top terminal -> bowl -> bottom terminal),
-   one lap per 11s (steep front, long tail), then rests a beat in the opening. Hover: the crest grows (1.42 -> 1.72) and
-   takes each dot's nacre colour (--n) while it passes, so the passing crest shows a halftone of the shell.
-   --n is sampled from the najeon tile (assets/najeon/tiles/najeon-512.webp), not picked: texture px =
-   ((c - (X, Y)) * 512 / 140) mod 512, (X, Y) = (60, 60) - 140 * (90, 200) / 512 = (35.39, 5.31), mean over the crest disc
-   (r * 1.72), sampled with PIL at authoring time.
-   Page tuning (perf): one animated layer. The former 107-dot hover copy (.c-nacre) is folded into the ink dots: its
-   per-dot fills became --n, and the hover amplitude/tint are registered properties the wave keyframes read, so the
-   tinted crest stays locked to the wave. Engines that do not re-resolve var() in running keyframes keep the calm wave.
-   Reduced motion: the plain halftone C; hover lays the still nacre halftone (every dot at its --n). */
+   the C master covers. A calm swell travels the way a C is written (top terminal -> bowl -> bottom terminal),
+   one lap per 11s (steep front, long tail), then rests a beat in the opening. Hover: the crest grows (1.42 -> 1.72).
+   Six running animations for 107 dots. The swell's profile is a per-dot scale (ease-in-out up over 34 -> 50 % of the
+   lap, down over 50 -> 78 %) whose phase is linear in the angle round the C's centre (62, 60):
+   phase = (angle + 216.4 deg + 32.727 deg/s * t) / 360, so the swell is one pattern turning at a steady rate. The
+   dots are one set (#c-dots, radius r * --k; the r attribute is the fallback where r is not a CSS property: there
+   the levels stay at scale 1 and the C stands still) drawn five times: still at scale 1 (.c-ink), and four levels on top, each
+   a quarter of the peak higher (--k = 1 + (peak - 1) * n/4, peak = registered --c-peak, 1.42, 1.72 on hover), each
+   seen through a hard-edged sector of ONE turning frame (.c-wave: rotates; .c-lv<n>: a still conic mask in it, the
+   angles where the profile is at least (n - .5)/4 of the peak) while its copy counter-rotates (.c-wave-in), so
+   the dots never move: every dot is a crisp disc at the nearest quarter of the profile's scale (a step of .105 r, ~.3 px at
+   1440). The first visit's entrance
+   draws the still dots; the swell comes in once it is over. Hover growth: --c-peak transitions (.6 s; the level radii
+   follow it only during that transition). Reduced motion: the plain halftone C. */
 @property --c-peak{syntax:'<number>';inherits:true;initial-value:1.42}
-@property --c-mix{syntax:'<percentage>';inherits:true;initial-value:0%}
-.t-c{--c-peak:1.42;--c-mix:0%;transition:--c-peak .6s ease,--c-mix .6s ease}
-.t-c:hover{--c-peak:1.72;--c-mix:100%}
-.t-c .glyph circle{transform-box:fill-box;transform-origin:center;animation:11s ease-in-out infinite both}
+.t-c{--c-peak:1.42;transition:--c-peak .6s ease}
+.t-c:is(:hover,.is-lit){--c-peak:1.72}
 .t-c .c-ink{fill:currentColor}
-.t-c .c-ink circle{animation-name:c-wave}
-@keyframes c-wave{0%,34%{transform:scale(1);fill:currentColor}44%,62%{fill:color-mix(in srgb,var(--n,currentColor) var(--c-mix,0%),currentColor)}50%{transform:scale(var(--c-peak,1.42))}78%,100%{transform:scale(1);fill:currentColor}}
+.t-c{overflow:clip}   /* the turning boxes must not leave the tile */
+.c-wave{position:absolute;inset:0;pointer-events:none;transform-origin:51.667% 50%;animation:c-turn 11s linear infinite;transition:opacity .6s ease}
+.c-lv{position:absolute;inset:0}
+.c-wave-in{position:absolute;inset:0;transform-origin:51.667% 50%;animation:c-turn-c 11s linear infinite}
+.c-wave svg{position:absolute;inset:0;width:100%;height:100%;fill:currentColor;overflow:visible}
+.c-lv1{--k:calc(1 + (var(--c-peak) - 1) * 0.25);-webkit-mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 14.172deg, #000 14.172deg 133.599deg, transparent 133.599deg);mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 14.172deg, #000 14.172deg 133.599deg, transparent 133.599deg)}
+.c-lv2{--k:calc(1 + (var(--c-peak) - 1) * 0.5);-webkit-mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 24.566deg, #000 24.566deg 115.409deg, transparent 115.409deg);mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 24.566deg, #000 24.566deg 115.409deg, transparent 115.409deg)}
+.c-lv3{--k:calc(1 + (var(--c-peak) - 1) * 0.75);-webkit-mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 33.034deg, #000 33.034deg 100.591deg, transparent 100.591deg);mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 33.034deg, #000 33.034deg 100.591deg, transparent 100.591deg)}
+.c-lv4{--k:calc(1 + (var(--c-peak) - 1) * 1);-webkit-mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 43.428deg, #000 43.428deg 82.401deg, transparent 82.401deg);mask-image:conic-gradient(from -57.6deg at 51.667% 50%, transparent 43.428deg, #000 43.428deg 82.401deg, transparent 82.401deg)}
+html.p-home-first .c-wave{opacity:0}
+/* the crest's angle (clockwise from up) at t: -32.727 deg/s * (t + 1.11 s); one turn per 11 s lap */
+@keyframes c-turn{from{transform:rotate(-36.33deg)}to{transform:rotate(-396.33deg)}}
+@keyframes c-turn-c{from{transform:rotate(36.33deg)}to{transform:rotate(396.33deg)}}
 @media (prefers-reduced-motion:reduce){
-.t-c .glyph .c-ink circle{animation:none}
-.t-c:hover .glyph .c-ink circle{fill:var(--n)}
-}
-
-/* glyph:h */
-.t-h .glyph{color:var(--ink,#EDF1F5)}
-.t-h .h-lines{fill:none;stroke-width:1.15}
-.t-h .h-a{stroke:currentColor;transition:opacity .6s ease}
-/* hover layer: the counter-flowing lines are a mask (h-m) over a fixed nacre rect, so the shell stays put while the lines
-   move across it (a pattern stroked on the moving lines would slide, and jump at every loop) */
-.t-h .h-b{opacity:0;transition:opacity .7s ease}
-.t-h .h-mk{fill:none;stroke:#fff;stroke-width:1.15}
-.t-h .h-da{animation:h-drift 13s linear infinite}
-.t-h .h-db{animation:h-drift-back 13s linear infinite}
-.t-h .h-vb{animation:h-flow 6.5s linear infinite}
-.t-h:hover .h-a{opacity:.75}
-.t-h:hover .h-b{opacity:1}
-@keyframes h-drift{to{translate:9.8462px 0}}
-@keyframes h-drift-back{to{translate:-9.8462px 0}}
-@keyframes h-flow{to{translate:0 -29.3333px}}
-@media (prefers-reduced-motion:reduce){
-.t-h .h-da,.t-h .h-db,.t-h .h-vb{animation:none}
-.t-h .h-a,.t-h .h-b{transition:none}
+.c-wave{display:none}
 }
 
 /* glyph:i */
-/* faint silhouette edge: gives the I a clean boundary while bytes keep scrolling through the clip (review pass) */
-.t-i .i-edge{fill:none;stroke:var(--ink-dim,rgba(237,241,245,.45));stroke-width:.6;opacity:.7;transition:opacity .4s ease}
-.t-i:hover .i-edge{opacity:1}
-/* KKACHI home - letter I - hex dump. Rows of IBM Plex Mono bytes clipped to the I scroll upward
-   (two stacked copies, one 90-unit block per 15s). 4B 4B 41 43 48 49 = ASCII "KKACHI".
-   Now and then a 49 ("I") lights violet (a found byte: state colour); on hover every KKACHI match lights as a nacre chip
-   (pattern i-nacre, 90 units = one scroll lap, so the chips keep their shell through the loop) with lacquer digits. */
-.t-i .i-dump{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:6px;font-weight:700;font-kerning:none;font-variant-ligatures:none;text-rendering:geometricPrecision;-webkit-user-select:none;user-select:none}
-.t-i .i-dump text{fill:currentColor}
-.t-i .i-scroll{animation:i-scroll 15s linear infinite}
-.t-i .i-rows text{fill-opacity:.74}
-.t-i .i-rows text,.t-i .i-rows tspan{transition:fill-opacity .5s ease}
-.t-i .i-rows .i-p{fill-opacity:1}
-.t-i .i-rows .i-z{fill-opacity:.46}
+/* KKACHI home - letter I - hex dump. Rows of Fragment Mono bytes (code face, v3 §3) clipped to the I. 4B 4B 41 43 48 49 = ASCII "KKACHI".
+   The cap height is 12 row slots (88/12 units) and the I's bars are 3 slots each (22 units, the
+   master's 20 within the +-3 optical allowance), so every clip edge is a slot boundary; the dump steps up one row at a
+   time (steps(12) over one 88-unit lap, two stacked copies, 15 s), like a hex dump paging. A row is only ever whole.
+   The faint 1px silhouette box is gone at rest: the whole rows draw the I; it comes back at half strength on hover.
+   Now and then a 49 ("I") lights to full shell; on hover every KKACHI match lights as a shell chip with lacquer digits
+   (v4: violet is 재현 확인 and 승인 only, nacre is proven only, so neither is on a letter). */
+.t-i .i-edge{fill:none;stroke:var(--p-home-dim,rgba(237,241,245,.45));stroke-width:.6;opacity:0;transition:opacity .4s ease}
+.t-i:is(:hover,.is-lit) .i-edge{opacity:.5}
+.t-i .i-dump{font-family:var(--font-mono);font-size:6px;font-weight:400;letter-spacing:0;font-kerning:none;font-variant-ligatures:none;text-rendering:geometricPrecision;-webkit-user-select:none;user-select:none}
+/* Fragment Mono has one weight (400); a hairline stroke in the byte's own colour and opacity (.3 units, under the
+   fill: paint-order) gives the dump the weight the I was drawn with, so the letter and its KKACHI bytes still read */
+.t-i .i-dump text{fill:currentColor;stroke:currentColor;stroke-width:.3;stroke-linejoin:round;paint-order:stroke}
+.t-i .i-scroll{animation:i-scroll 15s steps(12) infinite}
+.t-i .i-rows text{fill-opacity:.74;stroke-opacity:.74}
+.t-i .i-rows text,.t-i .i-rows tspan{transition:fill-opacity .5s ease,stroke-opacity .5s ease}
+.t-i .i-rows .i-p{fill-opacity:1;stroke-opacity:1}
+.t-i .i-rows .i-z{fill-opacity:.46;stroke-opacity:.46}
 .t-i .i-g{opacity:0;animation:i-glow 15s linear infinite}
-.t-i .i-g rect{fill:var(--violet,#96688D)}
-/* while hovered the KKACHI matches read as one material: the flat violet 49 hides once the nacre chips are in (.5 s),
-   so the plain byte never flashes between them (visibility is not animated, so this holds in both motion modes) */
+.t-i .i-g rect{fill:none}
+.t-i .i-g text{fill:var(--fg-1,#EDF1F5);stroke:var(--fg-1,#EDF1F5)}
+/* while hovered the lit 49 hides once the hover chips are in (.5 s), so the two never double up */
 .t-i .i-g{transition:visibility 0s .5s}
-.t-i:hover .i-g{visibility:hidden}
-.t-i .i-f rect{fill:url(#i-nacre)}
-.t-i .i-f text{fill:var(--bg,#292623)}
-/* the search sweep is a glint of shell-white light over the chip (nacre lightens, it never dims into the lacquer) */
-.t-i .i-f .i-gl{fill:var(--ink,#EDF1F5);opacity:0;animation:i-find 5s ease-in-out infinite}
+.t-i:is(:hover,.is-lit) .i-g{visibility:hidden}
+.t-i .i-f rect{fill:var(--fg-1,#EDF1F5)}
+.t-i .i-f text{fill:var(--bg,#292623);stroke:var(--bg,#292623)}
+/* the search sweep: a lacquer glint passes over each chip */
+.t-i .i-f .i-gl{fill:var(--bg,#292623);opacity:0;animation:i-find 5s ease-in-out infinite}
 .t-i .i-hov{opacity:0;transition:opacity .5s ease}
-.t-i:hover .i-hov{opacity:1}
+.t-i:is(:hover,.is-lit) .i-hov{opacity:1}
 .t-i .i-f .i-gl{animation-play-state:paused}
-.t-i:hover .i-f .i-gl{animation-play-state:running}
-.t-i:hover .i-rows text{fill-opacity:.94}
-.t-i:hover .i-rows .i-z{fill-opacity:.6}
-@keyframes i-scroll{from{transform:translateY(0)}to{transform:translateY(-90px)}}
+.t-i:is(:hover,.is-lit) .i-f .i-gl{animation-play-state:running}
+.t-i:is(:hover,.is-lit) .i-rows text{fill-opacity:.94;stroke-opacity:.94}
+.t-i:is(:hover,.is-lit) .i-rows .i-z{fill-opacity:.6;stroke-opacity:.6}
+@keyframes i-scroll{from{transform:translateY(0)}to{transform:translateY(-88px)}}
 @keyframes i-glow{0%{opacity:0;animation-timing-function:ease-out}4%{opacity:1}16%{opacity:1;animation-timing-function:ease-in}20%,100%{opacity:0}}
-@keyframes i-find{0%,34%,100%{opacity:0}9%{opacity:.5}}
+@keyframes i-find{0%,34%,100%{opacity:0}9%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){
 .t-i .i-scroll,.t-i .i-g,.t-i .i-f .i-gl{animation:none}
 .t-i .i-rest{opacity:1}
 }
 </style>
 </head>
-<body>
+<body class="kk">
 <main class="stage">
-  <h1 class="sr-only" lang="en">KKACHI</h1>
 
-  <nav class="grid" aria-label="KKACHI 둘러보기">
-    <!-- row 1 -->
+  <div class="grid">
+    <!-- the message tile (2 × 2): who, what, why, next -->
+    <div class="tile p-home-msg">
+      <h1 class="p-home-h1"><span class="kk-wm-box kk-wm--inlay p-home-wm" aria-hidden="true"><svg class="kk-wm" viewBox="0 -0.81 193.25 43.62" focusable="false"><path class="kk-wm-k" transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z"/></svg><canvas class="inlay p-home-wm-inlay" width="88" height="88" data-scale="1.2" data-angle="0"></canvas></span><span class="sr-only" lang="en">KKACHI. </span><span class="p-home-ln">모든 경로를 따라가,</span> <span class="p-home-ln">확인된 하나를 가져옵니다.</span></h1>
+      <div>
+        <p class="p-home-lede"><strong>기업 보안팀</strong>을 위한 자율 취약점 연구 에이전트입니다. 소스&nbsp;코드와 바이너리를 읽고, 확인되지 않은 경고 대신 재현으로 입증된 취약점만 보고합니다.</p>
+        <p class="p-home-cta"><a class="kk-btn kk-btn--primary" href="../waitlist/">대기자 명단 <span class="kk-arr" aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
     <div class="tile tile--glyph t-k1" aria-hidden="true"><!-- glyph:k1 --><svg class="glyph" viewBox="0 0 120 120" focusable="false">
 <defs>
-<pattern id="k1-nacre" patternUnits="userSpaceOnUse" x="-38.44" y="8.05" width="140" height="140"><image href="../../assets/najeon/tiles/najeon-512.webp" width="140" height="140"/></pattern>
 <linearGradient id="k1-light" class="k1-light" gradientUnits="userSpaceOnUse" x1="45.5" y1="53.24" x2="74.5" y2="66.76"><stop offset="0" stop-opacity="0"/><stop offset=".25" stop-opacity=".9"/><stop offset=".5"/><stop offset=".75" stop-opacity=".9"/><stop offset="1" stop-opacity="0"/></linearGradient>
 <mask id="k1-m" maskUnits="userSpaceOnUse" x="12" y="14" width="100" height="92"><g fill="#fff"><path class="k1-o" style="--k1-i:0" d="M16 16H40V17.3H72.84L74 16H106L104.78 17.3H16Z"/><path class="k1-e" style="--k1-i:1" d="M26.55 22.4H16V21.1H27.05ZM40 21.1V22.4H68.27L69.44 21.1H101.23L100.02 22.4H27.95L28.45 21.1Z"/><path class="k1-o" style="--k1-i:2" d="M40 26.2V27.5H63.71L64.87 26.2H96.47L95.25 27.5H16V26.2Z"/><path class="k1-e" style="--k1-i:3" d="M40 31.3V32.6H59.15L60.31 31.3H79L79.6 32.6H16V31.3ZM80.4 31.3H91.7L90.48 32.6H81Z"/><path class="k1-o" style="--k1-i:4" d="M40 36.4V37.7H54.58L55.75 36.4H86.93L85.72 37.7H16V36.4Z"/><path class="k1-e" style="--k1-i:5" d="M40 41.5V42.8H50.02L51.18 41.5H82.16L80.95 42.8H16V41.5Z"/><path class="k1-o" style="--k1-i:6" d="M40 46.6V47.9H45.46L46.62 46.6H62.55L62.05 47.9H16V46.6ZM63.95 46.6H77.4L76.18 47.9H63.45Z"/><path class="k1-e" style="--k1-i:7" d="M40 51.7V53H40.89L42.06 51.7H72.63L71.41 53H16V51.7Z"/><path class="k1-o" style="--k1-i:8" d="M51.3 58.1H16V56.8H51.3ZM67.86 56.8L66.65 58.1H52.7V56.8Z"/><path class="k1-e" style="--k1-i:9" d="M63.09 61.9L63 62L64.29 63.2H16V61.9Z"/><path class="k1-o" style="--k1-i:10" d="M40 68.3H16V67H40.6ZM68.36 67L69.75 68.3H41.4L42 67Z"/><path class="k1-e" style="--k1-i:11" d="M73.82 72.1L75.21 73.4H16V72.1Z"/><path class="k1-o" style="--k1-i:12" d="M79.29 77.2L80.68 78.5H50.5L49.2 77.2H42.8L41.5 78.5H16V77.2Z"/><path class="k1-e" style="--k1-i:13" d="M69.55 83.6H55.6L54.3 82.3H40V83.6H16V82.3H69.05ZM84.75 82.3L86.14 83.6H70.95L70.45 82.3Z"/><path class="k1-o" style="--k1-i:14" d="M28.3 88.7H16V87.4H28.3ZM90.21 87.4L91.61 88.7H60.7L59.4 87.4H40V88.7H29.7V87.4Z"/><path class="k1-e" style="--k1-i:15" d="M95.68 92.5L97.07 93.8H65.8L64.5 92.5H40V93.8H16V92.5Z"/><path class="k1-o" style="--k1-i:16" d="M87.55 98.9H70.9L69.6 97.6H40V98.9H16V97.6H88.05ZM101.14 97.6L102.54 98.9H88.95L89.45 97.6Z"/><path class="k1-e" style="--k1-i:17" d="M106.61 102.7L108 104H76L74.7 102.7H40V104H16V102.7Z"/></g></mask>
 </defs>
-<g fill="currentColor"><path class="k1-o" style="--k1-i:0" d="M16 16H40V17.3H72.84L74 16H106L104.78 17.3H16Z"/><path class="k1-e" style="--k1-i:1" d="M26.55 22.4H16V21.1H27.05ZM40 21.1V22.4H68.27L69.44 21.1H101.23L100.02 22.4H27.95L28.45 21.1Z"/><path class="k1-o" style="--k1-i:2" d="M40 26.2V27.5H63.71L64.87 26.2H96.47L95.25 27.5H16V26.2Z"/><path class="k1-e" style="--k1-i:3" d="M40 31.3V32.6H59.15L60.31 31.3H79L79.6 32.6H16V31.3ZM80.4 31.3H91.7L90.48 32.6H81Z"/><path class="k1-o" style="--k1-i:4" d="M40 36.4V37.7H54.58L55.75 36.4H86.93L85.72 37.7H16V36.4Z"/><path class="k1-e" style="--k1-i:5" d="M40 41.5V42.8H50.02L51.18 41.5H82.16L80.95 42.8H16V41.5Z"/><path class="k1-o" style="--k1-i:6" d="M40 46.6V47.9H45.46L46.62 46.6H62.55L62.05 47.9H16V46.6ZM63.95 46.6H77.4L76.18 47.9H63.45Z"/><path class="k1-e" style="--k1-i:7" d="M40 51.7V53H40.89L42.06 51.7H72.63L71.41 53H16V51.7Z"/><path class="k1-o" style="--k1-i:8" d="M51.3 58.1H16V56.8H51.3ZM67.86 56.8L66.65 58.1H52.7V56.8Z"/><path class="k1-e" style="--k1-i:9" d="M63.09 61.9L63 62L64.29 63.2H16V61.9Z"/><path class="k1-o" style="--k1-i:10" d="M40 68.3H16V67H40.6ZM68.36 67L69.75 68.3H41.4L42 67Z"/><path class="k1-e" style="--k1-i:11" d="M73.82 72.1L75.21 73.4H16V72.1Z"/><path class="k1-o" style="--k1-i:12" d="M79.29 77.2L80.68 78.5H50.5L49.2 77.2H42.8L41.5 78.5H16V77.2Z"/><path class="k1-e" style="--k1-i:13" d="M69.55 83.6H55.6L54.3 82.3H40V83.6H16V82.3H69.05ZM84.75 82.3L86.14 83.6H70.95L70.45 82.3Z"/><path class="k1-o" style="--k1-i:14" d="M28.3 88.7H16V87.4H28.3ZM90.21 87.4L91.61 88.7H60.7L59.4 87.4H40V88.7H29.7V87.4Z"/><path class="k1-e" style="--k1-i:15" d="M95.68 92.5L97.07 93.8H65.8L64.5 92.5H40V93.8H16V92.5Z"/><path class="k1-o" style="--k1-i:16" d="M87.55 98.9H70.9L69.6 97.6H40V98.9H16V97.6H88.05ZM101.14 97.6L102.54 98.9H88.95L89.45 97.6Z"/><path class="k1-e" style="--k1-i:17" d="M106.61 102.7L108 104H76L74.7 102.7H40V104H16V102.7Z"/></g>
-<mask id="k1-lm" maskUnits="userSpaceOnUse" x="12" y="14" width="100" height="92"><rect class="k1-band" x="20.86" y="15" width="78.28" height="90" fill="url(#k1-light)"/><g class="k1-b2"><rect class="k1-band k1-band2" x="20.86" y="15" width="78.28" height="90" fill="url(#k1-light)"/></g></mask>
-<g class="k1-tint" mask="url(#k1-m)"><rect x="12" y="14" width="100" height="92" fill="url(#k1-nacre)" mask="url(#k1-lm)"/></g>
+<g class="k1-s" fill="currentColor"><path class="k1-o" style="--k1-i:0" d="M16 16H40V17.3H72.84L74 16H106L104.78 17.3H16Z"/><path class="k1-e" style="--k1-i:1" d="M26.55 22.4H16V21.1H27.05ZM40 21.1V22.4H68.27L69.44 21.1H101.23L100.02 22.4H27.95L28.45 21.1Z"/><path class="k1-o" style="--k1-i:2" d="M40 26.2V27.5H63.71L64.87 26.2H96.47L95.25 27.5H16V26.2Z"/><path class="k1-e" style="--k1-i:3" d="M40 31.3V32.6H59.15L60.31 31.3H79L79.6 32.6H16V31.3ZM80.4 31.3H91.7L90.48 32.6H81Z"/><path class="k1-o" style="--k1-i:4" d="M40 36.4V37.7H54.58L55.75 36.4H86.93L85.72 37.7H16V36.4Z"/><path class="k1-e" style="--k1-i:5" d="M40 41.5V42.8H50.02L51.18 41.5H82.16L80.95 42.8H16V41.5Z"/><path class="k1-o" style="--k1-i:6" d="M40 46.6V47.9H45.46L46.62 46.6H62.55L62.05 47.9H16V46.6ZM63.95 46.6H77.4L76.18 47.9H63.45Z"/><path class="k1-e" style="--k1-i:7" d="M40 51.7V53H40.89L42.06 51.7H72.63L71.41 53H16V51.7Z"/><path class="k1-o" style="--k1-i:8" d="M51.3 58.1H16V56.8H51.3ZM67.86 56.8L66.65 58.1H52.7V56.8Z"/><path class="k1-e" style="--k1-i:9" d="M63.09 61.9L63 62L64.29 63.2H16V61.9Z"/><path class="k1-o" style="--k1-i:10" d="M40 68.3H16V67H40.6ZM68.36 67L69.75 68.3H41.4L42 67Z"/><path class="k1-e" style="--k1-i:11" d="M73.82 72.1L75.21 73.4H16V72.1Z"/><path class="k1-o" style="--k1-i:12" d="M79.29 77.2L80.68 78.5H50.5L49.2 77.2H42.8L41.5 78.5H16V77.2Z"/><path class="k1-e" style="--k1-i:13" d="M69.55 83.6H55.6L54.3 82.3H40V83.6H16V82.3H69.05ZM84.75 82.3L86.14 83.6H70.95L70.45 82.3Z"/><path class="k1-o" style="--k1-i:14" d="M28.3 88.7H16V87.4H28.3ZM90.21 87.4L91.61 88.7H60.7L59.4 87.4H40V88.7H29.7V87.4Z"/><path class="k1-e" style="--k1-i:15" d="M95.68 92.5L97.07 93.8H65.8L64.5 92.5H40V93.8H16V92.5Z"/><path class="k1-o" style="--k1-i:16" d="M87.55 98.9H70.9L69.6 97.6H40V98.9H16V97.6H88.05ZM101.14 97.6L102.54 98.9H88.95L89.45 97.6Z"/><path class="k1-e" style="--k1-i:17" d="M106.61 102.7L108 104H76L74.7 102.7H40V104H16V102.7Z"/></g>
+<mask id="k1-lm" maskUnits="userSpaceOnUse" x="12" y="14" width="100" height="92"><rect x="20.86" y="15" width="78.28" height="90" fill="url(#k1-light)"/></mask>
+<g class="k1-tint" mask="url(#k1-m)"><g class="k1-band"><g mask="url(#k1-lm)"><g class="k1-ctr"><rect x="12" y="14" width="100" height="92" fill="currentColor"/></g></g></g><g class="k1-b2"><g class="k1-band k1-band2"><g mask="url(#k1-lm)"><g class="k1-ctr k1-ctr2"><rect x="12" y="14" width="100" height="92" fill="currentColor"/></g></g></g></g></g>
 </svg><!-- /glyph:k1 --></div>
     <div class="tile tile--glyph t-k2" aria-hidden="true"><!-- glyph:k2 --><svg class="glyph" viewBox="0 0 120 120" focusable="false">
-<defs><pattern id="k2-nacre" patternUnits="userSpaceOnUse" x="-68.52" y="13.52" width="140" height="140"><image href="../../assets/najeon/tiles/najeon-512.webp" width="140" height="140"/></pattern></defs>
+<defs><linearGradient id="k2-cov" gradientUnits="userSpaceOnUse" x1="-20" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#292623" stop-opacity="0"/><stop offset="1" stop-color="#292623"/></linearGradient>
+<linearGradient id="k2-tg" gradientUnits="userSpaceOnUse" x1="-126.99" y1="0" x2="0" y2="0"><stop offset="0" stop-opacity="0.1"/><stop offset="0.3077" stop-opacity="0.1"/><stop offset="0.3077" stop-opacity="0.262"/><stop offset="0.5385" stop-opacity="0.262"/><stop offset="0.5385" stop-opacity="0.4834"/><stop offset="0.6923" stop-opacity="0.4834"/><stop offset="0.6923" stop-opacity="0.7417"/><stop offset="0.8077" stop-opacity="0.7417"/><stop offset="0.8077" stop-opacity="1"/><stop offset="1" stop-opacity="1"/></linearGradient>
+<clipPath id="k2-o0"><path d="M28 103L17 103L15 105L28 105Z"/></clipPath>
+<clipPath id="k2-o1"><path d="M17 103L17 17L15 15L15 105Z"/></clipPath>
+<clipPath id="k2-o2"><path d="M17 17L39 17L41 15L15 15Z"/></clipPath>
+<clipPath id="k2-o3"><path d="M39 17L39 56.617L41 51.383L41 15Z"/></clipPath>
+<clipPath id="k2-o4"><path d="M39 56.617L74.447 17L73.553 15L41 51.383Z"/></clipPath>
+<clipPath id="k2-o5"><path d="M74.447 17L103.696 17L108.304 15L73.553 15Z"/></clipPath>
+<clipPath id="k2-o6"><path d="M103.696 17L61.586 62.048L64.414 61.952L108.304 15Z"/></clipPath>
+<clipPath id="k2-o7"><path d="M61.586 62.048L105.463 103L110.537 105L64.414 61.952Z"/></clipPath>
+<clipPath id="k2-o8"><path d="M105.463 103L76.414 103L75.586 105L110.537 105Z"/></clipPath>
+<clipPath id="k2-o9"><path d="M76.414 103L46 72.586L46 75.414L75.586 105Z"/></clipPath>
+<clipPath id="k2-o10"><path d="M46 72.586L39 79.586L41 80.414L46 75.414Z"/></clipPath>
+<clipPath id="k2-o11"><path d="M39 79.586L39 103L41 105L41 80.414Z"/></clipPath>
+<clipPath id="k2-o12"><path d="M39 103L28 103L28 105L41 105Z"/></clipPath>
+<clipPath id="k2-ow"><rect x="-195.37" y="-0.5" width="195.37" height="1"/><rect x="-136.759" y="-0.575" width="136.759" height="1.15"/><rect x="-87.916" y="-0.65" width="87.916" height="1.3"/><rect x="-48.842" y="-0.7" width="48.842" height="1.4"/></clipPath>
+<clipPath id="k2-i0"><path d="M28 99.5L20.5 99.5L18.5 101.5L28 101.5Z"/></clipPath>
+<clipPath id="k2-i1"><path d="M20.5 99.5L20.5 20.5L18.5 18.5L18.5 101.5Z"/></clipPath>
+<clipPath id="k2-i2"><path d="M20.5 20.5L35.5 20.5L37.5 18.5L18.5 18.5Z"/></clipPath>
+<clipPath id="k2-i3"><path d="M35.5 20.5L35.5 65.778L37.5 60.542L37.5 18.5Z"/></clipPath>
+<clipPath id="k2-i4"><path d="M35.5 65.778L76.007 20.5L75.113 18.5L37.5 60.542Z"/></clipPath>
+<clipPath id="k2-i5"><path d="M76.007 20.5L95.636 20.5L100.244 18.5L75.113 18.5Z"/></clipPath>
+<clipPath id="k2-i6"><path d="M95.636 20.5L56.636 62.218L59.464 62.122L100.244 18.5Z"/></clipPath>
+<clipPath id="k2-i7"><path d="M56.636 62.218L96.583 99.5L101.657 101.5L59.464 62.122Z"/></clipPath>
+<clipPath id="k2-i8"><path d="M96.583 99.5L77.864 99.5L77.036 101.5L101.657 101.5Z"/></clipPath>
+<clipPath id="k2-i9"><path d="M77.864 99.5L46 67.636L46 70.464L77.036 101.5Z"/></clipPath>
+<clipPath id="k2-i10"><path d="M46 67.636L35.5 78.136L37.5 78.964L46 70.464Z"/></clipPath>
+<clipPath id="k2-i11"><path d="M35.5 78.136L35.5 99.5L37.5 101.5L37.5 78.964Z"/></clipPath>
+<clipPath id="k2-i12"><path d="M35.5 99.5L28 99.5L28 101.5L37.5 101.5Z"/></clipPath>
+<clipPath id="k2-iw"><rect x="0" y="-0.5" width="82.034" height="1"/><rect x="0" y="-0.7" width="41.017" height="1.4"/></clipPath></defs>
 <g class="k2-map" fill="none">
 <path class="k2-c k2-c2" d="M28 97H23V23H33V72.32L77.13 23H89.87L53.1 62.34L90.24 97H78.9L46 64.1L33 77.1V97Z"/>
 <path class="k2-c k2-c1" d="M28 100.5H19.5V19.5H36.5V63.16L75.56 19.5H97.94L58.05 62.17L99.12 100.5H77.45L46 69.05L36.5 78.55V100.5Z"/>
 <path class="k2-c k2-c0" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/>
 </g>
 <g class="k2-t" fill="none">
-<g class="k2-in"><path class="k2-r" pathLength="100" stroke-dasharray="18 82" stroke="url(#k2-nacre)" d="M28 100.5H19.5V19.5H36.5V63.16L75.56 19.5H97.94L58.05 62.17L99.12 100.5H77.45L46 69.05L36.5 78.55V100.5Z"/><path class="k2-r" pathLength="100" stroke-dasharray="9 91" stroke="url(#k2-nacre)" d="M28 100.5H19.5V19.5H36.5V63.16L75.56 19.5H97.94L58.05 62.17L99.12 100.5H77.45L46 69.05L36.5 78.55V100.5Z"/><path class="k2-r k2-w" pathLength="100" stroke-dasharray="2 98" opacity="1" d="M28 100.5H19.5V19.5H36.5V63.16L75.56 19.5H97.94L58.05 62.17L99.12 100.5H77.45L46 69.05L36.5 78.55V100.5Z"/></g>
-<g class="k2-long"><path class="k2-f" pathLength="100" stroke-dasharray="0 0 40 60" stroke="url(#k2-nacre)" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f" pathLength="100" stroke-dasharray="0 12 28 60" stroke="url(#k2-nacre)" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f" pathLength="100" stroke-dasharray="0 22 18 60" stroke="url(#k2-nacre)" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f" pathLength="100" stroke-dasharray="0 30 10 60" stroke="url(#k2-nacre)" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 38.4 1.6 60" opacity="1" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/></g>
-<g class="k2-trail"><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 14 26 60" opacity="0.1" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 22 18 60" opacity="0.18" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 28 12 60" opacity="0.3" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 32 8 60" opacity="0.5" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/><path class="k2-f k2-w" pathLength="100" stroke-dasharray="0 35 5 60" opacity="1" d="M28 104H16V16H40V54L74 16H106L63 62L108 104H76L46 74L40 80V104Z"/></g>
-</g></svg><!-- /glyph:k2 --></div>
-    <div class="tile t-logo" aria-hidden="true"><canvas class="inlay logo-inlay" width="88" height="88" data-scale="1.5" data-angle="0" aria-hidden="true"></canvas></div>
+<g class="k2-ri">
+<g clip-path="url(#k2-i0)"><g transform="translate(28 100.5) rotate(180)"><g class="k2-run" style="--a:232.12px;--b:-223.62px;--h0:0px;--d:-3.005s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-28 -100.5)" d="M30.2 100.5L17.3 100.5"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i1)"><g transform="translate(19.5 100.5) rotate(-90)"><g class="k2-run" style="--a:268.37px;--b:-187.37px;--h0:-8.5px;--d:-3.584s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(90) translate(-19.5 -100.5)" d="M19.5 102.7L19.5 17.3"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i2)"><g transform="translate(19.5 19.5) rotate(0)"><g class="k2-run" style="--a:236.37px;--b:-219.37px;--h0:-89.5px;--d:-4.219s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(0) translate(-19.5 -19.5)" d="M17.3 19.5L38.7 19.5"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i3)"><g transform="translate(36.5 19.5) rotate(90)"><g class="k2-run" style="--a:249.7px;--b:-206.04px;--h0:-106.5px;--d:-4.611s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-90) translate(-36.5 -19.5)" d="M36.5 17.3L36.5 65.36"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i4)"><g transform="translate(36.5 63.16) rotate(-48.183)"><g class="k2-run" style="--a:257.16px;--b:-198.58px;--h0:-150.16px;--d:-5.273s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(48.183) translate(-36.5 -63.16)" d="M35.033 64.8L77.027 17.86"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i5)"><g transform="translate(75.56 19.5) rotate(0)"><g class="k2-run" style="--a:239.06px;--b:-216.68px;--h0:-208.74px;--d:-5.797s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(0) translate(-75.56 -19.5)" d="M73.36 19.5L100.14 19.5"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i6)"><g transform="translate(97.94 19.5) rotate(133.071)"><g class="k2-run" style="--a:257.08px;--b:-198.67px;--h0:224.62px;--d:-0.42s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-133.071) translate(-97.94 -19.5)" d="M99.442 17.893L56.548 63.777"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i7)"><g transform="translate(58.05 62.17) rotate(43.024)"><g class="k2-run" style="--a:255.96px;--b:-199.78px;--h0:166.21px;--d:-1.162s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-43.024) translate(-58.05 -62.17)" d="M56.442 60.669L100.728 102.001"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i8)"><g transform="translate(99.12 100.5) rotate(180)"><g class="k2-run" style="--a:238.71px;--b:-217.04px;--h0:110.03px;--d:-1.666s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-99.12 -100.5)" d="M101.32 100.5L75.25 100.5"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i9)"><g transform="translate(77.45 100.5) rotate(-135)"><g class="k2-run" style="--a:250.11px;--b:-205.63px;--h0:88.36px;--d:-2.094s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(135) translate(-77.45 -100.5)" d="M79.006 102.056L44.444 67.494"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i10)"><g transform="translate(46 69.05) rotate(135)"><g class="k2-run" style="--a:234.59px;--b:-221.15px;--h0:43.89px;--d:-2.469s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-135) translate(-46 -69.05)" d="M47.556 67.494L34.944 80.106"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i11)"><g transform="translate(36.5 78.55) rotate(90)"><g class="k2-run" style="--a:238.85px;--b:-216.9px;--h0:30.45px;--d:-2.698s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-90) translate(-36.5 -78.55)" d="M36.5 76.35L36.5 102.7"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+<g clip-path="url(#k2-i12)"><g transform="translate(36.5 100.5) rotate(180)"><g class="k2-run" style="--a:232.12px;--b:-223.62px;--h0:8.5px;--d:-2.895s"><g class="k2-hv"><g clip-path="url(#k2-iw)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-36.5 -100.5)" d="M38.7 100.5L25.8 100.5"/></g></g><path class="k2-tip" d="M0 0H9.115"/></g></g></g></g>
+</g>
+<g class="k2-ro">
+<g clip-path="url(#k2-o0)"><g transform="translate(28 104) rotate(180)"><g class="k2-run" style="--a:-140.53px;--b:347.9px;--h0:195.37px;--d:-8.115s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-28 -104)" d="M30.2 104L13.8 104"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o1)"><g transform="translate(16 104) rotate(-90)"><g class="k2-run" style="--a:-102.53px;--b:385.9px;--h0:183.37px;--d:-6.907s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(90) translate(-16 -104)" d="M16 106.2L16 13.8"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o2)"><g transform="translate(16 16) rotate(0)"><g class="k2-run" style="--a:-134.53px;--b:353.9px;--h0:95.37px;--d:-5.554s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(0) translate(-16 -16)" d="M13.8 16L42.2 16"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o3)"><g transform="translate(40 16) rotate(90)"><g class="k2-run" style="--a:-127.53px;--b:360.9px;--h0:71.37px;--d:-4.805s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-90) translate(-40 -16)" d="M40 13.8L40 56.2"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o4)"><g transform="translate(40 54) rotate(-48.18)"><g class="k2-run" style="--a:-121.03px;--b:367.39px;--h0:33.37px;--d:-3.73s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(48.18) translate(-40 -54)" d="M38.533 55.64L75.467 14.36"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o5)"><g transform="translate(74 16) rotate(0)"><g class="k2-run" style="--a:-130.53px;--b:357.9px;--h0:-17.62px;--d:-2.728s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(0) translate(-74 -16)" d="M71.8 16L108.2 16"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o6)"><g transform="translate(106 16) rotate(133.069)"><g class="k2-run" style="--a:-115.04px;--b:373.38px;--h0:-49.62px;--d:-1.581s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-133.069) translate(-106 -16)" d="M107.502 14.393L61.498 63.607"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o7)"><g transform="translate(63 62) rotate(43.025)"><g class="k2-run" style="--a:-115.75px;--b:372.67px;--h0:-112.59px;--d:-0.076s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-43.025) translate(-63 -62)" d="M61.392 60.499L109.608 105.501"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o8)"><g transform="translate(108 104) rotate(180)"><g class="k2-run" style="--a:-130.53px;--b:357.9px;--h0:314.28px;--d:-10.746s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-108 -104)" d="M110.2 104L73.8 104"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o9)"><g transform="translate(76 104) rotate(-135)"><g class="k2-run" style="--a:-125.31px;--b:363.11px;--h0:282.28px;--d:-9.847s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(135) translate(-76 -104)" d="M77.556 105.556L44.444 72.444"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o10)"><g transform="translate(46 74) rotate(135)"><g class="k2-run" style="--a:-142.28px;--b:346.14px;--h0:239.86px;--d:-9.232s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-135) translate(-46 -74)" d="M47.556 72.444L38.444 81.556"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o11)"><g transform="translate(40 80) rotate(90)"><g class="k2-run" style="--a:-134.53px;--b:353.9px;--h0:231.37px;--d:-8.84s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-90) translate(-40 -80)" d="M40 77.8L40 106.2"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+<g clip-path="url(#k2-o12)"><g transform="translate(40 104) rotate(180)"><g class="k2-run" style="--a:-140.53px;--b:347.9px;--h0:207.37px;--d:-8.405s"><g class="k2-hv"><g clip-path="url(#k2-ow)"><g class="k2-cnt"><path class="k2-n" transform="rotate(-180) translate(-40 -104)" d="M42.2 104L25.8 104"/></g></g><path class="k2-tip" d="M-7.815 0H0"/></g><path class="k2-trl" d="M-195.37 0H0" stroke="url(#k2-tg)"/></g></g></g>
+</g>
+</g><rect class="p-home-cover" x="-20" y="-10" width="160" height="140" fill="url(#k2-cov)"/></svg><!-- /glyph:k2 --></div>
     <div class="tile tile--glyph t-a" aria-hidden="true"><!-- glyph:a --><svg class="glyph" viewBox="0 0 120 120" focusable="false">
-<defs><pattern id="a-nacre" patternUnits="userSpaceOnUse" x="49.84" y="-21.25" width="130" height="130"><image href="../../assets/najeon/tiles/najeon-512.webp" width="130" height="130"/></pattern></defs>
+<defs><linearGradient id="a-cov" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="0" y2="140"><stop offset="0" stop-color="#292623"/><stop offset="1" stop-color="#292623" stop-opacity="0"/></linearGradient><clipPath id="a-pc-e1"><path d="M25.1 99.93H30.3V105.13H25.1Z"/></clipPath><clipPath id="a-pc-h1"><path d="M33.1 75.73H38.3V80.93H33.1Z"/></clipPath><clipPath id="a-pc-h2"><path d="M57.4 75.73H62.6V80.93H57.4Z"/></clipPath><clipPath id="a-pc-h3"><path d="M80.29 74.76H85.49V79.96H80.29Z"/></clipPath><clipPath id="a-pc-e2"><path d="M34.5 74.76H39.7V79.96H34.5Z"/></clipPath><clipPath id="a-pc-e3"><path d="M43.91 49.6H49.11V54.8H43.91Z"/></clipPath><clipPath id="a-tw-m"><path d="M-0.495 175.025L27.705 99.525L24.895 98.475L-3.305 173.975Z"/></clipPath><clipPath id="a-tw-h1"><path d="M-13.9 75.33L35.7 75.33L35.7 72.33L-13.9 72.33Z"/></clipPath><clipPath id="a-tw-h2"><path d="M70.9 49.59H76.1V54.79H70.9Z"/></clipPath></defs>
 <g class="a-sw"><path class="a-sil" d="M44 16H76L108 104H82L75 84H45L38 104H12ZM52 64H68L60 40Z"/></g>
 <g class="a-e"><path d="M27.54 95.69L34.46 77.14M36.94 70.53L43.86 51.97M46.34 45.36L54.08 24.62M65.92 24.62L73.66 45.36M76.14 51.97L83.06 70.53"/><path class="a-hyp" d="M39.9 73.83L55.8 73.83M64.2 73.83L80.1 73.83M85.54 77.14L92.46 95.69"/></g>
-<g class="a-tr"><path class="a-tr-m" pathLength="100" d="M26.3 99L35.7 73.83L45.1 48.67L54.5 23.5"/><path class="a-tr-h" pathLength="100" d="M35.7 73.83L60 73.83L84.3 73.83L93.7 99"/></g>
-<g class="a-rp"><path class="a-r0" pathLength="100" d="M25.6 106.1L26.3 106.8L34.1 99L26.3 91.2L25.6 91.9M27 106.1L26.3 106.8L18.5 99L26.3 91.2L27 91.9"/><path class="a-r0" pathLength="100" d="M93 106.1L93.7 106.8L101.5 99L93.7 91.2L93 91.9M94.4 106.1L93.7 106.8L85.9 99L93.7 91.2L94.4 91.9"/><path class="a-r1" pathLength="100" d="M35 80.93L35.7 81.63L43.5 73.83L35.7 66.03L35 66.73M36.4 80.93L35.7 81.63L27.9 73.83L35.7 66.03L36.4 66.73"/><path class="a-r1" pathLength="100" d="M59.3 80.93L60 81.63L67.8 73.83L60 66.03L59.3 66.73M60.7 80.93L60 81.63L52.2 73.83L60 66.03L60.7 66.73"/><path class="a-r1" pathLength="100" d="M83.6 80.93L84.3 81.63L92.1 73.83L84.3 66.03L83.6 66.73M85 80.93L84.3 81.63L76.5 73.83L84.3 66.03L85 66.73"/><path class="a-r2" pathLength="100" d="M44.4 55.77L45.1 56.47L52.9 48.67L45.1 40.87L44.4 41.57M45.8 55.77L45.1 56.47L37.3 48.67L45.1 40.87L45.8 41.57"/><path class="a-r2" pathLength="100" d="M74.2 55.77L74.9 56.47L82.7 48.67L74.9 40.87L74.2 41.57M75.6 55.77L74.9 56.47L67.1 48.67L74.9 40.87L75.6 41.57"/></g>
-<g class="a-p"><path class="a-p-e1 a-tl" d="M26.3 99L35.7 73.83"/><path class="a-p-e1 a-hd" d="M26.3 99L35.7 73.83"/><path class="a-p-h1 a-tl" d="M35.7 73.83L60 73.83"/><path class="a-p-h1 a-hd" d="M35.7 73.83L60 73.83"/><path class="a-p-h2 a-tl" d="M60 73.83L84.3 73.83"/><path class="a-p-h2 a-hd" d="M60 73.83L84.3 73.83"/><path class="a-p-h3 a-tl" d="M84.3 73.83L93.7 99"/><path class="a-p-h3 a-hd" d="M84.3 73.83L93.7 99"/><path class="a-p-e2 a-tl" d="M35.7 73.83L45.1 48.67"/><path class="a-p-e2 a-hd" d="M35.7 73.83L45.1 48.67"/><path class="a-p-e3 a-tl" d="M45.1 48.67L54.5 23.5"/><path class="a-p-e3 a-hd" d="M45.1 48.67L54.5 23.5"/></g>
-<circle class="a-ring" cx="60" cy="23.5" r="10.5"/>
+<g class="a-tr"><g class="a-to-m"><g class="a-tw a-tw-m" clip-path="url(#a-tw-m)"><g class="a-tc a-tc-m"><path d="M26.3 99L54.5 23.5"/></g></g></g><g class="a-to-h"><g class="a-tw a-tw-h1" clip-path="url(#a-tw-h1)"><g class="a-tc a-tc-h1"><path class="a-sq" d="M35.7 73.83L84.3 73.83"/></g></g><g class="a-tw a-tw-h2" clip-path="url(#a-tw-h2)"><g class="a-tc a-tc-h2"><path d="M84.3 73.83L93.7 99"/></g></g></g></g>
+<g class="a-rp"><path class="a-r0" pathLength="100" d="M25.3 105.2H32.5V92.8H25.3M27.3 105.2H20.1V92.8H27.3"/><path class="a-r0" pathLength="100" d="M92.7 105.2H99.9V92.8H92.7M94.7 105.2H87.5V92.8H94.7"/><path class="a-r1" pathLength="100" d="M34.7 80.03H41.9V67.63H34.7M36.7 80.03H29.5V67.63H36.7"/><path class="a-r1" pathLength="100" d="M59 80.03H66.2V67.63H59M61 80.03H53.8V67.63H61"/><path class="a-r1" pathLength="100" d="M83.3 80.03H90.5V67.63H83.3M85.3 80.03H78.1V67.63H85.3"/><path class="a-r2" pathLength="100" d="M44.1 54.87H51.3V42.47H44.1M46.1 54.87H38.9V42.47H46.1"/><path class="a-r2" pathLength="100" d="M73.9 54.87H81.1V42.47H73.9M75.9 54.87H68.7V42.47H75.9"/></g>
+<g class="a-p"><g clip-path="url(#a-pc-e1)"><g class="a-pm a-p-e1"><path class="a-tl" d="M26.3 99L29.799 89.632"/><path class="a-hd" d="M28.539 93.004L29.799 89.632"/></g></g><g clip-path="url(#a-pc-h1)"><g class="a-pm a-p-h1"><path class="a-tl" d="M35.7 73.83L45.7 73.83"/><path class="a-hd" d="M42.1 73.83L45.7 73.83"/></g></g><g clip-path="url(#a-pc-h2)"><g class="a-pm a-p-h2"><path class="a-tl" d="M60 73.83L70 73.83"/><path class="a-hd" d="M66.4 73.83L70 73.83"/></g></g><g clip-path="url(#a-pc-h3)"><g class="a-pm a-p-h3"><path class="a-tl" d="M84.3 73.83L87.799 83.198"/><path class="a-hd" d="M86.539 79.826L87.799 83.198"/></g></g><g clip-path="url(#a-pc-e2)"><g class="a-pm a-p-e2"><path class="a-tl" d="M35.7 73.83L39.2 64.462"/><path class="a-hd" d="M37.94 67.835L39.2 64.462"/></g></g><g clip-path="url(#a-pc-e3)"><g class="a-pm a-p-e3"><path class="a-tl" d="M45.1 48.67L48.599 39.302"/><path class="a-hd" d="M47.339 42.674L48.599 39.302"/></g></g></g>
+<rect class="a-ring" x="47.5" y="15.1" width="25" height="16.8"/>
 <g class="a-n">
-<g><path class="a-b" d="M26.3 96L29.3 99L26.3 102L23.3 99Z"/><path class="a-tn" d="M26.3 96L29.3 99L26.3 102L23.3 99Z"/><path class="a-lit a-lit-l0" d="M26.3 96L29.3 99L26.3 102L23.3 99Z"/><path class="a-o" d="M26.3 96L29.3 99L26.3 102L23.3 99Z"/></g>
-<g><path class="a-b" d="M35.7 70.83L38.7 73.83L35.7 76.83L32.7 73.83Z"/><path class="a-tn" d="M35.7 70.83L38.7 73.83L35.7 76.83L32.7 73.83Z"/><path class="a-lit a-lit-l1" d="M35.7 70.83L38.7 73.83L35.7 76.83L32.7 73.83Z"/><path class="a-o" d="M35.7 70.83L38.7 73.83L35.7 76.83L32.7 73.83Z"/></g>
-<g><path class="a-b" d="M45.1 45.67L48.1 48.67L45.1 51.67L42.1 48.67Z"/><path class="a-tn" d="M45.1 45.67L48.1 48.67L45.1 51.67L42.1 48.67Z"/><path class="a-lit a-lit-l2" d="M45.1 45.67L48.1 48.67L45.1 51.67L42.1 48.67Z"/><path class="a-o" d="M45.1 45.67L48.1 48.67L45.1 51.67L42.1 48.67Z"/></g>
-<g><path class="a-b" d="M60 70.83L63 73.83L60 76.83L57 73.83Z"/><path class="a-tn" d="M60 70.83L63 73.83L60 76.83L57 73.83Z"/><path class="a-lit a-lit-m" d="M60 70.83L63 73.83L60 76.83L57 73.83Z"/><path class="a-o" d="M60 70.83L63 73.83L60 76.83L57 73.83Z"/></g>
-<g><path class="a-b" d="M84.3 70.83L87.3 73.83L84.3 76.83L81.3 73.83Z"/><path class="a-tn" d="M84.3 70.83L87.3 73.83L84.3 76.83L81.3 73.83Z"/><path class="a-lit a-lit-r1" d="M84.3 70.83L87.3 73.83L84.3 76.83L81.3 73.83Z"/><path class="a-o" d="M84.3 70.83L87.3 73.83L84.3 76.83L81.3 73.83Z"/></g>
-<g><path class="a-b" d="M74.9 45.67L77.9 48.67L74.9 51.67L71.9 48.67Z"/><path class="a-tn" d="M74.9 45.67L77.9 48.67L74.9 51.67L71.9 48.67Z"/><path class="a-o" d="M74.9 45.67L77.9 48.67L74.9 51.67L71.9 48.67Z"/></g>
-<g><path class="a-b" d="M93.7 96L96.7 99L93.7 102L90.7 99Z"/><path class="a-tn" d="M93.7 96L96.7 99L93.7 102L90.7 99Z"/><path class="a-o" d="M93.7 96L96.7 99L93.7 102L90.7 99Z"/><path class="a-x" d="M89.3 103.4L98.1 94.6"/></g>
-<g><path class="a-b" d="M60 18L65.5 23.5L60 29L54.5 23.5Z"/><path class="a-tn" d="M60 18L65.5 23.5L60 29L54.5 23.5Z"/><path class="a-v" d="M60 18L65.5 23.5L60 29L54.5 23.5Z"/><path class="a-o" d="M60 18L65.5 23.5L60 29L54.5 23.5Z"/></g>
+<g><path class="a-b" d="M23.7 96.4H28.9V101.6H23.7Z"/><path class="a-lit a-lit-l0" d="M23.7 96.4H28.9V101.6H23.7Z"/><path class="a-o" d="M23.7 96.4H28.9V101.6H23.7Z"/></g>
+<g><path class="a-b" d="M33.1 71.23H38.3V76.43H33.1Z"/><path class="a-lit a-lit-l1" d="M33.1 71.23H38.3V76.43H33.1Z"/><path class="a-o" d="M33.1 71.23H38.3V76.43H33.1Z"/></g>
+<g><path class="a-b" d="M42.5 46.07H47.7V51.27H42.5Z"/><path class="a-lit a-lit-l2" d="M42.5 46.07H47.7V51.27H42.5Z"/><path class="a-o" d="M42.5 46.07H47.7V51.27H42.5Z"/></g>
+<g><path class="a-b" d="M57.4 71.23H62.6V76.43H57.4Z"/><path class="a-lit a-lit-m" d="M57.4 71.23H62.6V76.43H57.4Z"/><path class="a-o" d="M57.4 71.23H62.6V76.43H57.4Z"/></g>
+<g><path class="a-b" d="M81.7 71.23H86.9V76.43H81.7Z"/><path class="a-lit a-lit-r1" d="M81.7 71.23H86.9V76.43H81.7Z"/><path class="a-o" d="M81.7 71.23H86.9V76.43H81.7Z"/></g>
+<g><path class="a-b" d="M72.3 46.07H77.5V51.27H72.3Z"/><path class="a-o" d="M72.3 46.07H77.5V51.27H72.3Z"/></g>
+<g><path class="a-b" d="M91.1 96.4H96.3V101.6H91.1Z"/><path class="a-o" d="M91.1 96.4H96.3V101.6H91.1Z"/><path class="a-x" d="M89.3 103.4L98.1 94.6"/></g>
+<g><path class="a-b" d="M54.5 19.8H65.5V27.2H54.5Z"/><path class="a-v" d="M54.5 19.8H65.5V27.2H54.5Z"/><path class="a-o" d="M54.5 19.8H65.5V27.2H54.5Z"/></g>
 </g>
-</svg><!-- /glyph:a --></div>
+<rect class="p-home-cover" x="-10" y="-20" width="140" height="160" fill="url(#a-cov)"/></svg><!-- /glyph:a --></div>
+    <div class="tile tile--glyph t-c" aria-hidden="true"><!-- glyph:c --><svg class="glyph" viewBox="0 0 120 120" focusable="false"><defs><linearGradient id="c-cov" gradientUnits="userSpaceOnUse" x1="0" y1="-20" x2="0" y2="0"><stop offset="0" stop-color="#292623" stop-opacity="0"/><stop offset="1" stop-color="#292623"/></linearGradient><g id="c-dots"><circle cx="55.71" cy="16" r="1.05" style="r:calc(1.05px*var(--k,1))"/><circle cx="62" cy="16" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="68.29" cy="16" r="1.05" style="r:calc(1.05px*var(--k,1))"/><circle cx="43.14" cy="22.29" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="49.43" cy="22.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="22.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="22.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="22.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="22.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="22.29" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="30.57" cy="28.57" r="1.01" style="r:calc(1.01px*var(--k,1))"/><circle cx="36.86" cy="28.57" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="43.14" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="28.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="87.14" cy="28.57" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="93.43" cy="28.57" r="1.01" style="r:calc(1.01px*var(--k,1))"/><circle cx="30.57" cy="34.86" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="36.86" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="34.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="87.14" cy="34.86" r="1.58" style="r:calc(1.58px*var(--k,1))"/><circle cx="93.43" cy="34.86" r="0.9" style="r:calc(0.9px*var(--k,1))"/><circle cx="24.29" cy="41.14" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="30.57" cy="41.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="41.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="41.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="41.14" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="55.71" cy="41.14" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="62" cy="41.14" r="0.93" style="r:calc(0.93px*var(--k,1))"/><circle cx="68.29" cy="41.14" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="74.57" cy="41.14" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="80.86" cy="41.14" r="1.52" style="r:calc(1.52px*var(--k,1))"/><circle cx="24.29" cy="47.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="30.57" cy="47.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="47.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="47.43" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="18" cy="53.71" r="1.05" style="r:calc(1.05px*var(--k,1))"/><circle cx="24.29" cy="53.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="30.57" cy="53.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="53.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="53.71" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="18" cy="60" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="24.29" cy="60" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="30.57" cy="60" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="60" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="60" r="0.93" style="r:calc(0.93px*var(--k,1))"/><circle cx="18" cy="66.29" r="1.05" style="r:calc(1.05px*var(--k,1))"/><circle cx="24.29" cy="66.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="30.57" cy="66.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="66.29" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="66.29" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="24.29" cy="72.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="30.57" cy="72.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="72.57" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="72.57" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="24.29" cy="78.86" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="30.57" cy="78.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="36.86" cy="78.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="78.86" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="78.86" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="55.71" cy="78.86" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="62" cy="78.86" r="0.93" style="r:calc(0.93px*var(--k,1))"/><circle cx="68.29" cy="78.86" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="74.57" cy="78.86" r="1.56" style="r:calc(1.56px*var(--k,1))"/><circle cx="80.86" cy="78.86" r="1.52" style="r:calc(1.52px*var(--k,1))"/><circle cx="30.57" cy="85.14" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="36.86" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="43.14" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="85.14" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="87.14" cy="85.14" r="1.58" style="r:calc(1.58px*var(--k,1))"/><circle cx="93.43" cy="85.14" r="0.9" style="r:calc(0.9px*var(--k,1))"/><circle cx="30.57" cy="91.43" r="1.01" style="r:calc(1.01px*var(--k,1))"/><circle cx="36.86" cy="91.43" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="43.14" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="49.43" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="91.43" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="87.14" cy="91.43" r="1.61" style="r:calc(1.61px*var(--k,1))"/><circle cx="93.43" cy="91.43" r="1.01" style="r:calc(1.01px*var(--k,1))"/><circle cx="43.14" cy="97.71" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="49.43" cy="97.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="55.71" cy="97.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="62" cy="97.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="68.29" cy="97.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="74.57" cy="97.71" r="1.62" style="r:calc(1.62px*var(--k,1))"/><circle cx="80.86" cy="97.71" r="1.46" style="r:calc(1.46px*var(--k,1))"/><circle cx="55.71" cy="104" r="1.05" style="r:calc(1.05px*var(--k,1))"/><circle cx="62" cy="104" r="1.14" style="r:calc(1.14px*var(--k,1))"/><circle cx="68.29" cy="104" r="1.05" style="r:calc(1.05px*var(--k,1))"/></g></defs><g class="c-ink"><use href="#c-dots"/></g><rect class="p-home-cover" x="-10" y="-20" width="140" height="160" fill="url(#c-cov)"/></svg><div class="c-wave"><div class="c-lv c-lv1"><div class="c-wave-in"><svg viewBox="0 0 120 120" focusable="false"><use href="#c-dots"/></svg></div></div><div class="c-lv c-lv2"><div class="c-wave-in"><svg viewBox="0 0 120 120" focusable="false"><use href="#c-dots"/></svg></div></div><div class="c-lv c-lv3"><div class="c-wave-in"><svg viewBox="0 0 120 120" focusable="false"><use href="#c-dots"/></svg></div></div><div class="c-lv c-lv4"><div class="c-wave-in"><svg viewBox="0 0 120 120" focusable="false"><use href="#c-dots"/></svg></div></div></div><!-- /glyph:c --></div>
 
-    <!-- row 2 -->
-    <div class="tile t-label" aria-hidden="true">
-      <div class="label">
-        <div class="label-row label-row--ch label-base"><span>K</span><span>K</span><span>A</span><span>C</span><span>H</span><span>I</span></div>
-        <div class="label-row label-row--ch label-hi label-hi--hover"><span>K</span><span>K</span><span>A</span><span>C</span><span>H</span><span>I</span></div>
-        <div class="label-row label-row--by label-base"><span>4B</span><span>4B</span><span>41</span><span>43</span><span>48</span><span>49</span></div>
-        <div class="label-row label-row--by label-hi label-hi--slow"><span>4B</span><span>4B</span><span>41</span><span>43</span><span>48</span><span>49</span></div>
-        <div class="label-row label-row--by label-hi label-hi--hover"><span>4B</span><span>4B</span><span>41</span><span>43</span><span>48</span><span>49</span></div>
-      </div>
-    </div>
-    <div class="tile t-cross" aria-hidden="true"><canvas class="inlay cross-inlay" width="88" height="88" data-scale="1.6" data-angle="1.32" aria-hidden="true"></canvas></div>
-    <a class="tile btn" href="../method/">
-      <span class="btn-top"><span class="btn-idx" aria-hidden="true">01</span><span class="btn-arr" aria-hidden="true">→</span></span>
-      <span class="btn-txt"><span class="btn-ko">작동 원리</span><span class="btn-en" lang="en">Method</span></span>
-    </a>
+    <!-- the session line (proof): session 7F2A, the prototype's sample -->
+    <figure class="tile p-home-sl" aria-labelledby="home-sl-cap">
+      <figcaption class="p-home-sl-cap"><span class="p-home-sl-id" id="home-sl-cap"><b>세션 7F2A</b> · 4분 12초 <span class="kk-sample">샘플 데이터</span></span><a class="kk-link kk-link--arrow p-home-sl-more" href="../why/#why-session"><span>세션 7F2A 자세히 보기</span> <span class="kk-arr" aria-hidden="true">→</span></a></figcaption>
+      <ol class="p-home-sl-track">
+        <li class="p-home-sl-st"><b class="p-home-sl-n">1,284</b><span class="p-home-sl-l">읽기 · 함수</span></li>
+        <li class="p-home-sl-st"><b class="p-home-sl-n">4</b><span class="p-home-sl-l">가설</span></li>
+        <li class="p-home-sl-st"><b class="p-home-sl-n">1</b><span class="p-home-sl-l">추적 · 경로</span>
+          <ul class="p-home-sl-drop"><li><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-end-rejected"/></svg>기각 2</li><li><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-end-hold"/></svg>보류 1</li></ul></li>
+        <li class="p-home-sl-st" data-s="proven"><i class="p-home-sl-edge"></i><i class="p-home-sl-pc" style="--k:0"></i><i class="p-home-sl-pc" style="--k:1"></i><i class="p-home-sl-pc" style="--k:2"></i><b class="p-home-sl-n">3/3</b><span class="p-home-sl-l">재현</span></li>
+        <li class="p-home-sl-st"><b class="p-home-sl-n"><svg class="kk-sym p-home-sl-f01" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>F-01</b><span class="p-home-sl-l">보고 · 초안</span></li>
+        <li class="p-home-sl-st p-home-sl-end"><b class="p-home-sl-n">사람 차례</b><span class="p-home-sl-l">검토 대기</span></li>
+      </ol>
+    </figure>
 
-    <!-- row 3 -->
-    <div class="tile tile--glyph t-c" aria-hidden="true"><!-- glyph:c --><svg class="glyph" viewBox="0 0 120 120" focusable="false"><g class="c-ink"><circle cx="55.71" cy="16" r="1.05" style="--n:#BCBCCE;animation-delay:-6.36s"/><circle cx="62" cy="16" r="1.14" style="--n:#B5B8CA;animation-delay:-6.61s"/><circle cx="68.29" cy="16" r="1.05" style="--n:#A8AEC3;animation-delay:-6.86s"/><circle cx="43.14" cy="22.29" r="1.46" style="--n:#C2BFC8;animation-delay:-5.8s"/><circle cx="49.43" cy="22.29" r="1.62" style="--n:#BCB7CD;animation-delay:-6.05s"/><circle cx="55.71" cy="22.29" r="1.62" style="--n:#B8B5CE;animation-delay:-6.32s"/><circle cx="62" cy="22.29" r="1.62" style="--n:#B2B2CA;animation-delay:-6.61s"/><circle cx="68.29" cy="22.29" r="1.62" style="--n:#A0AFC2;animation-delay:-6.9s"/><circle cx="74.57" cy="22.29" r="1.62" style="--n:#93A9BC;animation-delay:-7.18s"/><circle cx="80.86" cy="22.29" r="1.46" style="--n:#94A6BB;animation-delay:-7.42s"/><circle cx="30.57" cy="28.57" r="1.01" style="--n:#D2CDD8;animation-delay:-5.24s"/><circle cx="36.86" cy="28.57" r="1.61" style="--n:#D2CDD7;animation-delay:-5.43s"/><circle cx="43.14" cy="28.57" r="1.62" style="--n:#D2C5D4;animation-delay:-5.67s"/><circle cx="49.43" cy="28.57" r="1.62" style="--n:#C8BAD2;animation-delay:-5.95s"/><circle cx="55.71" cy="28.57" r="1.62" style="--n:#AEB2D0;animation-delay:-6.27s"/><circle cx="62" cy="28.57" r="1.62" style="--n:#ABAFC8;animation-delay:-6.61s"/><circle cx="68.29" cy="28.57" r="1.62" style="--n:#96A7C0;animation-delay:-6.96s"/><circle cx="74.57" cy="28.57" r="1.62" style="--n:#8BA4C0;animation-delay:-7.28s"/><circle cx="80.86" cy="28.57" r="1.62" style="--n:#94A5C0;animation-delay:-7.56s"/><circle cx="87.14" cy="28.57" r="1.61" style="--n:#96A3BF;animation-delay:-7.79s"/><circle cx="93.43" cy="28.57" r="1.01" style="--n:#92A3BE;animation-delay:-7.99s"/><circle cx="30.57" cy="34.86" r="1.61" style="--n:#E3DCE9;animation-delay:-5.04s"/><circle cx="36.86" cy="34.86" r="1.62" style="--n:#E2E0EA;animation-delay:-5.24s"/><circle cx="43.14" cy="34.86" r="1.62" style="--n:#D4DAE2;animation-delay:-5.49s"/><circle cx="49.43" cy="34.86" r="1.62" style="--n:#B7C0DB;animation-delay:-5.8s"/><circle cx="55.71" cy="34.86" r="1.62" style="--n:#A4B2D2;animation-delay:-6.18s"/><circle cx="62" cy="34.86" r="1.62" style="--n:#9EB3C9;animation-delay:-6.61s"/><circle cx="68.29" cy="34.86" r="1.62" style="--n:#8CA3C5;animation-delay:-7.04s"/><circle cx="74.57" cy="34.86" r="1.62" style="--n:#97A7C5;animation-delay:-7.42s"/><circle cx="80.86" cy="34.86" r="1.62" style="--n:#98AEC5;animation-delay:-7.74s"/><circle cx="87.14" cy="34.86" r="1.58" style="--n:#9AABC4;animation-delay:-7.99s"/><circle cx="93.43" cy="34.86" r="0.9" style="--n:#9AA7C4;animation-delay:-8.18s"/><circle cx="24.29" cy="41.14" r="1.46" style="--n:#D4DDDD;animation-delay:-4.67s"/><circle cx="30.57" cy="41.14" r="1.62" style="--n:#DDEAEA;animation-delay:-4.81s"/><circle cx="36.86" cy="41.14" r="1.62" style="--n:#E0F2EC;animation-delay:-4.99s"/><circle cx="43.14" cy="41.14" r="1.62" style="--n:#DFEBE5;animation-delay:-5.24s"/><circle cx="49.43" cy="41.14" r="1.56" style="--n:#CCD1D3;animation-delay:-5.58s"/><circle cx="55.71" cy="41.14" r="1.14" style="--n:#AAB5C2;animation-delay:-6.05s"/><circle cx="62" cy="41.14" r="0.93" style="--n:#96C0C7;animation-delay:-6.61s"/><circle cx="68.29" cy="41.14" r="1.14" style="--n:#95ADCD;animation-delay:-7.18s"/><circle cx="74.57" cy="41.14" r="1.56" style="--n:#98B6C9;animation-delay:-7.64s"/><circle cx="80.86" cy="41.14" r="1.52" style="--n:#95B6C7;animation-delay:-7.99s"/><circle cx="24.29" cy="47.43" r="1.62" style="--n:#CAD6D8;animation-delay:-4.43s"/><circle cx="30.57" cy="47.43" r="1.62" style="--n:#CBD8E2;animation-delay:-4.53s"/><circle cx="36.86" cy="47.43" r="1.62" style="--n:#D9E3EA;animation-delay:-4.67s"/><circle cx="43.14" cy="47.43" r="1.56" style="--n:#E3E3E4;animation-delay:-4.89s"/><circle cx="18" cy="53.71" r="1.05" style="--n:#BFB4C2;animation-delay:-4.11s"/><circle cx="24.29" cy="53.71" r="1.62" style="--n:#B1B1CB;animation-delay:-4.15s"/><circle cx="30.57" cy="53.71" r="1.62" style="--n:#D0B3D9;animation-delay:-4.21s"/><circle cx="36.86" cy="53.71" r="1.62" style="--n:#CEBCDC;animation-delay:-4.29s"/><circle cx="43.14" cy="53.71" r="1.14" style="--n:#BBB4DB;animation-delay:-4.43s"/><circle cx="18" cy="60" r="1.14" style="--n:#A2B5CD;animation-delay:-3.86s"/><circle cx="24.29" cy="60" r="1.62" style="--n:#C0ACCA;animation-delay:-3.86s"/><circle cx="30.57" cy="60" r="1.62" style="--n:#E0AFD6;animation-delay:-3.86s"/><circle cx="36.86" cy="60" r="1.62" style="--n:#D8AAD3;animation-delay:-3.86s"/><circle cx="43.14" cy="60" r="0.93" style="--n:#C8A9D0;animation-delay:-3.86s"/><circle cx="18" cy="66.29" r="1.05" style="--n:#BBB2CC;animation-delay:-3.61s"/><circle cx="24.29" cy="66.29" r="1.62" style="--n:#CBAFC8;animation-delay:-3.57s"/><circle cx="30.57" cy="66.29" r="1.62" style="--n:#D6B6CE;animation-delay:-3.52s"/><circle cx="36.86" cy="66.29" r="1.62" style="--n:#D4B3CC;animation-delay:-3.43s"/><circle cx="43.14" cy="66.29" r="1.14" style="--n:#C3ACC6;animation-delay:-3.3s"/><circle cx="24.29" cy="72.57" r="1.62" style="--n:#C6A8CA;animation-delay:-3.3s"/><circle cx="30.57" cy="72.57" r="1.62" style="--n:#C7A9CB;animation-delay:-3.2s"/><circle cx="36.86" cy="72.57" r="1.62" style="--n:#C4A6C8;animation-delay:-3.05s"/><circle cx="43.14" cy="72.57" r="1.56" style="--n:#BEA0C7;animation-delay:-2.83s"/><circle cx="24.29" cy="78.86" r="1.46" style="--n:#D0A5CF;animation-delay:-3.05s"/><circle cx="30.57" cy="78.86" r="1.62" style="--n:#D1A3CD;animation-delay:-2.92s"/><circle cx="36.86" cy="78.86" r="1.62" style="--n:#CB9DC7;animation-delay:-2.74s"/><circle cx="43.14" cy="78.86" r="1.62" style="--n:#C59BC6;animation-delay:-2.49s"/><circle cx="49.43" cy="78.86" r="1.56" style="--n:#BBA2C9;animation-delay:-2.14s"/><circle cx="55.71" cy="78.86" r="1.14" style="--n:#B8AECD;animation-delay:-1.68s"/><circle cx="62" cy="78.86" r="0.93" style="--n:#B6D1D2;animation-delay:-1.11s"/><circle cx="68.29" cy="78.86" r="1.14" style="--n:#CED0D7;animation-delay:-0.55s"/><circle cx="74.57" cy="78.86" r="1.56" style="--n:#D2D4DA;animation-delay:-0.08s"/><circle cx="80.86" cy="78.86" r="1.52" style="--n:#CBD8E0;animation-delay:-10.74s"/><circle cx="30.57" cy="85.14" r="1.61" style="--n:#DEA9C6;animation-delay:-2.68s"/><circle cx="36.86" cy="85.14" r="1.62" style="--n:#CDA1C0;animation-delay:-2.49s"/><circle cx="43.14" cy="85.14" r="1.62" style="--n:#AF99C1;animation-delay:-2.24s"/><circle cx="49.43" cy="85.14" r="1.62" style="--n:#BDA4C9;animation-delay:-1.92s"/><circle cx="55.71" cy="85.14" r="1.62" style="--n:#C4B4D0;animation-delay:-1.54s"/><circle cx="62" cy="85.14" r="1.62" style="--n:#C5D9CF;animation-delay:-1.11s"/><circle cx="68.29" cy="85.14" r="1.62" style="--n:#C4CADA;animation-delay:-0.68s"/><circle cx="74.57" cy="85.14" r="1.62" style="--n:#D5D7DE;animation-delay:-0.3s"/><circle cx="80.86" cy="85.14" r="1.62" style="--n:#D5DDDE;animation-delay:-10.99s"/><circle cx="87.14" cy="85.14" r="1.58" style="--n:#CDD1DD;animation-delay:-10.74s"/><circle cx="93.43" cy="85.14" r="0.9" style="--n:#D5CFDA;animation-delay:-10.54s"/><circle cx="30.57" cy="91.43" r="1.01" style="--n:#D3B4C9;animation-delay:-2.49s"/><circle cx="36.86" cy="91.43" r="1.61" style="--n:#A3CCB6;animation-delay:-2.29s"/><circle cx="43.14" cy="91.43" r="1.62" style="--n:#B4D2B5;animation-delay:-2.06s"/><circle cx="49.43" cy="91.43" r="1.62" style="--n:#CAACCB;animation-delay:-1.78s"/><circle cx="55.71" cy="91.43" r="1.62" style="--n:#DDBDD5;animation-delay:-1.46s"/><circle cx="62" cy="91.43" r="1.62" style="--n:#CBC7D4;animation-delay:-1.11s"/><circle cx="68.29" cy="91.43" r="1.62" style="--n:#CBDCD4;animation-delay:-0.77s"/><circle cx="74.57" cy="91.43" r="1.62" style="--n:#C8D4D8;animation-delay:-0.45s"/><circle cx="80.86" cy="91.43" r="1.62" style="--n:#CBD2D9;animation-delay:-0.17s"/><circle cx="87.14" cy="91.43" r="1.61" style="--n:#CCD6D7;animation-delay:-10.93s"/><circle cx="93.43" cy="91.43" r="1.01" style="--n:#C9D5D3;animation-delay:-10.74s"/><circle cx="43.14" cy="97.71" r="1.46" style="--n:#B7BDC7;animation-delay:-1.92s"/><circle cx="49.43" cy="97.71" r="1.62" style="--n:#E4BDD3;animation-delay:-1.68s"/><circle cx="55.71" cy="97.71" r="1.62" style="--n:#DBC0D5;animation-delay:-1.4s"/><circle cx="62" cy="97.71" r="1.62" style="--n:#DAC6D4;animation-delay:-1.11s"/><circle cx="68.29" cy="97.71" r="1.62" style="--n:#CFC5D3;animation-delay:-0.82s"/><circle cx="74.57" cy="97.71" r="1.62" style="--n:#C2BECF;animation-delay:-0.55s"/><circle cx="80.86" cy="97.71" r="1.46" style="--n:#C0BCCD;animation-delay:-0.3s"/><circle cx="55.71" cy="104" r="1.05" style="--n:#C3CCC3;animation-delay:-1.36s"/><circle cx="62" cy="104" r="1.14" style="--n:#C1C0CB;animation-delay:-1.11s"/><circle cx="68.29" cy="104" r="1.05" style="--n:#C3C1CE;animation-delay:-0.86s"/></g></svg><!-- /glyph:c --></div>
-    <a class="tile btn" href="../console/">
-      <span class="btn-top"><span class="btn-idx" aria-hidden="true">02</span><span class="btn-arr" aria-hidden="true">→</span></span>
-      <span class="btn-txt"><span class="btn-ko">콘솔</span><span class="btn-en" lang="en">Console</span></span>
-    </a>
-    <div class="tile t-trace" aria-hidden="true">
-      <div class="trace-body">
-        <span class="trace-tag">SAMPLE</span>
-        <ol class="trace-log">
-          <li class="trace-head">trace 7F2A</li>
-          <li><span class="trace-arrow">→</span> decode_image</li>
-          <li><span class="trace-arrow">→</span> parse_header</li>
-          <li><span class="trace-arrow">→</span> read_chunk</li>
-          <li><span class="trace-arrow">→</span> copy_rows</li>
-          <li class="trace-ok">✓ F-01 확인</li>
-        </ol>
-      </div>
-    </div>
-    <div class="tile tile--glyph t-h" aria-hidden="true"><!-- glyph:h --><svg class="glyph" viewBox="0 0 120 120" focusable="false"><defs><clipPath id="h-clip"><path d="M16 16H40V50H80V16H104V104H80V72H40V104H16Z"/></clipPath><pattern id="h-nacre" patternUnits="userSpaceOnUse" x="-42.54" y="-48.4" width="150" height="150"><image href="../../assets/najeon/tiles/najeon-512.webp" width="150" height="150"/></pattern><path id="h-w" d="M0 -13.33C0.84 -10.89 1.6 -8.44 1.6 -6C1.6 -3.56 0.84 -1.11 0 1.33C-0.84 3.78 -1.6 6.22 -1.6 8.67C-1.6 11.11 -0.84 13.56 0 16C0.84 18.44 1.6 20.89 1.6 23.33C1.6 25.78 0.84 28.22 0 30.67C-0.84 33.11 -1.6 35.56 -1.6 38C-1.6 40.44 -0.84 42.89 0 45.33C0.84 47.78 1.6 50.22 1.6 52.67C1.6 55.11 0.84 57.56 0 60C-0.84 62.44 -1.6 64.89 -1.6 67.33C-1.6 69.78 -0.84 72.22 0 74.67C0.84 77.11 1.6 79.56 1.6 82C1.6 84.44 0.84 86.89 0 89.33C-0.84 91.78 -1.6 94.22 -1.6 96.67C-1.6 99.11 -0.84 101.56 0 104C0.84 106.44 1.6 108.89 1.6 111.33C1.6 113.78 0.84 116.22 0 118.67C-0.84 121.11 -1.6 123.56 -1.6 126C-1.6 128.44 -0.84 130.89 0 133.33"/><path id="h-v" d="M0 -13.33C-0.84 -10.89 -1.6 -8.44 -1.6 -6C-1.6 -3.56 -0.84 -1.11 0 1.33C0.84 3.78 1.6 6.22 1.6 8.67C1.6 11.11 0.84 13.56 0 16C-0.84 18.44 -1.6 20.89 -1.6 23.33C-1.6 25.78 -0.84 28.22 0 30.67C0.84 33.11 1.6 35.56 1.6 38C1.6 40.44 0.84 42.89 0 45.33C-0.84 47.78 -1.6 50.22 -1.6 52.67C-1.6 55.11 -0.84 57.56 0 60C0.84 62.44 1.6 64.89 1.6 67.33C1.6 69.78 0.84 72.22 0 74.67C-0.84 77.11 -1.6 79.56 -1.6 82C-1.6 84.44 -0.84 86.89 0 89.33C0.84 91.78 1.6 94.22 1.6 96.67C1.6 99.11 0.84 101.56 0 104C-0.84 106.44 -1.6 108.89 -1.6 111.33C-1.6 113.78 -0.84 116.22 0 118.67C0.84 121.11 1.6 123.56 1.6 126C1.6 128.44 0.84 130.89 0 133.33"/><mask id="h-m" maskUnits="userSpaceOnUse" x="16" y="16" width="88" height="88"><g class="h-mk"><g class="h-db"><g class="h-vb"><use href="#h-v" x="13.23"/><use href="#h-v" x="18.15"/><use href="#h-v" x="23.08"/><use href="#h-v" x="28"/><use href="#h-v" x="32.92"/><use href="#h-v" x="37.85"/><use href="#h-v" x="42.77"/><use href="#h-v" x="47.69"/><use href="#h-v" x="52.62"/><use href="#h-v" x="57.54"/><use href="#h-v" x="62.46"/><use href="#h-v" x="67.38"/><use href="#h-v" x="72.31"/><use href="#h-v" x="77.23"/><use href="#h-v" x="82.15"/><use href="#h-v" x="87.08"/><use href="#h-v" x="92"/><use href="#h-v" x="96.92"/><use href="#h-v" x="101.85"/><use href="#h-v" x="106.77"/><use href="#h-v" x="111.69"/><use href="#h-v" x="116.62"/></g></g></g></mask></defs><g class="h-lines" clip-path="url(#h-clip)"><g class="h-a"><g class="h-da"><use href="#h-w" x="3.38"/><use href="#h-w" x="8.31"/><use href="#h-w" x="13.23"/><use href="#h-w" x="18.15"/><use href="#h-w" x="23.08"/><use href="#h-w" x="28"/><use href="#h-w" x="32.92"/><use href="#h-w" x="37.85"/><use href="#h-w" x="42.77"/><use href="#h-w" x="47.69"/><use href="#h-w" x="52.62"/><use href="#h-w" x="57.54"/><use href="#h-w" x="62.46"/><use href="#h-w" x="67.38"/><use href="#h-w" x="72.31"/><use href="#h-w" x="77.23"/><use href="#h-w" x="82.15"/><use href="#h-w" x="87.08"/><use href="#h-w" x="92"/><use href="#h-w" x="96.92"/><use href="#h-w" x="101.85"/><use href="#h-w" x="106.77"/></g></g><rect class="h-b" x="16" y="16" width="88" height="88" fill="url(#h-nacre)" mask="url(#h-m)"/></g></svg><!-- /glyph:h --></div>
-
-    <!-- row 4 -->
-    <a class="tile btn" href="../report/">
-      <span class="btn-top"><span class="btn-idx" aria-hidden="true">03</span><span class="btn-arr" aria-hidden="true">→</span></span>
-      <span class="btn-txt"><span class="btn-ko">보고서</span><span class="btn-en" lang="en">Report</span></span>
-    </a>
     <div class="tile tile--glyph t-i" aria-hidden="true"><!-- glyph:i --><svg class="glyph" viewBox="0 0 120 120" focusable="false">
-<defs><pattern id="i-nacre" patternUnits="userSpaceOnUse" x="15" y="7.27" width="90" height="90"><image href="../../assets/najeon/tiles/najeon-512.webp" width="90" height="90"/></pattern><clipPath id="i-clip"><path d="M26 16H94V36H74.85V84H94V104H26V84H45.15V36H26Z"/></clipPath></defs>
+<defs><clipPath id="i-clip"><path d="M26 16H94V38H74.85V82H94V104H26V82H45.15V38H26Z"/></clipPath></defs>
 <g class="i-dump" clip-path="url(#i-clip)"><g class="i-scroll">
 <g class="i-rows">
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="20.84">89<tspan class="i-p">504E47</tspan>0D0A1A</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="28.34">0A<tspan class="i-p">5C</tspan>01E00D<tspan class="i-p">4948</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="35.84"><tspan class="i-p">4452</tspan>7F<tspan class="i-z">00</tspan><tspan class="i-p">4B4B41</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="43.34"><tspan class="i-p">434849</tspan>0806<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="50.84"><tspan class="i-p">3A</tspan>7F1C<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan>D417</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="58.34">1C<tspan class="i-p">74455874</tspan><tspan class="i-z">00</tspan><tspan class="i-p">4B</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="65.84"><tspan class="i-p">4B41434849</tspan><tspan class="i-z">00</tspan>D2</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="73.34">9A<tspan class="i-p">3F</tspan><tspan class="i-z">00</tspan><tspan class="i-p">6B20</tspan>1E<tspan class="i-p">49</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="80.84"><tspan class="i-p">44415478</tspan>9CEDC1</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="88.34"><tspan class="i-z">00</tspan><tspan class="i-p">4B4B41434849</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="95.84">0D8F<tspan class="i-p">30</tspan><tspan class="i-z">00</tspan>8090FE</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="103.34">AF<tspan class="i-p">6E</tspan>11<tspan class="i-p">49454E44</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="110.84">89<tspan class="i-p">504E47</tspan>0D0A1A</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="118.34">0A<tspan class="i-p">5C</tspan>01E00D<tspan class="i-p">4948</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="125.84"><tspan class="i-p">4452</tspan>7F<tspan class="i-z">00</tspan><tspan class="i-p">4B4B41</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="133.34"><tspan class="i-p">434849</tspan>0806<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="140.84"><tspan class="i-p">3A</tspan>7F1C<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan>D417</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="148.34">1C<tspan class="i-p">74455874</tspan><tspan class="i-z">00</tspan><tspan class="i-p">4B</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="155.84"><tspan class="i-p">4B41434849</tspan><tspan class="i-z">00</tspan>D2</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="163.34">9A<tspan class="i-p">3F</tspan><tspan class="i-z">00</tspan><tspan class="i-p">6B20</tspan>1E<tspan class="i-p">49</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="170.84"><tspan class="i-p">44415478</tspan>9CEDC1</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="178.34"><tspan class="i-z">00</tspan><tspan class="i-p">4B4B41434849</tspan></text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="185.84">0D8F<tspan class="i-p">30</tspan><tspan class="i-z">00</tspan>8090FE</text>
-<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="193.34">AF<tspan class="i-p">6E</tspan>11<tspan class="i-p">49454E44</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="21.76">89<tspan class="i-p">504E47</tspan>0D0A1A</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="29.09">0A<tspan class="i-p">5C</tspan>01E00D<tspan class="i-p">4948</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="36.43"><tspan class="i-p">4452</tspan>7F<tspan class="i-z">00</tspan><tspan class="i-p">4B4B41</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="43.76"><tspan class="i-p">434849</tspan>0806<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="51.09"><tspan class="i-p">3A</tspan>7F1C<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan>D417</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="58.43">1C<tspan class="i-p">74455874</tspan><tspan class="i-z">00</tspan><tspan class="i-p">4B</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="65.76"><tspan class="i-p">4B41434849</tspan><tspan class="i-z">00</tspan>D2</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="73.09">9A<tspan class="i-p">3F</tspan><tspan class="i-z">00</tspan><tspan class="i-p">6B20</tspan>1E<tspan class="i-p">49</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="80.43"><tspan class="i-p">44544178</tspan>9CEDC1</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="87.76"><tspan class="i-z">00</tspan><tspan class="i-p">4B4B41434849</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="95.09">0D8F<tspan class="i-p">30</tspan><tspan class="i-z">00</tspan>8090FE</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="102.43">AF<tspan class="i-p">6E</tspan>11<tspan class="i-p">49454E44</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="109.76">89<tspan class="i-p">504E47</tspan>0D0A1A</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="117.09">0A<tspan class="i-p">5C</tspan>01E00D<tspan class="i-p">4948</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="124.43"><tspan class="i-p">4452</tspan>7F<tspan class="i-z">00</tspan><tspan class="i-p">4B4B41</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="131.76"><tspan class="i-p">434849</tspan>0806<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="139.09"><tspan class="i-p">3A</tspan>7F1C<tspan class="i-p">2E</tspan><tspan class="i-z">00</tspan>D417</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="146.43">1C<tspan class="i-p">74455874</tspan><tspan class="i-z">00</tspan><tspan class="i-p">4B</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="153.76"><tspan class="i-p">4B41434849</tspan><tspan class="i-z">00</tspan>D2</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="161.09">9A<tspan class="i-p">3F</tspan><tspan class="i-z">00</tspan><tspan class="i-p">6B20</tspan>1E<tspan class="i-p">49</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="168.43"><tspan class="i-p">44544178</tspan>9CEDC1</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="175.76"><tspan class="i-z">00</tspan><tspan class="i-p">4B4B41434849</tspan></text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="183.09">0D8F<tspan class="i-p">30</tspan><tspan class="i-z">00</tspan>8090FE</text>
+<text x="26.85 30.15 36.75 40.05 46.65 49.95 56.55 59.85 66.45 69.75 76.35 79.65 86.25 89.55" y="190.43">AF<tspan class="i-p">6E</tspan>11<tspan class="i-p">49454E44</tspan></text>
 </g>
 <g class="i-hov">
-<g class="i-f"><rect x="65.9" y="30.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="30.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.7s"/><text x="66.45 69.75" y="35.84">4B</text></g>
-<g class="i-f"><rect x="65.9" y="120.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="120.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.7s"/><text x="66.45 69.75" y="125.84">4B</text></g>
-<g class="i-f"><rect x="75.8" y="30.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="75.8" y="30.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.57s"/><text x="76.35 79.65" y="35.84">4B</text></g>
-<g class="i-f"><rect x="75.8" y="120.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="75.8" y="120.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.57s"/><text x="76.35 79.65" y="125.84">4B</text></g>
-<g class="i-f"><rect x="85.7" y="30.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="30.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.44s"/><text x="86.25 89.55" y="35.84">41</text></g>
-<g class="i-f"><rect x="85.7" y="120.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="120.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.44s"/><text x="86.25 89.55" y="125.84">41</text></g>
-<g class="i-f"><rect x="26.3" y="38.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="26.3" y="38.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.31s"/><text x="26.85 30.15" y="43.34">43</text></g>
-<g class="i-f"><rect x="26.3" y="128.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="26.3" y="128.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.31s"/><text x="26.85 30.15" y="133.34">43</text></g>
-<g class="i-f"><rect x="36.2" y="38.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="38.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.18s"/><text x="36.75 40.05" y="43.34">48</text></g>
-<g class="i-f"><rect x="36.2" y="128.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="128.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.18s"/><text x="36.75 40.05" y="133.34">48</text></g>
-<g class="i-f"><rect x="46.1" y="38.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="38.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.05s"/><text x="46.65 49.95" y="43.34">49</text></g>
-<g class="i-f"><rect x="46.1" y="128.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="128.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.05s"/><text x="46.65 49.95" y="133.34">49</text></g>
-<g class="i-f"><rect x="85.7" y="53.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="53.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.25s"/><text x="86.25 89.55" y="58.34">4B</text></g>
-<g class="i-f"><rect x="85.7" y="143.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="143.11" width="8" height="6.29" rx=".7" style="animation-delay:-4.25s"/><text x="86.25 89.55" y="148.34">4B</text></g>
-<g class="i-f"><rect x="26.3" y="60.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="26.3" y="60.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.12s"/><text x="26.85 30.15" y="65.84">4B</text></g>
-<g class="i-f"><rect x="26.3" y="150.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="26.3" y="150.61" width="8" height="6.29" rx=".7" style="animation-delay:-4.12s"/><text x="26.85 30.15" y="155.84">4B</text></g>
-<g class="i-f"><rect x="36.2" y="60.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="60.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.99s"/><text x="36.75 40.05" y="65.84">41</text></g>
-<g class="i-f"><rect x="36.2" y="150.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="150.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.99s"/><text x="36.75 40.05" y="155.84">41</text></g>
-<g class="i-f"><rect x="46.1" y="60.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="60.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.86s"/><text x="46.65 49.95" y="65.84">43</text></g>
-<g class="i-f"><rect x="46.1" y="150.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="150.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.86s"/><text x="46.65 49.95" y="155.84">43</text></g>
-<g class="i-f"><rect x="56" y="60.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="56" y="60.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.73s"/><text x="56.55 59.85" y="65.84">48</text></g>
-<g class="i-f"><rect x="56" y="150.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="56" y="150.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.73s"/><text x="56.55 59.85" y="155.84">48</text></g>
-<g class="i-f"><rect x="65.9" y="60.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="60.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.6s"/><text x="66.45 69.75" y="65.84">49</text></g>
-<g class="i-f"><rect x="65.9" y="150.61" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="150.61" width="8" height="6.29" rx=".7" style="animation-delay:-3.6s"/><text x="66.45 69.75" y="155.84">49</text></g>
-<g class="i-f"><rect x="36.2" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.8s"/><text x="36.75 40.05" y="88.34">4B</text></g>
-<g class="i-f"><rect x="36.2" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="36.2" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.8s"/><text x="36.75 40.05" y="178.34">4B</text></g>
-<g class="i-f"><rect x="46.1" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.67s"/><text x="46.65 49.95" y="88.34">4B</text></g>
-<g class="i-f"><rect x="46.1" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="46.1" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.67s"/><text x="46.65 49.95" y="178.34">4B</text></g>
-<g class="i-f"><rect x="56" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="56" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.54s"/><text x="56.55 59.85" y="88.34">41</text></g>
-<g class="i-f"><rect x="56" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="56" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.54s"/><text x="56.55 59.85" y="178.34">41</text></g>
-<g class="i-f"><rect x="65.9" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.41s"/><text x="66.45 69.75" y="88.34">43</text></g>
-<g class="i-f"><rect x="65.9" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="65.9" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.41s"/><text x="66.45 69.75" y="178.34">43</text></g>
-<g class="i-f"><rect x="75.8" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="75.8" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.28s"/><text x="76.35 79.65" y="88.34">48</text></g>
-<g class="i-f"><rect x="75.8" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="75.8" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.28s"/><text x="76.35 79.65" y="178.34">48</text></g>
-<g class="i-f"><rect x="85.7" y="83.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="83.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.15s"/><text x="86.25 89.55" y="88.34">49</text></g>
-<g class="i-f"><rect x="85.7" y="173.11" width="8" height="6.29" rx=".7"/><rect class="i-gl" x="85.7" y="173.11" width="8" height="6.29" rx=".7" style="animation-delay:-3.15s"/><text x="86.25 89.55" y="178.34">49</text></g>
+<g class="i-f"><rect x="65.9" y="31.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="31.33" width="8" height="6" rx=".7" style="animation-delay:-4.70s"/><text x="66.45 69.75" y="36.43">4B</text></g>
+<g class="i-f"><rect x="65.9" y="119.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="119.33" width="8" height="6" rx=".7" style="animation-delay:-4.70s"/><text x="66.45 69.75" y="124.43">4B</text></g>
+<g class="i-f"><rect x="75.8" y="31.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="75.8" y="31.33" width="8" height="6" rx=".7" style="animation-delay:-4.57s"/><text x="76.35 79.65" y="36.43">4B</text></g>
+<g class="i-f"><rect x="75.8" y="119.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="75.8" y="119.33" width="8" height="6" rx=".7" style="animation-delay:-4.57s"/><text x="76.35 79.65" y="124.43">4B</text></g>
+<g class="i-f"><rect x="85.7" y="31.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="31.33" width="8" height="6" rx=".7" style="animation-delay:-4.44s"/><text x="86.25 89.55" y="36.43">41</text></g>
+<g class="i-f"><rect x="85.7" y="119.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="119.33" width="8" height="6" rx=".7" style="animation-delay:-4.44s"/><text x="86.25 89.55" y="124.43">41</text></g>
+<g class="i-f"><rect x="26.3" y="38.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="26.3" y="38.67" width="8" height="6" rx=".7" style="animation-delay:-4.31s"/><text x="26.85 30.15" y="43.76">43</text></g>
+<g class="i-f"><rect x="26.3" y="126.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="26.3" y="126.67" width="8" height="6" rx=".7" style="animation-delay:-4.31s"/><text x="26.85 30.15" y="131.76">43</text></g>
+<g class="i-f"><rect x="36.2" y="38.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="38.67" width="8" height="6" rx=".7" style="animation-delay:-4.18s"/><text x="36.75 40.05" y="43.76">48</text></g>
+<g class="i-f"><rect x="36.2" y="126.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="126.67" width="8" height="6" rx=".7" style="animation-delay:-4.18s"/><text x="36.75 40.05" y="131.76">48</text></g>
+<g class="i-f"><rect x="46.1" y="38.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="38.67" width="8" height="6" rx=".7" style="animation-delay:-4.05s"/><text x="46.65 49.95" y="43.76">49</text></g>
+<g class="i-f"><rect x="46.1" y="126.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="126.67" width="8" height="6" rx=".7" style="animation-delay:-4.05s"/><text x="46.65 49.95" y="131.76">49</text></g>
+<g class="i-f"><rect x="85.7" y="53.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="53.33" width="8" height="6" rx=".7" style="animation-delay:-4.25s"/><text x="86.25 89.55" y="58.43">4B</text></g>
+<g class="i-f"><rect x="85.7" y="141.33" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="141.33" width="8" height="6" rx=".7" style="animation-delay:-4.25s"/><text x="86.25 89.55" y="146.43">4B</text></g>
+<g class="i-f"><rect x="26.3" y="60.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="26.3" y="60.67" width="8" height="6" rx=".7" style="animation-delay:-4.12s"/><text x="26.85 30.15" y="65.76">4B</text></g>
+<g class="i-f"><rect x="26.3" y="148.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="26.3" y="148.67" width="8" height="6" rx=".7" style="animation-delay:-4.12s"/><text x="26.85 30.15" y="153.76">4B</text></g>
+<g class="i-f"><rect x="36.2" y="60.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="60.67" width="8" height="6" rx=".7" style="animation-delay:-3.99s"/><text x="36.75 40.05" y="65.76">41</text></g>
+<g class="i-f"><rect x="36.2" y="148.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="148.67" width="8" height="6" rx=".7" style="animation-delay:-3.99s"/><text x="36.75 40.05" y="153.76">41</text></g>
+<g class="i-f"><rect x="46.1" y="60.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="60.67" width="8" height="6" rx=".7" style="animation-delay:-3.86s"/><text x="46.65 49.95" y="65.76">43</text></g>
+<g class="i-f"><rect x="46.1" y="148.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="148.67" width="8" height="6" rx=".7" style="animation-delay:-3.86s"/><text x="46.65 49.95" y="153.76">43</text></g>
+<g class="i-f"><rect x="56" y="60.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="56" y="60.67" width="8" height="6" rx=".7" style="animation-delay:-3.73s"/><text x="56.55 59.85" y="65.76">48</text></g>
+<g class="i-f"><rect x="56" y="148.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="56" y="148.67" width="8" height="6" rx=".7" style="animation-delay:-3.73s"/><text x="56.55 59.85" y="153.76">48</text></g>
+<g class="i-f"><rect x="65.9" y="60.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="60.67" width="8" height="6" rx=".7" style="animation-delay:-3.60s"/><text x="66.45 69.75" y="65.76">49</text></g>
+<g class="i-f"><rect x="65.9" y="148.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="148.67" width="8" height="6" rx=".7" style="animation-delay:-3.60s"/><text x="66.45 69.75" y="153.76">49</text></g>
+<g class="i-f"><rect x="36.2" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.80s"/><text x="36.75 40.05" y="87.76">4B</text></g>
+<g class="i-f"><rect x="36.2" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="36.2" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.80s"/><text x="36.75 40.05" y="175.76">4B</text></g>
+<g class="i-f"><rect x="46.1" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.67s"/><text x="46.65 49.95" y="87.76">4B</text></g>
+<g class="i-f"><rect x="46.1" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="46.1" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.67s"/><text x="46.65 49.95" y="175.76">4B</text></g>
+<g class="i-f"><rect x="56" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="56" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.54s"/><text x="56.55 59.85" y="87.76">41</text></g>
+<g class="i-f"><rect x="56" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="56" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.54s"/><text x="56.55 59.85" y="175.76">41</text></g>
+<g class="i-f"><rect x="65.9" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.41s"/><text x="66.45 69.75" y="87.76">43</text></g>
+<g class="i-f"><rect x="65.9" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="65.9" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.41s"/><text x="66.45 69.75" y="175.76">43</text></g>
+<g class="i-f"><rect x="75.8" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="75.8" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.28s"/><text x="76.35 79.65" y="87.76">48</text></g>
+<g class="i-f"><rect x="75.8" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="75.8" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.28s"/><text x="76.35 79.65" y="175.76">48</text></g>
+<g class="i-f"><rect x="85.7" y="82.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="82.67" width="8" height="6" rx=".7" style="animation-delay:-3.15s"/><text x="86.25 89.55" y="87.76">49</text></g>
+<g class="i-f"><rect x="85.7" y="170.67" width="8" height="6" rx=".7"/><rect class="i-gl" x="85.7" y="170.67" width="8" height="6" rx=".7" style="animation-delay:-3.15s"/><text x="86.25 89.55" y="175.76">49</text></g>
 </g>
-<g class="i-g i-rest" style="animation-delay:-14.2s"><rect x="65.9" y="60.61" width="8" height="6.29" rx=".7"/><text x="66.45 69.75" y="65.84">49</text></g>
-<g class="i-g i-rest" style="animation-delay:-14.2s"><rect x="65.9" y="150.61" width="8" height="6.29" rx=".7"/><text x="66.45 69.75" y="155.84">49</text></g>
-<g class="i-g" style="animation-delay:-6.7s"><rect x="46.1" y="38.11" width="8" height="6.29" rx=".7"/><text x="46.65 49.95" y="43.34">49</text></g>
-<g class="i-g" style="animation-delay:-6.7s"><rect x="46.1" y="128.11" width="8" height="6.29" rx=".7"/><text x="46.65 49.95" y="133.34">49</text></g>
+<g class="i-g i-rest" style="animation-delay:-14.2s"><rect x="65.9" y="60.67" width="8" height="6" rx=".7"/><text x="66.45 69.75" y="65.76">49</text></g>
+<g class="i-g i-rest" style="animation-delay:-14.2s"><rect x="65.9" y="148.67" width="8" height="6" rx=".7"/><text x="66.45 69.75" y="153.76">49</text></g>
+<g class="i-g" style="animation-delay:-6.7s"><rect x="46.1" y="38.67" width="8" height="6" rx=".7"/><text x="46.65 49.95" y="43.76">49</text></g>
+<g class="i-g" style="animation-delay:-6.7s"><rect x="46.1" y="126.67" width="8" height="6" rx=".7"/><text x="46.65 49.95" y="131.76">49</text></g>
 </g></g>
-<path class="i-edge" d="M26 16H94V36H74.85V84H94V104H26V84H45.15V36H26Z"/>
+<path class="i-edge" d="M26 16H94V38H74.85V82H94V104H26V82H45.15V38H26Z"/>
 </svg><!-- /glyph:i --></div>
+    <a class="tile btn" href="../why/">
+      <span class="btn-arr" aria-hidden="true">→</span>
+      <span class="btn-txt"><span class="btn-pre" aria-hidden="true"><span>많이 찾기보다, 확실히&nbsp;찾습니다.</span></span><span class="btn-t">왜 <span class="p-home-word">KKACHI인가</span></span></span>
+    </a>
     <a class="tile btn" href="../notes/">
-      <span class="btn-top"><span class="btn-idx" aria-hidden="true">04</span><span class="btn-arr" aria-hidden="true">→</span></span>
-      <span class="btn-txt"><span class="btn-ko">연구 노트</span><span class="btn-en" lang="en">Notes</span></span>
+      <span class="btn-arr" aria-hidden="true">→</span>
+      <span class="btn-txt"><span class="btn-pre" aria-hidden="true"><span>첫 노트는 연구&nbsp;프리뷰와 함께 공개합니다.</span></span><span class="btn-t">연구 노트</span></span>
     </a>
-    <a class="tile btn btn--primary" href="../waitlist/">
-      <span class="btn-top"><span class="btn-idx" aria-hidden="true">05</span><span class="btn-arr" aria-hidden="true">→</span></span>
-      <span class="btn-txt"><span class="btn-ko">대기자 명단</span><span class="btn-en" lang="en">Waitlist</span></span>
+    <a class="tile btn" href="../waitlist/">
+      <span class="btn-arr" aria-hidden="true">→</span>
+      <span class="btn-txt"><span class="btn-pre" aria-hidden="true"><span>반가운 소식만 가져오겠습니다.</span></span><span class="btn-t">대기자 명단</span></span>
     </a>
-  </nav>
+  </div>
 
   <div class="intro">
-    <p><strong lang="en">KKACHI</strong>(까치)는 자율 취약점 연구 에이전트입니다.</p>
-    <p>코드와 바이너리를 읽고 가설을 세운 뒤, 호출 경로를 끝까지 따라갑니다. 재현으로 입증된 것만 발견으로 보고합니다.</p>
-    <p>까치가 반가운 소식을 물어 오듯, 확인된 하나만 가져옵니다.</p>
-    <p class="intro-note"><span class="mono" lang="en">PROTOTYPE · 2026</span>격자 속 추적 기록은 설명용 샘플입니다.</p>
-    <div class="still"><input class="still-input sr-only" type="checkbox" id="kk-still"><label class="still-label" for="kk-still"><span class="still-box" aria-hidden="true"></span><span>움직임 멈춤</span> <span class="still-en" lang="en">Pause motion</span></label></div>
+    <div class="p-home-col">
+      <p class="p-home-why">확인되지 않은 경고가 쌓이면, 검토 시간은 그 경고를 하나씩 확인하는 데 쓰입니다.</p>
+      <p>KKACHI는 재현되는 것만 발견으로 올리고, 버린 가설도 이유와 함께 남깁니다.</p>
+      <dl class="p-home-facts">
+        <div><dt>읽는 것</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-in-source"/></svg>소스 코드</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-in-binary"/></svg>바이너리</span></dd></div>
+        <div><dt>돌아가는 곳</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-scope"/></svg>고객 환경 안</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p2"/></svg>KKACHI 격리 환경</span><small>둘 중 고객이 고릅니다.</small></dd></div>
+        <div><dt>받는 것</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-finding"/></svg>발견</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-cmd"/></svg>재현 명령</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-fix"/></svg>수정 방향</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-rejlog"/></svg>기각 기록</span></dd></div>
+        <div><dt>공개</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>사람이 정합니다</span></dd></div>
+      </dl>
+      <p class="p-home-name">이름은 반가운 소식을 물어 온다는 새, 까치에서.</p>
+    </div>
+    <div class="p-home-foot">
+      <p class="intro-note"><span>격자 속 세션 줄은 설명을 위한 <span class="p-home-word">샘플 데이터</span>입니다.</span><span>© 2026 KKACHI · <span class="p-home-word">SEORY0가 만든 프로토타입</span></span></p>
+      <div class="still"><input class="still-input sr-only" type="checkbox" id="kk-still"><label class="still-label" for="kk-still"><span class="still-box" aria-hidden="true"></span><span>움직임 멈춤</span></label></div>
+    </div>
   </div>
 </main>
+<!-- touch screens light the letters (section 8.5): a pointerdown on a letter lights it for 1.6 s -->
+<script>(function(){var m=matchMedia("(hover: none)"),T=new Map,S=".t-k1,.t-k2,.t-a,.t-c,.t-i";function off(t){clearTimeout(T.get(t));T.delete(t);t.classList.remove("is-lit")}document.addEventListener("pointerdown",function(e){var t=m.matches&&e.target.closest&&e.target.closest(S);if(!t)return;clearTimeout(T.get(t));t.classList.add("is-lit");T.set(t,setTimeout(function(){off(t)},1600))},{passive:true});addEventListener("pagehide",function(){T.forEach(function(v,t){off(t)})})})()</script>
+<!-- a press on a way tile answers in its own task (kk.css section 9, .is-going): a primary, unmodified pointerdown or
+     Enter lights the button at once (a modified or middle click opens a tab and leaves the page as it is; Space scrolls,
+     it does not follow a link). It stays lit while the page leaves. It goes when no click follows the release (400 ms),
+     on pointercancel or a context menu, when the 금문 cover reopens without leaving (kk-leaving taken off), and on a
+     bfcache restore, there without the wipe back (.is-snap), under the restored page's own curtain. -->
+<script>(function(){var r=document.documentElement,b=null,t=0,o=null,L=0;function at(e){return e.target instanceof Element?e.target.closest(".grid > .btn"):null}function mod(e){return e.ctrlKey||e.metaKey||e.shiftKey||e.altKey}function off(){clearTimeout(t);if(o){o.disconnect();o=null}if(b){b.classList.remove("is-going");b=null}}function on(x){off();b=x;x.classList.add("is-going")}function wait(){var x=b;clearTimeout(t);t=setTimeout(function(){b===x&&!o&&off()},400)}document.addEventListener("pointerdown",function(e){var x=at(e);x&&e.isPrimary&&e.button===0&&!mod(e)&&on(x)},{passive:true});document.addEventListener("keydown",function(e){var x=at(e);x&&e.key==="Enter"&&!e.repeat&&!mod(e)&&(on(x),wait())});document.addEventListener("pointerup",function(e){b&&(e.pointerType==="mouse"&&at(e)!==b?off():wait())},{passive:true});document.addEventListener("pointercancel",off,{passive:true});document.addEventListener("contextmenu",off);addEventListener("click",function(e){if(!b)return;if(at(e)!==b||e.button!==0||mod(e))return off();clearTimeout(t);if(!e.defaultPrevented||!window.MutationObserver)return;L=0;o=new MutationObserver(function(){r.classList.contains("kk-leaving")?L=1:L&&off()});o.observe(r,{attributes:true,attributeFilter:["class"]})});addEventListener("pageshow",function(e){var x=b;if(!e.persisted||!x)return;x.classList.add("is-snap");off();getComputedStyle(x,"::before").clipPath;requestAnimationFrame(function(){requestAnimationFrame(function(){x.classList.remove("is-snap")})})})})()</script>
+<!-- tiles wholly off screen hold their loops (section 11, .is-off); back in view, each loop takes up the start time it
+     had, so it stands where it would have stood and keeps its phase with the other tiles (the I and the trace tick in
+     turn). Only loops that were running are touched, and only if they run again (the pause switch or a curtain may
+     hold them). -->
+<script>"IntersectionObserver"in window&&(function(){var S=new WeakMap,g=function(t){return t.getAnimations?t.getAnimations({subtree:true}):[]},o=new IntersectionObserver(function(es){es.forEach(function(e){var t=e.target,off=!e.isIntersecting;if(off===t.classList.contains("is-off"))return;if(off){g(t).forEach(function(a){a.playState==="running"&&a.startTime!==null&&S.set(a,a.startTime)});t.classList.add("is-off")}else{t.classList.remove("is-off");g(t).forEach(function(a){var s=S.get(a);S.delete(a);s!=null&&a.playState==="running"&&(a.startTime=s)})}})});document.querySelectorAll(".grid > .tile--glyph, .grid > .p-home-sl").forEach(function(t){o.observe(t)})})()</script>
 <script type="module" src="../../assets/kkachi/transition.js"></script>
 <script type="module" src="../../assets/kkachi/inlay.js"></script>
 </body>

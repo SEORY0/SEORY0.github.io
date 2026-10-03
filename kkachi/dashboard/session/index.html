@@ -1,0 +1,1091 @@
+<!doctype html>
+<!-- KKACHI v4 — dashboard sample: session 7F2A (/kkachi/dashboard/session/). Specs: docs/superpowers/specs/
+     2026-10-02-kkachi-v4-symbol-system-design.md §4 (session detail); research §9.2 E, §3.7 (one time model), §6.3 (lines).
+     Every number comes from assets/kkachi/dash-data.js (SESSION_7F2A, FINDING_F01); the head is written out so it reads
+     without JavaScript, the panels are drawn by the module at the end. noindex, linked from nowhere on the site. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 세션 7F2A · 대시보드 샘플</title>
+<meta name="description" content="KKACHI 대시보드 샘플: 세션 7F2A의 관문 원장, 가설 차선, 호출 그래프, 세션 기록과 재생. 모든 데이터는 샘플입니다.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#292623">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/png" sizes="32x32" href="../../../assets/kkachi/icons/kk-32.png">
+<link rel="apple-touch-icon" href="../../../assets/kkachi/icons/kk-180.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<!-- kk-theme: a saved light theme paints from the first frame (app pages only) -->
+<script>try{if(localStorage.getItem("kk-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+<link rel="preload" href="../../../assets/kkachi/fonts/kk-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="../../../assets/kkachi/dash-data.js">
+<link rel="modulepreload" href="../../../assets/kkachi/kk-system.js">
+<link rel="modulepreload" href="../../../assets/kkachi/kk-app.js">
+<link rel="stylesheet" href="../../../assets/kkachi/kk-system.css">
+<!-- controls that need JS keep their place and hide without it; the panels JS draws give way to one message -->
+<noscript><style>[data-p-dashboard-session-js], [data-kk-theme] { visibility: hidden; } [data-p-panel] { display: none !important; }</style></noscript>
+<style>
+/* ============================================================
+   KKACHI — 세션 7F2A · /kkachi/dashboard/session/ — page CSS only (p-dashboard-session- classes, dashboard-session- ids)
+   One clock drives the page: the head (state, verdict), the gate ledger, the hypothesis lanes, the call graph and its
+   twin, the session log. Lines: --lw-1 hairlines, --lw-2 traced / spines, --lw-3 the one proven path (three weights);
+   textures: dashed claim, solid traced, nacre strips proven (+ the dotted tail of a hold, its end mark).
+   ============================================================ */
+.p-dashboard-session { container-type: inline-size; display: grid; gap: var(--sp-6); align-content: start; }
+.p-dashboard-session > * { min-width: 0; }
+
+/* replay banner: under the bar, edge to edge, holds while the page scrolls */
+.p-dashboard-session-replay { position: sticky; z-index: 14; top: var(--kk-appbar-h, 0px); margin: calc(-1 * var(--sp-6)) calc(-1 * var(--sp-6)) calc(-1 * var(--sp-2)); gap: 6px var(--sp-3); }
+.p-dashboard-session-replay > .kk-sym { flex: none; }
+.p-dashboard-session-replay b { font-weight: var(--w-semibold); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-replay-ctl { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-left: auto; }
+@media (max-width: 599.98px) {
+  .p-dashboard-session-replay { top: var(--p-dashboard-session-strip, 0px); margin: calc(-1 * var(--sp-4)) calc(-1 * var(--sp-4)) calc(-1 * var(--sp-2)); padding-inline: var(--sp-4); }
+  .p-dashboard-session-replay-ctl { margin-left: 0; }
+}
+
+/* head */
+.p-dashboard-session-head { display: grid; gap: var(--sp-3); }
+.p-dashboard-session-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); }
+.p-dashboard-session-h1 { font: var(--w-bold) var(--ui-24)/var(--ui-24-lh) var(--font-sans); letter-spacing: -.02em; }
+.p-dashboard-session-state { display: inline-flex; align-items: center; gap: 7px; font: var(--w-semibold) var(--ui-14)/var(--ui-14-lh) var(--font-sans); color: var(--fg-1); white-space: nowrap; }
+.p-dashboard-session-lead { max-width: 60em; font-size: 15px; line-height: 23px; color: var(--fg-2); }
+.p-dashboard-session-lead b { font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-dashboard-session-ok { color: var(--confirm-t); }
+.p-dashboard-session-verdict .kk-btn { white-space: nowrap; }
+.p-dashboard-session-idents { display: grid; gap: var(--sp-3); padding-top: var(--sp-1); }
+
+
+/* panels and rows */
+.p-dashboard-session-pair { display: grid; gap: var(--sp-5); align-items: stretch; }
+@container (min-width: 860px) { .p-dashboard-session-pair { grid-template-columns: minmax(280px, 4fr) minmax(0, 8fr); } }
+.p-dashboard-session-meta { font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-2); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-panel-t { display: inline-flex; align-items: baseline; gap: var(--sp-2); }
+.p-dashboard-session-panel-t > span { font-weight: var(--w-regular); color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-skel { display: grid; gap: 14px; }
+/* without data the controls have nothing to move */
+.p-dashboard-session-failed :is(.p-dashboard-session-ctl, #dashboard-session-pick, #dashboard-session-order) { visibility: hidden; }
+
+/* gate ledger (the dashed return 기각 → 다음 가설 sits beside the spine, outside the list) */
+.p-dashboard-session-ledger-w { position: relative; }
+.p-dashboard-session-unmade { visibility: hidden; }
+.kk-chips.p-dashboard-session-later .kk-chip { border-style: dotted; color: var(--fg-3); }
+.p-dashboard-session-back { font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); }
+.p-dashboard-session-ledger .kk-chip[href] { color: var(--fg-1); text-decoration: none; }
+@media (hover: hover) { .p-dashboard-session-ledger .kk-chip[href]:hover { background: var(--s2); } }
+.p-dashboard-session-ledger .kk-chip[href]:focus-visible { outline-offset: 2px; }
+
+/* lanes: controls, lanes with their sentences, the axis the ┴ cursor stands on, the slider under the same track */
+.p-dashboard-session-lanes-p { display: flex; flex-direction: column; }
+.p-dashboard-session-lanes-p > [data-p-body] { flex: 1; display: flex; flex-direction: column; gap: var(--sp-2); }
+.p-dashboard-session-lanes-p > .kk-panel-head { margin-bottom: var(--sp-2); }
+.p-dashboard-session-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.p-dashboard-session-ctl .kk-kbd, .p-dashboard-session-replay-ctl .kk-kbd { margin-left: 2px; }
+@media (hover: none) { .p-dashboard-session-ctl .kk-kbd { display: none; } }
+.p-dashboard-session-lane-d { grid-column: 2 / -1; display: flex; flex-wrap: wrap; column-gap: 6px; margin-top: -6px; padding: 0 20px 9px 0; font-size: var(--ui-12); line-height: 17px; color: var(--fg-2); }
+.p-dashboard-session-lane-d code { font-size: 11.5px; }
+.p-dashboard-session-lane-d > span, .p-dashboard-session-lr { position: relative; z-index: 1; background: var(--s1); box-shadow: 0 0 0 2px var(--s1); }
+.p-dashboard-session-lane-why { color: var(--fg-3); }
+.p-dashboard-session-lane-why.is-later { visibility: hidden; }
+.p-dashboard-session-lr.is-ok { color: var(--confirm-t); }
+.p-dashboard-session-lr.is-now { color: var(--fg-1); }
+.p-dashboard-session-dim > .kk-lane-track { opacity: .35; }
+.p-dashboard-session-axis { position: relative; height: 0; margin: 0 calc(12em + var(--sp-3) + 20px) 0 calc(2.5em + var(--sp-3)); border-top: var(--lw-1) solid var(--line-2); }
+.p-dashboard-session-axis > span { position: absolute; top: 4px; left: calc(var(--a) / var(--t1, 252) * 100%); transform: translateX(-50%); font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.p-dashboard-session-scrub { display: grid; grid-template-columns: 2.5em minmax(0, 1fr) 12em; column-gap: var(--sp-3); align-items: center; }
+.p-dashboard-session-scrub > label { font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); }
+.p-dashboard-session-track { position: relative; height: 28px; margin: 0 calc(20px - 3px) 0 -3px; }
+.p-dashboard-session-track > .kk-density { position: absolute; left: 3px; right: 3px; top: 0; height: 14px; border-bottom: 0; pointer-events: none; }
+.p-dashboard-session-track > .kk-range { position: absolute; inset: 0; }
+.p-dashboard-session-clock { display: grid; font: var(--w-semibold) var(--ui-14)/var(--ui-14-lh) var(--font-sans); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-clock > small { font-size: var(--ui-12); line-height: var(--ui-12-lh); font-weight: var(--w-regular); color: var(--fg-3); }
+.p-dashboard-session-lanes-foot { display: grid; gap: var(--sp-3); margin-top: auto; padding-top: var(--sp-4); }
+/* what the cursor stands on, and what comes next (at the end: a person's review) */
+.p-dashboard-session-at { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3) var(--sp-5); margin: var(--sp-2) 0 0; padding: var(--sp-3) var(--sp-4); border-radius: var(--r-2); background: var(--s2); }
+.p-dashboard-session-at > div { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.p-dashboard-session-at dt { font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); }
+.p-dashboard-session-at dd { margin: 0; display: grid; grid-template-columns: auto 24px minmax(0, 1fr); gap: 6px var(--sp-2); align-items: start; font-size: var(--ui-13); line-height: var(--ui-13-lh); color: var(--fg-2); }
+.p-dashboard-session-at dd > b:first-child { font-weight: var(--w-semibold); color: var(--fg-1); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-at dd > span:nth-child(2) { display: grid; place-items: center; height: 18px; }
+.p-dashboard-session-at small { color: var(--fg-2); }
+.p-dashboard-session-at dd code { font-size: 12px; }
+.p-dashboard-session-at dd > span > b { margin-right: 6px; font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-dashboard-session-at small { display: block; font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); }
+@media (max-width: 599.98px) { .p-dashboard-session-at { grid-template-columns: minmax(0, 1fr); } }
+.p-dashboard-session-lanes-foot .kk-caveat { margin: 0; padding: 0; border: 0; max-width: none; }
+@media (max-width: 719.98px) {
+  .p-dashboard-session-axis { margin-right: 20px; }
+  .p-dashboard-session-scrub { grid-template-columns: 2.5em minmax(0, 1fr); row-gap: 4px; }
+  .p-dashboard-session-clock { grid-column: 2; grid-template-columns: auto auto; justify-content: start; align-items: baseline; column-gap: 8px; }
+  .p-dashboard-session-lane-d { padding-right: 20px; }
+  .p-dashboard-session-lr { justify-self: start; }
+}
+
+/* call graph: wide (an SVG, left to right) from 720px of panel; narrower, the function list draws its own vertical
+   graph in a gutter. Either way the list under it is the table twin. */
+.p-dashboard-session-graph { container-type: inline-size; }
+.p-dashboard-session-graph > .kk-panel-head { margin-bottom: var(--sp-3); }
+.p-dashboard-session-gwide { display: none; margin: var(--sp-2) 0 var(--sp-4); }
+.p-dashboard-session-gbox { position: relative; width: 100%; max-width: 1040px; aspect-ratio: 960 / 300; }
+.p-dashboard-session-gbox > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.p-dashboard-session-g .p-off { display: none; }
+.p-dashboard-session-g .p-later:not(text) { opacity: .22; }
+.p-dashboard-session-g text.p-later { fill: var(--fg-3); }
+.p-dashboard-session-g .kk-g-node:not(.is-on) { fill: var(--s1); }
+.p-dashboard-session-guse { color: var(--fg-1); --kk-sym-ok: var(--confirm); --kk-sym-lacquer: var(--lacquer); --kk-sym-sw: 1; --kk-sym-dim: .38; }
+.p-dashboard-session-gbtn { position: absolute; padding: 0; border: 0; border-radius: var(--r-1); background: none; cursor: pointer; }
+@media (hover: hover) { .p-dashboard-session-gbtn:hover { box-shadow: inset 0 0 0 1px var(--line-2); } }
+.p-dashboard-session-gbtn:focus-visible { outline: var(--lw-focus) solid var(--focus); outline-offset: 0; }
+.p-dashboard-session-gbtn[aria-expanded="true"] { box-shadow: inset 0 0 0 1px var(--fg-2); }
+.p-dashboard-session-gleg { margin-bottom: var(--sp-4); }
+@container (min-width: 720px) { .p-dashboard-session-gwide { display: block; } }
+
+/* the function list (graph twin) */
+.p-dashboard-session-fn-h3 { margin: var(--sp-2) 0 var(--sp-2); font: var(--w-semibold) var(--ui-13)/var(--ui-13-lh) var(--font-sans); color: var(--fg-1); }
+.p-dashboard-session-fn-h3 > span { margin-left: var(--sp-2); font-weight: var(--w-regular); color: var(--fg-3); }
+.p-dashboard-session-fnhead { display: none; }
+.p-dashboard-session-fns { display: grid; }
+.p-dashboard-session-fn { position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); grid-auto-rows: auto; column-gap: var(--sp-2); min-height: 56px; padding: 4px 0 8px; border-top: var(--lw-0) solid var(--line); font-size: var(--ui-13); line-height: var(--ui-13-lh); color: var(--fg-2); }
+.p-dashboard-session-fn:last-child { border-bottom: var(--lw-0) solid var(--line); }
+.p-dashboard-session-fn > :not(.p-dashboard-session-fn-g) { grid-column: 2; min-width: 0; }
+.p-dashboard-session-fn-g { grid-column: 1; grid-row: 1 / span 3; position: relative; align-self: stretch; margin: -4px 0 -8px; }
+.p-dashboard-session-fn-main { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--sp-2); min-height: 32px; }
+.p-dashboard-session-fn-b { display: inline-flex; align-items: center; min-height: 32px; margin-left: -6px; padding: 0 6px; border: 0; border-radius: var(--r-1); background: none; color: var(--fg-1); font: inherit; cursor: pointer; }
+.p-dashboard-session-fn-b code { font-size: 12.5px; box-shadow: inset 0 -1px 0 var(--edge); }
+@media (hover: hover) { .p-dashboard-session-fn-b:hover { background: var(--s2); } .p-dashboard-session-fn-b:hover code { box-shadow: inset 0 -1px 0 var(--fg-1); } }
+.p-dashboard-session-fn-b:focus-visible { outline-offset: 0; }
+.p-dashboard-session-fn-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--sp-3); }
+.p-dashboard-session-fn-meta .kk-sig { font-size: var(--ui-12); color: inherit; font-weight: var(--w-regular); }
+.p-dashboard-session-fn-end { margin-top: 2px; }
+.p-dashboard-session-fn-end .kk-sig { font-size: var(--ui-12); }
+.p-dashboard-session-fn-t small { margin-left: 4px; color: var(--fg-3); }
+.p-dashboard-session-fn.is-later, .p-dashboard-session-fn.is-later .p-dashboard-session-fn-b { color: var(--fg-3); }
+.p-dashboard-session-fns.is-picking > .p-dashboard-session-fn:not(.is-hi) { color: var(--fg-3); }
+.p-dashboard-session-fns.is-picking > .p-dashboard-session-fn:not(.is-hi) > .p-dashboard-session-fn-g { opacity: .4; }
+.p-dashboard-session-fns.is-picking > .p-dashboard-session-fn.is-hi { background: linear-gradient(90deg, var(--s2), transparent 70%); }
+/* the gutter: a vertical call graph drawn with boxes (spine x 11, branch columns at --cx) */
+.p-dashboard-session-fn-g > i { position: absolute; display: block; }
+.p-dashboard-session-gs { left: 10.25px; width: 1.5px; }
+.p-dashboard-session-gs[data-p="up"] { top: 0; height: 20px; }
+.p-dashboard-session-gs[data-p="dn"] { top: 20px; bottom: 0; }
+.p-dashboard-session-gs[data-p="thru"] { top: 0; bottom: 0; }
+.p-dashboard-session-gc { left: calc(var(--cx) * 1px - .75px); width: 1.5px; }
+.p-dashboard-session-gc[data-p="thru"] { top: 0; bottom: 0; }
+.p-dashboard-session-gc[data-p="top"] { top: 0; height: 20px; }
+.p-dashboard-session-ge { left: 11px; top: 19.25px; bottom: 0; width: calc(var(--cx) * 1px - 10.25px); box-sizing: border-box; border-top: 1.5px solid var(--fg-1); border-right: 1.5px solid var(--fg-1); border-top-right-radius: 8px; }
+.p-dashboard-session-fn-g > [data-x="traced"]:not(.p-dashboard-session-ge) { background: var(--fg-1); }
+.p-dashboard-session-fn-g > [data-x="claim"]:not(.p-dashboard-session-ge) { background: repeating-linear-gradient(180deg, var(--fg-2) 0 var(--dash-claim-on), transparent var(--dash-claim-on) calc(var(--dash-claim-on) + var(--dash-claim-off))); }
+.p-dashboard-session-ge[data-x="claim"] { border-style: dashed; border-color: var(--fg-2); }
+.p-dashboard-session-gs[data-x="proven"] { left: 7.5px; width: 7px; background: var(--lacquer); border-inline: 1px solid var(--confirm); }
+.p-dashboard-session-gs[data-x="proven"]::after { content: ""; position: absolute; left: 1px; right: 1px; top: 0; bottom: 0; background: var(--nacre) 50% 40% / 480px auto; -webkit-mask: repeating-linear-gradient(180deg, #000 0 var(--seg-on), transparent var(--seg-on) calc(var(--seg-on) + var(--seg-off))); mask: repeating-linear-gradient(180deg, #000 0 var(--seg-on), transparent var(--seg-on) calc(var(--seg-on) + var(--seg-off))); }
+.p-dashboard-session-gn { left: calc(var(--cx) * 1px - 4px); top: 16px; width: 8px; height: 8px; box-sizing: border-box; border: 1.25px solid var(--fg-2); background: var(--s1); }
+.p-dashboard-session-gn.is-on { border-color: var(--fg-1); background: var(--fg-1); }
+.p-dashboard-session-gx { left: calc(var(--cx) * 1px - 6px); top: 25px; width: 12px; }
+.p-dashboard-session-gx[data-end="rejected"] { height: 12px; background: linear-gradient(var(--fg-1), var(--fg-1)) 50% 0 / 1.5px 5px no-repeat, linear-gradient(var(--fg-1), var(--fg-1)) 0 100% / 12px 1.5px no-repeat; }
+.p-dashboard-session-gx[data-end="hold"] { height: 22px; background: repeating-linear-gradient(180deg, var(--fg-2) 0 var(--dash-cand-on), transparent var(--dash-cand-on) calc(var(--dash-cand-on) + var(--dash-cand-off))) 50% 0 / 1.5px 100% no-repeat; }
+.p-dashboard-session-gx[data-end="ok"] { left: calc(var(--cx) * 1px - 6.5px); top: 29px; width: 13px; height: 9px; box-sizing: border-box; border: 1.25px solid var(--confirm); background: var(--lacquer); }
+.p-dashboard-session-fn-g > .is-later { opacity: .25; }
+@container (min-width: 720px) {
+  .p-dashboard-session-fnhead, .p-dashboard-session-fn { grid-template-columns: minmax(13em, 3fr) 8.5em 8.5em 10em minmax(0, 4fr); column-gap: var(--sp-4); }
+  .p-dashboard-session-fnhead { display: grid; padding: 0 0 6px; font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-3); }
+  .p-dashboard-session-fn { min-height: 40px; padding: 4px 0; align-items: center; }
+  .p-dashboard-session-fn-g { display: none; }
+  .p-dashboard-session-fn > :not(.p-dashboard-session-fn-g) { grid-column: auto; }
+  .p-dashboard-session-fn-meta { display: contents; }
+  .p-dashboard-session-fn-end { margin: 0; }
+}
+
+/* session log: one spine, a type glyph on it per event, the verb first */
+.p-dashboard-session-log-p > .kk-panel-head { margin-bottom: var(--sp-3); }
+.p-dashboard-session-types { margin: 0 0 var(--sp-2); gap: 2px var(--sp-4); }
+.p-dashboard-session-types > button.kk-sig > b { margin-left: 2px; font-weight: var(--w-regular); color: var(--fg-2); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-types > button.kk-sig[aria-disabled="true"] { color: var(--fg-3); cursor: default; }
+.p-dashboard-session-types > button.kk-sig[aria-disabled="true"] .kk-sym { opacity: .45; }
+.p-dashboard-session-result { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--sp-3); margin-bottom: var(--sp-2); font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-2); }
+.p-dashboard-session-result button { padding: 0; border: 0; background: none; color: var(--fg-1); font: inherit; text-decoration: underline; text-underline-offset: .2em; cursor: pointer; min-height: 24px; }
+.p-dashboard-session-log { display: grid; }
+.p-dashboard-session-log > li { position: relative; }
+.p-dashboard-session-log > li::before { content: ""; position: absolute; z-index: 0; left: calc(var(--sp-2) + 64px + var(--sp-3) + 11.25px); top: 0; bottom: 0; width: var(--lw-2); background: var(--line-2); }
+.p-dashboard-session-log > li:first-child::before { top: 17px; }
+.p-dashboard-session-log > li:last-child::before { bottom: calc(100% - 17px); }
+.p-dashboard-session-log > li:only-child::before { display: none; }
+.p-dashboard-session-ev { position: relative; z-index: 1; display: grid; grid-template-columns: 64px 24px minmax(0, 1fr); column-gap: var(--sp-3); align-items: start; width: 100%; padding: 8px var(--sp-2); border: 0; border-radius: var(--r-1); background: none; color: var(--fg-2); font: inherit; font-size: var(--ui-13); line-height: var(--ui-13-lh); text-align: left; cursor: pointer; }
+@media (hover: hover) { .p-dashboard-session-ev:hover { background: var(--s2); } .p-dashboard-session-ev:hover .p-dashboard-session-ev-g { background: var(--s2); } }
+.p-dashboard-session-ev:focus-visible { outline-offset: -2px; }
+.p-dashboard-session-ev-t { display: grid; font-variant-numeric: tabular-nums; text-align: right; }
+.p-dashboard-session-ev-t > b { font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-dashboard-session-ev-t > small, .p-dashboard-session-ev-a { font-size: var(--ui-12); line-height: var(--ui-13-lh); color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-ev-a { display: none; }
+.p-dashboard-session-ev-g { display: grid; place-items: center; width: 24px; height: 18px; background: var(--s1); }
+.p-dashboard-session-ev-x > b { margin-right: 6px; font-weight: var(--w-semibold); color: var(--fg-1); }
+.p-dashboard-session-ev-x code { font-size: 12px; }
+.p-dashboard-session-ev-h { display: inline-block; margin-right: 6px; padding: 0 5px; border: var(--lw-1) solid var(--line-2); border-radius: var(--r-1); font-size: var(--ui-12); line-height: 16px; color: var(--fg-1); font-variant-numeric: tabular-nums; }
+.p-dashboard-session-ev.is-now { background: var(--s3); color: var(--fg-1); }
+.p-dashboard-session-ev.is-now .p-dashboard-session-ev-g { background: var(--s3); }
+.p-dashboard-session-ev.is-later { color: var(--fg-3); }
+.p-dashboard-session-ev.is-later .p-dashboard-session-ev-t > b, .p-dashboard-session-ev.is-later .p-dashboard-session-ev-x > b { color: var(--fg-3); }
+.p-dashboard-session-ev.is-later .kk-sym { opacity: .4; }
+.p-dashboard-session-log-p { container-type: inline-size; }
+@container (min-width: 640px) {
+  .p-dashboard-session-ev { grid-template-columns: 64px 24px minmax(0, 1fr) auto; }
+  .p-dashboard-session-ev-t > small { display: none; }
+  .p-dashboard-session-ev-a { display: block; }
+}
+.p-dashboard-session-log-empty { padding: var(--sp-5) 0; font-size: var(--ui-13); color: var(--fg-2); }
+
+/* the function drawer */
+.p-dashboard-session-dr { display: grid; gap: var(--sp-4); align-content: start; }
+.p-dashboard-session-dr h3 { font: var(--w-semibold) var(--ui-13)/var(--ui-13-lh) var(--font-sans); color: var(--fg-1); }
+.p-dashboard-session-dr-k { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--sp-3); font-size: var(--ui-13); color: var(--fg-2); }
+.p-dashboard-session-dr-hs { display: grid; gap: 0; }
+.p-dashboard-session-dr-hs > li { display: grid; gap: 2px; padding: 8px 0; border-top: var(--lw-0) solid var(--line); font-size: var(--ui-13); line-height: var(--ui-13-lh); color: var(--fg-1); }
+.p-dashboard-session-dr-hs > li:last-child { border-bottom: var(--lw-0) solid var(--line); }
+.p-dashboard-session-dr-hs small { font-size: var(--ui-12); line-height: var(--ui-12-lh); color: var(--fg-2); }
+.p-dashboard-session-dr-acts { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.p-dashboard-session-dr .kk-caveat { margin: 0; }
+
+/* the confirmation moment: the proven pieces turn to nacre together, left to right (about 240 ms; at once without motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .p-dashboard-session.is-confirming .kk-lane-track > i[data-x="proven"] { animation: p-dashboard-session-reveal 240ms steps(3, end) both; }
+  .p-dashboard-session.is-confirming .p-dashboard-session-gproven .kk-g-nacre { animation: p-dashboard-session-on 1ms linear both; animation-delay: calc(var(--i) * 48ms); }
+  .p-dashboard-session.is-confirming .p-dashboard-session-gs[data-x="proven"]::after { animation: p-dashboard-session-on 1ms linear both; animation-delay: calc(var(--i, 0) * 30ms); }
+}
+@keyframes p-dashboard-session-reveal { from { clip-path: inset(-3px 100% -3px -3px); } to { clip-path: inset(-3px -3px -3px -3px); } }
+@keyframes p-dashboard-session-on { from { opacity: 0; } }
+
+@media (forced-colors: active) {
+  /* lanes, cursor, density ticks and the range: kk-system.css §22 / §31 (system colours for the roles) */
+  .p-dashboard-session-fn-g > i, .p-dashboard-session-ge { forced-color-adjust: none; }
+  .p-dashboard-session-fn-g > [data-x="traced"]:not(.p-dashboard-session-ge), .p-dashboard-session-gn.is-on { background: CanvasText; border-color: CanvasText; }
+  .p-dashboard-session-gs[data-x="proven"] { background: Canvas; border-color: Highlight; }
+  .p-dashboard-session-gs[data-x="proven"]::after { background: Highlight; }
+  .p-dashboard-session-ev.is-now { outline: 2px solid Highlight; }
+}
+</style>
+</head>
+<body class="kk kk-app">
+<a class="kk-skip" href="#main">본문 바로가기</a>
+<!-- the nacre pattern for this page's own inline SVG (the proven path in the call graph); symbols carry their own -->
+<svg class="kk-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><pattern id="kk-nacre" patternUnits="userSpaceOnUse" width="102.4" height="102.4" patternTransform="translate(-47.6 -53.6)"><image href="../../../assets/kkachi/nacre-512.webp" width="102.4" height="102.4"/></pattern></defs></svg>
+<div class="kk-shell">
+  <nav class="kk-side" aria-label="대시보드 메뉴">
+    <a class="kk-side-home" href="../" aria-label="대시보드 개요"><span class="kk-wm-box kk-wm--inlay"><svg class="kk-wm" viewBox="0 -0.81 193.25 43.62" aria-hidden="true" focusable="false"><path class="kk-wm-k" transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z"/></svg><span class="kk-wm-inlay" aria-hidden="true"></span></span></a>
+    <a class="kk-side-i" href="../"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-overview"/></svg><span>개요</span></a>
+    <a class="kk-side-i" href="../#dashboard-findings"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-finding"/></svg><span>발견</span></a>
+    <a class="kk-side-i" href="../#dashboard-sessions" aria-current="true"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-session"/></svg><span>세션</span></a>
+    <span class="kk-side-i" aria-disabled="true"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-scope"/></svg><span>대상</span><small>샘플에 없음</small></span>
+    <span class="kk-side-i" aria-disabled="true"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-log"/></svg><span>기록</span><small>샘플에 없음</small></span>
+    <span class="kk-side-i" aria-disabled="true"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-config"/></svg><span>설정</span><small>샘플에 없음</small></span>
+    <p class="kk-side-foot">샘플 화면 · 검색에 나오지 않습니다 · <kbd class="kk-kbd">?</kbd> 키보드</p>
+  </nav>
+
+  <header class="kk-appbar kk-appbar--two">
+    <a class="kk-appbar-home" href="../" aria-label="대시보드 개요"><span class="kk-wm-box kk-wm--inlay"><svg class="kk-wm" viewBox="0 -0.81 193.25 43.62" aria-hidden="true" focusable="false"><path class="kk-wm-k" transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z"/></svg><span class="kk-wm-inlay" aria-hidden="true"></span></span></a>
+    <div class="kk-search">
+      <svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-search"/></svg>
+      <input class="kk-input" type="search" id="dashboard-session-q" aria-label="세션, 발견, 함수 검색" aria-describedby="dashboard-session-q-out" placeholder="세션, 발견, 함수" autocomplete="off" data-kk-search data-kk-search-go="../">
+      <output class="kk-search-out" id="dashboard-session-q-out" for="dashboard-session-q"></output>
+      <kbd class="kk-kbd" aria-hidden="true">/</kbd>
+    </div>
+    <div class="kk-timectl">
+      <div class="kk-seg kk-seg--sm" role="group" aria-label="시간" id="dashboard-session-time" data-p-dashboard-session-js>
+        <button type="button" aria-pressed="true" data-value="live"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-time-live"/></svg>실시간</button>
+        <button type="button" aria-pressed="false" data-value="replay"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-time-replay"/></svg>기록</button>
+      </div>
+      <span class="kk-timectl-tz">KST</span>
+    </div>
+    <p class="kk-agent" data-s="run" id="dashboard-session-agent"><span class="kk-sline--mini" role="img" aria-label="진행 중인 세션의 관문"><i data-s="done"></i><i data-s="done"></i><i data-s="now"></i><i data-s="wait"></i><i data-s="wait"></i><i data-e="dim"></i></span><b>실행 중 2</b><span class="kk-agent-w">대기 1</span></p>
+    <span class="kk-appbar-sp"></span>
+    <span class="kk-sample">샘플 데이터</span>
+    <div class="kk-seg kk-seg--sm" role="group" aria-label="화면 테마" data-kk-theme>
+      <button type="button" data-value="dark" aria-pressed="true">어둡게</button>
+      <button type="button" data-value="light" aria-pressed="false">밝게</button>
+    </div>
+    <div class="kk-appbar-sub">
+      <ul class="kk-auto" aria-label="자율 범위">
+        <li data-v="yes"><svg class="kk-sym kk-sym--12" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg>읽기</li>
+        <li data-v="yes"><svg class="kk-sym kk-sym--12" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg>격리 실행</li>
+        <li data-v="no"><svg class="kk-sym kk-sym--12" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-noexfil"/></svg>외부 전송 안 함</li>
+        <li data-v="human"><svg class="kk-sym kk-sym--12" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>공개는 사람</li>
+      </ul>
+      <p class="kk-fresh">목록 최신 · <time datetime="2026-09-26T14:31:00+09:00">14:31 KST</time></p>
+    </div>
+  </header>
+
+  <main class="kk-main p-dashboard-session" id="main" tabindex="-1">
+    <div class="kk-replay p-dashboard-session-replay" id="dashboard-session-replay" hidden>
+      <svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-time-replay"/></svg>
+      <span><b id="dashboard-session-rp-clock">00:00</b> 시점을 재생 중입니다 · <span id="dashboard-session-rp-state">실행 중 · 읽기</span></span>
+      <span class="p-dashboard-session-replay-ctl">
+        <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="prev" aria-keyshortcuts="ArrowLeft">이전 사건</button>
+        <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="play" aria-keyshortcuts="Space">재생</button>
+        <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="next" aria-keyshortcuts="ArrowRight">다음 사건</button>
+        <button class="kk-btn kk-btn--sm" type="button" data-p-act="now">지금으로</button>
+      </span>
+    </div>
+
+    <header class="p-dashboard-session-head">
+      <nav class="kk-crumbs" aria-label="위치"><a href="../">개요</a><span aria-hidden="true">/</span><a href="../#dashboard-sessions">세션</a><span aria-hidden="true">/</span><span aria-current="page">7F2A</span></nav>
+      <div class="p-dashboard-session-title">
+        <h1 class="p-dashboard-session-h1" id="dashboard-session-t" tabindex="-1">세션 7F2A</h1>
+        <span class="p-dashboard-session-state" id="dashboard-session-state"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>사람 차례 · 검토 대기</span>
+        <span class="kk-sample">샘플 데이터 <span>프로토타입의 설명용 세션</span></span>
+      </div>
+      <p class="p-dashboard-session-lead">함수 <b>1,284</b>개를 읽고 가설 <b>4</b>개를 세웠습니다. H1을 격리 환경에서 <b>재현 3/3</b>으로 확인해 발견 F-01로 올렸고, H2와 H3은 기각, H4는 보류했습니다.</p>
+      <dl class="kk-verdict p-dashboard-session-verdict" id="dashboard-session-verdict" data-attn>
+        <div><dt>결과</dt><dd id="dashboard-session-v-res"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg><span class="p-dashboard-session-ok">발견 1 · 재현 확인</span></dd><dd class="kk-verdict-n" id="dashboard-session-v-res-n"><span><a class="kk-link" href="../finding/">F-01</a> · 가설 4개 중 1개 · 기각 2 · 보류 1</span></dd></div>
+        <div><dt>검증</dt><dd id="dashboard-session-v-ver"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-runs-ok"/></svg>재현 3/3 · 관문 4/5</dd><dd class="kk-verdict-n" id="dashboard-session-v-ver-n">실행마다 새 VM · 다섯째 관문은 사람의 검토</dd></div>
+        <div><dt>상태</dt><dd id="dashboard-session-v-st"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>사람 차례 · 검토 대기</dd><dd class="kk-verdict-n" id="dashboard-session-v-st-n"><span><time datetime="2026-09-26T14:03:00+09:00">14:03 KST</time>부터 · 28분째</span></dd></div>
+        <div class="kk-verdict-next"><dt>다음 행동</dt><dd><a class="kk-btn kk-btn--primary kk-btn--sm" href="../finding/">F-01 검토하기 <span class="kk-arr" aria-hidden="true">→</span></a></dd><dd class="kk-verdict-n" id="dashboard-session-v-next-n">승인 · 수정 요청 · 기각은 발견 화면에서</dd></div>
+      </dl>
+      <div class="p-dashboard-session-idents">
+        <dl class="kk-ident" aria-label="세션 신원">
+          <div><dt>세션</dt><dd><code>7F2A</code></dd></div>
+          <div><dt>대상</dt><dd>sample-imgcodec 2.4 (가상)</dd></div>
+          <div><dt>범위</dt><dd>승인된 로컬 빌드</dd></div>
+          <div><dt>시작</dt><dd><time datetime="2026-09-26T13:58:48+09:00">9월 26일 13:58:48 KST</time></dd></div>
+          <div><dt>끝</dt><dd><time class="kk-when" datetime="2026-09-26T14:03:00+09:00">14:03:00 KST<span>28분 전</span></time></dd></div>
+          <div><dt>경과</dt><dd>4분 12초</dd></div>
+        </dl>
+        <dl class="kk-ident" aria-label="샘플에 없는 출처 값">
+          <div><dt>범위 승인</dt><dd class="kk-ph">샘플 자리표시</dd></div>
+          <div><dt>빌드</dt><dd class="kk-ph">샘플 자리표시</dd></div>
+          <div><dt>에이전트 버전</dt><dd class="kk-ph">샘플 자리표시</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <noscript><div class="kk-panel"><div class="kk-state"><span class="kk-state-g" aria-hidden="true"></span><p class="kk-state-t">자바스크립트가 꺼져 있습니다</p><p class="kk-state-d">관문 원장, 가설 차선, 호출 그래프와 세션 기록은 샘플 데이터를 읽어 자바스크립트로 그립니다. 위의 요약과 판정, 신원 띠는 그대로 읽을 수 있습니다. 재생과 함수 자세히 보기는 자바스크립트를 켜면 됩니다.</p><a class="kk-btn kk-btn--sm" href="../finding/">발견 F-01 보기</a></div></div></noscript>
+    <p class="sr-only" role="status" id="dashboard-session-status">세션 기록을 불러오는 중입니다.</p>
+
+    <div class="p-dashboard-session-pair">
+      <section class="kk-panel p-dashboard-session-ledger" aria-labelledby="dashboard-session-ledger-t" aria-busy="true" data-p-panel>
+        <header class="kk-panel-head"><h2 class="kk-panel-t" id="dashboard-session-ledger-t">관문 원장</h2><p class="p-dashboard-session-meta" id="dashboard-session-ledger-n">관문 4/5 통과</p></header>
+        <div data-p-body id="dashboard-session-ledger-b">
+          <div class="p-dashboard-session-skel" aria-hidden="true">
+            <div class="kk-skel-row"><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div><span class="kk-skel kk-skel--line" style="--w:70%"></span><span class="kk-skel kk-skel--line" style="--w:30%"></span>
+            <div class="kk-skel-row"><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div><span class="kk-skel kk-skel--line" style="--w:70%"></span><span class="kk-skel kk-skel--line" style="--w:30%"></span>
+            <div class="kk-skel-row"><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div><span class="kk-skel kk-skel--line" style="--w:70%"></span><span class="kk-skel kk-skel--line" style="--w:50%"></span>
+            <div class="kk-skel-row"><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div><span class="kk-skel kk-skel--line" style="--w:70%"></span><span class="kk-skel kk-skel--line" style="--w:50%"></span>
+            <div class="kk-skel-row"><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div><span class="kk-skel kk-skel--line" style="--w:60%"></span><span class="kk-skel kk-skel--line" style="--w:35%"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kk-panel p-dashboard-session-lanes-p" aria-labelledby="dashboard-session-lanes-t" aria-busy="true" data-p-panel>
+        <header class="kk-panel-head">
+          <h2 class="kk-panel-t" id="dashboard-session-lanes-t">가설 차선</h2>
+          <div class="p-dashboard-session-ctl" role="group" aria-label="재생">
+            <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="prev" aria-keyshortcuts="ArrowLeft">이전 사건<kbd class="kk-kbd" aria-hidden="true">←</kbd></button>
+            <button class="kk-btn kk-btn--sm" type="button" data-p-act="play" aria-keyshortcuts="Space">처음부터 재생<kbd class="kk-kbd" aria-hidden="true">Space</kbd></button>
+            <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="next" aria-keyshortcuts="ArrowRight">다음 사건<kbd class="kk-kbd" aria-hidden="true">→</kbd></button>
+            <button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-p-act="now">지금으로</button>
+          </div>
+        </header>
+        <div data-p-body id="dashboard-session-lanes-b">
+          <div class="p-dashboard-session-skel" aria-hidden="true">
+            <span class="kk-skel kk-skel--line" style="--w:100%"></span><span class="kk-skel kk-skel--line" style="--w:60%"></span>
+            <span class="kk-skel kk-skel--line" style="--w:100%"></span><span class="kk-skel kk-skel--line" style="--w:55%"></span>
+            <span class="kk-skel kk-skel--line" style="--w:100%"></span><span class="kk-skel kk-skel--line" style="--w:50%"></span>
+            <span class="kk-skel kk-skel--line" style="--w:100%"></span><span class="kk-skel kk-skel--line" style="--w:55%"></span>
+            <span class="kk-skel kk-skel--block" style="--h:44px"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="kk-panel p-dashboard-session-graph" aria-labelledby="dashboard-session-graph-t" aria-busy="true" data-p-panel>
+      <header class="kk-panel-head">
+        <h2 class="kk-panel-t" id="dashboard-session-graph-t">호출 그래프</h2>
+        <div class="kk-seg kk-seg--sm" role="group" aria-label="가설 고르기" id="dashboard-session-pick">
+          <button type="button" aria-pressed="true" data-value="all">전체</button>
+          <button type="button" aria-pressed="false" data-value="H1">H1</button>
+          <button type="button" aria-pressed="false" data-value="H2">H2</button>
+          <button type="button" aria-pressed="false" data-value="H3">H3</button>
+          <button type="button" aria-pressed="false" data-value="H4">H4</button>
+        </div>
+      </header>
+      <div data-p-body id="dashboard-session-graph-b">
+        <div class="p-dashboard-session-skel" aria-hidden="true"><span class="kk-skel kk-skel--block" style="--h:220px"></span><span class="kk-skel kk-skel--line" style="--w:80%"></span><span class="kk-skel kk-skel--line" style="--w:100%"></span><span class="kk-skel kk-skel--line" style="--w:100%"></span></div>
+      </div>
+    </section>
+
+    <section class="kk-panel p-dashboard-session-log-p" aria-labelledby="dashboard-session-log-t" aria-busy="true" data-p-panel>
+      <header class="kk-panel-head">
+        <h2 class="kk-panel-t p-dashboard-session-panel-t" id="dashboard-session-log-t">세션 기록 <span id="dashboard-session-log-n">16</span></h2>
+        <div class="kk-seg kk-seg--sm" role="group" aria-label="순서" id="dashboard-session-order">
+          <button type="button" aria-pressed="true" data-value="asc">오래된 순</button>
+          <button type="button" aria-pressed="false" data-value="desc">최신 순</button>
+        </div>
+      </header>
+      <div data-p-body id="dashboard-session-log-b">
+        <div class="p-dashboard-session-skel" aria-hidden="true">
+          <span class="kk-skel kk-skel--line" style="--w:70%"></span>
+          <div class="kk-skel-row"><span class="kk-skel kk-skel--line" style="--w:44px"></span><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:50%"></span></div>
+          <div class="kk-skel-row"><span class="kk-skel kk-skel--line" style="--w:44px"></span><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:40%"></span></div>
+          <div class="kk-skel-row"><span class="kk-skel kk-skel--line" style="--w:44px"></span><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:55%"></span></div>
+          <div class="kk-skel-row"><span class="kk-skel kk-skel--line" style="--w:44px"></span><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:45%"></span></div>
+          <div class="kk-skel-row"><span class="kk-skel kk-skel--line" style="--w:44px"></span><span class="kk-skel kk-skel--sym"></span><span class="kk-skel kk-skel--line" style="--w:35%"></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<aside class="kk-drawer" id="dashboard-session-fn" aria-labelledby="dashboard-session-fn-t" hidden>
+  <header class="kk-drawer-head"><h2 id="dashboard-session-fn-t">함수</h2><button class="kk-btn kk-btn--ghost kk-btn--sm" type="button" data-kk-close>닫기</button></header>
+  <div class="p-dashboard-session-dr" id="dashboard-session-fn-b"></div>
+</aside>
+<div class="kk-toasts" role="status" aria-live="polite"></div>
+
+<script type="module" src="../../../assets/kkachi/kk-system.js"></script>
+<script type="module" src="../../../assets/kkachi/kk-app.js"></script>
+<script type="module">
+/* 세션 7F2A. Draws the gate ledger, the hypothesis lanes, the call graph (+ its twin, which narrows into a vertical
+   graph) and the session log from dash-data.js, then keeps all of them and the head on one clock: 실시간 (the cursor at
+   the session's end: a person's turn) or 기록 (a replay cursor). The cursor moves with the slider, ← → (or k j) from
+   event to event, Space to play or pause, a click on a log row, a function's "…로 이동", or ?at=<seconds> in the
+   address. Nacre shows only once the claim is proven (04:12); before that the same pieces read as traced. */
+import { announce, toast, reduce } from '../../../assets/kkachi/kk-system.js';
+import { openDrawer, addKeys } from '../../../assets/kkachi/kk-app.js';
+
+const P = 'dashboard-session-';
+const $ = (k) => document.getElementById(P + k);
+const main = document.getElementById('main');
+const panels = [...document.querySelectorAll('[data-p-panel]')];
+for (const p of panels) { const b = p.querySelector('[data-p-body]'); b.dataset.skel = b.innerHTML; }
+let tries = 0;
+
+async function load() {
+  let D;
+  try { D = await import(`../../../assets/kkachi/dash-data.js${tries ? `?retry=${tries}` : ''}`); }
+  catch (err) { fail(); return; }
+  start(D);
+}
+function fail() {
+  panels.forEach((p, i) => {
+    p.removeAttribute('aria-busy');
+    p.querySelector('[data-p-body]').innerHTML = `<div class="kk-state kk-state--error"${i === 0 ? ' role="alert"' : ''}><span class="kk-state-g" aria-hidden="true"></span><p class="kk-state-t">샘플 데이터를 불러오지 못했습니다</p><p class="kk-state-d">이 패널은 dash-data.js에서 그립니다. 연결을 확인하고 다시 시도해 주세요.</p><button class="kk-btn kk-btn--sm" type="button" data-p-retry>다시 시도</button></div>`;
+  });
+  $('status').textContent = '샘플 데이터를 불러오지 못했습니다.';
+  main.classList.add('p-dashboard-session-failed');
+}
+document.addEventListener('click', (e) => {
+  if (!(e.target instanceof Element) || !e.target.closest('[data-p-retry]')) return;
+  tries += 1;
+  for (const p of panels) { p.setAttribute('aria-busy', 'true'); const b = p.querySelector('[data-p-body]'); b.innerHTML = b.dataset.skel; }
+  main.classList.remove('p-dashboard-session-failed');
+  load();
+});
+load();
+
+function start(D) {
+  const { SESSION_7F2A: S, FINDING_F01: F, EVENT_KINDS: KINDS, STAGES, STATES, OVERVIEW, SAMPLE_NOW, esc, symSVG, symHref, slineMiniHTML, fmtClock: clk, fmtKST, atSession } = D;
+  const END = S.duration;
+  const EV = [...S.events].sort((a, b) => a.t - b.t);
+  const T_OK = (EV.find((e) => e.kind === 'ok') || { t: END }).t;
+  const HYP = S.hypotheses;
+  const H1 = HYP.find((h) => h.state === 'ok');
+  const T_CLAIM = Math.min(...HYP.map((h) => h.lanes[0].a));
+  const NODE = Object.fromEntries(S.graph.nodes.map((n) => [n.id, n]));
+  const iso = (t) => atSession(S, t);
+  const hms = (t) => fmtKST(iso(t), { date: false, sec: true, tz: false });
+  const sym = (id, cls = '', style = '') => { const s = symSVG(id, { cls }); return style ? s.replace('<svg ', `<svg style="${style}" `) : s; };
+  const sig = (id, word, tone = '', cls = '') => `<span class="kk-sig${cls ? ' ' + cls : ''}"${tone ? ` data-tone="${tone}"` : ''}>${sym(id)}${word}</span>`;
+  const FN = /[A-Za-z_]\w*\(\)/g;
+  const code = (s, toks = []) => {                          // code names in mono, the rest as words
+    let h = esc(s).replace(FN, (m) => `<code>${m}</code>`);
+    for (const k of toks) if (!/\(\)$/.test(k)) h = h.replace(new RegExp(`(^|[^\\w>])(${k})(?![\\w<])`), '$1<code>$2</code>');
+    return h;
+  };
+  const runsAt = (t) => EV.filter((e) => e.kind === 'run' && e.t <= t).length;
+  const gateAt = (t) => S.gates.reduce((i, g, k) => (t >= g.from ? k : i), 0);
+  const passedAt = (t) => S.gates.filter((g) => g.to != null && t >= g.to).length;
+  const evAt = (t) => { let i = -1; EV.forEach((e, k) => { if (e.t <= t) i = k; }); return i; };
+  // the strips of 재현 k/3: shell white, never nacre before the confirmation; three passed but not yet recorded =
+  // three passes before the 재현 확인 record: three white strips (kk-s-runs-3), never nacre
+  const runsSym = (t, cls = '') => (t >= T_OK ? sym('kk-s-runs-ok', cls) : sym(`kk-s-runs-${Math.min(3, runsAt(t))}`, cls));
+  const stageSym = (i, t, cls = '') => (STAGES[i].key === 'rep' ? runsSym(t, cls) : sym(STAGES[i].sym, cls));
+  const FINAL = { ok: ['ok', '재현 확인'], rejected: ['rejected', '기각'], hold: ['hold', '보류'] };
+  function hypAt(h, t) {                                    // a hypothesis as it stood at t
+    if (t < h.lanes[0].a) return { key: 'none', word: '아직 없음' };
+    if (t >= h.end.at && (h.end.kind !== 'ok' || t >= T_OK)) { const [key, word] = FINAL[h.end.kind]; return { key, word, final: true }; }
+    const seg = h.lanes.find((s) => t >= s.a && t < s.b) || h.lanes[h.lanes.length - 1];
+    if (seg.x === 'claim') return { key: 'hyp', word: '검증 중' };
+    if (seg.x === 'traced') return { key: 'traced', word: '추적 중' };
+    const k = runsAt(t);
+    return { key: `rep${Math.min(k, 2)}`, word: `재현 ${k}/3`, k };
+  }
+  const counts = (t) => ({
+    formed: t >= T_CLAIM ? HYP.length : 0,
+    rej: HYP.filter((h) => h.end.kind === 'rejected' && t >= h.end.at).length,
+    hold: HYP.filter((h) => h.end.kind === 'hold' && t >= h.end.at).length,
+  });
+
+  /* ── the app bar's agent capsule (all sessions; the same on every app page) ── */
+  $('agent').innerHTML = `${slineMiniHTML({ stages: ['done', 'done', 'now', 'wait', 'wait'], end: 'dim' }, '진행 중인 세션의 관문')}<b>실행 중 ${OVERVIEW.running}</b><span class="kk-agent-w">대기 ${OVERVIEW.waiting}</span>`;
+
+  /* ── gate ledger ── */
+  const ledgerB = $('ledger-b');
+  ledgerB.innerHTML = `<div class="p-dashboard-session-ledger-w"><ol class="kk-ledger" aria-label="세션 7F2A의 관문 다섯">${S.gates.map((g) => `<li data-k="${g.key}">
+    <div class="kk-ledger-h"><span class="p-dashboard-session-lsym"></span><b>${esc(g.word)}</b><span class="kk-ledger-st"></span><time></time></div>
+    <p class="kk-ledger-gate">관문 · ${esc(g.gate)}</p>
+    <ul class="kk-chips">${g.outputs.map((o) => `<li>${/F-01/.test(o) ? `<a class="kk-chip" href="../finding/">${esc(o)}</a>` : `<span class="kk-chip">${esc(o)}</span>`}</li>`).join('')}</ul>
+    ${g.key === 'trace' ? '<p class="p-dashboard-session-back">기각이나 보류 뒤에는 다음 가설로 넘어갔습니다</p>' : ''}</li>`).join('')}</ol><span class="kk-ledger-back" aria-hidden="true" hidden></span></div>`;
+  const ledger = ledgerB.querySelector('.kk-ledger');
+  const ledgerLis = [...ledger.children].filter((el) => el.tagName === 'LI');
+  const back = ledgerB.querySelector('.kk-ledger-back');
+  const firstTurn = Math.min(...HYP.filter((h) => h.end.kind !== 'ok').map((h) => h.end.at));
+  const placeBack = () => {
+    const a = ledgerLis[S.gates.findIndex((g) => g.key === 'hyp')], b = ledgerLis[S.gates.findIndex((g) => g.key === 'trace')];
+    if (!a || !b) return;
+    back.style.top = `${a.offsetTop + 7}px`;
+    back.style.height = `${b.offsetTop - a.offsetTop}px`;
+  };
+  if ('ResizeObserver' in window) new ResizeObserver(placeBack).observe(ledger);
+
+  /* ── hypothesis lanes, the axis, the slider ── */
+  const lanesB = $('lanes-b');
+  const ticks = [0, 60, 120, 180, 240].filter((x) => x <= END);
+  lanesB.innerHTML = `<div class="kk-lanes" style="--t0:0;--t1:${END}" id="${P}lanes">
+      <ol aria-label="가설 차선: 가설마다 한 줄, 왼쪽에서 오른쪽으로 세션 시간">${HYP.map((h) => `<li class="kk-lane" data-h="${h.id}">
+        <span class="kk-lane-h">${h.id}</span><span class="kk-lane-track" aria-hidden="true"></span><span class="kk-lane-r p-dashboard-session-lr"></span>
+        <p class="p-dashboard-session-lane-d"><span>${code(h.text, h.code)}</span><span class="p-dashboard-session-lane-why">${code(h.reason)}</span></p></li>`).join('')}</ol>
+      <span class="kk-lanes-cursor" aria-hidden="true" id="${P}cursor"></span>
+      <p class="p-dashboard-session-axis" aria-hidden="true" style="--t1:${END}">${ticks.map((x) => `<span style="--a:${x}">${clk(x)}</span>`).join('')}</p>
+    </div>
+    <div class="p-dashboard-session-scrub">
+      <label for="${P}range">시간</label>
+      <div class="p-dashboard-session-track">
+        <div class="kk-density" aria-hidden="true">${EV.map((e) => `<i${e.kind === 'ok' ? ' class="is-ok"' : ''} style="--a:${(e.t / END).toFixed(4)}"></i>`).join('')}</div>
+        <input class="kk-range" type="range" id="${P}range" min="0" max="${END}" step="1" value="${END}" aria-describedby="${P}range-h">
+      </div>
+      <output class="p-dashboard-session-clock" for="${P}range" id="${P}clock"></output>
+      <p class="sr-only" id="${P}range-h">세션 시간을 옮기면 머리의 상태, 관문, 가설, 그래프, 기록이 그 시점의 모습으로 바뀝니다.</p>
+    </div>
+    <dl class="p-dashboard-session-at" id="${P}at"><div><dt>커서가 선 사건</dt><dd id="${P}at-now"></dd></div><div><dt>다음</dt><dd id="${P}at-next"></dd></div></dl>
+    <div class="p-dashboard-session-lanes-foot">
+      <ul class="kk-legend" aria-label="차선 범례">${[sig('kk-s-ln-claim', '가설'), sig('kk-s-ln-traced', '추적'), sig('kk-s-ln-proven', '입증'), sig('kk-s-end-rejected', '기각'), sig('kk-s-end-hold', '보류'), sig('kk-s-end-ok', '재현 확인')].map((x) => `<li>${x}</li>`).join('')}</ul>
+      <p class="kk-caveat">기각은 그 경로에서 재현되지 않았다는 뜻이며, 안전하다는 뜻은 아닙니다.</p>
+    </div>`;
+  const laneLis = [...lanesB.querySelectorAll('.kk-lane')];
+  const cursorEl = $('cursor'), range = $('range'), clockEl = $('clock');
+  function laneTrack(h, t) {
+    const out = [];
+    for (const s of h.lanes) {
+      const x = s.x === 'proven' && t < T_OK ? 'traced' : s.x;           // nacre only once proven
+      if (t >= s.b) out.push(`<i data-x="${x}" style="--a:${s.a};--b:${s.b}"></i>`);
+      else if (t > s.a) out.push(`<i data-x="${x}" style="--a:${s.a};--b:${t}"></i><i data-x="${x}" class="is-later" style="--a:${t};--b:${s.b}"></i>`);
+      else out.push(`<i data-x="${x}" class="is-later" style="--a:${s.a};--b:${s.b}"></i>`);
+    }
+    for (const e of EV) if (e.h === h.id && e.t !== h.end.at && e.t > h.lanes[0].a) out.push(`<s${e.t > t ? ' class="is-later"' : ''} style="--a:${e.t}"></s>`);
+    out.push(`<b data-end="${h.end.kind}"${t < h.end.at || (h.end.kind === 'ok' && t < T_OK) ? ' class="is-later"' : ''} style="--a:${h.end.at}"></b>`);
+    return out.join('');
+  }
+
+  /* ── call graph: the wide SVG (left → right), its buttons, and the function list (its twin) ── */
+  const spine = H1.path;
+  const branches = HYP.filter((h) => h !== H1).map((h) => ({ h, fn: h.path[h.path.length - 1], parent: h.path[h.path.length - 2], side: h.end.kind === 'hold' ? -1 : 1 }));
+  // a branch leaves its parent along the spine and turns off half a node pitch later (RX), midway to the next node:
+  // the riser stands between two spine labels, never through one, and the run from the parent stays the branch's own
+  // line, so a picked hypothesis reads unbroken from its parent to its end
+  const GW = 960, GH = 300, GY = 150, PITCH = 160, X = {}, Y = {}, RX = {};
+  spine.forEach((f, i) => { X[f] = 50 + i * PITCH; Y[f] = GY; });
+  for (const b of branches) { RX[b.fn] = X[b.parent] + PITCH / 2; X[b.fn] = RX[b.fn] + 120; Y[b.fn] = GY + b.side * 100; }
+  const EDGES = new Map();
+  const ek = (a, b) => `${a}>${b}`;
+  for (const h of HYP) for (let i = 0; i < h.path.length - 1; i++) {
+    const k = ek(h.path[i], h.path[i + 1]);
+    const e = EDGES.get(k) || { k, a: h.path[i], b: h.path[i + 1], hs: [], claim: Infinity, traced: Infinity, proven: null, branch: null };
+    e.hs.push(h.id);
+    e.claim = Math.min(e.claim, h.lanes[0].a);
+    const tr = h.lanes.find((s) => s.x === 'traced');
+    if (tr) e.traced = Math.min(e.traced, tr.a);
+    if (h === H1) e.proven = T_OK;
+    EDGES.set(k, e);
+  }
+  for (const b of branches) EDGES.get(ek(b.parent, b.fn)).branch = b;
+  const edgeAt = (e, t) => (t < e.claim ? 'later' : e.proven != null && t >= e.proven ? 'proven' : t >= e.traced ? 'traced' : 'claim');
+  // when the trace reached each function: the log's trace lines name them; a branch's last function only has the
+  // moment its hypothesis ended there (drawn then, reported as "기록 없음")
+  const reach = {};
+  for (const e of EV) if (e.kind === 'trace' && e.code) for (const n of e.text.split('→').map((s) => `${s.trim()}()`)) if (!(n in reach)) reach[n] = e.t;
+  const branchOf = (fn) => branches.find((b) => b.fn === fn);
+  const drawAt = (fn) => reach[fn] ?? (branchOf(fn) ? branchOf(fn).h.end.at : Infinity);
+  const hsOf = (fn) => HYP.filter((h) => h.path.includes(fn));
+  const allFns = [...spine, ...branches.map((b) => b.fn)];
+  const stemFn = (H1.code || []).find((c) => /\(\)$/.test(c) && spine.includes(c));
+
+  let g = '';
+  for (const e of EDGES.values()) {
+    const hs = e.hs.join(' ');
+    if (e.branch) {
+      const { fn, parent, side } = e.branch, px = X[parent], rx = RX[fn], x = X[fn], y = Y[fn];
+      const d = `M${px + 6} ${GY}H${rx - 14}Q${rx} ${GY} ${rx} ${GY + side * 14}V${y - side * 14}Q${rx} ${y} ${rx + 14} ${y}H${x - 6}`;
+      g += `<path class="kk-g-claim" data-e="${e.k}" data-l="claim" data-h="${hs}" d="${d}"/><path class="kk-g-traced" data-e="${e.k}" data-l="traced" data-h="${hs}" d="${d}"/>`;
+    } else {
+      const x1 = X[e.a] + 6, x2 = X[e.b] - 6;
+      g += `<path class="kk-g-claim" data-e="${e.k}" data-l="claim" data-h="${hs}" d="M${x1} ${GY}H${x2}"/><path class="kk-g-taper" data-e="${e.k}" data-l="traced" data-h="${hs}" d="M${x1} ${GY - 1.125}L${x2} ${GY - 0.375}V${GY + 0.375}L${x1} ${GY + 1.125}Z"/>`;
+    }
+  }
+  const bx1 = X[spine[0]] - 4, bx2 = X[spine[spine.length - 1]] + 4;
+  g += `<g class="p-dashboard-session-gproven"><rect class="kk-g-bed" data-h="${H1.id}" x="${bx1}" y="${GY - 3.5}" width="${bx2 - bx1}" height="7"/>`;
+  spine.slice(0, -1).forEach((f, i) => { const x1 = X[f] + 7, x2 = X[spine[i + 1]] - 7, hh = 4 - i * 0.5; g += `<rect class="kk-g-nacre" data-h="${H1.id}" style="--i:${i}" x="${x1}" y="${GY - hh / 2}" width="${x2 - x1}" height="${hh}"/>`; });
+  g += '</g>';
+  for (const fn of allFns) {
+    const x = X[fn], y = Y[fn], hs = hsOf(fn).map((h) => h.id).join(' ');
+    const ly = y === GY ? y - 18 : y > GY ? y + 26 : y - 14;
+    g += `<rect class="kk-g-node" data-n="${fn}" data-h="${hs}" x="${x - 4}" y="${y - 4}" width="8" height="8"/><text class="kk-g-label" data-n="${fn}" data-h="${hs}" x="${x}" y="${ly}" text-anchor="middle">${esc(fn)}</text>`;
+  }
+  for (const b of branches) {
+    const x = X[b.fn], y = Y[b.fn], id = b.h.id;
+    if (b.h.end.kind === 'rejected') g += `<path class="kk-g-traced" data-end-of="${id}" data-h="${id}" d="M${x + 6} ${y}H${x + 12}"/><path class="kk-g-cut" data-end-of="${id}" data-h="${id}" d="M${x + 16.5} ${y - 8}V${y + 8}"/>`;
+    else g += `<path class="kk-g-tail" data-end-of="${id}" data-h="${id}" d="M${x + 6} ${y}H${x + 70}"/>`;
+    g += `<text class="kk-g-tag" data-tag="${id}" data-h="${id}" x="${x}" y="${y > GY ? y + 43 : y - 30}" text-anchor="middle"></text>`;
+  }
+  if (stemFn) g += `<path class="kk-g-stem" data-h="${H1.id}" d="M${X[stemFn]} ${GY - 32}V${GY - 46}"/><text class="kk-g-tag" data-tag="${H1.id}" data-h="${H1.id}" x="${X[stemFn]}" y="${GY - 52}" text-anchor="middle"></text>`;
+  const sink = spine[spine.length - 1];
+  g += `<g class="kk-g-chip" data-h="${HYP.map((h) => h.id).join(' ')}"><rect x="${X[spine[0]] - 16}" y="${GY + 12}" width="32" height="18" rx="2"/><text x="${X[spine[0]]}" y="${GY + 25}" text-anchor="middle">진입</text></g>`;
+  g += `<g class="kk-g-chip" data-h="${H1.id}"><rect x="${X[sink] - 16}" y="${GY + 12}" width="32" height="18" rx="2"/><text x="${X[sink]}" y="${GY + 25}" text-anchor="middle">싱크</text></g>`;
+  g += `<use class="p-dashboard-session-guse" data-end-of="${H1.id}" data-h="${H1.id}" href="${symHref('kk-s-claim-ok')}" x="${X[sink] + 14}" y="${GY - 16}" width="32" height="32"/><text class="kk-g-tag kk-g-tag--ok" data-end-of="${H1.id}" data-h="${H1.id}" x="${X[sink] + 50}" y="${GY + 4}">${esc(H1.finding || '')}</text>`;
+  const gbtn = (fn) => {
+    const x = X[fn], y = Y[fn], [top, h] = y === GY ? [GY - 34, 44] : y > GY ? [y - 9, 58] : [y - 47, 56];
+    return `<button class="p-dashboard-session-gbtn" type="button" data-fn="${fn}" aria-label="${fn} 자세히" aria-expanded="false" aria-controls="${P}fn" style="left:${((x - 58) / GW * 100).toFixed(3)}%;top:${(top / GH * 100).toFixed(3)}%;width:${(116 / GW * 100).toFixed(3)}%;height:${(h / GH * 100).toFixed(3)}%"></button>`;
+  };
+
+  // the twin rows, in tree order: each spine function, then the branches that leave it
+  const rows = [];
+  spine.forEach((f) => { rows.push({ fn: f }); for (const b of branches) if (b.parent === f) rows.push({ fn: b.fn, b }); });
+  const COLX = [31, 44];
+  let open = [];
+  for (const [i, r] of rows.entries()) {
+    const pieces = [];
+    const si = spine.indexOf(r.fn);
+    if (!r.b) {
+      if (si > 0) pieces.push(`<i class="p-dashboard-session-gs" data-p="up" data-e="${ek(spine[si - 1], r.fn)}" style="--i:${si * 2 - 1}"></i>`);
+      if (si < spine.length - 1) pieces.push(`<i class="p-dashboard-session-gs" data-p="dn" data-e="${ek(r.fn, spine[si + 1])}" style="--i:${si * 2}"></i>`);
+    } else {
+      const ps = spine.indexOf(r.b.parent);
+      pieces.push(`<i class="p-dashboard-session-gs" data-p="thru" data-e="${ek(spine[ps], spine[ps + 1])}" style="--i:${ps * 2}"></i>`);
+    }
+    for (const o of open) if (o.b !== r.b) pieces.push(`<i class="p-dashboard-session-gc" data-p="thru" data-e="${ek(o.b.parent, o.b.fn)}" style="--cx:${COLX[o.col]}"></i>`);
+    if (r.b) {
+      const o = open.find((x) => x.b === r.b);
+      pieces.push(`<i class="p-dashboard-session-gc" data-p="top" data-e="${ek(r.b.parent, r.fn)}" style="--cx:${COLX[o.col]}"></i><i class="p-dashboard-session-gn" data-n="${r.fn}" style="--cx:${COLX[o.col]}"></i><i class="p-dashboard-session-gx" data-end="${r.b.h.end.kind}" data-end-of="${r.b.h.id}" style="--cx:${COLX[o.col]}"></i>`);
+      open = open.filter((x) => x !== o);
+    } else {
+      for (const b of branches.filter((x) => x.parent === r.fn)) {
+        let c = 0;
+        while (open.some((o) => o.col === c)) c += 1;
+        open.push({ col: c, b });
+        pieces.push(`<i class="p-dashboard-session-ge" data-e="${ek(r.fn, b.fn)}" style="--cx:${COLX[c]}"></i>`);
+      }
+      pieces.push(`<i class="p-dashboard-session-gn" data-n="${r.fn}" style="--cx:11"></i>`);
+      if (si === spine.length - 1) pieces.push(`<i class="p-dashboard-session-gx" data-end="ok" data-end-of="${H1.id}" style="--cx:11"></i>`);
+    }
+    r.gutter = pieces.join('');
+    r.i = i;
+  }
+  const steps = Object.fromEntries((F.steps || []).map((s) => [s.fn, s]));
+  const loc = (fn) => { const m = steps[fn] && steps[fn].note && /rows\.c:(\d+)/.exec(steps[fn].note); return m ? `${F.code.file}:${m[1]}` : null; };
+  const doing = (fn) => (steps[fn] && steps[fn].note ? steps[fn].note.replace(/^rows\.c:\d+ · /, '') : null);
+  const role = (fn) => (fn === spine[0] ? '진입' : fn === sink ? '싱크' : '');
+  const obsSig = (fn) => (NODE[fn] && NODE[fn].observed ? sig('kk-s-loc-observed', '실행 관찰') : sig('kk-s-loc', '정적 추론'));
+  const reachHTML = (fn) => (reach[fn] != null ? `<span class="sr-only">처음 닿음 </span>${clk(reach[fn])}<small>${hms(reach[fn])}</small>` : '<span class="sr-only">처음 닿음 </span><span class="kk-none">기록 없음</span>');
+  function endHTML(fn) {
+    const b = branchOf(fn);
+    if (b) { const [k, w] = FINAL[b.h.end.kind]; return sig(STATES[k].sym, `${w} · ${clk(b.h.end.at)}`, k === 'rejected' ? 'mute' : '') + ` <span>${code(b.h.reason)}</span>`; }
+    if (fn === sink) return `${sig('kk-s-claim-ok', `${esc(H1.finding)} 재현 확인 · ${clk(T_OK)}`, 'ok')}${doing(fn) ? ` <span>${code(doing(fn))}</span>` : ''}`;
+    const d = doing(fn);
+    return d ? `<span>${loc(fn) ? `<code>${esc(loc(fn).replace(/^src\//, ''))}</code> · ` : ''}${code(d)}</span>` : '';
+  }
+
+  const graphB = $('graph-b');
+  graphB.innerHTML = `<div class="p-dashboard-session-gwide">
+      <div class="p-dashboard-session-gbox">
+        <svg class="kk-graph p-dashboard-session-g" id="${P}g" viewBox="0 0 ${GW} ${GH}" role="img" aria-labelledby="${P}g-t ${P}g-d" focusable="false"><title id="${P}g-t">세션 7F2A 호출 그래프</title><desc id="${P}g-d">샘플입니다. ${esc(spine[0])}(진입)에서 ${spine.slice(1, -1).map(esc).join(', ')}를 거쳐 ${esc(sink)}(싱크)까지 H1의 경로가 입증되었고, 끝에서 발견 ${esc(H1.finding)}가 재현 확인되었습니다. ${branches.map((b) => `${b.h.id}는 ${esc(b.fn)}에서 ${FINAL[b.h.end.kind][1]}`).join(', ')}되었습니다. 아래 함수 목록이 같은 내용입니다.</desc>${g}</svg>
+        ${rows.map((r) => gbtn(r.fn)).join('')}
+      </div>
+    </div>
+    <ul class="kk-legend p-dashboard-session-gleg" aria-label="그래프 범례">${[sig('kk-s-ln-claim', '가설'), sig('kk-s-ln-traced', '추적'), sig('kk-s-ln-proven', '입증'), sig('kk-s-end-rejected', '기각'), sig('kk-s-end-hold', '보류'), sig('kk-s-loc-observed', '실행 관찰'), sig('kk-s-loc', '정적 추론')].map((x) => `<li>${x}</li>`).join('')}</ul>
+    <h3 class="p-dashboard-session-fn-h3" id="${P}fns-t">함수 ${allFns.length}개<span>진입에서 싱크까지, 갈라진 가지는 그 아래에 · 이름을 누르면 자세히</span></h3>
+    <div class="p-dashboard-session-fnhead" aria-hidden="true"><span>함수</span><span>관찰</span><span>닿은 가설</span><span>처음 닿음 · KST</span><span>결과 · 하는 일</span></div>
+    <ol class="p-dashboard-session-fns" id="${P}fns" aria-labelledby="${P}fns-t">${rows.map((r) => `<li class="p-dashboard-session-fn" data-n="${r.fn}" data-h="${hsOf(r.fn).map((h) => h.id).join(' ')}">
+      <span class="p-dashboard-session-fn-g" aria-hidden="true">${r.gutter}</span>
+      <div class="p-dashboard-session-fn-main"><button class="p-dashboard-session-fn-b" type="button" data-fn="${r.fn}" aria-expanded="false" aria-controls="${P}fn"><code>${esc(r.fn)}</code></button>${role(r.fn) ? `<span class="kk-chip">${role(r.fn)}</span>` : ''}</div>
+      <p class="p-dashboard-session-fn-meta"><span>${obsSig(r.fn)}</span><span><span class="sr-only">닿은 가설 </span>${hsOf(r.fn).map((h) => h.id).join(' · ')}</span><span class="p-dashboard-session-fn-t">${reachHTML(r.fn)}</span></p>
+      <p class="p-dashboard-session-fn-end">${endHTML(r.fn)}</p></li>`).join('')}</ol>
+    <p class="kk-partial" style="margin-top:var(--sp-3)">손대지 않은 호출 <span class="kk-none">기록 없음</span></p>`;
+  const gsvg = $('g');
+  const gEls = { claim: [...gsvg.querySelectorAll('[data-l="claim"]')], traced: [...gsvg.querySelectorAll('[data-l="traced"]')], nodes: [...gsvg.querySelectorAll('.kk-g-node')], labels: [...gsvg.querySelectorAll('.kk-g-label')], ends: [...gsvg.querySelectorAll('[data-end-of]')], tags: [...gsvg.querySelectorAll('[data-tag]')], proven: gsvg.querySelector('.p-dashboard-session-gproven') };
+  const fnList = $('fns');
+  const fnLis = [...fnList.children];
+
+  /* ── session log ── */
+  const logB = $('log-b');
+  const kinds = Object.keys(KINDS);
+  const nOf = Object.fromEntries(kinds.map((k) => [k, EV.filter((e) => e.kind === k).length]));
+  // a log line: the verb first (the kind's word, or the line's own when it says the same more exactly: 재현 2회), the
+  // hypothesis it belongs to, then what happened; code names and file:line in mono. A line that opens with its own verb
+  // (사람 차례 · F-01 검토 대기) says it once.
+  const evParts = (e) => {
+    let t = e.h && e.text.startsWith(`${e.h} · `) ? e.text.slice(e.h.length + 3) : e.text;
+    let verb = KINDS[e.kind].word;
+    const head = t.split(' · ')[0];
+    if (head !== t && head === verb) t = t.slice(head.length + 3);
+    else if (head !== t && /\d/.test(verb) && /\d/.test(head) && head.split(' ')[0] === verb.split(' ')[0]) { verb = head; t = t.slice(head.length + 3); }
+    return { verb, t };
+  };
+  const evText = (e) => {
+    const { verb, t } = evParts(e);
+    const body = e.code ? `<code>${esc(t)}</code>` : code(t).replace(/\b([\w-]+\.c:\d+)/g, '<code>$1</code>');
+    return `<b>${esc(verb)}</b>${e.h ? `<span class="p-dashboard-session-ev-h">${e.h}</span>` : ''}${body}`;
+  };
+  const evPlain = (e) => { const { verb, t } = evParts(e); return `${verb}${e.h ? ` ${e.h}` : ''} ${t}`; };
+  $('log-n').textContent = String(EV.length);
+  logB.innerHTML = `<div class="kk-legend p-dashboard-session-types" role="group" aria-label="유형으로 거르기">${kinds.map((k) => (nOf[k]
+      ? `<button class="kk-sig" type="button" aria-pressed="true" data-kind="${k}">${sym(KINDS[k].sym)}${esc(KINDS[k].word)}<b>${nOf[k]}</b></button>`
+      : `<button class="kk-sig" type="button" aria-pressed="false" aria-disabled="true" data-tip="이 세션의 기록에는 없습니다" data-kind="${k}">${sym(KINDS[k].sym)}${esc(KINDS[k].word)}<b>0</b></button>`)).join('')}</div>
+    <p class="p-dashboard-session-result" id="${P}result" aria-live="polite"></p>
+    <ol class="p-dashboard-session-log" id="${P}log" aria-label="세션 기록, 사건마다 한 줄: 누르면 그 시각으로 이동합니다">${EV.map((e, i) => `<li data-kind="${e.kind}" data-i="${i}"><button class="p-dashboard-session-ev" type="button" tabindex="-1" data-i="${i}">
+      <span class="p-dashboard-session-ev-t"><b>${clk(e.t)}</b><small>${hms(e.t)}</small></span>
+      <span class="p-dashboard-session-ev-g">${sym(KINDS[e.kind].sym)}</span>
+      <span class="p-dashboard-session-ev-x">${evText(e)}</span><span class="p-dashboard-session-ev-a">${hms(e.t)} KST</span></button></li>`).join('')}</ol>`;
+  const logOl = $('log');
+  const logLis = [...logOl.children];
+  const logBtns = logLis.map((li) => li.firstElementChild);
+  const shown = new Set(kinds.filter((k) => nOf[k]));
+  let order = 'asc';
+  const visibleBtns = () => [...logOl.children].filter((li) => !li.hidden).map((li) => li.firstElementChild);
+  function filterLog() {
+    for (const li of logLis) li.hidden = !shown.has(li.dataset.kind);
+    const n = logLis.filter((li) => !li.hidden).length;
+    $('result').innerHTML = n === EV.length ? `사건 ${EV.length}개 · ${fmtKST(S.start, { date: true }).split(' ').slice(0, 2).join(' ')} · 시각은 세션 경과와 KST` : `사건 ${EV.length}개 중 ${n}개${n ? '' : ' · 고른 유형이 없습니다'} <button type="button" data-p-all>모두 보기</button>`;
+    rove();
+  }
+  function rove(focusTo) {
+    const vis = visibleBtns();
+    let cur = vis.find((b) => b.classList.contains('is-now')) || vis[0];
+    if (focusTo) cur = focusTo;
+    for (const b of logBtns) b.tabIndex = b === cur ? 0 : -1;
+  }
+  logB.addEventListener('click', (e) => {
+    const k = e.target.closest('.p-dashboard-session-types > button');
+    if (k && k.getAttribute('aria-disabled') !== 'true') {
+      const on = k.getAttribute('aria-pressed') !== 'true';
+      k.setAttribute('aria-pressed', String(on));
+      if (on) shown.add(k.dataset.kind); else shown.delete(k.dataset.kind);
+      filterLog();
+      return;
+    }
+    if (e.target.closest('[data-p-all]')) {
+      for (const b of logB.querySelectorAll('.p-dashboard-session-types > button:not([aria-disabled="true"])')) { b.setAttribute('aria-pressed', 'true'); shown.add(b.dataset.kind); }
+      filterLog();
+      return;
+    }
+    const ev = e.target.closest('.p-dashboard-session-ev');
+    if (ev) { const x = EV[+ev.dataset.i]; rove(ev); setT(x.t, { say: true, why: 'log' }); }
+  });
+  logOl.addEventListener('keydown', (e) => {
+    const b = e.target.closest('.p-dashboard-session-ev');
+    if (!b) return;
+    const vis = visibleBtns(), i = vis.indexOf(b);
+    const to = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: vis.length - 1 }[e.key];
+    if (to == null) return;
+    e.preventDefault();
+    const n = vis[Math.max(0, Math.min(vis.length - 1, to))];
+    rove(n);
+    n.focus();
+  });
+  $('order').addEventListener('kk:seg', (e) => {
+    order = e.detail.value;
+    logOl.append(...(order === 'desc' ? [...logLis].reverse() : logLis));
+    announce(order === 'desc' ? '최신 순으로 바꿨습니다' : '오래된 순으로 바꿨습니다');
+  });
+  filterLog();
+
+  /* ── the function drawer ── */
+  const drawer = $('fn'), drB = $('fn-b');
+  let drOpener = null;
+  function openFn(fn, opener) {
+    const hs = hsOf(fn), b = branchOf(fn), n = NODE[fn] || {}, at = reach[fn] ?? (b ? b.h.end.at : null), l = loc(fn), d = doing(fn);
+    const si = spine.indexOf(fn);
+    const about = HYP.find((h) => (h.code || []).includes(fn));      // a hypothesis that is about this function
+    const others = hs.filter((h) => h !== H1).map((h) => h.id);
+    const why = b ? `<b>${b.h.id}</b> · ${code(b.h.text, b.h.code)}`
+      : si === 0 ? `진입점 · 가설 ${hs.length}개의 경로가 모두 여기서 시작합니다`
+      : `${about ? `<b>${about.id}</b> · ${code(about.text, about.code)} · ` : ''}${H1.id} 경로의 ${si + 1}단계${fn === sink ? '(싱크)' : ''}${others.length ? ` · ${others.join(' · ')}도 지납니다` : ''}`;
+    $('fn-t').innerHTML = `<code>${esc(fn)}</code>`;
+    drB.innerHTML = `<p class="p-dashboard-session-dr-k">${n.observed ? sig('kk-s-loc-observed', '실행 관찰') : sig('kk-s-loc', '정적 추론')}${role(fn) ? `<span class="kk-chip">${role(fn)}</span>` : ''}<span class="kk-sample">샘플 데이터</span></p>
+      <dl class="kk-kv">
+        <div><dt>위치</dt><dd>${l ? `<code>${esc(l)}</code>` : '<span class="kk-none">기록 없음</span>'}</dd></div>
+        <div><dt>하는 일</dt><dd>${d ? code(d) : '<span class="kk-none">기록 없음</span>'}</dd></div>
+        <div><dt>들어간 이유</dt><dd>${why}</dd></div>
+        <div><dt>처음 닿음</dt><dd>${reach[fn] != null ? `${clk(reach[fn])} · <time datetime="${iso(reach[fn])}">${fmtKST(iso(reach[fn]), { sec: true })}</time>` : `<span class="kk-none">기록 없음</span>${b ? ` · ${clk(b.h.end.at)}에 ${FINAL[b.h.end.kind][1]}` : ''}`}</dd></div>
+      </dl>
+      <h3>닿은 가설 ${hs.length}</h3>
+      <ul class="p-dashboard-session-dr-hs">${hs.map((h) => { const [k, w] = FINAL[h.end.kind]; return `<li>${sig(STATES[k].sym, `${h.id} ${w}`, k === 'ok' ? 'ok' : k === 'rejected' ? 'mute' : '')}<span>${code(h.text, h.code)}</span><small>${code(h.reason)} · ${clk(h.end.at)}</small></li>`; }).join('')}</ul>
+      <div class="p-dashboard-session-dr-acts">${at != null ? `<button class="kk-btn kk-btn--sm" type="button" data-p-goto="${at}">${clk(at)} 시점으로 이동</button>` : ''}${l ? `<a class="kk-btn kk-btn--ghost kk-btn--sm" href="../finding/#dashboard-finding-code">F-01의 코드 ${F.code.from}–${F.code.to}행</a>` : ''}</div>
+      ${b && b.h.end.kind === 'rejected' ? '<p class="kk-caveat">기각은 그 경로에서 재현되지 않았다는 뜻이며, 안전하다는 뜻은 아닙니다.</p>' : ''}`;
+    if (drOpener && drOpener !== opener) drOpener.setAttribute('aria-expanded', 'false');
+    drOpener = opener;
+    opener.setAttribute('aria-expanded', 'true');
+    openDrawer(drawer, opener);
+  }
+  drawer.addEventListener('kk:drawer', (e) => { if (!e.detail.open && drOpener) { drOpener.setAttribute('aria-expanded', 'false'); drOpener = null; } });
+  drB.addEventListener('click', (e) => { const b = e.target.closest('[data-p-goto]'); if (b) setT(+b.dataset.pGoto, { say: true }); });
+  graphB.addEventListener('click', (e) => { const b = e.target.closest('[data-fn]'); if (b) openFn(b.dataset.fn, b); });
+  // the graph's function buttons are one tab stop; arrows walk them in the twin's order (the list below has its own)
+  const gbtns = [...graphB.querySelectorAll('.p-dashboard-session-gbtn')];
+  gbtns.forEach((b, i) => { b.tabIndex = i ? -1 : 0; });
+  graphB.addEventListener('keydown', (e) => {
+    const b = e.target.closest('.p-dashboard-session-gbtn');
+    if (!b) return;
+    const i = gbtns.indexOf(b);
+    const to = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: gbtns.length - 1 }[e.key];
+    if (to == null) return;
+    e.preventDefault();
+    const n = gbtns[Math.max(0, Math.min(gbtns.length - 1, to))];
+    for (const x of gbtns) x.tabIndex = x === n ? 0 : -1;
+    n.focus();
+  });
+
+  /* ── picking a hypothesis: the graph, its twin and the lanes keep that path, the rest steps back ── */
+  $('pick').addEventListener('kk:seg', (e) => {
+    const v = e.detail.value === 'all' ? null : e.detail.value;
+    gsvg.classList.toggle('is-picking', !!v);
+    for (const el of gsvg.querySelectorAll('[data-h]')) el.classList.toggle('is-hi', !!v && el.dataset.h.split(' ').includes(v));
+    fnList.classList.toggle('is-picking', !!v);
+    for (const li of fnLis) li.classList.toggle('is-hi', !!v && li.dataset.h.split(' ').includes(v));
+    for (const li of laneLis) li.classList.toggle('p-dashboard-session-dim', !!v && li.dataset.h !== v);
+    const h = v && HYP.find((x) => x.id === v);
+    announce(h ? `${h.id}의 경로만 남겼습니다: ${h.path.join(', ')}` : '모든 가설을 보입니다');
+  });
+
+  /* ── one clock ── */
+  let cur = END, mode = 'live', playing = false, raf = 0, timer = 0, lastKey = '';
+  const timeSeg = $('time');
+  const verdict = $('verdict');
+  const acts = [...document.querySelectorAll('[data-p-act]')];
+  const thresholds = [...new Set([...EV.map((e) => e.t), ...HYP.flatMap((h) => h.lanes.flatMap((s) => [s.a, s.b])), ...S.gates.flatMap((g) => [g.from, g.to]).filter((x) => x != null), T_OK])].sort((a, b) => a - b);
+  const keyAt = (t) => thresholds.filter((x) => x <= t).length;
+  function stateWord(t) { return t >= T_OK ? '사람 차례 · 검토 대기' : `실행 중 · ${S.gates[gateAt(t)].word}`; }
+  function stateSymAt(t) { return t >= T_OK ? sym('kk-s-human-turn') : stageSym(gateAt(t), t); }
+
+  function heavy(t) {                                      // what changes only when the cursor passes a recorded moment
+    const c = counts(t), k = runsAt(t), done = passedAt(t);
+    $('state').innerHTML = `${stateSymAt(t)}${stateWord(t)}`;
+    verdict.toggleAttribute('data-attn', t >= T_OK);
+    $('v-res').innerHTML = t >= T_OK ? `${sym('kk-s-claim-ok', 'kk-sym--20')}<span class="p-dashboard-session-ok">발견 1 · 재현 확인</span>` : '<span class="kk-none">판정 없음</span>';
+    $('v-res-n').innerHTML = t >= T_OK ? `<span><a class="kk-link" href="../finding/">${esc(H1.finding)}</a> · 가설 ${c.formed}개 중 1개 · 기각 ${c.rej} · 보류 ${c.hold}</span>` : c.formed ? `가설 ${c.formed} · 기각 ${c.rej} · 보류 ${c.hold}` : '가설 전 · 함수 지도를 만드는 중';
+    $('v-ver').innerHTML = `${runsSym(t)}재현 ${t >= T_OK ? 3 : k}/3 · 관문 ${done}/${S.gates.length}`;
+    $('v-ver-n').textContent = t >= T_OK ? '실행마다 새 VM · 다섯째 관문은 사람의 검토' : k ? (k >= 3 ? '세 번 모두 같은 자리에서 크래시 · 확인 기록 전' : '실행마다 새 VM') : '재현 관문에 닿지 않음';
+    $('v-st').innerHTML = `${stateSymAt(t)}${stateWord(t)}`;
+    $('v-st-n').innerHTML = t >= T_OK ? `<span><time datetime="${iso(T_OK)}">${fmtKST(iso(T_OK), { date: false })}</time>부터 · ${Math.round((new Date(SAMPLE_NOW) - new Date(iso(T_OK))) / 60000)}분째</span>` : `${clk(t)} 시점 · ${hms(t)} KST`;
+    $('v-next-n').textContent = mode === 'replay' ? '재생과 상관없이 지금 할 일 · 결정은 발견 화면에서' : '승인 · 수정 요청 · 기각은 발견 화면에서';
+    // ledger
+    S.gates.forEach((gt, i) => {
+      const li = ledgerLis[i], isDone = gt.to != null && t >= gt.to, now = !isDone && t >= gt.from;
+      li.dataset.s = isDone ? 'done' : now ? 'now' : 'wait';
+      li.querySelector('.kk-ledger-st').textContent = isDone ? gt.status : now ? (gt.to == null ? gt.status : '진행 중') : '대기';
+      const tm = li.querySelector('time');
+      tm.textContent = isDone ? `${clk(gt.from)}–${clk(gt.to)}` : now ? `${clk(gt.from)}–` : '';
+      if (isDone || now) tm.setAttribute('datetime', iso(gt.from)); else tm.removeAttribute('datetime');
+      li.querySelector('.p-dashboard-session-lsym').innerHTML = stageSym(i, t, isDone || now ? '' : 'kk-sym--mute');
+      li.querySelector('.kk-chips').classList.toggle('p-dashboard-session-later', !(gt.to == null ? t >= gt.from : t >= gt.to));
+      const bk = li.querySelector('.p-dashboard-session-back');
+      if (bk) bk.classList.toggle('p-dashboard-session-unmade', t < firstTurn);
+    });
+    back.hidden = t < firstTurn;
+    requestAnimationFrame(placeBack);
+    $('ledger-n').textContent = `관문 ${done}/${S.gates.length} 통과${t >= T_OK ? ' · 다섯째는 사람' : ''}`;
+    // lanes' words
+    HYP.forEach((h, i) => {
+      const st = hypAt(h, t), r = laneLis[i].querySelector('.kk-lane-r');
+      r.textContent = st.final ? `${st.word} · ${clk(h.end.at)}` : st.word;
+      r.classList.toggle('is-ok', st.key === 'ok');
+      r.classList.toggle('is-now', !st.final && st.key !== 'none');
+      laneLis[i].querySelector('.p-dashboard-session-lane-why').classList.toggle('is-later', !st.final);
+    });
+    // graph
+    for (const el of gEls.claim) { const s = edgeAt(EDGES.get(el.dataset.e), t); el.classList.toggle('p-off', !(s === 'later' || s === 'claim')); el.classList.toggle('p-later', s === 'later'); }
+    for (const el of gEls.traced) { const e = EDGES.get(el.dataset.e), s = edgeAt(e, t); el.classList.toggle('p-off', !(s === 'traced' || (s === 'proven' && e.branch))); }
+    gEls.proven.classList.toggle('p-off', t < T_OK);
+    for (const el of gEls.nodes) { const fn = el.dataset.n; el.classList.toggle('is-on', !!(NODE[fn] && NODE[fn].observed) && t >= drawAt(fn)); el.classList.toggle('p-later', t < T_CLAIM); }
+    for (const el of gEls.labels) { el.classList.toggle('is-on', t >= drawAt(el.dataset.n)); el.classList.toggle('p-later', t < T_CLAIM); }
+    for (const el of gEls.ends) { const h = HYP.find((x) => x.id === el.dataset.endOf); el.classList.toggle('p-later', t < (h.end.kind === 'ok' ? T_OK : h.end.at)); }
+    for (const el of gEls.tags) { const h = HYP.find((x) => x.id === el.dataset.tag), st = hypAt(h, t); el.textContent = st.final ? `${h.id} ${st.word} · ${clk(h.end.at)}` : `${h.id}${st.key === 'none' ? '' : ' ' + st.word}`; el.classList.toggle('p-later', st.key === 'none'); }
+    // the twin's gutter and rows
+    for (const li of fnLis) {
+      const fn = li.dataset.n;
+      li.classList.toggle('is-later', t < drawAt(fn));
+      for (const p of li.querySelectorAll('[data-e]')) {
+        const e = EDGES.get(p.dataset.e), s = edgeAt(e, t);
+        p.dataset.x = s === 'later' ? 'claim' : s === 'proven' && e.branch ? 'traced' : s;
+        p.classList.toggle('is-later', s === 'later');
+      }
+      for (const p of li.querySelectorAll('[data-n]')) { p.classList.toggle('is-on', !!(NODE[fn] && NODE[fn].observed) && t >= drawAt(fn)); p.classList.toggle('is-later', t < T_CLAIM); }
+      for (const p of li.querySelectorAll('[data-end-of]')) { const h = HYP.find((x) => x.id === p.dataset.endOf); p.classList.toggle('is-later', t < (h.end.kind === 'ok' ? T_OK : h.end.at)); }
+      li.querySelector('.p-dashboard-session-fn-end').classList.toggle('p-dashboard-session-unmade', !!(branchOf(fn) && t < branchOf(fn).h.end.at) || (fn === sink && t < T_OK));
+    }
+    // log
+    // every event of the cursor's second is under it (04:12: 재현 확인, then 사람 차례); the last carries aria-current
+    const now = evAt(t), nowT = now >= 0 ? EV[now].t : null;
+    logBtns.forEach((b, i) => {
+      b.classList.toggle('is-later', EV[i].t > t);
+      b.classList.toggle('is-now', EV[i].t === nowT);
+      if (i === now) b.setAttribute('aria-current', 'time'); else b.removeAttribute('aria-current');
+    });
+    if (!logOl.contains(document.activeElement)) rove();
+    // the moment under the cursor and the next one, each with every event of its second (the clock once: 04:12 is
+    // 재현 확인, then 사람 차례); after the last, the step that is a person's: the decision on the finding
+    const evLine = (e, k = 0, n = 1) => `<b>${k ? '' : clk(e.t)}</b><span>${sym(KINDS[e.kind].sym)}</span><span>${evText(e)}${k === n - 1 ? `<small>${hms(e.t)} KST</small>` : ''}</span>`;
+    const moment = (at) => { const es = EV.filter((e) => e.t === at); return es.map((e, k) => evLine(e, k, es.length)).join(''); };
+    const nx = EV.find((e) => e.t > t);
+    $('at-now').innerHTML = now >= 0 ? moment(nowT) : '<span class="kk-none">기록 없음</span>';
+    $('at-next').innerHTML = nx ? moment(nx.t) : `<b>지금</b><span>${sym('kk-s-human-turn')}</span><span><b>사람의 결정</b>승인 · 수정 요청 · 기각<small>발견 ${esc(H1.finding)} 화면에서 · 에이전트는 공개하지 않습니다</small></span>`;
+    // replay banner and controls
+    $('rp-state').textContent = stateWord(t);
+  }
+
+  function paint() {
+    const t = cur;
+    for (const [i, h] of HYP.entries()) laneLis[i].querySelector('.kk-lane-track').innerHTML = laneTrack(h, t);
+    cursorEl.style.setProperty('--a', t.toFixed(2));
+    range.value = String(Math.round(t));
+    range.style.setProperty('--v', `${(t / END * 100).toFixed(2)}%`);
+    const ti = Math.floor(t);
+    clockEl.innerHTML = `${clk(ti)} / ${clk(END)}<small>${hms(ti)} KST</small>`;
+    $('rp-clock').textContent = clk(ti);
+    const i = evAt(t), e = EV[i];
+    range.setAttribute('aria-valuetext', `${clk(ti)}, ${hms(ti)} KST · ${stateWord(t)}${e ? ` · 마지막 사건 ${evPlain(e)}` : ''}`);
+    const k = keyAt(t);
+    if (k !== lastKey) { lastKey = k; heavy(t); }
+    for (const b of acts) {
+      const a = b.dataset.pAct;
+      const off = (a === 'prev' && t <= 0) || ((a === 'next' || a === 'now') && t >= END);
+      if (off) { b.setAttribute('aria-disabled', 'true'); b.dataset.tip = a === 'prev' ? '첫 사건입니다' : a === 'next' ? '마지막 사건입니다' : '이미 지금 상태입니다'; }
+      else if (b.hasAttribute('aria-disabled')) { b.removeAttribute('aria-disabled'); delete b.dataset.tip; }
+      if (a === 'play') { const w = playing ? '멈춤' : t >= END ? '처음부터 재생' : '재생'; if (b.firstChild && b.firstChild.nodeType === 3) b.firstChild.textContent = w; else b.prepend(w); }
+    }
+  }
+
+  let urlTimer = 0;
+  function setMode(m) {
+    if (m === mode) return;
+    mode = m;
+    $('replay').hidden = m !== 'replay';
+    for (const b of timeSeg.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.value === m));
+    lastKey = '';
+  }
+  function syncUrl() {
+    clearTimeout(urlTimer);
+    urlTimer = setTimeout(() => {
+      const u = new URL(location.href);
+      if (mode === 'replay') u.searchParams.set('at', String(Math.round(cur))); else u.searchParams.delete('at');
+      if (u.href !== location.href) history.replaceState(history.state, '', u);
+    }, 300);
+  }
+  function confirmMoment(byPlay) {
+    main.classList.remove('is-confirming');
+    void main.offsetWidth;
+    main.classList.add('is-confirming');
+    setTimeout(() => main.classList.remove('is-confirming'), 700);
+    if (byPlay) toast(`${H1.finding} · 재현 3/3 · 사람의 검토를 기다립니다`, { tone: 'ok' });
+  }
+  function setT(nt, { say = false, play = false, moment = false } = {}) {
+    const was = cur;
+    cur = Math.max(0, Math.min(END, nt));
+    setMode(cur >= END ? 'live' : 'replay');
+    paint();
+    if (was < T_OK && cur >= T_OK) confirmMoment(play || moment);
+    if (!play) syncUrl();
+    if (say) {
+      const e = EV[evAt(cur)];
+      announce(cur >= END ? `지금 상태입니다. ${stateWord(cur)}` : `${clk(cur)} 시점 · ${stateWord(cur)}${e && e.t === Math.round(cur) ? ` · ${evPlain(e)}` : ''}`);
+    }
+  }
+  function stop(say = true) {
+    if (!playing) return;
+    playing = false;
+    cancelAnimationFrame(raf); clearTimeout(timer);
+    paint();
+    syncUrl();
+    if (say) announce(cur >= END ? '재생이 끝났습니다. 지금 상태입니다' : `${clk(cur)}에서 멈췄습니다`);
+  }
+  function play() {
+    if (playing) { stop(); return; }
+    if (cur >= END) setT(0);
+    playing = true;
+    paint();
+    announce('재생합니다. 멈춤은 Space');
+    if (reduce.matches) {                                    // no gliding cursor: event to event
+      const tick = () => {
+        if (!playing) return;
+        const n = EV.find((e) => e.t > cur);
+        setT(n ? n.t : END, { play: true });
+        if (cur >= END) { stop(); return; }
+        timer = setTimeout(tick, 700);
+      };
+      timer = setTimeout(tick, 400);
+      return;
+    }
+    const speed = END / 12;                                  // the whole session in about twelve seconds
+    let last = performance.now();
+    const frame = (now) => {
+      if (!playing) return;
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      setT(cur + dt * speed, { play: true });
+      if (cur >= END) { stop(); return; }
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+  }
+  function step(dir) {
+    stop(false);
+    const t = Math.round(cur);
+    const target = dir > 0 ? (EV.find((e) => e.t > t) || { t: END }).t : ([...EV].reverse().find((e) => e.t < t) || { t: 0 }).t;
+    setT(target, { say: true, moment: dir > 0 });
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target instanceof Element ? e.target.closest('[data-p-act]') : null;
+    if (!b) return;
+    const a = b.dataset.pAct;
+    if (a === 'prev') step(-1);
+    else if (a === 'next') step(1);
+    else if (a === 'play') play();
+    else if (a === 'now') { stop(false); setT(END, { say: true }); }
+  });
+  range.addEventListener('input', () => { stop(false); setT(+range.value); });
+  range.addEventListener('change', () => setT(+range.value, { say: false }));
+  timeSeg.addEventListener('kk:seg', (e) => {
+    stop(false);
+    if (e.detail.value === 'live') setT(END, { say: true });
+    else if (mode !== 'replay') { setT(0, { say: true }); }
+  });
+  document.addEventListener('kk:key', (e) => {
+    const k = e.detail.key;
+    if (k === 'ArrowLeft' || k === 'k') { step(-1); e.preventDefault(); }
+    else if (k === 'ArrowRight' || k === 'j') { step(1); e.preventDefault(); }
+    else if (k === 'Space') { play(); e.preventDefault(); }
+  });
+  addKeys([[['j', 'k'], '재생: 다음 · 이전 사건 (← → 와 같습니다)'], [['Home', 'End'], '시간 막대에서: 처음 · 끝으로']]);
+
+  // the replay banner holds under whatever stays on top: the bar (wide) or the menu strip (narrow)
+  const side = document.querySelector('.kk-side');
+  const measureStrip = () => { const sticky = getComputedStyle(side).position === 'sticky' && side.offsetHeight < 120; main.style.setProperty('--p-dashboard-session-strip', sticky ? `${side.offsetHeight}px` : '0px'); };
+  if ('ResizeObserver' in window) new ResizeObserver(measureStrip).observe(side);
+
+  // first paint: the address may ask for a moment (?at=100), else now
+  const at = Number(new URL(location.href).searchParams.get('at'));
+  for (const p of panels) p.removeAttribute('aria-busy');
+  if (Number.isFinite(at) && at >= 0 && at < END && new URL(location.href).searchParams.has('at')) setT(at); else { lastKey = ''; paint(); }
+  requestAnimationFrame(placeBack);
+  $('status').textContent = `세션 7F2A의 기록을 불러왔습니다. 사건 ${EV.length}개, 가설 ${HYP.length}개.`;
+}
+</script>
+</body>
+</html>

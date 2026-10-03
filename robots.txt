@@ -1,5 +1,2 @@
----
-layout: none
----
 User-agent: *
-Sitemap: {{ site.url }}/sitemap.xml
+Sitemap: https://SEORY0.github.io/sitemap.xml

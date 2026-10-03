@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI — 왜 KKACHI인가</title>
+<meta name="description" content="많이 찾기보다, 확실히 찾습니다. KKACHI(까치)는 기업 보안팀을 위한 자율 연구 에이전트입니다. 소스 코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 재현으로 입증된 취약점만 보고합니다.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#292623">
+<meta property="og:title" content="KKACHI — 왜 KKACHI인가">
+<meta property="og:description" content="많이 찾기보다, 확실히 찾습니다. KKACHI(까치)는 기업 보안팀을 위한 자율 연구 에이전트입니다. 소스 코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 재현으로 입증된 취약점만 보고합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seory0.github.io/kkachi/why/">
+<meta property="og:site_name" content="KKACHI">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://seory0.github.io/assets/kkachi/og/kkachi-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="옻칠 바탕 위의 KKACHI 워드마크와 ‘많이 찾기보다, 확실히 찾습니다.’">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://seory0.github.io/assets/kkachi/og/kkachi-og.png">
+<link rel="canonical" href="https://seory0.github.io/kkachi/why/">
+<!-- kk-favicon:start -->
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/kkachi/icons/kk-32.png">
+<link rel="apple-touch-icon" href="../../assets/kkachi/icons/kk-180.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<!-- kk-favicon:end -->
+<!-- kk-transition:start (assets/kkachi/transition.js) -->
+<style>html.kk-arriving{color-scheme:dark;scrollbar-color:#363333 #292623}html.kk-arriving::after{content:"";position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#292623 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='136'%3E%3Cpath id='k' fill='%23363333' transform='translate(14 112)' d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3Cuse href='%23k' y='-136'/%3E%3Cuse href='%23k' x='38' y='-68'/%3E%3Cuse href='%23k' x='-38' y='-68'/%3E%3C/svg%3E") 0 34px/76px 136px;animation:kk-failsafe .3s 3s forwards}@keyframes kk-failsafe{to{opacity:0;visibility:hidden}}</style>
+<script>try{let s=sessionStorage,k=(s.getItem("kk-arrive")||"").split(" "),r=document.documentElement;s.removeItem("kk-arrive");Date.now()-k[0]<(k[2]||4e3)&&k[1]==location.pathname&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&(r.classList.add("kk-arriving"),setTimeout(function(){r.classList.contains("kk-arriving")&&(r.classList.remove("kk-arriving"),document.dispatchEvent(new Event("kk:reveal")))},3300))}catch(e){}</script>
+<!-- kk-transition:end -->
+<link rel="preload" href="../../assets/kkachi/fonts/kk-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/kkachi/kk-system.css">
+<noscript><style>.p-why-replay, .p-why-scrub, .p-why-copy { visibility: hidden; } .p-why-hint { display: none; } .p-why-hyp { cursor: default; }</style></noscript>
+<style>
+/* ============================================================
+   KKACHI — 왜 KKACHI인가 · /kkachi/why/ — page CSS only (p-why- classes and keyframes, why- ids; #how, #record and
+   #report stay as section ids for old links). Spec: v4 §3 (why), research §8.2 / §8.4; system: kk-system.css §23–§31.
+   Order: the hero says who · what · why · next → right under it the proof (session line, input → output with who uses
+   it and where it runs, the trust bar) → the problem as a qualitative matrix → how (the gate ledger) → the record
+   (call graph in the v4 line grammar + hypothesis lanes) → the report as evidence rows → principles → CTA.
+   Every figure rests in its final state: without JS, under reduced motion, on narrow screens and when it is already on
+   screen at load. The session line's stations are jump links into the page (ledger, repro, report, the fifth rule).
+   Under the matrix, the limits (METHOD_LIMITS[0..3] of dash-data.js, word for word). Below the fold the gate ledger is
+   drawn by the scroll from a ghost of itself. Only on wide screens does the record, met below the fold, replay once
+   when its graph reaches the middle of the screen (held while the console is off screen, with a slim read-out under
+   the bar): the ┴ cursor runs through the session's 252 seconds, what is not yet known stays faint, and at 04:12 the
+   proven path and then the F-01 seal turn to nacre left to right, and the seal (the page's one shader) catches the
+   light once (the confirmation moment). 처음부터 다시 보기 and the session-time range replay it.
+   Marketing-size compositions of app parts (ledger, evidence rows, verdict line, identity strip, did / did not,
+   update log) are scoped to this page's wrappers until kk-system.css carries them (proposed).
+   ============================================================ */
+
+/* ── hero: on phones the lead hero starts closer to the bar, so the whole session line fits the first screen ── */
+.p-why-hero .kk-hero-why { color: var(--fg-2); }
+
+/* ── proof under the hero: the session line (its values at reading size; under 520px of width it wraps into three columns and two rows instead
+   of standing up, so all six stations stay on the first screen of a phone), then input → output beside who uses it
+   and where it runs, then the trust bar ── */
+.p-why-proof { display: grid; gap: clamp(44px, 5.5vw, 80px); }
+/* the value size and the phone wrap are the system's (.kk-sline--lg, --wrap) */
+/* on arrival the strips are laid in order, left to right (words and numbers are there from the first frame); paused
+   under the 금문 curtain; none under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .p-why-sl .kk-sline-track > li::before, .p-why-sl .kk-sline-track > li::after { animation: p-why-lay .42s var(--ease) calc(.15s + var(--i, 0) * 110ms) both; }
+  html:is(.kk-arriving, .kk-veiled) .p-why-sl .kk-sline-track > li:is(*)::before, html:is(.kk-arriving, .kk-veiled) .p-why-sl .kk-sline-track > li:is(*)::after { animation-play-state: paused; }
+}
+@keyframes p-why-lay { from { clip-path: inset(0 100% 0 0); } }
+/* every station is a jump link (word + value, and the strip above them as its hit area): 읽기 · 가설 · 추적 → the gate
+   ledger (#how), 재현 → the repro (#why-r-repro), 보고 → the report (#report), 사람 차례 → the fifth rule (#why-p5).
+   The link box takes the type the system gives li > b / li > span (.kk-sline--lg on a marketing page), so nothing moves */
+.p-why-sl-go { display: grid; gap: 2px; align-content: start; margin-top: -18px; padding-top: 18px; color: inherit; text-decoration: none; }
+.p-why-sl-go > b { font: var(--w-medium) 15px/22px var(--font-sans); color: var(--fg-2); }
+.p-why-sl li[data-s="proven"] > .p-why-sl-go > b { color: var(--confirm-t); }
+.p-why-sl-go > span { margin-top: 2px; font-size: clamp(16px, .9rem + .5vw, 22px); line-height: 1.3; font-weight: var(--w-semibold); letter-spacing: -.01em; color: var(--fg-1); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.p-why-sl-go > span .kk-sym { margin-right: 2px; vertical-align: -3px; }
+.p-why-sl-go:focus-visible { outline-offset: 2px; }
+.p-why-sl-go:focus-visible > span { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+@media (hover: hover) {
+  .p-why-sl-go:hover > span { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .p-why-sl li:not([data-s="proven"]) > .p-why-sl-go:hover > b { color: var(--fg-1); }
+}
+/* the jumps land with their heading 20px under the bar (the html scroll-padding): the scene's top padding and the parts'
+   heading margin are taken back, and the ledger's sticky words stop on that same line */
+#how, #report { scroll-margin-top: calc(-1 * var(--scene)); }
+#how > .kk-scene-text { top: calc(var(--bar-h) + 20px); }
+.p-why-io { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: stretch; gap: var(--sp-8) calc(var(--gap) * 2); }
+.p-why-io-fig { display: grid; gap: var(--sp-4); align-content: center; margin: 0; }
+.p-why-io-h { display: grid; grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr); gap: var(--sp-5); font-size: var(--mk-small); line-height: 1.5; color: var(--fg-3); }
+.p-why-io-h > :first-child { text-align: right; }
+.p-why-io-h > :last-child { grid-column: 3; }
+.p-why-facts { display: grid; align-content: center; gap: var(--sp-6); margin: 0; padding-left: calc(var(--gap) * 2); border-left: var(--lw-0) solid var(--line); }
+.p-why-facts > div { display: grid; gap: 4px; }
+.p-why-facts dt { font-size: var(--mk-small); line-height: 1.5; color: var(--fg-3); }
+.p-why-facts dd { margin: 0; font: var(--w-semibold) 19px/1.45 var(--font-sans); letter-spacing: -.012em; color: var(--fg-1); }
+.p-why-facts dd > small { display: block; margin-top: 2px; font-size: 15px; line-height: 1.55; font-weight: var(--w-regular); letter-spacing: 0; color: var(--fg-2); }
+@media (max-width: 999.98px) {
+  .p-why-io { grid-template-columns: minmax(0, 1fr); }
+  .p-why-facts { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); padding: var(--sp-7) 0 0; border-left: 0; border-top: var(--lw-0) solid var(--line); }
+}
+@media (max-width: 719.98px) { .p-why-io-h { grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); gap: var(--sp-3); } }   /* follows .kk-io on phones */
+
+/* ── the problem: the prose beside the matrix; every row says what it means; words stay beside the squares ── */
+.p-why-pb { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--sp-8) calc(var(--gap) * 2); align-items: start; margin-top: clamp(40px, 5vw, 72px); }
+.p-why-pb > .kk-lede { margin-top: 0; }
+.p-why-mx .kk-matrix tbody th { min-width: 8.5em; }
+.p-why-mx .kk-matrix tbody th > small { display: block; margin-top: 2px; font-size: 13px; line-height: 1.45; font-weight: var(--w-regular); color: var(--fg-3); }
+.p-why-mx .kk-matrix td > .kk-sym { --kk-sym-h: 20px; --kk-sym-sw: 1.1; }
+.p-why-mx .kk-matrix td > span { font-size: 14px; }
+.p-why-mx .kk-matrix td.is-us > span { color: var(--fg-1); font-weight: var(--w-semibold); }
+.p-why-mx .kk-matrix-key { margin-top: var(--sp-4); }
+.p-why-mx .kk-matrix-key > span { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 999.98px) { .p-why-pb { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 599.98px) { .p-why-mx .kk-matrix tbody th { min-width: 0; } }
+/* the limits under the matrix: METHOD_LIMITS[0..3] (dash-data.js) word for word, each behind the symbol it is about */
+.p-why-lim { grid-column: 2; }
+.p-why-lim-h { margin-bottom: var(--sp-3); font: var(--w-semibold) 17px/1.5 var(--font-sans); color: var(--fg-1); }
+.p-why-lim-l > li { grid-template-columns: 20px 6.5em minmax(0, 1fr); align-items: start; gap: 2px var(--sp-4); padding: 12px 0; font-size: 15px; line-height: 22px; }
+.p-why-lim-l > li > .kk-sym { align-self: start; margin-top: 1px; }
+.p-why-lim-l > li > span { overflow-wrap: normal; text-wrap: pretty; }
+@media (max-width: 999.98px) { .p-why-lim { grid-column: auto; } }
+@media (max-width: 599.98px) {
+  .p-why-lim-l > li { grid-template-columns: 20px minmax(0, 1fr); gap: 2px var(--sp-3); }
+  .p-why-lim-l > li > span { grid-column: 2; }
+}
+
+/* ── how: the gate ledger at reading size (the spine and nodes re-aligned to a 28px head) ── */
+.p-why-led { padding: clamp(24px, 3vw, 40px); }
+.p-why-led .kk-ledger > li { gap: 6px; padding: 0 0 var(--sp-8) 40px; }
+.p-why-led .kk-ledger > li:last-child { padding-bottom: 0; }
+.p-why-led .kk-ledger > li::before { left: 13.25px; top: 14px; }
+.p-why-led .kk-ledger > li + li::before { top: 0; }
+.p-why-led .kk-ledger > li:not(:last-child)::before { bottom: 0; }
+.p-why-led .kk-ledger > li:last-child::before { height: 7px; }   /* the spine stops on the ring */
+.p-why-led .kk-ledger > li::after { left: 4px; top: 10.5px; width: 20px; height: 7px; }
+.p-why-led .kk-ledger-h { gap: 2px 12px; font-size: 15px; line-height: 28px; }
+.p-why-led .kk-ledger-h > b { font-size: 21px; line-height: 28px; letter-spacing: -.015em; }
+.p-why-led .kk-ledger-gate { font-size: 14px; line-height: 1.5; color: var(--fg-3); }
+.p-why-led .kk-chips { gap: 8px; margin-top: 4px; }
+.p-why-led .kk-chip { min-height: 26px; padding: 2px 10px; font-size: 13px; line-height: 20px; }
+.p-why-does { max-width: 34em; font-size: 16px; line-height: 1.6; color: var(--fg-2); }
+/* 보고 waits for a person: its node is the open ring (사람 차례), where the spine ends */
+.p-why-led .kk-ledger > li:last-child::after { left: 7px; top: 7px; width: 14px; height: 14px; box-sizing: border-box; border: 1.25px solid var(--fg-1); border-radius: 50%; background: none; box-shadow: none; }
+/* 재현's glyph, drawn here so its strips can step: --p-why-r runs passed (3 = 재현 3/3: the lacquer bed comes in and the
+   three strips turn nacre together, 80 ms apart, left first; 2/3 is never nacre). At rest (and without JS) it is 3/3. */
+@property --p-why-r { syntax: '<integer>'; inherits: true; initial-value: 3; }
+.p-why-r3-bed { fill: var(--lacquer); opacity: clamp(0, calc(var(--p-why-r) - 2), 1); }
+.p-why-r3-w { fill: currentColor; opacity: calc(.38 + .62 * clamp(0, calc(var(--p-why-r) - var(--j) + 1), 1)); }
+.p-why-r3-n { opacity: clamp(0, calc(var(--p-why-r) - 2), 1); }
+.p-why-r3-n > rect { fill: none; }
+.p-why-r3-n > svg { overflow: hidden; }   /* a window on the tile (the system makes svg overflow visible) */
+/* ── the ledger drawn by the scroll (the notes pattern). Armed below the fold (kk-system.js [data-kk-in], .is-armed) it
+   starts as a ghost of itself: every node dotted, the spine a dim --lw-1 hairline, the 재현 strips at 0/3, every word
+   there. Each gate's node turns solid as it crosses the reading line (60% down the screen) and the spine draws down
+   behind it; at 재현 the strips fill white 1/3, 2/3, then all three turn nacre together; 보고 ends on the open ring.
+   Only weight, dash and fill change. Where view timelines exist the scroll drives it (back up: it undraws); elsewhere
+   it plays once in time when half of it shows (.is-in). Never armed: on screen at load, no JS, reduced motion, print. ── */
+@keyframes p-why-node { from { background-color: transparent; outline: 1.25px dotted var(--fg-3); outline-offset: -1.25px; } }
+@keyframes p-why-ring { from { border-style: dotted; border-color: var(--fg-3); } }
+@keyframes p-why-spine { from { transform: scaleY(0); } }
+@keyframes p-why-runs { 0%, 14% { --p-why-r: 0; } 14.01%, 28% { --p-why-r: 1; } 28.01%, 42% { --p-why-r: 2; } 42.01%, 100% { --p-why-r: 3; } }
+@media (prefers-reduced-motion: no-preference) {
+  .p-why-led.is-armed .kk-ledger > li { background: linear-gradient(var(--fg-3), var(--fg-3)) 13.5px 0 / var(--lw-1) 100% no-repeat; }
+  .p-why-led.is-armed .kk-ledger > li:first-child { background-position: 13.5px 14px; background-size: var(--lw-1) calc(100% - 14px); }
+  .p-why-led.is-armed .kk-ledger > li:last-child { background-size: var(--lw-1) 7px; }
+  .p-why-led.is-armed .kk-ledger > li::before { transform-origin: 50% 0; animation: p-why-spine .36s linear calc(.2s + var(--k) * .36s) both; }
+  .p-why-led.is-armed .kk-ledger > li::after { animation: p-why-node 1ms steps(1, jump-start) calc(.2s + var(--k) * .36s) both; }
+  .p-why-led.is-armed .kk-ledger > li:last-child::after { animation-name: p-why-ring; }
+  .p-why-led.is-armed .kk-ledger > li:nth-child(4) { animation: p-why-runs .9s linear calc(.2s + 3 * .36s) both; }
+  .p-why-led.is-armed .p-why-r3-n { transition: opacity 1ms step-end calc((var(--j) - 1) * 80ms); }
+  .p-why-led.is-armed:not(.is-in) .kk-ledger > li, .p-why-led.is-armed:not(.is-in) .kk-ledger > li::before, .p-why-led.is-armed:not(.is-in) .kk-ledger > li::after { animation-play-state: paused; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .p-why-led.is-armed .kk-ledger > li { view-timeline: --p-why-g block; view-timeline-inset: 0% 40%; }
+    .p-why-led.is-armed .kk-ledger > li:nth-child(4), .p-why-led.is-armed .kk-ledger > li::before, .p-why-led.is-armed .kk-ledger > li::after {
+      animation-duration: auto; animation-delay: 0s; animation-timeline: --p-why-g; animation-range: entry 0% entry 100%;
+    }
+    .p-why-led.is-armed:not(.is-in) .kk-ledger > li, .p-why-led.is-armed:not(.is-in) .kk-ledger > li::before, .p-why-led.is-armed:not(.is-in) .kk-ledger > li::after { animation-play-state: running; }
+  }
+}
+@media print { .p-why-led .kk-ledger > li, .p-why-led .kk-ledger > li::before, .p-why-led .kk-ledger > li::after { animation: none !important; } .p-why-led .kk-ledger > li { background: none !important; } }
+
+/* ── the record: session 7F2A on a sample panel ── */
+.p-why-con { --p: clamp(16px, 2.6vw, 32px); padding: var(--p); background: var(--s1); }
+.p-why-con, .p-why-sheet { margin-top: clamp(48px, 6vw, 88px); }   /* a sample area's own margin would drop the scene-body gap */
+.p-why-con-hd { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-4) var(--sp-6); padding-bottom: var(--sp-5); border-bottom: var(--lw-0) solid var(--line); }
+.p-why-con-t { font: var(--w-bold) var(--ui-24)/var(--ui-24-lh) var(--font-sans); letter-spacing: -.02em; }
+.p-why-con-sub { margin-top: 2px; font-size: 14px; line-height: 1.5; color: var(--fg-2); }
+.p-why-con-r { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3) var(--sp-5); }
+.p-why-st { min-width: 7.2em; }                       /* holds 읽는 중 … 재현 확인 without a shift */
+.p-why-clock { display: inline-flex; align-items: baseline; gap: 8px; font-size: 13px; color: var(--fg-3); }
+.p-why-clock > b { min-width: 2.9em; font: var(--w-semibold) 20px/1 var(--font-sans); font-variant-numeric: tabular-nums; letter-spacing: -.01em; color: var(--fg-1); }
+.p-why-hint { margin-top: var(--sp-5); font-size: 14px; line-height: 1.5; color: var(--fg-3); }
+.p-why-hyps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); margin-top: var(--sp-3); }
+.p-why-hyp {
+  display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px; min-width: 0;
+  padding: 14px 16px 16px; text-align: left; overflow-wrap: break-word;
+  border: var(--lw-1) solid var(--line-2); border-radius: var(--r-1); background: transparent; color: var(--fg-1);
+  font: var(--w-regular) 15px/1.5 var(--font-sans); cursor: pointer;
+  transition: background-color var(--t-1) linear, border-color var(--t-1) linear;
+}
+.p-why-hyp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 22px; }
+.p-why-hyp-id { font: var(--w-bold) 16px/22px var(--font-sans); font-variant-numeric: tabular-nums; }
+.p-why-hyp-q { font-weight: var(--w-medium); text-wrap: pretty; }
+.p-why-hyp-why { font-size: 13px; line-height: 1.5; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.p-why-hyp[data-open] .p-why-hyp-why { visibility: hidden; }
+.p-why-hyp code, .p-why-read code, .p-why-out code { font-size: .88em; }
+@media (hover: hover) { .p-why-hyp:not(:disabled):hover { background: var(--s2); border-color: var(--edge); } }
+.p-why-hyp[aria-pressed="true"] { background: var(--s3); border-color: var(--fg-1); box-shadow: inset 0 var(--lw-state) 0 var(--fg-1); }
+.p-why-hyp:disabled { cursor: default; }
+@media (max-width: 1099.98px) { .p-why-hyps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 559.98px) { .p-why-hyps { grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); } .p-why-hyp { gap: 4px; padding: 12px 14px 14px; } }
+
+/* the graph: wide (left to right) from 860px of panel, else the portrait tree */
+.p-why-fig { margin: var(--sp-7) 0 0; container-type: inline-size; }
+.p-why-g { display: none; }
+@container (min-width: 860px) { .p-why-g--w { display: block; } }
+@container (max-width: 859.98px) { .p-why-g--p { display: block; max-width: 340px; } }
+@supports not (container-type: inline-size) { .p-why-g--w { display: block; } }
+.p-why-g .kk-g-label { font-size: 12px; }
+.p-why-g .kk-g-tag { font-size: 12px; }
+.p-why-f01 { color: var(--fg-1); --kk-sym-ok: var(--confirm); --kk-sym-lacquer: var(--lacquer); --kk-sym-sw: 1; --kk-sym-dim: .38; }
+.p-why-g [data-t] { transition: opacity .3s var(--ease); }
+.p-why-g .p-why-later { opacity: .14; }
+.p-why-g :is(text, .kk-g-chip).p-why-later { opacity: 0; }
+.p-why-pre :is(.p-why-proven, .p-why-proven-t) { opacity: 0 !important; transition: none; }
+.p-why-g.is-picking :is(.kk-g-bed, .kk-g-nacre):not(.is-hi) { opacity: .1; }   /* a rejected path shows through */
+@media (prefers-reduced-motion: no-preference) {
+  .p-why-moment .kk-g-nacre { animation: p-why-on 1ms step-end calc(var(--i, 0) * 60ms) both; }
+}
+@keyframes p-why-on { from { opacity: 0; } }
+.p-why-legend { margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: var(--lw-0) solid var(--line); }
+/* the F-01 seal (wide graph only): one 36px claim-ok plate at the sink — a lacquer bed, a violet 1.25px edge and three
+   pieces cut from the page's one shader (canvas.inlay, inlay.js; its CSS tile without JS or WebGL). Before 04:12 it is
+   the traced plate (shell edge; the runs fill its pieces white 1/3, 2/3; never nacre). At 04:12 the edge turns violet,
+   the pieces come in left to right right after the proven path has filled, and the shell catches the light once
+   (kk:inlay-sweep, 1200 ms), then rests. At rest, reduced, narrow and without JS: the finished seal. */
+.p-why-gw { position: relative; }
+.p-why-seal {
+  display: none; position: absolute; left: calc(846 / 980 * 100%); top: calc(128 / 268 * 100%); translate: -50% -50%;
+  width: min(36px, calc(36 / 980 * 100%)); aspect-ratio: 3 / 2; pointer-events: none;
+  background: var(--lacquer); box-shadow: inset 0 0 0 1.25px var(--confirm);
+}
+@container (min-width: 860px) { .p-why-seal { display: block; } }
+@supports not (container-type: inline-size) { .p-why-seal { display: block; } }
+.p-why-seal > i { position: absolute; top: 25%; width: calc(100% / 6); height: 50%; background: var(--fg-1); opacity: 0; }
+.p-why-seal > i:nth-child(1) { left: calc(100% * 6 / 36); }
+.p-why-seal > i:nth-child(2) { left: calc(100% * 15 / 36); }
+.p-why-seal > i:nth-child(3) { left: calc(100% * 24 / 36); }
+.p-why-seal > canvas.inlay {
+  position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto;
+  --inlay-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 24' preserveAspectRatio='none'%3E%3Cpath d='M6 6h6v12H6zM15 6h6v12h-6zM24 6h6v12h-6z'/%3E%3C/svg%3E");
+}
+.p-why-seal[data-k]:not([data-k="ok"]) { background: none; box-shadow: inset 0 0 0 1.25px var(--fg-1); }
+.p-why-seal[data-k]:not([data-k="ok"]) > canvas { visibility: hidden; }
+.p-why-seal[data-k="later"] { opacity: .14; }
+.p-why-seal:is([data-k="rep0"], [data-k="rep1"], [data-k="rep2"]) > i { opacity: .38; }
+.p-why-seal[data-k="rep1"] > i:nth-child(1), .p-why-seal[data-k="rep2"] > i:is(:nth-child(1), :nth-child(2)) { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .p-why-moment .p-why-seal > canvas { animation: p-why-seal-on 240ms step-end 220ms both; }
+  .p-why-moment .p-why-seal > i { animation: p-why-seal-w 1ms step-end 460ms both; }
+}
+@keyframes p-why-seal-on { 0% { clip-path: inset(0 100% 0 0); } 33.33% { clip-path: inset(0 62% 0 0); } 66.67% { clip-path: inset(0 36% 0 0); } 100% { clip-path: inset(0); } }
+@keyframes p-why-seal-w { from { opacity: 1; } }
+/* the replay starts when the graph's centre crosses the middle of the screen: this line runs from that centre down */
+.p-why-mid { position: absolute; left: 0; top: 50%; width: 1px; height: 100vh; visibility: hidden; pointer-events: none; }
+/* ┴, the session-time cursor as a mark: a --lw-2 stem standing on a --lw-1 axis (the lanes' own) */
+.p-why-cur {
+  flex: none; display: inline-block; width: 12px; height: 12px;
+  background: linear-gradient(var(--fg-1), var(--fg-1)) 50% 0 / var(--lw-2) 100% no-repeat, linear-gradient(var(--fg-2), var(--fg-2)) 0 100% / 100% var(--lw-1) no-repeat;
+}
+.p-why-faint { flex: none; display: inline-block; width: 22px; height: 8px; opacity: .14; background: linear-gradient(var(--fg-1), var(--fg-1)) 0 50% / 16px var(--lw-2) no-repeat, linear-gradient(var(--fg-1), var(--fg-1)) 100% 50% / 7px 7px no-repeat; }
+/* while the record plays (or is held): a slim read-out pinned under the bar once the console's head has gone by, and
+   at the console's top edge while held — ┴ 01:48 · 추적 중 · 멈춤. No flow height: nothing moves when it shows. */
+.p-why-ro { position: sticky; top: var(--bar-h); z-index: 3; height: 0; margin-top: calc(-1 * var(--p)); margin-bottom: var(--p); }
+.p-why-ro-in {
+  position: absolute; top: 0; left: calc(-1 * var(--p)); right: calc(-1 * var(--p)); height: calc(var(--p) - 2px); margin: 0;
+  display: flex; align-items: center; gap: 0; padding: 0 var(--p); background: var(--s1); border-bottom: var(--lw-0) solid var(--line);
+  font: var(--w-medium) 13px/1 var(--font-sans); color: var(--fg-2); white-space: nowrap;
+  visibility: hidden; opacity: 0; transition: opacity var(--t-2) linear, visibility 0s linear var(--t-2);
+}
+.p-why-ro-in > b { margin: 0 6px 0 10px; font-weight: var(--w-semibold); color: var(--fg-1); font-variant-numeric: tabular-nums; }
+.p-why-ro-h { margin-left: 4px; }
+.p-why-con:is(.is-playing.is-hd-off, .is-held) .p-why-ro-in { visibility: visible; opacity: 1; transition: opacity var(--t-2) linear; }
+.p-why-ro-h, .p-why-now-h { display: none; }
+.p-why-con.is-held :is(.p-why-ro-h, .p-why-now-h) { display: inline; }
+
+/* the hypothesis lanes and the session-time range under them (its thumb sits under the ┴) */
+.p-why-lanes { margin-top: var(--sp-7); }
+.p-why-lanes-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px var(--sp-4); margin-bottom: var(--sp-3); font-size: 14px; line-height: 1.5; color: var(--fg-3); }
+.p-why-lanes-h > b { font-weight: var(--w-semibold); color: var(--fg-1); font-size: 15px; }
+.p-why-lanes .kk-lane > * { transition: opacity var(--t-2) linear, color var(--t-2) linear; }
+.p-why-lanes .kk-lane.p-why-dim > .kk-lane-track { opacity: .3; }   /* a picked hypothesis: the others' lines fade, their words step to --fg-3 (still AA) */
+.p-why-lanes .kk-lane.p-why-dim > :is(.kk-lane-h, .kk-lane-r) { color: var(--fg-3); }
+.p-why-lanes .kk-lane-r { transition: opacity var(--t-2) linear, color var(--t-2) linear; }
+.p-why-lanes .kk-lane-r.p-why-later { opacity: 0; }
+.p-why-lanes .kk-lane-track > .p-why-off { visibility: hidden; }
+.p-why-scrub { position: absolute; z-index: 1; top: 0; bottom: var(--sp-5); left: calc(2.5em + var(--sp-3) - 3px); right: calc(12em + var(--sp-3) + 17px); }
+.p-why-scrub > .kk-range { display: block; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.p-why-lanes .kk-lanes:has(.p-why-scrub > .kk-range:focus-visible) { outline: var(--lw-focus) solid var(--focus); outline-offset: 6px; }
+@media (hover: hover) { .p-why-lanes .kk-lanes:hover .kk-lanes-cursor { width: 2.5px; } }
+.p-why-lanes .kk-lanes:has(.p-why-scrub > .kk-range:focus-visible) .kk-lanes-cursor { width: 2.5px; }
+@media (max-width: 719.98px) { .p-why-scrub { right: 17px; } }
+
+/* the read-out: every line in one cell (the tallest holds the space, so switching never moves what follows) */
+.p-why-read { display: grid; margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: var(--lw-0) solid var(--line); font-size: 15px; line-height: 1.6; color: var(--fg-2); }
+.p-why-read > p { grid-area: 1 / 1; }
+.p-why-read > p.is-off { visibility: hidden; }
+.p-why-read-k { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-right: 12px; color: var(--fg-1); font-weight: var(--w-semibold); }
+.p-why-read-k > .kk-sig { font-weight: var(--w-medium); }
+.p-why-read-w { display: block; margin-top: 2px; }
+.p-why-read-t { margin-right: 8px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+
+/* the outcome: the finding on bare lacquer at the foot of the panel */
+.p-why-out {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2) var(--sp-6);
+  margin: var(--sp-6) calc(-1 * var(--p)) calc(-1 * var(--p)); padding: var(--sp-5) var(--p);
+  background: var(--bg); border-top: var(--lw-0) solid var(--line); transition: opacity .3s var(--ease);
+}
+.p-why-out-k { display: flex; align-items: center; gap: 10px 12px; white-space: nowrap; }
+.p-why-out-k > b { font: var(--w-bold) 20px/1 var(--font-sans); letter-spacing: -.01em; }
+.p-why-out-k > span:last-child { font-size: 14px; color: var(--fg-2); }
+.p-why-out-t { font-weight: var(--w-semibold); }
+.p-why-out > .kk-link { white-space: nowrap; }
+/* before 04:12 the outcome's band holds the session time and the key to the replay instead (same box: nothing moves) */
+.p-why-out { position: relative; }
+.p-why-pre .p-why-out > :not(.p-why-now) { visibility: hidden; }
+.p-why-now {
+  position: absolute; inset: 0; display: none; flex-wrap: wrap; align-items: center; align-content: center; gap: var(--sp-2) var(--sp-6);
+  margin: 0; padding: 0 var(--p); font-size: 14px; line-height: 1.4; color: var(--fg-2);
+}
+.p-why-pre .p-why-now { display: flex; }
+.p-why-now-k { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.p-why-now-t { min-width: 2.9em; font: var(--w-bold) 20px/1 var(--font-sans); letter-spacing: -.01em; color: var(--fg-1); font-variant-numeric: tabular-nums; }
+.p-why-now-of { color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.p-why-now-s { font-weight: var(--w-semibold); color: var(--fg-1); white-space: nowrap; }
+.p-why-now-key { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; color: var(--fg-3); white-space: nowrap; }
+@media (max-width: 899.98px) { .p-why-out { grid-template-columns: minmax(0, 1fr); } .p-why-out-k { flex-wrap: wrap; } }
+
+/* ── the report: an excerpt of F-01's draft on a sample sheet ── */
+.p-why-sheet { padding: clamp(20px, 4vw, 56px); background: var(--s1); }
+.p-why-sheet .kk-ident { font-size: 14px; line-height: 20px; }
+.p-why-sheet .kk-ident dt { font-size: 13px; line-height: 18px; }
+.p-why-sheet .kk-ident dd code { font-size: 13px; }
+.p-why-sheet-st { margin-top: var(--sp-7); }
+.p-why-sheet-t { max-width: 24em; margin-top: var(--sp-3); font: var(--w-bold) clamp(24px, 1rem + 1.4vw, 38px)/1.28 var(--font-sans); letter-spacing: -.02em; }
+.p-why-sheet-t code, .p-why-out-t code { padding: 0; background: none; }
+.p-why-sheet-t code { font-size: .86em; }
+.p-why-sheet-s { max-width: 38em; margin-top: var(--sp-4); font-size: clamp(17px, 1rem + .25vw, 20px); line-height: 1.65; color: var(--fg-2); }
+.p-why-sheet .kk-verdict { margin-top: var(--sp-7); }
+.p-why-sheet .kk-verdict > div { padding-block: var(--sp-4); }
+.p-why-sheet .kk-verdict dt { font-size: 13px; line-height: 18px; }
+.p-why-sheet .kk-verdict dd { font-size: 16px; line-height: 24px; }
+.p-why-sheet .kk-verdict dd.kk-verdict-n { font-size: 13px; line-height: 18px; }
+.p-why-sec-h { margin-top: var(--sp-9); margin-bottom: var(--sp-3); font: var(--w-semibold) 17px/1.5 var(--font-sans); color: var(--fg-1); }
+.p-why-sheet .kk-evid > li { grid-template-columns: 20px 6em minmax(0, 1fr) auto; padding: 13px 0; font-size: 15px; line-height: 1.5; }
+.p-why-sheet .kk-evid > li > span code { font-size: 13px; }
+.p-why-sheet .kk-evid-go { min-height: 24px; }
+@media (max-width: 599.98px) {
+  .p-why-sheet .kk-evid > li { grid-template-columns: 20px minmax(0, 1fr) auto; }
+  .p-why-sheet .kk-ident { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3) var(--sp-4); }
+  .p-why-sheet .kk-ident > div { padding: 0; border-left: 0; }
+  .p-why-sheet .kk-ident > div:is(:nth-child(3), :nth-child(4)) { grid-column: 1 / -1; }
+}
+.p-why-parts { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 0 calc(var(--gap) * 2); align-items: start; }
+.p-why-parts > section { min-width: 0; scroll-margin-top: calc(-1 * var(--sp-9)); }   /* the heading (its --sp-9 margin) lands on the scroll-padding line */
+.p-why-parts > section + section + section { grid-column: 2; }
+.p-why-parts > section:first-child { grid-row: 1 / span 2; }
+@media (max-width: 999.98px) { .p-why-parts { grid-template-columns: minmax(0, 1fr); } .p-why-parts > section + section + section { grid-column: auto; } .p-why-parts > section:first-child { grid-row: auto; } }
+.p-why-part-p { max-width: 34em; margin-top: var(--sp-3); font-size: 15px; line-height: 1.6; color: var(--fg-2); }
+.p-why-code { white-space: pre-wrap; overflow-wrap: break-word; }
+/* phones: code never breaks inside a token. Each block keeps its lines and scrolls sideways (a named, focusable region;
+   its focus ring is the block's own), with a fade at the right edge while more of the line lies behind it */
+.p-why-cw { position: relative; }
+@media (max-width: 559.98px) {
+  .p-why-code { white-space: pre; overflow-wrap: normal; scroll-timeline: --p-why-x inline; }
+  .p-why-code > code { display: block; width: max-content; min-width: 100%; }
+  .p-why-cw { timeline-scope: --p-why-x; }
+  .p-why-cw::after {
+    content: ""; position: absolute; top: var(--bw); bottom: var(--bw); right: var(--bw); width: 36px; pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--s1) 80%); opacity: 0;
+    animation: p-why-fade linear both; animation-timeline: --p-why-x;
+  }
+}
+@keyframes p-why-fade { from, 86% { opacity: 1; } to { opacity: 0; } }
+.p-why-l { display: block; padding-left: 3.4em; text-indent: -3.4em; }
+.p-why-l > .ln { text-indent: 0; }
+.p-why-l.is-find { margin-inline: -16px; padding-left: calc(16px + 3.4em); padding-right: 16px; background: var(--s3); box-shadow: inset var(--lw-state) 0 0 var(--fg-1); }
+.p-why-gap { color: var(--fg-3); }
+.p-why-notes { display: grid; gap: 6px; margin-top: var(--sp-3); font-size: 15px; line-height: 1.55; color: var(--fg-2); }
+.p-why-notes > li { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); }
+.p-why-notes > li > code { padding-top: .1em; color: var(--fg-3); font-size: 13px; background: none; }
+/* root cause: the row buffer (4 bytes, from the 32-bit product) and the copy (the 64-bit length) running past it;
+   the heap boundary is a double line (겹선: a boundary) */
+.p-why-mem { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 14px var(--sp-4); align-items: center; margin: var(--sp-5) 0 0; padding: var(--sp-5) 0 var(--sp-2); font-size: 14px; line-height: 1.4; color: var(--fg-2); }
+.p-why-mem-k { grid-column: 1; white-space: nowrap; }
+.p-why-mem-k > code { margin-right: 6px; color: var(--fg-3); font-size: 13px; background: none; }
+.p-why-mem-bar { grid-column: 2; position: relative; height: 26px; }
+.p-why-mem-bar > i { position: absolute; top: 5px; bottom: 5px; left: 0; }
+.p-why-mem-buf { width: 12%; box-sizing: border-box; border: 1.5px solid var(--fg-1); }
+.p-why-mem-in { width: 12%; background: var(--fg-1); }
+.p-why-mem-out { left: 12% !important; right: 0; box-sizing: border-box; border: 1.5px solid var(--fg-1); border-left: 0; transform-origin: 0 50%; }
+.p-why-mem-edge { position: absolute; left: calc(12% + 1px); top: -12px; bottom: -12px; width: 2px; border-inline: var(--lw-1) solid var(--fg-2); }
+.p-why-mem-cap { grid-column: 2; display: flex; justify-content: space-between; gap: var(--sp-3); font-size: 13px; color: var(--fg-3); }
+.p-why-mem-cap > span:first-child { padding-left: calc(12% - 1.6em); }
+.p-why-mem > figcaption { grid-column: 1 / -1; margin-top: var(--sp-2); }
+.p-why-mem.is-armed .p-why-mem-out { transform: scaleX(0); }
+.p-why-mem.is-armed .p-why-mem-in { transform: scaleX(0); transform-origin: 0 50%; }
+.p-why-mem.is-armed.is-in .p-why-mem-in { transform: none; transition: transform .5s var(--ease) .2s; }
+.p-why-mem.is-armed.is-in .p-why-mem-out { transform: none; transition: transform 1.4s cubic-bezier(.45, 0, .25, 1) .7s; }
+.p-why-sh .p-why-l { padding-left: 2ch; text-indent: -2ch; }
+.p-why-ps { color: var(--fg-3); user-select: none; }
+.p-why-cmd-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-3); }
+.p-why-cmd-st { font-size: 14px; color: var(--fg-2); }
+.p-why-runs { display: grid; gap: 0; margin-top: var(--sp-5); border-top: var(--lw-0) solid var(--line); }
+.p-why-runs > li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px var(--sp-4); padding: 9px 0; border-bottom: var(--lw-0) solid var(--line); font-size: 14px; line-height: 1.5; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+.p-why-runs > li > span:last-child code { font-size: 13px; background: none; padding: 0; }
+.p-why-diff .p-why-l { padding-left: 2.4ch; text-indent: -2.4ch; }
+.p-why-diff .ln { width: 2.4ch; }
+.p-why-diff .p-why-rm { color: var(--fg-3); }
+.p-why-diff .p-why-rm s { text-decoration-color: var(--fg-3); }
+.p-why-diff .p-why-ad .ln { color: var(--fg-1); }
+.p-why-sheet .kk-did { margin-top: var(--sp-9); padding-top: var(--sp-6); border-top: var(--lw-0) solid var(--line); font-size: 15px; line-height: 22px; }
+.p-why-sheet .kk-did > ul > li { min-height: 28px; }
+.p-why-sheet .kk-updates { margin-top: var(--sp-6); font-size: 14px; line-height: 20px; }
+.p-why-sheet .kk-updates > li { grid-template-columns: 7em minmax(0, 1fr); }
+
+/* ── principles: the trust bar's anchors land here ── */
+.p-why-rules > li { display: grid; grid-template-columns: 48px minmax(0, 5fr) minmax(0, 6fr); gap: var(--sp-2) var(--sp-7); align-items: start; padding: var(--sp-6) 0; border-top: var(--lw-0) solid var(--line); scroll-margin-top: calc(-1 * var(--sp-6)); }   /* the rule's words land on the scroll-padding line */
+.p-why-rules > li:last-child { border-bottom: var(--lw-0) solid var(--line); }
+.p-why-rules > li > .kk-sym { margin-top: 2px; }
+.p-why-rules h3 { font: var(--w-semibold) var(--mk-h3)/1.4 var(--font-sans); letter-spacing: -.022em; }
+.p-why-rules p { padding-top: .35em; color: var(--fg-2); }
+@media (max-width: 899.98px) { .p-why-rules > li { grid-template-columns: 40px minmax(0, 1fr); gap: var(--sp-1) var(--sp-4); } .p-why-rules p { grid-column: 2; padding-top: 0; } }
+
+@media (forced-colors: active) {
+  .p-why-mem-bar > i, .p-why-mem-edge { forced-color-adjust: none; border-color: CanvasText; }
+  .p-why-mem-in { forced-color-adjust: none; background: CanvasText; }
+  .p-why-hyp[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .p-why-out { border-top: 1px solid CanvasText; }
+  .p-why-seal { forced-color-adjust: none; background: Canvas; box-shadow: inset 0 0 0 1.25px Highlight; }
+  .p-why-seal > i { background: CanvasText; }
+  .p-why-seal:is(:not([data-k]), [data-k="ok"]) > i { opacity: 1; background: Highlight; }
+  .p-why-seal[data-k]:not([data-k="ok"]) { box-shadow: inset 0 0 0 1.25px CanvasText; }
+  .p-why-cur, .p-why-faint { forced-color-adjust: none; }   /* drawn with gradients: kept (their roles are system colours, kk-system.css §22) */
+  .p-why-r3-n > svg { visibility: hidden; }
+  .p-why-r3-n > rect { fill: Highlight; }
+  .p-why-r3-bed { fill: Canvas; }
+  .p-why-r3-w { fill: CanvasText; }
+  /* the graph's classes (.kk-g-*) are mapped by kk-system.css §22 */
+}
+</style>
+</head>
+<body class="kk">
+<a class="kk-skip" href="#main">본문 바로가기</a>
+<!-- the nacre pattern for this page's own inline SVG (the proven path of the graph); symbols carry their own nacre -->
+<svg class="kk-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><pattern id="kk-nacre" patternUnits="userSpaceOnUse" width="102.4" height="102.4" patternTransform="translate(-47.6 -53.6)"><image href="../../assets/kkachi/nacre-512.webp" width="102.4" height="102.4"/></pattern></defs></svg>
+
+<header class="kk-bar">
+  <div class="kk-bar-in">
+    <a class="kk-bar-home" href="../home/" aria-label="KKACHI 홈">
+      <span class="kk-wm-box kk-wm--inlay"><svg class="kk-wm" viewBox="0 -0.81 193.25 43.62" aria-hidden="true" focusable="false"><path class="kk-wm-k" transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z"/></svg><span class="kk-wm-inlay" aria-hidden="true"></span></span>
+    </a>
+    <nav class="kk-bar-nav" aria-label="주요 페이지">
+      <ul>
+        <li><a href="../why/" aria-current="page">왜 KKACHI인가</a></li>
+        <li><a href="../notes/">연구 노트</a></li>
+        <li><a href="../waitlist/">대기자 명단</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- 1 · hero: who and what (the lede), why (one line), next (the waitlist, there from the first frame) -->
+  <header class="kk-hero kk-hero--lead kk-wrap p-why-hero">
+    <h1 class="kk-display">많이 찾기보다, 확실히 찾습니다.</h1>
+    <p class="kk-lede">KKACHI(까치)는 기업 보안팀을 위한 자율 연구 에이전트입니다. 소스 코드와 바이너리를 읽고 호출 경로를 끝까지 따라가, 재현으로 입증된 취약점만 보고합니다.</p>
+    <p class="kk-hero-why">확인되지 않은 경고가 쌓이면, 검토 시간은 그 경고를 하나씩 확인하는 데 쓰입니다.</p>
+    <div class="kk-actions">
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="../waitlist/">대기자 명단 <span class="kk-arr" aria-hidden="true">→</span></a>
+      <a class="kk-link kk-link--arrow" href="#why-record" data-kk-jump><span>추적 과정 보기</span> <span class="kk-arr" aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <!-- 2 · proof right under the hero: one session (sample), what goes in and comes out, who and where, the five rules -->
+  <section class="kk-wrap p-why-proof" aria-label="한 세션의 기록과 지키는 것">
+    <figure class="kk-sline kk-sline--lg kk-sline--wrap p-why-sl" id="why-session" aria-labelledby="why-sl-cap">
+      <figcaption class="kk-sline-cap" id="why-sl-cap">한 세션의 기록 · 세션 7F2A · 4분 12초 <span class="kk-sample">샘플 데이터</span></figcaption>
+      <ol class="kk-sline-track">
+        <li data-s="done" style="--i:0"><a class="p-why-sl-go" href="#how" data-kk-jump><b>읽기</b> <span>함수 1,284</span></a></li>
+        <li data-s="done" style="--i:1"><a class="p-why-sl-go" href="#how" data-kk-jump><b>가설</b> <span>4개</span></a></li>
+        <li data-s="done" style="--i:2"><a class="p-why-sl-go" href="#how" data-kk-jump><b>추적</b> <span>경로 1</span></a><ul class="kk-sline-drop"><li data-end="rejected">기각 2</li><li data-end="hold">보류 1</li></ul></li>
+        <li data-s="proven" style="--i:3"><a class="p-why-sl-go" href="#why-r-repro" data-kk-jump><b>재현</b> <span>3/3</span></a></li>
+        <li data-s="done" style="--i:4"><a class="p-why-sl-go" href="#report" data-kk-jump><b>보고</b> <span><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>F-01</span></a></li>
+        <li class="kk-sline-end" data-s="turn" style="--i:5"><a class="p-why-sl-go" href="#why-p5" data-kk-jump><b>사람 차례</b> <span>검토 대기</span></a></li>
+      </ol>
+    </figure>
+
+    <div class="p-why-io">
+      <figure class="p-why-io-fig" aria-label="넣는 것과 받는 것">
+        <p class="p-why-io-h" aria-hidden="true"><span>넣는 것</span><span>받는 것</span></p>
+        <div class="kk-io">
+          <ul class="kk-io-in" aria-label="넣는 것">
+            <li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-scope"/></svg>승인 범위</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-in-source"/></svg>소스 코드</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-in-binary"/></svg>바이너리</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-config"/></svg>빌드 설정</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-in-crash"/></svg>크래시 로그 <small>선택</small></li>
+          </ul>
+          <span class="kk-io-k" aria-hidden="true"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-mark"/></svg></span>
+          <ul class="kk-io-out" aria-label="받는 것">
+            <li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-finding"/></svg>발견 판</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-cmd"/></svg>재현 명령</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-fix"/></svg>수정 방향</li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-out-rejlog"/></svg>기각 기록</li>
+          </ul>
+        </div>
+      </figure>
+      <dl class="p-why-facts">
+        <div><dt>쓰는 사람</dt><dd>기업 보안팀 <small>제품 보안 · 레드팀 · 모의해킹 담당</small></dd></div>
+        <div><dt>실행 위치</dt><dd>고객 환경 안, 또는 KKACHI의 격리 환경 <small>둘 중 고객이 고릅니다.</small></dd></div>
+      </dl>
+    </div>
+
+    <ul class="kk-trust" aria-label="지키는 다섯 가지">
+      <li><a href="#why-p1" data-kk-jump><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p1"/></svg><span>승인된 대상만 <small>권한자가 승인한 범위 안에서</small></span></a></li>
+      <li><a href="#why-p2" data-kk-jump><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p2"/></svg><span>격리해서 재현 <small>매번 새로 만든 일회용 환경에서</small></span></a></li>
+      <li><a href="#why-p3" data-kk-jump><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p3"/></svg><span>재현 없으면 발견 아님 <small>추측은 가설로만</small></span></a></li>
+      <li><a href="#why-p4" data-kk-jump><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p4"/></svg><span>버린 가설도 기록 <small>무엇을, 왜 버렸는지</small></span></a></li>
+      <li><a href="#why-p5" data-kk-jump><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p5"/></svg><span>공개는 사람이 <small>사람의 검토를 거친 뒤에만</small></span></a></li>
+    </ul>
+  </section>
+
+  <!-- 3 · why it is needed: a qualitative matrix, no figures -->
+  <section class="kk-scene kk-wrap" aria-labelledby="why-problem">
+    <h2 class="kk-h2" id="why-problem">확인되지 않은 경고가 쌓입니다.</h2>
+    <div class="p-why-pb">
+      <p class="kk-lede">분석 도구는 의심스러운 자리를 짚어 줍니다. 실제 입력이 거기까지 닿는지, 다시 일어나는지 확인하는 일은 사람에게 남습니다.</p>
+      <div class="p-why-mx">
+        <div class="kk-table-wrap" tabindex="0" role="region" aria-labelledby="why-mx-cap">
+          <table class="kk-matrix">
+            <caption id="why-mx-cap">무엇을 하는가 · 도구 종류를 단순하게 나눈 정성 비교이며, 측정한 결과가 아닙니다.</caption>
+            <thead><tr><th scope="col">할 수 있는 일</th><th scope="col">정적 분석</th><th scope="col">퍼저</th><th scope="col" class="is-us">KKACHI</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">의심 지점<small>위험해 보이는 코드를 짚습니다</small></th><td data-v="full"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td><td data-v="half"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-half"/></svg><span>일부</span></td><td data-v="full" class="is-us"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td></tr>
+              <tr><th scope="row">입력에서 도달<small>실제 입력이 그 자리까지 닿는지 봅니다</small></th><td data-v="half"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-half"/></svg><span>일부</span></td><td data-v="full"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td><td data-v="full" class="is-us"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td></tr>
+              <tr><th scope="row">재현<small>같은 입력으로 다시 일으킵니다</small></th><td data-v="none"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-none"/></svg><span>안 함</span></td><td data-v="full"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td><td data-v="full" class="is-us"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td></tr>
+              <tr><th scope="row">원인과 수정<small>왜 일어나는지, 어떻게 고칠지 씁니다</small></th><td data-v="half"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-half"/></svg><span>일부</span></td><td data-v="none"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-none"/></svg><span>안 함</span></td><td data-v="full" class="is-us"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td></tr>
+              <tr><th scope="row">버린 가설 기록<small>아니라고 본 것과 그 이유를 남깁니다</small></th><td data-v="none"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-none"/></svg><span>안 함</span></td><td data-v="none"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-none"/></svg><span>안 함</span></td><td data-v="full" class="is-us"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg><span>함</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="kk-matrix-key" aria-hidden="true"><span><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-full"/></svg>함</span><span><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-half"/></svg>일부</span><span><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-deg-none"/></svg>안 함</span></p>
+      </div>
+      <div class="p-why-lim">
+        <h3 class="p-why-lim-h" id="why-lim-h">한계</h3>
+        <ul class="kk-evid p-why-lim-l" aria-labelledby="why-lim-h"><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-runs-ok"/></svg><b>재현 3/3</b> <span>재현 3/3을 통과한 것만 발견으로 보고합니다.</span></li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-hold"/></svg><b>보류</b> <span>확신이 없으면 보고하지 않고 보류로 남깁니다.</span></li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-scope"/></svg><b>승인 범위</b> <span>승인된 범위 밖의 코드는 판단하지 않습니다.</span></li><li><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg><b>기각</b> <span>기각은 그 경로에서 재현되지 않았다는 뜻이며, 안전하다는 뜻은 아닙니다.</span></li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · how it works: five stages, five gates (the gate ledger), outputs as chips -->
+  <section class="kk-scene kk-scene--split kk-wrap" id="how" aria-labelledby="why-how">
+    <div class="kk-scene-text">
+      <h2 class="kk-h2" id="why-how">의심하고, 따라가고, 다시 확인합니다.</h2>
+      <p class="kk-lede">다섯 단계마다 관문이 있습니다. 조건을 채우지 못하면 다음 단계로 가지 않고, 그 사실도 기록합니다.</p>
+    </div>
+    <div class="kk-scene-body kk-sample-area p-why-led" data-kk-in="half">
+      <span class="kk-sample">샘플 데이터 <span>세션 7F2A</span></span>
+      <ol class="kk-ledger" aria-label="다섯 단계와 관문 (세션 7F2A)">
+        <li data-s="done" style="--k:0"><div class="kk-ledger-h"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-stage-read"/></svg><b>읽기</b> <span class="kk-ledger-st">통과</span> <time>00:00–00:36</time></div><p class="p-why-does">소스 코드와 바이너리, 빌드 설정과 크래시 로그를 읽고 호출 그래프를 만듭니다.</p><p class="kk-ledger-gate">관문 · 입력 경계가 표시된 지도</p><ul class="kk-chips"><li class="kk-chip">함수 지도 1,284</li></ul></li>
+        <li data-s="done" style="--k:1"><div class="kk-ledger-h"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-hyp"/></svg><b>가설</b> <span class="kk-ledger-st">통과</span> <time>00:36–00:50</time></div><p class="p-why-does">입력을 믿는 자리마다, 반증할 수 있는 문장으로 가설을 적습니다.</p><p class="kk-ledger-gate">관문 · 반증 조건이 있는 가설</p><ul class="kk-chips"><li class="kk-chip">가설 4</li></ul></li>
+        <li data-s="done" style="--k:2"><div class="kk-ledger-h"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-path"/></svg><b>추적</b> <span class="kk-ledger-st">통과</span> <time>00:50–03:47</time></div><p class="p-why-does">진입점에서 싱크까지 경로를 끝까지 따라갑니다. 막히면 이유를 적고 버립니다.</p><p class="kk-ledger-gate">관문 · 입력에서 도달 가능한 경로</p><ul class="kk-chips"><li class="kk-chip">경로 5단계</li><li class="kk-chip"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg>기각 2</li><li class="kk-chip"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-hold"/></svg>보류 1</li></ul></li>
+        <li data-s="done" style="--k:3"><div class="kk-ledger-h"><svg class="kk-sym kk-sym--20 p-why-r3" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect class="p-why-r3-bed" x="2.25" y="2.25" width="11.5" height="11.5"/><rect class="p-why-r3-w" style="--j:1" x="3.5" y="3.5" width="2" height="9"/><rect class="p-why-r3-w" style="--j:2" x="7" y="3.5" width="2" height="9"/><rect class="p-why-r3-w" style="--j:3" x="10.5" y="3.5" width="2" height="9"/><g class="p-why-r3-n" style="--j:1"><rect x="3.5" y="3.5" width="2" height="9"/><svg x="3.5" y="3.5" width="2" height="9" viewBox="255.5 285.5 10 45" preserveAspectRatio="none"><image href="../../assets/kkachi/nacre-512.webp" width="512" height="512"/></svg></g><g class="p-why-r3-n" style="--j:2"><rect x="7" y="3.5" width="2" height="9"/><svg x="7" y="3.5" width="2" height="9" viewBox="273 285.5 10 45" preserveAspectRatio="none"><image href="../../assets/kkachi/nacre-512.webp" width="512" height="512"/></svg></g><g class="p-why-r3-n" style="--j:3"><rect x="10.5" y="3.5" width="2" height="9"/><svg x="10.5" y="3.5" width="2" height="9" viewBox="290.5 285.5 10 45" preserveAspectRatio="none"><image href="../../assets/kkachi/nacre-512.webp" width="512" height="512"/></svg></g></svg><b>재현</b> <span class="kk-ledger-st">통과</span> <time>03:47–04:12</time></div><p class="p-why-does">격리된 새 환경에서 고정된 입력으로 세 번 재현합니다. 한 번이라도 어긋나면 발견이 아닙니다.</p><p class="kk-ledger-gate">관문 · 결정적으로 재현됨</p><ul class="kk-chips"><li class="kk-chip">재현 3/3</li><li class="kk-chip">실행마다 새 VM</li></ul></li>
+        <li data-s="now" style="--k:4"><div class="kk-ledger-h"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-report-draft"/></svg><b>보고</b> <span class="kk-ledger-st">사람 검토 대기</span> <time>04:12–</time></div><p class="p-why-does">근본 원인, 재현 절차, 수정 방향을 보고서로 정리하고 사람의 검토를 기다립니다.</p><p class="kk-ledger-gate">관문 · 사람의 검토</p><ul class="kk-chips"><li class="kk-chip">보고서 초안 F-01</li></ul></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5 · the record of judgements: session 7F2A (graph + lanes); its resting state is the final one -->
+  <section class="kk-scene kk-wrap" id="record" aria-labelledby="why-record">
+    <h2 class="kk-h2" id="why-record">뚜껑을 열면, 판단의 기록이 보입니다.</h2>
+    <p class="kk-lede">무엇을 의심했고, 어디까지 따라갔고, 왜 버렸는지. 판단마다 호출 경로와 시각이 남습니다.</p>
+    <article class="kk-scene-body kk-sample-area p-why-con" id="why-console" aria-labelledby="why-con-t">
+      <span class="kk-sample">샘플 데이터 <span>세션 7F2A</span></span>
+      <div class="p-why-ro" aria-hidden="true"><p class="p-why-ro-in"><i class="p-why-cur"></i><b class="p-why-ro-t">04:12</b><span class="p-why-ro-s">· 재현 확인</span><span class="p-why-ro-h">· 멈춤</span></p></div>
+      <header class="p-why-con-hd">
+        <div>
+          <h3 class="p-why-con-t" id="why-con-t">세션 7F2A</h3>
+          <p class="p-why-con-sub"><code class="nw">sample-imgcodec 2.4</code> (가상) · 승인된 로컬 빌드 · 함수 1,284</p>
+        </div>
+        <div class="p-why-con-r">
+          <span class="kk-sig p-why-st" id="why-status" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg><span>재현 확인</span></span>
+          <span class="kk-sig" id="why-turn"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>사람 차례</span>
+          <p class="p-why-clock">경과 <b id="why-clock">04:12</b></p>
+          <button class="kk-btn kk-btn--sm p-why-replay" id="why-replay" type="button">처음부터 다시 보기</button>
+        </div>
+      </header>
+      <p class="p-why-hint" id="why-hint">가설을 고르면 그래프와 차선에 그 가설만 남습니다. 다시 누르면 전체로 돌아갑니다. 아래 차선을 끌면 그 시각까지의 판단이 보입니다.</p>
+      <div class="p-why-hyps" id="why-hyps" role="group" aria-label="가설" aria-describedby="why-hint">
+        <button class="p-why-hyp" type="button" aria-pressed="false" data-h="h1" disabled>
+          <span class="p-why-hyp-top"><b class="p-why-hyp-id">H1</b> <span class="kk-sig" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg><span>재현 확인</span></span></span>
+          <span class="p-why-hyp-q"><code class="nw">copy_rows()</code>가 헤더의 <code class="nw">width</code> 값을 검증 없이 신뢰한다</span>
+          <span class="p-why-hyp-why">경로 5단계 · 재현 3/3 · 04:12</span>
+        </button>
+        <button class="p-why-hyp" type="button" aria-pressed="false" data-h="h2" disabled>
+          <span class="p-why-hyp-top"><b class="p-why-hyp-id">H2</b> <span class="kk-sig" data-tone="mute"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg><span>기각</span></span></span>
+          <span class="p-why-hyp-q">팔레트 인덱스가 배열 경계를 넘는다</span>
+          <span class="p-why-hyp-why"><code class="nw">read_palette()</code>에서 경계 검사 확인 · 01:37</span>
+        </button>
+        <button class="p-why-hyp" type="button" aria-pressed="false" data-h="h3" disabled>
+          <span class="p-why-hyp-top"><b class="p-why-hyp-id">H3</b> <span class="kk-sig" data-tone="mute"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg><span>기각</span></span></span>
+          <span class="p-why-hyp-q"><code class="nw">inflate_block()</code>의 출력 버퍼가 넘친다</span>
+          <span class="p-why-hyp-why">출력 버퍼 크기가 고정됨 · 02:28</span>
+        </button>
+        <button class="p-why-hyp" type="button" aria-pressed="false" data-h="h4" disabled>
+          <span class="p-why-hyp-top"><b class="p-why-hyp-id">H4</b> <span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-hold"/></svg><span>보류</span></span></span>
+          <span class="p-why-hyp-q"><code class="nw">validate_len()</code>의 부호 비교가 뒤집혀 있다</span>
+          <span class="p-why-hyp-why">입력 샘플 부족 · 다음 세션 · 02:46</span>
+        </button>
+      </div>
+      <figure class="p-why-fig" id="why-graph">
+<div class="p-why-gw">
+<svg class="kk-graph p-why-g p-why-g--w" viewBox="0 22 980 268" role="img" aria-labelledby="why-gw-t why-gw-d" focusable="false">
+<title id="why-gw-t">호출 그래프: 세션 7F2A의 추적 (샘플)</title>
+<desc id="why-gw-d">진입 fuzz_entry()에서 decode_image(), parse_header(), read_chunk(), copy_rows()를 거쳐 싱크 memcpy()까지 이어진 경로가 세 번 재현되어 입증되었고, 끝에서 발견 F-01이 재현 확인되었습니다. H2는 read_palette()에서, H3는 inflate_block()에서 기각되었습니다. H4는 validate_len()에서 보류되었고, 이 함수는 실행으로 닿지 않고 정적으로만 추론했습니다. 아래 가설 목록과 경로 설명이 같은 내용입니다.</desc>
+<path class="kk-g-groove" data-t="0" d="M40 146V74Q40 60 54 60H136"/><rect class="kk-g-idle" data-t="0" x="140" y="59" width="2" height="2"/>
+<path class="kk-g-groove" data-t="0" d="M664 154V226Q664 240 678 240H756"/><rect class="kk-g-idle" data-t="0" x="760" y="239" width="2" height="2"/>
+<path class="kk-g-claim" data-h="h1" data-t="36" d="M44 150H804"/>
+<path class="kk-g-traced" data-h="h2" data-t="50" d="M196 154V226Q196 240 210 240H296"/>
+<path class="kk-g-traced" data-h="h2" data-t="97" d="M304 240H311"/><path class="kk-g-cut" data-h="h2" data-t="97" d="M314.75 232V248"/>
+<path class="kk-g-traced" data-h="h3" data-t="108" d="M352 154V226Q352 240 366 240H452"/>
+<path class="kk-g-traced" data-h="h3" data-t="148" d="M460 240H467"/><path class="kk-g-cut" data-h="h3" data-t="148" d="M470.75 232V248"/>
+<path class="kk-g-claim" data-h="h4" data-t="36" d="M352 146V74Q352 60 366 60H420"/>
+<path class="kk-g-traced" data-h="h4" data-t="148" d="M420 60H452"/><path class="kk-g-tail" data-h="h4" data-t="166" d="M462 60H522"/>
+<path class="kk-g-taper" data-h="h1 h2 h3 h4" data-t="50" d="M44 148.75L192 148.9V151.1L44 151.25Z"/>
+<path class="kk-g-taper" data-h="h1 h3 h4" data-t="108" d="M200 148.9L348 149.05V150.95L200 151.1Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M356 149.06L504 149.2V150.8L356 150.94Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M512 149.21L660 149.36V150.64L512 150.79Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M668 149.37L804 149.5V150.5L668 150.63Z"/>
+<rect class="kk-g-bed p-why-proven" data-h="h1" data-t="252" x="44" y="146.5" width="760" height="7"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:0" x="46" y="148" width="144" height="4"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:1" x="202" y="148.25" width="144" height="3.5"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:2" x="358" y="148.5" width="144" height="3"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:3" x="514" y="148.75" width="144" height="2.5"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:4" x="670" y="149" width="132" height="2"/>
+<rect class="kk-g-node is-on" data-h="h1 h2 h3 h4" data-t="0" x="36" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1 h2 h3 h4" data-t="50" x="192" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1 h3 h4" data-t="108" x="348" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="504" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="660" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="804" y="146" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h2" data-t="50" x="296" y="236" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h3" data-t="108" x="452" y="236" width="8" height="8"/>
+<rect class="kk-g-node" data-h="h4" data-t="148" x="452" y="56" width="8" height="8"/>
+<text class="kk-g-label is-on" data-h="h1 h2 h3 h4" data-t="0" x="47" y="139">fuzz_entry()</text>
+<text class="kk-g-label is-on" data-h="h1 h2 h3 h4" data-t="50" x="203" y="139">decode_image()</text>
+<text class="kk-g-label is-on" data-h="h1 h3 h4" data-t="108" x="359" y="139">parse_header()</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="515" y="139">read_chunk()</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="671" y="139">copy_rows()</text>
+<text class="kk-g-label" data-h="h2" data-t="50" x="300" y="264" text-anchor="middle">read_palette()</text>
+<text class="kk-g-tag" data-h="h2" data-t="97" x="300" y="282" text-anchor="middle">H2 기각 · 01:37</text>
+<text class="kk-g-label" data-h="h3" data-t="108" x="456" y="264" text-anchor="middle">inflate_block()</text>
+<text class="kk-g-tag" data-h="h3" data-t="148" x="456" y="282" text-anchor="middle">H3 기각 · 02:28</text>
+<text class="kk-g-label" data-h="h4" data-t="148" x="456" y="44" text-anchor="middle">validate_len()</text>
+<text class="kk-g-tag" data-h="h4" data-t="166" x="532" y="64">H4 보류 · 02:46</text>
+<g class="kk-g-chip" data-h="h1 h2 h3 h4" data-t="0"><rect x="24" y="163" width="32" height="18" rx="2"/><text x="40" y="176" text-anchor="middle">진입</text></g>
+<g class="kk-g-chip" data-h="h1" data-t="167"><rect x="792" y="163" width="32" height="18" rx="2"/><text x="808" y="176" text-anchor="middle">싱크</text></g>
+<text class="kk-g-tag kk-g-tag--ok p-why-proven-t" data-h="h1" data-t="252" x="876" y="141">F-01 재현 확인</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="876" y="158">memcpy()</text>
+<text class="kk-g-label" data-h="h1" data-t="229" x="876" y="175">rows.c:212</text>
+</svg>
+<span class="p-why-seal" aria-hidden="true"><i></i><i></i><i></i><canvas class="inlay" width="36" height="24" data-scale="1.5" data-angle="0"></canvas></span>
+<svg class="kk-graph p-why-g p-why-g--p" viewBox="0 0 232 412" role="img" aria-labelledby="why-gp-t why-gp-d" focusable="false">
+<title id="why-gp-t">호출 그래프: 세션 7F2A의 추적 (샘플)</title>
+<desc id="why-gp-d">진입 fuzz_entry()에서 decode_image(), parse_header(), read_chunk(), copy_rows()를 거쳐 싱크 memcpy()까지 이어진 경로가 세 번 재현되어 입증되었고, 끝에서 발견 F-01이 재현 확인되었습니다. H2는 read_palette()에서, H3는 inflate_block()에서 기각되었습니다. H4는 validate_len()에서 보류되었고, 이 함수는 실행으로 닿지 않고 정적으로만 추론했습니다. 아래 가설 목록과 경로 설명이 같은 내용입니다.</desc>
+<path class="kk-g-groove" data-t="0" d="M24 44H44"/><rect class="kk-g-idle" data-t="0" x="48" y="43" width="2" height="2"/>
+<path class="kk-g-groove" data-t="0" d="M24 324H44"/><rect class="kk-g-idle" data-t="0" x="48" y="323" width="2" height="2"/>
+<path class="kk-g-claim" data-h="h1" data-t="36" d="M20 24V344"/>
+<path class="kk-g-traced" data-h="h2" data-t="50" d="M24 96H52"/>
+<path class="kk-g-traced" data-h="h2" data-t="97" d="M60 96H66"/><path class="kk-g-cut" data-h="h2" data-t="97" d="M69.75 88V104"/>
+<path class="kk-g-traced" data-h="h3" data-t="108" d="M24 172H52"/>
+<path class="kk-g-traced" data-h="h3" data-t="148" d="M60 172H66"/><path class="kk-g-cut" data-h="h3" data-t="148" d="M69.75 164V180"/>
+<path class="kk-g-claim" data-h="h4" data-t="36" d="M24 212H38"/><path class="kk-g-traced" data-h="h4" data-t="148" d="M38 212H52"/>
+<path class="kk-g-tail" data-h="h4" data-t="166" d="M62 212H84"/>
+<path class="kk-g-taper" data-h="h1 h2 h3 h4" data-t="50" d="M18.75 24L18.84 64H21.16L21.25 24Z"/>
+<path class="kk-g-taper" data-h="h1 h3 h4" data-t="108" d="M18.86 72L19.01 136H20.99L21.14 72Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M19.03 144L19.27 248H20.73L20.97 144Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M19.29 256L19.39 296H20.61L20.71 256Z"/>
+<path class="kk-g-taper" data-h="h1" data-t="167" d="M19.41 304L19.5 344H20.5L20.59 304Z"/>
+<rect class="kk-g-bed p-why-proven" data-h="h1" data-t="252" x="16.5" y="24" width="7" height="320"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:0" x="18" y="26" width="4" height="36"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:1" x="18.25" y="74" width="3.5" height="60"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:2" x="18.5" y="146" width="3" height="100"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:3" x="18.75" y="258" width="2.5" height="36"/>
+<rect class="kk-g-nacre p-why-proven" data-h="h1" data-t="252" style="--i:4" x="19" y="306" width="2" height="36"/>
+<rect class="kk-g-node is-on" data-h="h1 h2 h3 h4" data-t="0" x="16" y="16" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1 h2 h3 h4" data-t="50" x="16" y="64" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1 h3 h4" data-t="108" x="16" y="136" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="16" y="248" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="16" y="296" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h1" data-t="167" x="16" y="344" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h2" data-t="50" x="52" y="92" width="8" height="8"/>
+<rect class="kk-g-node is-on" data-h="h3" data-t="108" x="52" y="168" width="8" height="8"/>
+<rect class="kk-g-node" data-h="h4" data-t="148" x="52" y="208" width="8" height="8"/>
+<text class="kk-g-label is-on" data-h="h1 h2 h3 h4" data-t="0" x="36" y="24">fuzz_entry()</text>
+<text class="kk-g-label is-on" data-h="h1 h2 h3 h4" data-t="50" x="36" y="72">decode_image()</text>
+<text class="kk-g-label is-on" data-h="h1 h3 h4" data-t="108" x="36" y="144">parse_header()</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="36" y="256">read_chunk()</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="36" y="304">copy_rows()</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="167" x="36" y="352">memcpy()</text>
+<text class="kk-g-label" data-h="h2" data-t="50" x="84" y="100">read_palette()</text>
+<text class="kk-g-tag" data-h="h2" data-t="97" x="84" y="117">H2 기각 · 01:37</text>
+<text class="kk-g-label" data-h="h3" data-t="108" x="84" y="176">inflate_block()</text>
+<text class="kk-g-tag" data-h="h3" data-t="148" x="84" y="193">H3 기각 · 02:28</text>
+<text class="kk-g-label" data-h="h4" data-t="148" x="94" y="216">validate_len()</text>
+<text class="kk-g-tag" data-h="h4" data-t="166" x="94" y="233">H4 보류 · 02:46</text>
+<path class="kk-g-stem" data-h="h1" data-t="36" d="M126 300H134"/><text class="kk-g-tag" data-h="h1" data-t="36" x="140" y="304">H1</text>
+<g class="kk-g-chip" data-h="h1 h2 h3 h4" data-t="0"><rect x="134" y="11" width="32" height="18" rx="2"/><text x="150" y="24" text-anchor="middle">진입</text></g>
+<g class="kk-g-chip" data-h="h1" data-t="167"><rect x="112" y="339" width="32" height="18" rx="2"/><text x="128" y="352" text-anchor="middle">싱크</text></g>
+<use class="p-why-f01" data-h="h1" data-t="227" href="../../assets/kkachi/symbols.svg#kk-s-claim-ok" x="4" y="368" width="32" height="32"/>
+<text class="kk-g-tag kk-g-tag--ok p-why-proven-t" data-h="h1" data-t="252" x="44" y="382">F-01 재현 확인</text>
+<text class="kk-g-label is-on" data-h="h1" data-t="252" x="44" y="399">rows.c:212</text>
+</svg>
+<i class="p-why-mid" aria-hidden="true"></i>
+</div>
+        <figcaption class="kk-legend p-why-legend">
+          <span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-ln-context"/></svg>맥락</span><span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-ln-claim"/></svg>가설</span><span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-ln-traced"/></svg>추적</span><span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-ln-proven"/></svg>입증</span><span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-end-rejected"/></svg>기각</span><span class="kk-sig"><svg class="kk-sym kk-sym--w2" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-end-hold"/></svg>보류</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-loc-observed"/></svg>실행 관찰</span><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-loc"/></svg>정적 추론</span>
+        </figcaption>
+      </figure>
+      <div class="p-why-lanes">
+        <p class="p-why-lanes-h"><b>가설 차선</b> <span>선의 결이 시간에 따라 바뀌고, 표지는 끝에만 둡니다</span></p>
+        <div class="kk-lanes" style="--t0:0;--t1:252" id="why-lanes">
+          <ol aria-label="가설 차선 (세션 시간 00:00–04:12)">
+            <li class="kk-lane" data-h="h1"><span class="kk-lane-h">H1</span> <span class="kk-lane-track" aria-hidden="true"><i data-x="claim" data-a="36" data-b="167" style="--a:36;--b:167"></i><i data-x="traced" data-a="167" data-b="227" style="--a:167;--b:227"></i><i data-x="proven" data-p data-a="227" data-b="252" style="--a:227;--b:252"></i><s data-a="216" style="--a:216"></s><s data-a="223" style="--a:223"></s><s data-a="229" style="--a:229"></s><s data-a="236" style="--a:236"></s><s data-a="243" style="--a:243"></s><b data-end="ok" data-a="252" style="--a:252"></b></span> <span class="kk-lane-r" data-t="252">재현 확인 · 04:12</span></li>
+            <li class="kk-lane" data-h="h2"><span class="kk-lane-h">H2</span> <span class="kk-lane-track" aria-hidden="true"><i data-x="claim" data-a="36" data-b="50" style="--a:36;--b:50"></i><i data-x="traced" data-a="50" data-b="97" style="--a:50;--b:97"></i><b data-end="rejected" data-a="97" style="--a:97"></b></span> <span class="kk-lane-r" data-t="97">기각 · 01:37</span></li>
+            <li class="kk-lane" data-h="h3"><span class="kk-lane-h">H3</span> <span class="kk-lane-track" aria-hidden="true"><i data-x="claim" data-a="36" data-b="108" style="--a:36;--b:108"></i><i data-x="traced" data-a="108" data-b="148" style="--a:108;--b:148"></i><b data-end="rejected" data-a="148" style="--a:148"></b></span> <span class="kk-lane-r" data-t="148">기각 · 02:28</span></li>
+            <li class="kk-lane" data-h="h4"><span class="kk-lane-h">H4</span> <span class="kk-lane-track" aria-hidden="true"><i data-x="claim" data-a="36" data-b="148" style="--a:36;--b:148"></i><i data-x="traced" data-a="148" data-b="166" style="--a:148;--b:166"></i><b data-end="hold" data-a="166" style="--a:166"></b></span> <span class="kk-lane-r" data-t="166">보류 · 02:46</span></li>
+          </ol>
+          <span class="kk-lanes-cursor" id="why-cursor" style="--a:252" aria-hidden="true"></span>
+          <p class="kk-lanes-axis" aria-hidden="true"><span style="--a:0">00:00</span><span style="--a:60">01:00</span><span style="--a:120">02:00</span><span style="--a:180">03:00</span><span style="--a:240">04:00</span></p>
+          <div class="p-why-scrub"><label class="sr-only" for="why-t">세션 시간</label><input class="kk-range" id="why-t" type="range" min="0" max="252" step="1" value="252" aria-valuetext="04:12, F-01 재현 확인"></div>
+        </div>
+      </div>
+      <div class="p-why-read" aria-live="polite">
+        <p data-why-read="all"><span class="p-why-read-k">발견 F-01까지의 경로 <span class="kk-sig" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>재현 확인 · 04:12</span></span> <span class="p-why-read-v"><code class="nw">fuzz_entry()</code> → <code class="nw">decode_image()</code> → <code class="nw">parse_header()</code> → <code class="nw">read_chunk()</code> → <code class="nw">copy_rows()</code> → <code class="nw">memcpy()</code></span></p>
+        <p class="is-off" data-why-read="h1"><span class="p-why-read-k">H1의 경로 <span class="kk-sig" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>재현 확인 · 04:12</span></span> <span class="p-why-read-v"><code class="nw">fuzz_entry()</code> → <code class="nw">decode_image()</code> → <code class="nw">parse_header()</code> → <code class="nw">read_chunk()</code> → <code class="nw">copy_rows()</code> → <code class="nw">memcpy()</code></span> <span class="p-why-read-w">격리 환경에서 세 번 모두 <code class="nw">rows.c:212</code>에서 멈췄습니다.</span></p>
+        <p class="is-off" data-why-read="h2"><span class="p-why-read-k">H2의 경로 <span class="kk-sig" data-tone="mute"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg>기각 · 01:37</span></span> <span class="p-why-read-v"><code class="nw">fuzz_entry()</code> → <code class="nw">decode_image()</code> → <code class="nw">read_palette()</code>에서 멈춤</span> <span class="p-why-read-w"><code class="nw">read_palette()</code>에서 경계 검사를 확인했습니다. 기각은 이 경로에서 재현되지 않았다는 뜻이며, 안전하다는 뜻은 아닙니다.</span></p>
+        <p class="is-off" data-why-read="h3"><span class="p-why-read-k">H3의 경로 <span class="kk-sig" data-tone="mute"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg>기각 · 02:28</span></span> <span class="p-why-read-v"><code class="nw">fuzz_entry()</code> → <code class="nw">decode_image()</code> → <code class="nw">parse_header()</code> → <code class="nw">inflate_block()</code>에서 멈춤</span> <span class="p-why-read-w">출력 버퍼의 크기가 고정되어 있습니다. 기각은 이 경로에서 재현되지 않았다는 뜻이며, 안전하다는 뜻은 아닙니다.</span></p>
+        <p class="is-off" data-why-read="h4"><span class="p-why-read-k">H4의 경로 <span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-hold"/></svg>보류 · 02:46</span></span> <span class="p-why-read-v"><code class="nw">fuzz_entry()</code> → <code class="nw">decode_image()</code> → <code class="nw">parse_header()</code> → <code class="nw">validate_len()</code>에서 멈춤</span> <span class="p-why-read-w">입력 샘플이 부족해 다음 세션으로 넘겼습니다. <code class="nw">validate_len()</code>에는 실행으로 닿지 않았고, 정적으로만 추론했습니다.</span></p>
+        <p class="is-off" data-why-read="live" aria-hidden="true"></p>
+      </div>
+      <div class="p-why-out">
+        <p class="p-why-out-k"><span class="kk-sig" data-tone="ok"><svg class="kk-sym kk-sym--24" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>재현 확인</span><b>F-01</b> <span>재현 3/3 · 격리 환경 · 실행마다 새 VM</span></p>
+        <p class="p-why-out-t"><code class="nw">copy_rows()</code>의 행 길이 계산에서 정수 오버플로</p>
+        <a class="kk-link kk-link--arrow" href="#why-report" data-kk-jump><span>보고서 발췌 보기</span> <span class="kk-arr" aria-hidden="true">→</span></a>
+        <p class="p-why-now" aria-hidden="true"><span class="p-why-now-k"><i class="p-why-cur"></i><span>세션 시간</span> <b class="p-why-now-t">04:12</b> <span class="p-why-now-of">/ 04:12</span></span><span class="p-why-now-s"><span class="p-why-now-w">재현 확인</span><span class="p-why-now-h"> · 멈춤</span></span><span class="p-why-now-key"><i class="p-why-faint"></i>흐림 · 아직 모르는 것</span></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- 6 · the report speaks in evidence: an excerpt of F-01's draft -->
+  <section class="kk-scene kk-wrap" id="report" aria-labelledby="why-report">
+    <h2 class="kk-h2" id="why-report">보고서는 증거로 말합니다.</h2>
+    <p class="kk-lede">발견 하나에 보고서 하나. 주장마다 직접 확인할 수 있는 근거가 붙습니다.</p>
+    <article class="kk-scene-body kk-sample-area p-why-sheet" aria-labelledby="why-rep-t">
+      <span class="kk-sample">샘플 데이터 <span>보고서 F-01 초안에서 발췌</span></span>
+      <dl class="kk-ident">
+        <div><dt>발견</dt><dd><code class="nw">F-01</code></dd></div>
+        <div><dt>세션</dt><dd><code class="nw">7F2A</code></dd></div>
+        <div><dt>대상</dt><dd><code class="nw">sample-imgcodec 2.4</code> (가상)</dd></div>
+        <div><dt>위치</dt><dd><code class="nw">src/rows.c:207 → 212</code></dd></div>
+        <div><dt>분류</dt><dd class="nw">CWE-190 → CWE-122</dd></div>
+        <div><dt>작성</dt><dd><time datetime="2026-09-26">2026-09-26</time></dd></div>
+      </dl>
+      <p class="p-why-sheet-st"><span class="kk-sig" data-tone="ok"><svg class="kk-sym kk-sym--20" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-ok"/></svg>재현 확인 3/3</span></p>
+      <h3 class="p-why-sheet-t" id="why-rep-t"><code class="nw">copy_rows()</code>의 행 길이 계산에서 정수 오버플로</h3>
+      <p class="p-why-sheet-s">조작된 이미지 헤더의 <code class="nw">width</code> 값이 32비트 곱셈에서 넘쳐 행 버퍼가 실제보다 작게 할당되고, 이어지는 <code class="nw">memcpy()</code>가 힙 경계를 넘어 씁니다.</p>
+      <dl class="kk-verdict" data-attn>
+        <div><dt>심각도</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-sev-unrev"/></svg>검토 전</span></dd><dd class="kk-verdict-n">사람이 정합니다</dd></div>
+        <div><dt>검증</dt><dd><span class="kk-sig" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-runs-ok"/></svg>재현 3/3</span></dd><dd class="kk-verdict-n">관문 4/5 통과 · 다섯째는 사람의 검토</dd></div>
+        <div><dt>상태</dt><dd><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>사람 검토 대기</span></dd><dd class="kk-verdict-n">보고서 초안</dd></div>
+        <div class="kk-verdict-next"><dt>다음 행동</dt><dd>사람이 검토합니다</dd><dd class="kk-verdict-n">승인 · 수정 요청 · 기각 중 하나</dd></div>
+      </dl>
+
+      <h4 class="p-why-sec-h" id="why-evid-h">근거</h4>
+      <ul class="kk-evid" aria-labelledby="why-evid-h">
+        <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-path"/></svg><b>도달</b> <span><code class="nw">fuzz_entry()</code>에서 <code class="nw">memcpy()</code>까지 · <code class="nw">rows.c:207 → 212</code></span> <a class="kk-evid-go" href="#why-graph" data-kk-jump>경로 보기</a></li>
+        <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-loc-observed"/></svg><b>원인</b> <span><code class="nw">width</code>와 <code class="nw">bpp</code>를 32비트로 곱합니다 · <code class="nw">rows.c:207</code></span> <a class="kk-evid-go" href="#why-r-code" data-kk-jump>코드 보기</a></li>
+        <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-runs-ok"/></svg><b>재현</b> <span>격리 VM에서 3회 모두 같은 자리에서 크래시</span> <a class="kk-evid-go" href="#why-r-repro" data-kk-jump>명령 보기</a></li>
+        <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-claim-rejected"/></svg><b>버린 대안</b> <span>H2 · H3 기각, H4 보류</span> <a class="kk-evid-go" href="#why-hyps" data-kk-jump>가설 보기</a></li>
+      </ul>
+
+      <div class="p-why-parts">
+        <section id="why-r-code" aria-labelledby="why-r-code-h">
+          <h4 class="p-why-sec-h" id="why-r-code-h">근본 원인</h4>
+          <div class="p-why-cw"><pre class="kk-code p-why-code" tabindex="0" role="region" aria-label="근본 원인 코드"><code><span class="p-why-l"><span class="ln">207</span>u32 stride = <span class="nw">h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>; <span class="c">// u32 overflow</span></span><span class="p-why-l"><span class="ln">208</span>u8 *row = malloc(stride);</span><span class="p-why-l p-why-gap"><span class="ln">…</span></span><span class="p-why-l is-find"><span class="ln">212</span>  memcpy(row, s, <span class="nw">(size_t)h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>);</span></code></pre></div>
+          <ul class="p-why-notes">
+            <li><code class="nw">207</code><span>32비트 곱셈이 넘쳐 4바이트 버퍼만 할당됩니다.</span></li>
+            <li><code class="nw">212</code><span>64비트로 다시 계산한 길이만큼 복사해 힙 경계를 넘어 씁니다.</span></li>
+          </ul>
+          <figure class="p-why-mem" data-kk-in aria-labelledby="why-mem-cap">
+            <span class="p-why-mem-k"><code class="nw">207</code>행 버퍼</span>
+            <span class="p-why-mem-bar" aria-hidden="true"><i class="p-why-mem-buf"></i><span class="p-why-mem-edge"></span></span>
+            <span class="p-why-mem-k"><code class="nw">212</code>복사</span>
+            <span class="p-why-mem-bar" aria-hidden="true"><i class="p-why-mem-in"></i><i class="p-why-mem-out"></i><span class="p-why-mem-edge"></span></span>
+            <span class="p-why-mem-cap" aria-hidden="true"><span>힙 경계</span><span>넘어 씀</span></span>
+            <figcaption class="kk-cap" id="why-mem-cap">입력 <code class="nw">width 0x40000001</code>, <code class="nw">bpp 4</code>. 행 버퍼는 32비트 곱이 넘쳐 4바이트가 되고, 복사 길이는 64비트로 계산되어 넘치지 않습니다.</figcaption>
+          </figure>
+        </section>
+        <section id="why-r-repro" aria-labelledby="why-r-repro-h">
+          <h4 class="p-why-sec-h" id="why-r-repro-h">재현</h4>
+          <div class="p-why-cw"><pre class="kk-code p-why-code p-why-sh" tabindex="0" role="region" aria-label="재현 명령"><code><span class="p-why-l"><span class="p-why-ps" aria-hidden="true">$ </span><span id="why-cmd">./repro --seed 7f2a poc-f01.img</span></span><span class="p-why-l c">ASan: heap-buffer-overflow · rows.c:212</span></code></pre></div>
+          <div class="p-why-cmd-row"><button class="kk-btn kk-btn--sm p-why-copy" id="why-copy" type="button">명령 복사</button><span class="p-why-cmd-st" id="why-copy-st" role="status"></span></div>
+          <ul class="p-why-runs" aria-label="재현 실행 세 번">
+            <li><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>실행 1</span> <span>0.41초 · <code class="nw">rows.c:212</code></span></li>
+            <li><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>실행 2</span> <span>0.39초 · <code class="nw">rows.c:212</code></span></li>
+            <li><span class="kk-sig"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>실행 3</span> <span>0.40초 · <code class="nw">rows.c:212</code></span></li>
+            <li><span class="kk-sig" data-tone="ok"><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-runs-ok"/></svg>재현 확인 3/3</span> <span>x86_64 · ASan · 고정 시드 · 실행마다 새 VM</span></li>
+          </ul>
+        </section>
+        <section id="why-r-fix" aria-labelledby="why-r-fix-h">
+          <h4 class="p-why-sec-h" id="why-r-fix-h">수정 방향</h4>
+          <div class="p-why-cw"><pre class="kk-code p-why-code p-why-diff" tabindex="0" role="region" aria-label="수정 방향 코드"><code><span class="p-why-l p-why-rm"><span class="sr-only">삭제: </span><span class="ln" aria-hidden="true">−</span><s>u32 stride = <span class="nw">h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>;</s></span><span class="p-why-l p-why-ad"><span class="sr-only">추가: </span><span class="ln" aria-hidden="true">+</span>if (<span class="nw">h-&gt;width</span> &gt; MAX_W) return -1;</span><span class="p-why-l p-why-ad"><span class="sr-only">추가: </span><span class="ln" aria-hidden="true">+</span>size_t stride = <span class="nw">(size_t)h-&gt;width</span> * <span class="nw">h-&gt;bpp</span>;</span></code></pre></div>
+          <p class="p-why-part-p">수정은 제안일 뿐입니다. 적용은 사람이 결정합니다.</p>
+        </section>
+      </div>
+
+      <div class="kk-did">
+        <p class="kk-did-h" id="why-did-h">에이전트가 한 일</p>
+        <ul aria-labelledby="why-did-h">
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>재현 3/3</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>실행마다 새 일회용 VM</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>보고서 초안 작성</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-strip"/></svg>수정 방향 제안</li>
+        </ul>
+        <p class="kk-did-h" id="why-didnt-h">하지 않은 일 · 사람 몫</p>
+        <ul data-human aria-labelledby="why-didnt-h">
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>심각도 결정</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>수정 적용</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>외부 공개</li>
+          <li><svg class="kk-sym" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-human-turn"/></svg>제보 채널과 공개 시점</li>
+        </ul>
+      </div>
+      <ol class="kk-updates" aria-label="갱신 기록">
+        <li><time datetime="2026-09-26">2026-09-26</time><p>재현 3/3으로 확인하고 보고서 초안을 만들었습니다. 사람의 검토를 기다립니다.</p></li>
+      </ol>
+    </article>
+  </section>
+
+  <!-- 7 · principles: the trust bar's five anchors -->
+  <section class="kk-scene kk-wrap" aria-labelledby="why-rules">
+    <h2 class="kk-h2" id="why-rules">이 다섯 가지는 바꾸지 않습니다.</h2>
+    <ul class="p-why-rules kk-scene-body">
+      <li id="why-p1" tabindex="-1"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p1"/></svg><h3>허가받은 대상만 봅니다.</h3><p>소유자나 권한자가 승인한 범위 안에서만 분석하고 실행합니다.</p></li>
+      <li id="why-p2" tabindex="-1"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p2"/></svg><h3>격리된 곳에서만 재현합니다.</h3><p>재현은 매번 새로 만든 일회용 샌드박스 안에서 실행합니다.</p></li>
+      <li id="why-p3" tabindex="-1"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p3"/></svg><h3>재현되지 않으면 발견이 아닙니다.</h3><p>추측은 가설로 남기고, 보고서에는 쓰지 않습니다.</p></li>
+      <li id="why-p4" tabindex="-1"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p4"/></svg><h3>버린 가설도 기록합니다.</h3><p>무엇을 왜 버렸는지가 다음 연구를 빠르게 만듭니다. 틀린 길을 아는 것도 증거입니다.</p></li>
+      <li id="why-p5" tabindex="-1"><svg class="kk-sym kk-sym--32" aria-hidden="true" focusable="false"><use href="../../assets/kkachi/symbols.svg#kk-s-p5"/></svg><h3>혼자 공개하지 않습니다.</h3><p>보고서는 사람의 검토를 거친 뒤에만 밖으로 나갑니다. 제보 채널과 공개 시점은 사람이 정합니다.</p></li>
+    </ul>
+  </section>
+
+  <!-- 8 · the way on -->
+  <section class="kk-cta kk-wrap" aria-labelledby="why-cta">
+    <div class="kk-cta-in">
+      <h2 class="kk-cta-t" id="why-cta">반가운 소식만 가져오겠습니다.</h2>
+      <ol class="kk-cta-steps">
+        <li><b>이메일을 남깁니다</b> <span>소속은 적지 않아도 됩니다.</span></li>
+        <li><b>공개 일정이 정해지면</b> <span>검증된 소식만 가끔 전합니다.</span></li>
+        <li><b>연구 프리뷰 초대</b> <span>첫 노트는 연구 프리뷰와 함께 공개합니다.</span></li>
+      </ol>
+      <div class="kk-actions">
+        <a class="kk-btn kk-btn--primary kk-btn--lg" href="../waitlist/">대기자 명단 <span class="kk-arr" aria-hidden="true">→</span></a>
+        <a class="kk-link kk-link--arrow" href="../notes/"><span>연구 노트</span> <span class="kk-arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="kk-end kk-wrap" aria-label="다음 페이지">
+    <a class="kk-tile kk-tile--next" href="../notes/">
+      <span class="kk-tile-arr" aria-hidden="true">→</span>
+      <span class="kk-tile-d">KKACHI를 만들며 배운 것을 짧은 노트로 정리합니다.</span>
+      <span class="kk-tile-t">연구 노트</span>
+    </a>
+    <a class="kk-tile kk-tile--home" href="../home/">
+      <span class="kk-tile-arr" aria-hidden="true">→</span>
+      <span class="kk-tile-d">처음 화면으로</span>
+      <span class="kk-tile-t">홈</span>
+    </a>
+  </nav>
+</main>
+
+<footer class="kk-foot kk-wrap">
+  <div class="kk-foot-in">
+    <a class="kk-foot-home" href="../home/" aria-label="KKACHI 홈"><span class="kk-wm-box"><svg class="kk-wm" viewBox="0 -0.81 193.25 43.62" aria-hidden="true" focusable="false"><path class="kk-wm-k" transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z"/></svg></span></a>
+    <nav class="kk-foot-nav" aria-label="KKACHI 페이지">
+      <ul>
+        <li><a href="../home/">홈</a></li>
+        <li><a href="../why/" aria-current="page">왜 KKACHI인가</a></li>
+        <li><a href="../notes/">연구 노트</a></li>
+        <li><a href="../waitlist/">대기자 명단</a></li>
+      </ul>
+    </nav>
+    <div class="kk-foot-txt">
+      <p>화면의 대상, 경로, 수치, 기록은 모두 설명을 위한 샘플 데이터입니다. 실제 고객, 성과, 벤치마크를 나타내지 않습니다.</p>
+      <p>색 값은 서울공예박물관 소장품 페이지를 참고했습니다.</p>
+    </div>
+    <p class="kk-foot-c">© 2026 KKACHI · SEORY0가 만든 프로토타입</p>
+  </div>
+</footer>
+
+<script type="module" src="../../assets/kkachi/transition.js"></script>
+<script type="module" src="../../assets/kkachi/kk-system.js"></script>
+<script type="module">
+/* 왜 KKACHI인가 — page script (hooks: ids why-*, data-why-*, data-t / data-h on the graph, data-a / data-b on the lanes;
+   state classes p-why-* and is-*).
+   1 The record (#why-console) is a replay of session 7F2A's 252 seconds. setNow(t) shows what was known at t: graph
+     parts established later stay faint (their words hidden), lanes grow to the ┴ cursor, the four hypotheses show
+     their state then (대기 → 검증 중 → 기각 / 보류 / 재현 k/3 → 재현 확인), the clock and the status follow (also in the
+     read-out under the bar and in the band at the foot), the read-out line says the latest event, and the F-01 seal is
+     the traced plate whose pieces fill white run by run. Before 04:12 nothing is nacre (2/3 is not nacre); at 04:12 the
+     proven path, then the seal's pieces turn to nacre left to right (the confirmation moment; at once under reduced
+     motion), and when the replay gets there the seal's shader catches the light once (kk:inlay-sweep, 1200 ms).
+     Resting state = 04:12 (the markup's own). On wide screens (>= 1000px), with motion, a console below the fold at
+     load is set to 00:00 and replays once (22 ms a session second) when the graph's centre crosses the middle of the
+     screen, after the 금문 curtain. While it plays, a console under 25% visible holds it (t and the ┴ stay; 멈춤) and
+     it goes on when the console comes back. Keyboard focus in a waiting console, a pick and the range give the record
+     its final state or the chosen second. 처음부터 다시 보기 replays. Picking a hypothesis lights its path and lane (the
+     rest dims) and puts its path and reason in the read-out (a polite live region); pressed again: all.
+   2 The seal's shader: inlay.js (the najeon runtime behind it) is brought in only where the seal shows (the wide graph),
+     so a phone builds no WebGL context; one canvas, one context. Elsewhere, and until then, the seal is the CSS tile.
+   3 Copy: the repro command alone; the result goes to the role=status beside the button.
+   Without JS everything is in its final state; the replay button and the range are hidden (noscript style). */
+import { reduce, lifted, copy, announce } from '../../assets/kkachi/kk-system.js';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const later = (fn) => requestAnimationFrame(() => setTimeout(fn, 0));
+const SYM = '../../assets/kkachi/symbols.svg#kk-s-';
+const sym = (id, cls = '') => `<svg class="kk-sym${cls}" aria-hidden="true" focusable="false"><use href="${SYM}${id}"/></svg>`;
+const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
+const con = $('#why-console');
+if (con) {
+  const END = 252, MS = 22;
+  const timed = $$('.p-why-g [data-t]', con);
+  const f01 = $$('.p-why-f01', con);
+  const graphs = $$('.p-why-g', con);
+  const cards = $$('.p-why-hyp', con);
+  const lanes = $$('.kk-lane', con);
+  const segs = $$('.kk-lane-track > i', con);
+  const marks = $$('.kk-lane-track > :is(s, b)', con);
+  const laneR = $$('.kk-lane-r[data-t]', con);
+  const cursor = $('#why-cursor'), range = $('#why-t'), clock = $('#why-clock');
+  const status = $('#why-status'), turn = $('#why-turn'), replay = $('#why-replay');
+  const reads = $$('[data-why-read]', con), live = $('[data-why-read="live"]', con), mid = $('.p-why-mid', con);
+  const seal = $('.p-why-seal', con), head = $('.p-why-con-hd', con);
+  const roT = $('.p-why-ro-t', con), roS = $('.p-why-ro-s', con), nowT = $('.p-why-now-t', con), nowW = $('.p-why-now-w', con);
+  const code = (s) => `<code class="nw">${s}</code>`;
+  // the session's own record (prototype sample), newest last: [t, symbol, what, detail]
+  const EV = [
+    [0, 'stage-read', '읽기', '함수 1,284개를 색인했습니다.'],
+    [36, 'claim-hyp', '가설 4개', 'H1–H4를 반증할 수 있는 문장으로 적었습니다.'],
+    [50, 'path', 'H2 추적', `${code('fuzz_entry()')} → ${code('decode_image()')}`],
+    [97, 'claim-rejected', 'H2 기각', `${code('read_palette()')}에서 경계 검사를 확인했습니다.`],
+    [108, 'path', 'H3 추적', `${code('decode_image()')} → ${code('parse_header()')}`],
+    [148, 'claim-rejected', 'H3 기각', '출력 버퍼 크기가 고정되어 있습니다.'],
+    [166, 'claim-hold', 'H4 보류', '입력 샘플이 부족해 다음 세션으로 넘깁니다.'],
+    [167, 'path', 'H1 추적', `${code('read_chunk()')} → ${code('copy_rows()')} → ${code('memcpy()')}`],
+    [216, 'strip-broken', 'H1 입력 1', '크래시 없음.'],
+    [223, 'strip-broken', 'H1 입력 2', '크래시 없음.'],
+    [227, 'runs-0', 'H1 재현 시작', '격리 환경에서 세 번 실행합니다. 실행마다 새 VM.'],
+    [229, 'strip', '실행 1', `0.41초 · ${code('rows.c:212')}에서 멈춤`],
+    [236, 'strip', '실행 2', `0.39초 · ${code('rows.c:212')}에서 멈춤`],
+    [243, 'strip', '실행 3', `0.40초 · ${code('rows.c:212')}에서 멈춤`],
+    [252, 'claim-ok', 'F-01 재현 확인 3/3', '사람의 검토를 기다립니다.'],
+  ];
+  // what each hypothesis card says at t: [from, symbol, word, tone]
+  const CARD = {
+    h1: [[0, 'claim-cand', '후보'], [36, 'claim-hyp', '검증 중'], [227, 'claim-rep0', '재현 0/3'], [229, 'claim-rep1', '재현 1/3'], [236, 'claim-rep2', '재현 2/3'], [252, 'claim-ok', '재현 확인', 'ok']],
+    h2: [[0, 'claim-cand', '후보'], [36, 'claim-hyp', '검증 중'], [97, 'claim-rejected', '기각', 'mute']],
+    h3: [[0, 'claim-cand', '후보'], [36, 'claim-hyp', '검증 중'], [148, 'claim-rejected', '기각', 'mute']],
+    h4: [[0, 'claim-cand', '후보'], [36, 'claim-hyp', '검증 중'], [166, 'claim-hold', '보류']],
+  };
+  const STATUS = [[0, 'stage-read', '읽는 중'], [36, 'claim-hyp', '가설 세우는 중'], [50, 'path', '추적 중'], [227, 'runs-0', '재현 중'], [229, 'runs-1', '재현 중'], [236, 'runs-2', '재현 중'], [252, 'claim-ok', '재현 확인', 'ok']];
+  const F01 = [[0, 'claim-traced'], [227, 'claim-rep0'], [229, 'claim-rep1'], [236, 'claim-rep2'], [252, 'claim-ok']];
+  // the seal at t: faint until the runs start, then the traced plate with its pieces filling white, then 재현 확인
+  const SEAL = [[0, 'later'], [227, 'rep0'], [229, 'rep1'], [236, 'rep2'], [252, 'ok']];
+  const at = (list, t) => { let r = list[0]; for (const x of list) if (x[0] <= t) r = x; return r; };
+
+  // raf: a replay frame is queued. armed: waiting at 00:00 for the graph. held: a replay paused off screen.
+  // seen: the console's visible share (IntersectionObserver)
+  let now = END, raf = 0, armed = false, held = false, seen = 1, chosen = null, liveAt = -1, inlay = false;
+  const setSig = (el, [, id, word, tone]) => {
+    const key = id + word;
+    if (el.dataset.k === key) return;
+    el.dataset.k = key;
+    if (tone) el.dataset.tone = tone; else delete el.dataset.tone;
+    el.innerHTML = `${sym(id)}<span>${word}</span>`;
+  };
+  function showRead(k) {
+    for (const r of reads) r.classList.toggle('is-off', r.dataset.whyRead !== k);
+  }
+  function setNow(t) {
+    const was = now;
+    now = t;
+    const pre = t < END;
+    con.classList.toggle('p-why-pre', pre);
+    for (const el of timed) el.classList.toggle('p-why-later', +el.dataset.t > t);
+    const fs = SYM + at(F01, t)[1];
+    for (const u of f01) if (u.getAttribute('href') !== fs) u.setAttribute('href', fs);
+    if (seal) seal.dataset.k = at(SEAL, t)[1];
+    for (const s of segs) {
+      const a = +s.dataset.a, b = +s.dataset.b;
+      s.classList.toggle('p-why-off', t <= a);
+      s.style.setProperty('--b', Math.max(a, Math.min(b, t)));
+      if (s.hasAttribute('data-p')) s.dataset.x = pre ? 'traced' : 'proven';
+    }
+    for (const m of marks) m.classList.toggle('p-why-off', t < +m.dataset.a);
+    for (const r of laneR) r.classList.toggle('p-why-later', t < +r.dataset.t);
+    cursor.style.setProperty('--a', t);
+    range.value = t;
+    const ev = at(EV, t), st = at(STATUS, t);
+    range.setAttribute('aria-valuetext', `${mmss(t)}, ${ev[2]}`);
+    clock.textContent = roT.textContent = nowT.textContent = mmss(t);
+    roS.textContent = `· ${st[2]}`;
+    nowW.textContent = st[2];
+    setSig(status, st);
+    turn.classList.toggle('p-why-later', pre);
+    turn.style.visibility = pre ? 'hidden' : '';
+    for (const c of cards) {
+      const s = at(CARD[c.dataset.h], t);
+      setSig($('.kk-sig', c), s);
+      const open = s[2] === '후보' || s[2] === '검증 중' || s[2].startsWith('재현 ') && s[2] !== '재현 확인';
+      c.toggleAttribute('data-open', open);
+    }
+    if (!chosen) {
+      if (pre) {
+        if (liveAt !== ev[0]) {
+          liveAt = ev[0];
+          live.innerHTML = `<span class="p-why-read-k"><span class="p-why-read-t">${mmss(ev[0])}</span> <span class="kk-sig"${ev[1] === 'claim-ok' ? ' data-tone="ok"' : ''}>${sym(ev[1])}${ev[2]}</span></span> <span class="p-why-read-v">${ev[3]}</span>`;
+        }
+        showRead('live');
+      } else showRead('all');
+    }
+    if (was < END && t >= END) moment();
+  }
+  // 04:12: the path fills left to right, then the seal's pieces (CSS, .p-why-moment)
+  function moment() {
+    if (reduce.matches) return;
+    con.classList.remove('p-why-moment');
+    void con.offsetWidth;
+    con.classList.add('p-why-moment');
+    setTimeout(() => con.classList.remove('p-why-moment'), 700);
+  }
+  // …and, at the end of a replay, the seal's shell catches the light once (inlay.js; a no-op under reduced motion)
+  const sweep = () => { if (inlay) document.dispatchEvent(new CustomEvent('kk:inlay-sweep', { detail: { duration: 1200 } })); };
+  function stop() { cancelAnimationFrame(raf); raf = 0; held = false; con.classList.remove('is-playing', 'is-held'); }
+  function run() {                        // from now, at 22 ms a session second
+    const t0 = performance.now() - now * MS;
+    const tick = (ts) => {
+      const t = Math.max(0, Math.min(END, Math.floor((ts - t0) / MS)));
+      if (t !== now) setNow(t);
+      if (t < END) raf = requestAnimationFrame(tick);
+      else {
+        stop();
+        sweep();
+        announce('추적이 끝났습니다. 가설 H1이 재현 3/3으로 확인되어 발견 F-01이 되었습니다. 사람의 검토를 기다립니다.');
+      }
+    };
+    raf = requestAnimationFrame(tick);
+  }
+  function hold() { if (!raf) return; cancelAnimationFrame(raf); raf = 0; held = true; con.classList.add('is-held'); }
+  function resume() { if (!held) return; held = false; con.classList.remove('is-held'); run(); }
+  function pick(h) {
+    chosen = h;
+    for (const c of cards) c.setAttribute('aria-pressed', String(c.dataset.h === h));
+    for (const g of graphs) {
+      g.classList.toggle('is-picking', !!h);
+      for (const el of $$('[data-h]', g)) el.classList.toggle('is-hi', !!h && el.dataset.h.split(' ').includes(h));
+    }
+    for (const l of lanes) l.classList.toggle('p-why-dim', !!h && l.dataset.h !== h);
+    showRead(h || (now < END ? 'live' : 'all'));
+  }
+  function play() {
+    stop();
+    armed = false;
+    pick(null);
+    if (reduce.matches) { setNow(END); return; }
+    con.classList.add('is-playing');
+    setNow(0);
+    run();
+    if (seen < 0.25) hold();
+  }
+  const finish = () => { if (raf || armed || held) { stop(); armed = false; setNow(END); } };
+  for (const c of cards) {
+    c.disabled = false;
+    c.addEventListener('click', () => {
+      finish();
+      pick(chosen === c.dataset.h ? null : c.dataset.h);
+    });
+  }
+  replay.addEventListener('click', play);
+  // a reader who comes into the record by keyboard (or a jump) gets the finished record at once (the replay button
+  // itself excepted: it is how a replay is asked for)
+  con.addEventListener('focusin', (e) => { if (e.target !== replay) finish(); });
+  range.addEventListener('input', () => { stop(); armed = false; setNow(+range.value); });
+  reduce.addEventListener('change', () => { if (reduce.matches) finish(); });
+
+  // the seal's shader, only where the seal shows (see 2 above)
+  const bring = () => {
+    if (inlay || !seal || getComputedStyle(seal).display === 'none') return;
+    inlay = true;
+    import('../../assets/kkachi/inlay.js').catch(() => {});
+  };
+  let rz = 0;
+  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(bring, 250); }, { passive: true });
+
+  later(() => {
+    bring();
+    if (!('IntersectionObserver' in window)) return;
+    // held under 25% visible, on again above it
+    new IntersectionObserver((es) => {
+      for (const e of es) seen = e.isIntersecting ? e.intersectionRatio : 0;
+      if (seen < 0.25) hold(); else resume();
+    }, { threshold: [0, 0.25, 0.5, 1] }).observe(con);
+    // the read-out pins under the bar once the console's head has gone under it
+    const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+    new IntersectionObserver((es) => {
+      for (const e of es) con.classList.toggle('is-hd-off', !e.isIntersecting && e.boundingClientRect.top < innerHeight / 2);
+    }, { rootMargin: `-${Math.round(bar)}px 0px 0px 0px` }).observe(head);
+    // wide screens, with motion: a console met below the fold waits at 00:00 and plays once its graph's centre
+    // crosses the middle of the screen (after the curtain)
+    if (reduce.matches || innerWidth < 1000) return;
+    if (con.getBoundingClientRect().top < innerHeight * 0.85) return;
+    armed = true;
+    setNow(0);
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      lifted.then(() => { if (armed) play(); });
+    }, { rootMargin: '0px 0px -48% 0px' });   // the top half of the screen (52%): entered as the centre reaches the middle
+    io.observe(mid);
+  });
+}
+
+/* 3 · copy the repro command */
+const cb = $('#why-copy'), cs = $('#why-copy-st'), cmd = $('#why-cmd');
+if (cb) {
+  let t = 0;
+  cb.addEventListener('click', async () => {
+    const ok = await copy(cmd.textContent.trim());
+    cs.textContent = ok ? '재현 명령을 복사했습니다.' : '복사하지 못했습니다. 선택된 명령을 직접 복사하세요.';
+    if (!ok) { const r = document.createRange(); r.selectNodeContents(cmd); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    clearTimeout(t);
+    t = setTimeout(() => { cs.textContent = ''; }, 6000);
+  });
+}
+</script>
+</body>
+</html>
