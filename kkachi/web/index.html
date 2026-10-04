@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKACHI Web — live web application testing · KKACHI</title>
+<meta name="description" content="KKACHI Web tests running web applications and APIs inside the scope you approve, and proves each issue with requests you can replay.">
+<link rel="canonical" href="https://SEORY0.github.io/kkachi/web/">
+<meta property="og:title" content="KKACHI Web — live web application testing · KKACHI">
+<meta property="og:description" content="Your live app, tested the way an attacker would, inside the scope you approve.">
+<meta property="og:url" content="https://SEORY0.github.io/kkachi/web/">
+<!-- part:head:start -->
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050506">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KKACHI">
+<meta property="og:image" content="https://SEORY0.github.io/assets/kkachi/og/kkachi-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23292623'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='%23EDF1F5'%3E%3Cpath d='M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/kkachi/icons/kk-32.png">
+<link rel="apple-touch-icon" href="/assets/kkachi/icons/kk-180.png">
+<link rel="preload" href="/assets/kkachi/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/kkachi/fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/kkachi/site.css">
+<script>document.documentElement.classList.add('js')</script>
+<script type="module" src="/assets/kkachi/site.js"></script>
+<!-- part:head:end -->
+</head>
+<body class="sub">
+<!-- part:header:start -->
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 7.1v4.4M8 4.7v.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 12 12"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <a class="brand" href="/kkachi/" aria-label="KKACHI home"><svg viewBox="0 -0.81 193.25 43.62" focusable="false" aria-hidden="true"><clipPath id="logo-k"><path transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/></clipPath><g class="nacre" clip-path="url(#logo-k)"><image href="/assets/kkachi/nacre-512.webp" x="-20" y="-24" width="90" height="90"/></g><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z" fill="#F2F2F3"/></svg></a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-main">Menu</button>
+  <nav id="nav-main" aria-label="Main">
+    <div class="menu">
+      <button class="menu-btn is-current" type="button" aria-expanded="false" aria-controls="menu-products">Products <svg class="chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+      <div class="menu-panel" id="menu-products">
+        <a href="/kkachi/keel/"><span class="mi-name">Keel</span><span class="mi-desc">Agent harness</span></a>
+        <a href="/kkachi/code/"><span class="mi-name">KKACHI Code</span><span class="mi-desc">Source and binary research</span></a>
+        <a href="/kkachi/web/" aria-current="page"><span class="mi-name">KKACHI Web</span><span class="mi-desc">Live web application testing</span></a>
+      </div>
+    </div>
+    <a href="/kkachi/about/">About</a>
+    <a href="/kkachi/resources/">Resources</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+<!-- part:header:end -->
+
+<main id="main">
+  <section id="top" class="page-hero">
+    <p class="eyebrow"><span class="dot nacre" aria-hidden="true"></span>KKACHI Web — live web application testing</p>
+    <h1>Your live app, tested the way an attacker would.</h1>
+    <p class="lede">KKACHI Web explores running web applications and APIs inside the scope you approve, and proves each issue with a request sequence you can replay yourself.</p>
+    <p class="cta">Ask for <a class="btn" href="mailto:seory0@outlook.kr?subject=KKACHI%20early%20access">Early access <span class="arw">↗</span></a> or see <a class="btn" href="#how">how it works <span class="arw">↓</span></a></p>
+  </section>
+
+  <section id="how" class="band band-char">
+    <div class="col">
+      <h2>How it works</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="step-n">01</span><h3 class="label">Map</h3><p>Routes, forms, APIs, and roles, explored with the test accounts you provide.</p></li>
+      <li><span class="step-n">02</span><h3 class="label">Suspect</h3><p>Access control, injection, and business-logic paths become hypotheses.</p></li>
+      <li><span class="step-n">03</span><h3 class="label">Probe</h3><p>Non-destructive requests test each one. Nothing is deleted, sent, or bought.</p></li>
+      <li><span class="step-n">04</span><h3 class="label">Prove</h3><p>A finding is a request sequence that triggers the issue three times in a row.</p></li>
+      <li><span class="step-n">05</span><h3 class="label">Report</h3><p>Impact, the exact requests, and a fix direction, waiting for a person to sign off.</p></li>
+    </ol>
+  </section>
+
+  <section id="guardrails" class="band band-deep">
+    <div class="col">
+      <h2>Guardrails</h2>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <h3 class="label">Approved scope only</h3>
+        <div class="card-box">
+          <p>Hosts and paths come from an allowlist you set. Everything else is refused.</p>
+        </div>
+      </article>
+      <article class="card">
+        <h3 class="label">Rate limits</h3>
+        <div class="card-box">
+          <p>It stays under the request rate you choose, so production traffic is never crowded out.</p>
+        </div>
+      </article>
+      <article class="card">
+        <h3 class="label">No destructive actions</h3>
+        <div class="card-box">
+          <p>It reads and probes. It never deletes data, completes payments, or messages real users.</p>
+        </div>
+      </article>
+      <article class="card">
+        <h3 class="label">Human sign-off</h3>
+        <div class="card-box">
+          <p>Nothing is disclosed or retested in production until a person approves it.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="pairs" class="band band-char">
+    <div class="col">
+      <h2>Pairs with KKACHI Code</h2>
+      <p>When source is available, a finding in the running app is traced back to the line that caused it.</p>
+    </div>
+    <div class="cards cards-links">
+      <article class="card">
+        <h3 class="label">KKACHI Code</h3>
+        <div class="card-box">
+          <p>Source and binary research.</p>
+          <a class="more" href="/kkachi/code/">Explore KKACHI Code <span class="arw">→</span></a>
+        </div>
+      </article>
+      <article class="card">
+        <h3 class="label">Keel</h3>
+        <div class="card-box">
+          <p>The harness both run on.</p>
+          <a class="more" href="/kkachi/keel/">Explore Keel <span class="arw">→</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- part:footer:start -->
+<footer id="contact" class="foot">
+  <div class="foot-cols">
+    <div>
+      <h2 class="label">Products</h2>
+      <ul><li><a href="/kkachi/keel/">Keel</a></li><li><a href="/kkachi/code/">KKACHI Code</a></li><li><a href="/kkachi/web/">KKACHI Web</a></li></ul>
+    </div>
+    <div>
+      <h2 class="label">Company</h2>
+      <ul><li><a href="/kkachi/about/">About</a></li><li><a href="/kkachi/resources/">Resources</a></li></ul>
+    </div>
+    <div>
+      <h2 class="label">Contact</h2>
+      <ul><li><a href="mailto:seory0@outlook.kr">seory0@outlook.kr</a></li><li><a href="mailto:seory0@outlook.kr?subject=KKACHI%20early%20access">Early access</a></li></ul>
+    </div>
+  </div>
+  <div class="foot-mark">
+<svg viewBox="-6 -6.8 205.2 55.6" focusable="false" role="img" aria-label="KKACHI"><clipPath id="foot-k"><path transform="translate(-3 -3)" d="M15 3H45V33C42.5 22.75 36 29.75 36 16.5V12H31.5C18.25 12 25.25 5.5 15 3ZM3 15H33V45C30.5 34.75 24 41.75 24 28.5V24H19.5C6.25 24 13.25 17.5 3 15Z"/></clipPath><g class="nacre" clip-path="url(#foot-k)"><image class="mark-drift" href="/assets/kkachi/nacre-512.webp" x="-30" y="-30" width="110" height="110"/></g><path d="M64.85 0H74.13L90.37 42H78.34ZM63.28 0H71.93L71.81 12.44H64.85L72.56 0L59.08 42H47.04ZM59.34 24.92H78.08V34.49H59.34ZM92.26 21Q92.26 14.88 95.14 9.89Q98.01 4.9 103.03 2.04Q108.04 -0.81 114.16 -0.81Q118.34 -0.81 122.04 0.51Q125.74 1.83 128.61 4.32Q131.48 6.82 133.31 10.15L123.53 14.71Q122.05 12.21 119.63 10.85Q117.21 9.48 114.16 9.48Q111.06 9.48 108.55 10.96Q106.04 12.44 104.61 15.08Q103.17 17.72 103.17 21Q103.17 24.25 104.61 26.87Q106.04 29.5 108.55 31.01Q111.06 32.52 114.16 32.52Q117.21 32.52 119.63 31.12Q122.05 29.73 123.53 27.29L133.31 31.85Q131.48 35.18 128.61 37.65Q125.74 40.11 122.04 41.46Q118.34 42.81 114.16 42.81Q108.04 42.81 103.03 39.94Q98.01 37.07 95.14 32.08Q92.26 27.09 92.26 21ZM138.14 0H149.04V42H138.14ZM147.88 14.82H166.5V25.09H147.88ZM165.34 0H176.25V42H165.34ZM182.34 0H193.25V42H182.34Z" fill="#F2F2F3"/></svg>
+  </div>
+  <p class="fine">© 2026 Project KKACHI.</p>
+</footer>
+<!-- part:footer:end -->
+</body>
+</html>
