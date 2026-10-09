@@ -49,9 +49,10 @@ sizes from the viewport so 51 columns always fit.
 - CV row: `.cv-brief` on the left (six `year | line` entries, then
   `cv.pdf` opening in a new tab with date, size and a `sha256` prefix; the
   full hash is in the title and the link's aria-label, recompute it when the
-  PDF changes) and `.cat` on the right, an ASCII cat drawn for this site.
-  `cv-art.js` decodes the cat from noise on load and blinks it every few
-  seconds; nothing moves under reduced motion. `cv-art.js` decodes it from ASCII noise on
+  PDF changes) and `.willow` on the right: a weeping willow that `willow.js`
+  lays into a 36 × 16 character grid ten times a second, each hanging
+  strand swaying on its own phase, a gust on hover. Under reduced motion a
+  single frame is drawn and left still. `cv-art.js` decodes it from ASCII noise on
   load and on hover/focus, and twitches four glyphs every 3.5 s; it does
   nothing under `prefers-reduced-motion`.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
@@ -68,8 +69,8 @@ sizes from the viewport so 51 columns always fit.
 ## 6. Motion & interaction
 Hover is a full inversion (`background: var(--fg); color: var(--bg)`) on
 links and buttons. Focus is a 2px outline in `--fg`. No transitions. The one
-exception is the home cat (`cv-art.js`): text-only motion, off under
-reduced motion.
+exception is the home willow (`willow.js`): text-only motion, one still
+frame under reduced motion.
 
 ## 7. Depth & surface
 Lines only: `1px solid var(--line)`, everywhere, for everything. No dotted

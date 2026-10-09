@@ -47,8 +47,8 @@
   .meta { color: var(--mute); font-size: 13px; }
 
   /* The CV row: a brief on the left (year | line), the file link under it,
-     and the cat on the right. cv-art.js decodes the cat on load and blinks
-     it; the hash is hard-coded — recompute it (sha256sum
+     and the willow on the right. willow.js draws the tree into the <pre>
+     every frame; the hash is hard-coded — recompute it (sha256sum
      assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
   .cv-row {
     max-width: none;
@@ -64,17 +64,21 @@
   }
   .cv-file { margin-top: 12px; }
   .cv-file .hash { white-space: nowrap; }
-  .cat {
-    font-size: 13px;
-    line-height: 1.2;
+  .willow {
+    font-size: 12px;
+    line-height: 1.15;
     white-space: pre;
     user-select: none;
     color: var(--fg);
+    /* 36 cols × 16 rows, reserved so the row does not jump when the first
+       frame lands. */
+    min-width: 36ch;
+    min-height: calc(16 * 1.15em);
   }
 
   @media (max-width: $bp-mobile) {
     .cv-row { grid-template-columns: 1fr; }
-    .cat { justify-self: center; }
+    .willow { justify-self: center; }
   }
 
   @media (max-width: $bp-mobile) {
