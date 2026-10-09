@@ -1,0 +1,9 @@
+/* Server Mono — Internet Development Studio Company, SIL OFL 1.1 (OFL.txt).
+   Single weight; browsers synthesise the bold the labels use. */
+@font-face {
+  font-family: 'Server Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(ServerMono-Regular.woff2) format('woff2');
+}

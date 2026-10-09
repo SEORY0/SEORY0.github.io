@@ -21,9 +21,11 @@ FOUC guard and `theme-toggle.js`. No other colours exist.
 
 ## 3. Typography
 - `--mono` is the site voice: chrome, labels, dates, the home sheet, list
-  pages. 15px / 1.7. The face is Berkeley Mono (US Graphics Company,
-  commercial, files kept out of the repo; see `assets/fonts/berkeley/`),
-  with IBM Plex Mono as the shipped fallback.
+  pages. 15px / 1.7. The shipped face is Server Mono (Internet Development
+  Studio Company, OFL, one weight; bold is synthesised). Berkeley Mono
+  (US Graphics Company, commercial, files kept out of the repo; see
+  `assets/fonts/berkeley/`) takes over if its files are added. IBM Plex Mono
+  remains the fallback and still serves article code blocks' glyph gaps.
 - `--sans` (Pretendard subset) is for reading: article bodies at 17px / 1.8.
 - Hierarchy comes from weight and boxes, not size. Row labels and page
   headings are one style: 13px bold uppercase, 0.1em tracking. Article titles

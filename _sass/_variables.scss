@@ -16,11 +16,11 @@ $bp-mobile: 560px;
   --link: #1a0dab;              /* classic link blue — old HTML and projectzero.google alike */
 
   /* One monospace for everything mono. Berkeley Mono (US Graphics Company,
-     commercial; see assets/fonts/berkeley/README.md) leads; IBM Plex Mono is
-     the fallback. Box-drawing and block glyphs (the figlet banner) are not in
-     the Plex Mono subset, so .banner names system monos after Berkeley —
-     see _home.scss. */
-  --mono: "Berkeley Mono", "TX-02", "IBM Plex Mono", "SF Mono", Consolas, "Portfolio Sans", "Pretendard Variable", monospace;
+     commercial; see assets/fonts/berkeley/README.md) leads if its files are
+     present; Server Mono (OFL, shipped) is the face that actually renders;
+     IBM Plex Mono is the fallback. Box-drawing and block glyphs (the figlet
+     banner) need a system mono — see .banner in _home.scss. */
+  --mono: "Berkeley Mono", "TX-02", "Server Mono", "IBM Plex Mono", "SF Mono", Consolas, "Portfolio Sans", "Pretendard Variable", monospace;
   /* Long-form reading (articles) and Korean copy. */
   --sans: "Portfolio Sans", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
