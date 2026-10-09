@@ -1,654 +1,87 @@
 /* ========================================================================== */
-/* Home page — CV-style minimal (red.anthropic 톤 + 명함식 행 정렬)            */
+/* Home — the figlet wordmark, one line of name, a sheet of two rows.          */
 /* ========================================================================== */
 
-/* .info — intro paragraph block */
-.info {
-  margin-top: 32px;
-
-  * {
-    margin: 0;
-    opacity: 0.9;
-    line-height: 1.7;
-  }
-  *:not(:first-child) { margin-top: 16px; }
-
-  a {
-    text-decoration: none;
-    font-weight: 700;
-    color: var(--text);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 1px;
-    transition: color 0.15s ease;
-
-    &:hover { color: var(--accent); }
-  }
-}
-
-/* .date — section label (uppercase + wide tracking) */
-.date {
+.banner {
+  /* Block and box-drawing glyphs are not in the Plex Mono subset; these system
+     monos have them at the right advance width. line-height 1 keeps █ rows
+     touching. */
+  font-family: "Berkeley Mono", "TX-02", "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
   display: block;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
-  margin-top: 72px;
-  margin-bottom: 4px;
-}
-.date.first-child { margin-top: 56px; }
-
-/* ========================================================================== */
-/* .note — CV row: title left, description right                                */
-/* No background. Border-bottom only. Hover shifts text right + bottom border.  */
-/* ========================================================================== */
-
-.note {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  background: transparent;
-  text-decoration: none;
-  color: var(--text);
-  transition: padding-left 0.15s ease, border-bottom-color 0.15s ease;
-
-  &:last-of-type { border-bottom: 1px solid var(--border); }
+  text-align: center;
+  line-height: 1;
+  white-space: pre;
+  /* 51 cols × 0.6em must fit the column: (100vw − 40px) / 31.
+     clamp() rather than min(): GitHub Pages compiles with Ruby Sass, whose
+     own min() rejects a calc() argument, while clamp() passes through. */
+  font-size: clamp(6px, calc((100vw - 40px) / 31), 23px);
+  margin: 48px 0 12px;
+  user-select: none;
 }
 
-a.note:hover {
-  border-bottom-color: var(--text);
-}
-
-/* only clickable rows shift — static rows shouldn't pretend to be links */
-a.note:hover {
-  padding-left: 8px;
-}
-
-a.note:hover h3 { color: var(--accent); }
-a.note:hover .description { color: var(--accent); }
-
-.note h3 {
-  display: block;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.4;
-  flex: 0 1 auto;
-  min-width: 0;
-}
-
-.note .description {
-  display: block;
-  margin: 0;
-  font-size: 0.9rem;
+.tagline {
+  text-align: center;
+  font-size: 17px;
   font-weight: 400;
-  color: var(--text-muted);
-  text-align: right;
-  flex: 1 1 auto;
-  min-width: 0;
   line-height: 1.5;
-  transition: color 0.15s ease;
+  color: var(--fg);
+  @media (max-width: $bp-mobile) { font-size: 15px; }
+}
 
-  /* inline links inside description (e.g. "ASC · Fermion") */
-  a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 1px;
-    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+/* The sheet: rows of label | value, separated by the one rule. The writing
+   index uses the same class (date | entry), so both pages read as one table. */
+.sheet {
+  margin-top: 44px;
+  border-top: 1px solid var(--line);
 
-    &:hover {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
+  .row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
   }
-}
+  dt { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 2px; }
+  dd { max-width: 62ch; }
+  dd b { font-weight: 700; }
+  .meta { color: var(--mute); font-size: 13px; }
 
-/* override red.anthropic's " - " prefix for CV layout */
-.note .description::before {
-  content: none;
-}
-
-/* ========================================================================== */
-/* Résumé / archive rows — professional CV grid                                */
-/* Title + description stacked left, period (or meta) right-aligned.           */
-/* Scoped to .page-shader (home + writing); other layouts keep the base row.   */
-/* ========================================================================== */
-
-.page-shader .note {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 32px;
-  row-gap: 3px;
-  align-items: baseline;
-  padding: 15px 0;
-}
-
-.page-shader .note h3 {
-  grid-column: 1;
-  font-size: 0.98rem;
-  letter-spacing: -0.01em;
-}
-
-.page-shader .note .description {
-  grid-column: 1;
-  text-align: left;
-  font-size: 0.88rem;
-  line-height: 1.55;
-}
-
-.page-shader .note .period {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-meta);
-  white-space: nowrap;
-  line-height: 1.5;
-}
-
-/* stacked variants (publication / award / featured / role) keep their vertical flow */
-.page-shader .note.publication,
-.page-shader .note.talk,
-.page-shader .note.award,
-.page-shader .note.featured,
-.page-shader .note.role {
-  display: flex;
-}
-
-/* ========================================================================== */
-/* .note.publication / .note.talk — stacked variant (vertical flow)             */
-/* Title + authors or speakers (owner bolded) + venue                           */
-/* ========================================================================== */
-
-.note.publication,
-.note.talk {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 6px;
-  padding: 16px 0;
-
-  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
-  @media (max-width: $bp-mobile) {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
+  /* The CV row: teams and CTF results on the left, the file link under
+     them, and on the right a cat sitting on a CRT, drawn by hand in ASCII.
+     The hash is hard-coded: recompute it (sha256sum assets/pdfs/CV_rsj.pdf)
+     whenever the PDF changes. */
+  .cv-row {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px 24px;
+    align-items: end;
   }
-}
-
-.note.publication h3,
-.note.talk h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.pub-authors,
-.talk-speakers {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 400;
-  color: var(--text-muted);
-  line-height: 1.5;
-
-  strong {
-    color: var(--text);
-    font-weight: 700;
+  .cv-brief {
+    min-width: 0;
+    font-size: 13px;
+    li { display: grid; grid-template-columns: 5ch 1fr; gap: 0 8px; }
+    li + li { margin-top: 2px; }
+    .k { color: var(--mute); font-variant-numeric: tabular-nums; }
+    .t { white-space: nowrap; }
+    .meta { margin-left: 2px; }
   }
-}
-
-.pub-venue,
-.talk-venue {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-meta);
-}
-
-/* ========================================================================== */
-/* .note.featured — emphasized project card (no beige, red accent tag)         */
-/* Stacks vertically: small red FEATURED tag + larger title + italic byline    */
-/* ========================================================================== */
-
-.note.featured {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 4px;
-  padding: 18px 0;
-
-  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
-  @media (max-width: $bp-mobile) {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-}
-
-.note.featured h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.4;
-  margin-top: 2px;
-  color: var(--text);
-  transition: color 0.15s ease;
-}
-
-.featured-tag {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-}
-
-.featured-byline {
-  display: block;
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  font-style: italic;
-  line-height: 1.55;
-  margin-top: 2px;
-}
-
-a.note.featured:hover h3 { color: var(--accent); }
-
-/* ========================================================================== */
-/* .note.award — award variant (accent tag + trophy icon + title + venue)      */
-/* Vertical stack so long award names / venues read cleanly instead of being   */
-/* split across a cramped two-column CV row.                                    */
-/* ========================================================================== */
-
-.note.award {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 4px;
-  padding: 18px 0;
-
-  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
-  @media (max-width: $bp-mobile) {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-}
-
-.note.award h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.4;
-  margin-top: 2px;
-  color: var(--text);
-}
-
-.award-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  align-self: flex-start;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-}
-
-.award-icon {
-  flex: 0 0 auto;
-  display: block;
-}
-
-.award-venue {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-meta);
-  margin-top: 2px;
-}
-
-/* ========================================================================== */
-/* .note.role — experience sub-entry: a project under the org row above.        */
-/* Title + role tag on one line, then a compact bullet list. Sits flush like    */
-/* the other stacked variants (publication / talk / award / featured).          */
-/* ========================================================================== */
-
-.note.role {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  padding: 16px 0;
-
-  /* Mobile: horizontal padding (override .note's mobile rule since this is more specific) */
-  @media (max-width: $bp-mobile) {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-}
-
-.role-head {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 6px 12px;
-}
-
-.note.role h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.role-tag {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  white-space: nowrap;
-}
-
-.role-points {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.role-points li {
-  position: relative;
-  padding-left: 16px;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--text-muted);
-}
-
-.role-points li::before {
-  content: "•";
-  position: absolute;
-  left: 2px;
-  color: var(--text-meta);
-}
-
-.role-link {
-  align-self: flex-start;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-meta);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 1px;
-  transition: color 0.15s ease, border-bottom-color 0.15s ease;
-
-  &:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-}
-
-/* "→ All writing" trailing link */
-.more {
-  margin-top: 32px;
-  font-size: 0.88rem;
-
-  a {
-    color: var(--text-muted);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    padding-bottom: 1px;
-    transition: color 0.15s ease, border-bottom-color 0.15s ease;
-
-    &:hover {
-      color: var(--text);
-      border-bottom-color: var(--text);
-    }
-  }
-}
-
-/* ========================================================================== */
-/* h1 accent — red on the trailing "0" character                                */
-/* ========================================================================== */
-
-/* ========================================================================== */
-/* Home h1 — the SEORY0 wordmark. Same typeface as everything else; the        */
-/* hierarchy comes from size and weight, not from a second face.               */
-/* Sizing is inherited from .container h1 (250% / 200% / 170%).                */
-/* ========================================================================== */
-
-.page-home .container h1 {
-  margin-top: 48px;
-
-  /* Pretendard ships a slashed zero — without it the trailing 0 is an O and the
-     name reads "SEORYO". Same advance width, so nothing reflows. */
-  font-feature-settings: "zero" 1;
-}
-
-/* ========================================================================== */
-/* Hero subtitle — Korean + English name beneath h1                             */
-/* ========================================================================== */
-
-/* One uniformly muted line under the name — the lockup reads as a single unit
-   only if nothing inside it competes with the name for attention. */
-.hero-subtitle {
-  margin: 5px 0 0;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--text-muted);
-  letter-spacing: 0;
-  line-height: 1.45;
-}
-
-.hero-name-kr,
-.hero-name-en {
-  font-weight: 400;
-  font-style: normal;
-  color: inherit;
-  letter-spacing: 0;
-}
-
-.hero-subtitle .sep { opacity: 0.55; }
-
-/* ========================================================================== */
-/* Mobile padding (red.anthropic source has indent for date label)              */
-/* ========================================================================== */
-
-@media (max-width: $bp-mobile) {
-  .info {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-
-  .hero-subtitle {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-
-  .date {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-
-  .note {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-
-    .description { text-align: left; }
-  }
-
-  .paper {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-
-  .more {
-    padding-left: var(--indent);
-    padding-right: var(--indent);
-  }
-
-  /* Long text wrap safety net — long Korean phrases or technical terms
-     shouldn't overflow inside narrow viewports */
-  .hero-subtitle,
-  .info p,
-  .note h3,
-  .note .description,
-  .featured-byline,
-  .pub-authors,
-  .pub-venue,
-  .talk-speakers,
-  .talk-venue,
-  .role-points li {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-}
-
-/* ========================================================================== */
-/* Ambient shader background (Paper Shaders — halftone dots over a sky photo)  */
-/* Fixed monochrome canvas behind everything. Dark theme flips via invert(1),  */
-/* so a single shader instance serves both themes.                             */
-/* ========================================================================== */
-
-.shader-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  filter: brightness(0.85);
-  pointer-events: none;
-
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.theme-dark .shader-bg {
-  filter: invert(1) brightness(0.85);
-}
-
-/* Text sits on a solid --bg panel, separated from the halftone backdrop by a
-   plain hairline — no feathering/blur. */
-.page-shader .site-container {
-  background: transparent;
-}
-
-.page-shader .container {
-  background: var(--bg);
-  border: 1px solid var(--border);
-
-  /* Mobile: float the content as a rounded card over the shader — matching the
-     footer box and the PC panel, instead of a borderless edge-to-edge slab.
-     The card owns the horizontal inset here (see the child-reset block below). */
-  @media (max-width: $bp-mobile) {
-    margin: 72px var(--indent) 40px;
-    padding: 4px var(--indent) 32px;
-    border-radius: 14px;
-    overflow: hidden;
-  }
-}
-
-/* Mobile card inset: the container now provides the left/right padding, so its
-   children drop their own indent. Without this the .note grid (padding: 15px 0)
-   overrode the base mobile indent and its text hit the card edge, getting
-   clipped by overflow: hidden. Higher specificity (.container descendant) wins
-   over every base/page-shader rule regardless of source order. */
-@media (max-width: $bp-mobile) {
-  .page-shader .container .info,
-  .page-shader .container .hero-subtitle,
-  .page-shader .container .date,
-  .page-shader .container .note,
-  .page-shader .container .more,
-  .page-shader .container h1,
-  .page-shader .container h2 {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-    margin-right: 0;
-  }
-}
-
-.page-shader .site-footer-box {
-  background: var(--bg);
-  max-width: calc(var(--container-max) + 128px);
-  margin: 0 auto;
-
-  @media (max-width: $bp-tablet) {
-    max-width: calc(var(--container-max) + 96px);
+  .cv-file { margin-top: 12px; }
+  .cv-file .hash { white-space: nowrap; }
+  .crt-cat {
+    font-size: 8px;
+    line-height: 1.15;
+    white-space: pre;
+    user-select: none;
+    color: var(--fg);
   }
 
   @media (max-width: $bp-mobile) {
-    max-width: 100%;
-    margin: 0 var(--indent);
+    .cv-row { grid-template-columns: 1fr; }
+    .crt-cat { justify-self: center; }
   }
-}
-
-/* Brand mark must fit the narrowed home footer box (nowrap + overflow:hidden) */
-.page-shader .site-footer-brand {
-  font-size: clamp(3rem, 7.2vw, 6rem);
 
   @media (max-width: $bp-mobile) {
-    font-size: 9vw;
+    .row { grid-template-columns: 1fr; gap: 6px; }
   }
 }
-
-/* Home top nav — box hugs the same width as the content panel */
-.page-shader .top-nav {
-  left: 50%;
-  right: auto;
-  width: 100%;
-  max-width: calc(var(--container-max) + 128px);
-  transform: translateX(-50%);
-  border: 1px solid var(--border);
-  border-top: 0;
-}
-
-.page-shader .top-nav-inner {
-  max-width: none;
-  margin: 0;
-  padding: 0 64px;
-}
-
-@media (max-width: $bp-tablet) {
-  .page-shader .top-nav {
-    max-width: calc(var(--container-max) + 96px);
-  }
-
-  .page-shader .top-nav-inner {
-    padding: 0 48px;
-  }
-}
-
-@media (max-width: $bp-mobile) {
-  .page-shader .top-nav {
-    max-width: 100%;
-    border: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .page-shader .top-nav-inner {
-    padding: 0 var(--indent);
-  }
-}
-
-/* writing archive: date column shouldn't wrap */
-.writing-list .note .description {
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-/* ========================================================================== */
-/* i18n: hide opposite-language spans based on html[lang], home-only scope     */
-/* ========================================================================== */
-
-html[lang="en"] .page-home [lang="ko"] { display: none; }
-html[lang="ko"] .page-home [lang="en"] { display: none; }

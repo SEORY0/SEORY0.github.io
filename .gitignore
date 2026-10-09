@@ -5,3 +5,6 @@ _site/
 Gemfile.lock
 # oh-my-claudecode local state
 .omc/
+
+# Berkeley Mono is licensed; keep the files out of the repo unless the licence allows it
+assets/fonts/berkeley/*.woff2

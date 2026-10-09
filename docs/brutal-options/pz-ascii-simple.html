@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEORY0 — simple main</title>
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/portfolio-sans/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<style>
+/* ---------------------------------------------------------------------
+   SEORY0 메인 — 소개 몇 줄과 CV 링크 하나. 나머지는 writing 으로.
+   --------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --mute: #666666;
+  --link: #1a0dab;
+  --mono: "IBM Plex Mono", "SF Mono", Consolas, "Portfolio Sans", "Pretendard Variable", monospace;
+  --sans: "Portfolio Sans", "Pretendard Variable", Pretendard, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d0d0d; --fg: #e8e8e8; --mute: #8a8a8a; --link: #8ab4f8; }
+}
+html[lang="ko"] .prose { font-family: var(--sans); font-size: 15px; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.65;
+  word-break: keep-all; -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column;
+}
+a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+h1, p, dl, dd { margin: 0; }
+pre { margin: 0; }
+
+.wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 20px; flex: 1; }
+
+.topline { display: flex; align-items: center; gap: 14px; height: 48px; font-size: 12px; white-space: nowrap; }
+.topline .prompt { font-weight: 700; }
+.topline nav { display: flex; gap: 14px; }
+.topline .rule { flex: 1; height: 1px; background: var(--fg); min-width: 24px; }
+.topline .kb { color: var(--mute); }
+.topline a { color: var(--fg); text-decoration: none; }
+.topline a:hover { background: var(--fg); color: var(--bg); }
+@media (max-width: 560px) {
+  .topline { font-size: 11px; gap: 10px; }
+  .topline nav { gap: 10px; }
+  .topline .rule { display: none; }
+  .topline .kb { margin-left: auto; }
+}
+
+.banner {
+  font-family: "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  display: block; text-align: center; line-height: 1; white-space: pre;
+  font-size: min(23px, calc((100vw - 40px) / 31)); margin: 48px 0 12px; user-select: none;
+}
+.tagline { text-align: center; font-size: 12px; color: var(--mute); font-weight: 400; }
+.tagline b { color: var(--fg); font-weight: 700; }
+
+.man { margin-top: 44px; border-top: 1px solid var(--fg); padding-top: 10px; }
+.man .head { display: flex; justify-content: space-between; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
+.man dl { margin-top: 18px; }
+.man dt { font-weight: 700; margin-top: 16px; }
+.man dd { margin: 4px 0 0 32px; max-width: 62ch; }
+.man .prose b { font-weight: 700; }
+@media (max-width: 560px) { .man dd { margin-left: 16px; } }
+
+/* 유일한 행동: CV */
+.cv { display: inline-flex; align-items: baseline; gap: 12px; margin-top: 2px; border: 1px solid var(--fg); padding: 6px 12px; color: var(--fg); text-decoration: none; }
+.cv:hover { background: var(--fg); color: var(--bg); }
+.cv b { font-weight: 700; }
+.cv small { font-size: 11px; color: inherit; opacity: 0.7; }
+
+.foot { margin-top: 56px; border-top: 1px solid var(--fg); padding: 14px 0 32px; font-size: 12px; color: var(--mute); }
+.foot .wrap { flex: none; }
+.foot pre { font-family: var(--mono); font-size: min(17px, calc((100vw - 40px) / 42)); line-height: 1.15; margin: 20px 0 18px; color: var(--fg); user-select: none; white-space: pre; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topline">
+    <span class="prompt">&gt; seory0</span>
+    <nav><a href="#">writing</a><a href="#">github</a><a href="#">email</a><a href="#">[EN]</a></nav>
+    <span class="rule" aria-hidden="true"></span>
+    <span class="kb" title="total page weight">[ 7 kB ]</span>
+  </div>
+
+  <pre class="banner" aria-hidden="true">███████╗███████╗ ██████╗ ██████╗ ██╗   ██╗ ██████╗
+██╔════╝██╔════╝██╔═══██╗██╔══██╗╚██╗ ██╔╝██╔═████╗
+███████╗█████╗  ██║   ██║██████╔╝ ╚████╔╝ ██║██╔██║
+╚════██║██╔══╝  ██║   ██║██╔══██╗  ╚██╔╝  ████╔╝██║
+███████║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝
+╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ </pre>
+  <h1 class="tagline"><b>SEORY0</b> · 류석준 · Seokjun Ryu</h1>
+
+  <section class="man" aria-label="About">
+    <div class="head"><span>SEORY0(1)</span><span>User Commands</span><span>SEORY0(1)</span></div>
+    <dl>
+      <dt>NAME</dt>
+      <dd>seory0 — security researcher, CTF player</dd>
+
+      <dt>DESCRIPTION</dt>
+      <dd class="prose">Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="#">AI Safety Center</a>. Windows kernel exploitation, reverse engineering, and AI for security.</dd>
+
+      <dt>FILES</dt>
+      <dd><a class="cv" href="#"><b>cv.pdf</b> <small>curriculum vitae · 2026-10 · 180 kB</small></a></dd>
+
+      <dt>SEE ALSO</dt>
+      <dd><a href="#">writing(7)</a>, <a href="#">github(1)</a>, <a href="#">mail(1)</a></dd>
+    </dl>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+<pre aria-hidden="true">    __ __ __________  _   __________       ____  ___    _   __________
+   / //_// ____/ __ \/ | / / ____/ /      / __ \/   |  / | / / / ____/
+  / ,<  / __/ / /_/ /  |/ / __/ / /      / /_/ / /| | /  |/ / / /
+ / /| |/ /___/ _, _/ /|  / /___/ /___   / ____/ ___ |/ /|  /_/ /___
+/_/ |_/_____/_/ |_/_/ |_/_____/_____/  /_/   /_/  |_/_/ |_(_)\____/   </pre>
+    <p>© 2026 SEORY0 · 류석준 / Seokjun Ryu · <a href="#">Source on GitHub</a> · <a href="#">Atom feed</a></p>
+  </div>
+</footer>
+</body>
+</html>

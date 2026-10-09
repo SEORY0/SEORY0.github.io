@@ -1,0 +1,53 @@
+/* ========================================================================== */
+/* Chrome — one rule above the page (the top line) and one below (the foot).  */
+/* Static, not sticky. No background, no blur.                                 */
+/* ========================================================================== */
+
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  height: 52px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  white-space: nowrap;
+
+  .name { font-weight: 700; color: var(--fg); text-decoration: none; }
+  nav { display: flex; gap: 14px; align-items: center; }
+  nav a, nav button { color: var(--fg); text-decoration: none; }
+  nav a:hover, nav button:hover, .name:hover { background: var(--fg); color: var(--bg); }
+  nav a[aria-current] { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (max-width: $bp-mobile) {
+    font-size: 12px;
+    nav { gap: 10px; }
+  }
+}
+
+/* Theme button: names the action, not the state. */
+.t-light { display: none; }
+.theme-dark .t-light { display: inline; }
+.theme-dark .t-dark { display: none; }
+
+/* ---- footer: the same rule on the column, the KERNEL PAN!C mark, one line ---- */
+.foot {
+  font-size: 13px;
+  color: var(--mute);
+
+  .wrap { border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 32px; }
+
+  .mark {
+    /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not
+       min(): Ruby Sass on GitHub Pages evaluates min() itself. */
+    font-size: clamp(5px, calc((100vw - 40px) / 42), 17px);
+    line-height: 1.15;
+    margin: 20px 0 18px;
+    color: var(--fg);
+    white-space: pre;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  p { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+}

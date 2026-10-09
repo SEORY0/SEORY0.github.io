@@ -1,113 +1,83 @@
-/* 2. Reset & Base */
+/* ========================================================================== */
+/* Base                                                                        */
+/* ========================================================================== */
 
 * { box-sizing: border-box; }
 
-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-dark) var(--bg);
-}
+html { scrollbar-width: thin; scrollbar-color: var(--mute) var(--bg); }
 
 body {
   margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 15px;
   line-height: 1.7;
   word-break: keep-all;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
-/* Typography baseline */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-body);
-  color: var(--text);
-  letter-spacing: -0.01em;
-  margin: 1.2em 0 0.5em;
-  line-height: 1.3;
-}
-
-h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; }
-h2 { font-size: 1.5rem; font-weight: 700; }
-h3 { font-size: 1.15rem; font-weight: 700; }
-h4 { font-size: 1rem; font-weight: 700; }
-h5, h6 { font-size: 0.9rem; font-weight: 700; }
-
-p {
-  margin: 0 0 1em;
-}
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+pre { margin: 0; font-family: var(--mono); }
+img { max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 
 a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+
+/* Links that leave the site (new tab, mail) carry a small north-east arrow
+   on the right. inline-block keeps the underline off the arrow. Article
+   prose is left alone so a paragraph does not fill with arrows. */
+.topline a[target="_blank"]::after, .topline a[href^="mailto:"]::after,
+.sheet a[target="_blank"]::after,   .sheet a[href^="mailto:"]::after,
+.foot a[target="_blank"]::after,    .foot a[href^="mailto:"]::after,
+.not-found a[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 0.2em;
+  font-size: 0.85em;
   text-decoration: none;
-  color: var(--text);
-  transition: color 0.15s ease;
-  &:visited { color: var(--text); }
-  &:hover { color: var(--accent); }
 }
 
-ul, ol {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+::selection { background: var(--fg); color: var(--bg); }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-section) 0;
-}
+hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
 
-hr.hairline {
-  border-top: 1px solid var(--border);
-  margin: 40px 0;
-}
+/* The one column every page shares. */
+.wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 20px; }
+main.wrap { flex: 1; padding-bottom: 48px; }
 
-/* Skip to content link */
 .skip-to-content {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 10000;
-  padding: 8px 16px;
-  background: var(--text);
-  color: var(--bg);
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-
-  &:visited,
-  &:hover,
-  &:focus {
-    color: var(--bg);
-    background: var(--text);
-  }
-
-  &:focus {
-    left: 16px;
-    top: 16px;
-    outline: 2px solid var(--accent);
-  }
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  padding: 8px 12px; background: var(--fg); color: var(--bg); text-decoration: none;
+  &:focus { left: 16px; top: 16px; }
 }
 
-/* Focus indicators */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+/* Boxed label — the Project Zero date chip. Used for dates, tags, the CV link. */
+.box {
+  display: inline-block;
+  border: 1px solid var(--fg);
+  padding: 0 7px;
+  font-size: 12px;
+  line-height: 1.75;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
+.box.soft { border-color: var(--mute); color: var(--mute); }
+a.box { color: var(--fg); text-decoration: none; }
+a.box:hover { background: var(--fg); color: var(--bg); }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 0;
-  &:hover { background: var(--border-dark); }
-}
-
-/* Selection — monochrome inversion */
-::selection {
-  background: var(--text);
-  color: var(--bg);
-}
+/* Page heading for list pages (writing, tags, search). */
+.page-h { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 32px 0 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.page-h small { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--mute); margin-left: 10px; }

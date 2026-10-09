@@ -4,17 +4,6 @@
 
   <script>/* FOUC guard: apply saved theme to <html> before first paint so navigating in dark mode never flashes the light theme. NOTE: no // line comments — the compress layout strips newlines and would comment out the whole script. */(function(){try{var t=localStorage.getItem('theme');var dark=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('theme-dark');}catch(e){}})();</script>
 
-  {% if page.layout == 'home' %}
-  <script>/* FOWL guard: apply saved language before content paints */(function(){try{var lang=localStorage.getItem('lang');if(lang==='ko'||lang==='en'){document.documentElement.lang=lang;}}catch(e){}})();</script>
-  {% endif %}
-
-  {%- comment -%} Preload the dithered backdrop so it downloads in parallel with the page, not after the shader module parses. {%- endcomment -%}
-  {% if page.layout == 'home' %}
-  <link rel="preload" as="image" href="{{ '/assets/images/sky-halftone.jpg' | relative_url }}">
-  {% elsif page.layout == 'writing' %}
-  <link rel="preload" as="image" href="{{ '/assets/images/mountain-halftone.jpg' | relative_url }}">
-  {% endif %}
-
   {% seo title=false %}
 
   {% assign page_title = page.title | default: site.title %}
@@ -77,10 +66,9 @@
   <link rel="preload" href="{{ '/assets/fonts/portfolio-sans/portfolio-sans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ '/assets/fonts/pretendard/font.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/fonts/portfolio-sans/font.css' | relative_url }}">
-  {% if page.layout == 'post' %}
+  <link rel="stylesheet" href="{{ '/assets/fonts/server-mono/font.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/fonts/mono/font.css' | relative_url }}">
-  {% endif %}
-  {% if page.layout == 'post' %}
+  {% if page.layout == 'post' or page.layout == 'wiki-page' %}
   <link rel="stylesheet" href="{{ '/assets/css/syntax.css' | relative_url }}">
   {% endif %}
 
