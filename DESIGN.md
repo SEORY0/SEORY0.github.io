@@ -46,9 +46,10 @@ sizes from the viewport so 51 columns always fit.
   the word. Article prose carries no arrows.
 - `.box`: 1px bordered mono chip for dates, tags, the back link. `.soft` for
   secondary chips (tags).
-- `.cv`: the one call to action — a figlet "CV" in the footer mark's slant
-  face at 14px (a step under the mark), with `cv.pdf ↓ · date · size` under
-  it. No frame, no inversion. `cv-art.js` decodes it from ASCII noise on
+- `.cv`: the one call to action — an ASCII name card (42 columns at 14px,
+  narrower than the footer mark) with `cv.pdf ↓ · date · size` and a
+  `sha256` prefix of the PDF under it (full hash in the title and the link's
+  aria-label; recompute when the PDF changes). No frame, no inversion. `cv-art.js` decodes it from ASCII noise on
   load and on hover/focus, and twitches four glyphs every 3.5 s; it does
   nothing under `prefers-reduced-motion`.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home

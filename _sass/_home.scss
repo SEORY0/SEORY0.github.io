@@ -46,9 +46,10 @@
   dd b { font-weight: 700; }
   .meta { color: var(--mute); font-size: 13px; }
 
-  /* The one call to action: a figlet "CV" in the footer mark's slant face,
-     a step smaller, with the file line under it. No frame, no inversion —
-     cv-art.js gives it its motion. */
+  /* The one call to action: an ASCII name card, 42 columns, with the file
+     line and the PDF's hash under it. No frame, no inversion — cv-art.js
+     gives it its motion. The hash is hard-coded: recompute it (sha256sum
+     assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
   .cv {
     display: inline-flex;
     flex-direction: column;
@@ -60,6 +61,7 @@
     .cv-art { font-size: 14px; line-height: 1.15; white-space: pre; user-select: none; }
     .cv-meta { font-size: 13px; }
     .cv-meta .meta { margin-left: 4px; }
+    .cv-meta .hash { display: block; margin-left: 0; font-size: 12px; }
 
     /* The base a:hover inverts every link; the button keeps its ink and
        answers with the decode instead. */
@@ -70,7 +72,8 @@
       .cv-meta { text-decoration: underline; text-underline-offset: 3px; }
     }
 
-    @media (max-width: $bp-mobile) { .cv-art { font-size: 12px; } }
+    /* 42 cols × 0.63em (Server Mono's advance) must fit 100vw − 40px. */
+    @media (max-width: $bp-mobile) { .cv-art { font-size: clamp(8px, calc((100vw - 40px) / 27.5), 14px); } }
   }
 
   @media (max-width: $bp-mobile) {
