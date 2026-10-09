@@ -46,10 +46,12 @@ sizes from the viewport so 51 columns always fit.
   the word. Article prose carries no arrows.
 - `.box`: 1px bordered mono chip for dates, tags, the back link. `.soft` for
   secondary chips (tags).
-- `.cv`: the one call to action — an ASCII name card (42 columns at 14px,
-  narrower than the footer mark) with `cv.pdf ↓ · date · size` and a
-  `sha256` prefix of the PDF under it (full hash in the title and the link's
-  aria-label; recompute when the PDF changes). No frame, no inversion. `cv-art.js` decodes it from ASCII noise on
+- CV row: `.cv-brief` on the left (six `year | line` entries, then
+  `cv.pdf` opening in a new tab with date, size and a `sha256` prefix; the
+  full hash is in the title and the link's aria-label, recompute it when the
+  PDF changes) and `.cat` on the right, an ASCII cat drawn for this site.
+  `cv-art.js` decodes the cat from noise on load and blinks it every few
+  seconds; nothing moves under reduced motion. `cv-art.js` decodes it from ASCII noise on
   load and on hover/focus, and twitches four glyphs every 3.5 s; it does
   nothing under `prefers-reduced-motion`.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
@@ -66,7 +68,7 @@ sizes from the viewport so 51 columns always fit.
 ## 6. Motion & interaction
 Hover is a full inversion (`background: var(--fg); color: var(--bg)`) on
 links and buttons. Focus is a 2px outline in `--fg`. No transitions. The one
-exception is the home CV mark (`cv-art.js`): text-only motion, off under
+exception is the home cat (`cv-art.js`): text-only motion, off under
 reduced motion.
 
 ## 7. Depth & surface

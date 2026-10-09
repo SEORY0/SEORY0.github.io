@@ -1,8 +1,7 @@
 /* /assets/js/cv-art.js
- * The home CV button is a figlet "CV". This decodes it: every glyph starts
- * as ASCII noise and settles into place, left to right, along the slant.
- * Runs once on load, again on hover or focus, and every few seconds a few
- * glyphs twitch so the eye lands on it. Static under reduced motion.
+ * The home cat. It decodes from ASCII noise on load, left to right, and
+ * again when hovered; then it sits there and blinks every few seconds.
+ * Static under reduced motion.
  */
 (function () {
   var el = document.querySelector('[data-cv]');
@@ -23,7 +22,7 @@
       var out = '';
       for (var x = 0; x < line.length; x++) {
         var c = line[x];
-        out += c === ' ' ? ' ' : (x < cut - y * 1.2 ? c : pick());
+        out += c === ' ' ? ' ' : (x < cut - y * 0.6 ? c : pick());
       }
       return out;
     }).join('\n');
@@ -41,19 +40,20 @@
   }
 
   decode(1100);
-  var link = el.closest('a') || el;
-  link.addEventListener('mouseenter', function () { decode(700); });
-  link.addEventListener('focus', function () { decode(700); });
+  el.addEventListener('mouseenter', function () { decode(700); });
 
-  /* Idle twitch: four glyphs flip for 120 ms, every 3.5 s, unless decoding. */
+  /* Blink: the eyes are the two "o" glyphs; shut for 140 ms every 4 s,
+     sometimes twice, like a real cat. */
+  function blink(times) {
+    if (raf) return;
+    el.textContent = art.replace(/o/g, '-');
+    setTimeout(function () {
+      if (!raf) el.textContent = art;
+      if (times > 1) setTimeout(function () { blink(times - 1); }, 160);
+    }, 140);
+  }
   setInterval(function () {
-    if (raf || document.hidden) return;
-    var s = art.split('');
-    for (var k = 0; k < 4; k++) {
-      var i = Math.random() * s.length | 0;
-      if (s[i] !== ' ' && s[i] !== '\n') s[i] = pick();
-    }
-    el.textContent = s.join('');
-    setTimeout(function () { if (!raf) el.textContent = art; }, 120);
-  }, 3500);
+    if (document.hidden) return;
+    blink(Math.random() < 0.25 ? 2 : 1);
+  }, 4000);
 })();

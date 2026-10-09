@@ -11,8 +11,13 @@ two files here:
     assets/fonts/berkeley/BerkeleyMono-Bold.woff2
 
 `font.css` already declares both faces and `_sass/_variables.scss` lists
-"Berkeley Mono" first in `--mono`; nothing else changes. Without the files
-browsers fall through to IBM Plex Mono.
+"Berkeley Mono" first in `--mono`. Then add this line to
+`_includes/head.html` next to the other font stylesheets (it is left out so
+pages do not request two missing files on every load):
+
+    <link rel="stylesheet" href="{{ '/assets/fonts/berkeley/font.css' | relative_url }}">
+
+Without the files browsers use Server Mono.
 
 Keep the files out of git if the licence forbids redistribution (add them to
 `.gitignore`) and deploy them by other means, or commit them only if the
