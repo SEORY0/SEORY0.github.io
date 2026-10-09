@@ -50,11 +50,10 @@ sizes from the viewport so 51 columns always fit.
   from `_data/ctfs.yml` using its `short` name; then `cv.pdf` opening in a
   new tab with date, size and a `sha256` prefix; the full hash is in the
   title and the link's aria-label, recompute it when the PDF changes) and
-  `.willow` on the right: a weeping willow photograph converted to 44
-  columns of text with `docs/willow/willow_ascii.py` (source: "Trauerweide
-  Skizze 2021", Wikimedia Commons, CC0). Static. `cv-art.js` decodes it from ASCII noise on
-  load and on hover/focus, and twitches four glyphs every 3.5 s; it does
-  nothing under `prefers-reduced-motion`.
+  `.crt-cat` on the right: a cat in left profile sitting on a CRT turned
+  to the left (screen, recessed bezel, vented bell, stand, cable), tail
+  hanging across the screen, drawn by hand in ASCII at 8px. Static, no
+  JavaScript. Server Mono has no `^`, so the art never uses it.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
   uses it as a `<dl>` (About, CV); the writing index uses it as an
   `<ol>` (date chip | title, summary, tags). Same class, same rules.

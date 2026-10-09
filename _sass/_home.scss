@@ -47,9 +47,9 @@
   .meta { color: var(--mute); font-size: 13px; }
 
   /* The CV row: teams and CTF results on the left, the file link under
-     them, and the willow on the right — a photograph turned into text, see
-     docs/willow/. The hash is hard-coded: recompute it (sha256sum
-     assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
+     them, and on the right a cat sitting on a CRT, drawn by hand in ASCII.
+     The hash is hard-coded: recompute it (sha256sum assets/pdfs/CV_rsj.pdf)
+     whenever the PDF changes. */
   .cv-row {
     max-width: none;
     display: grid;
@@ -68,8 +68,8 @@
   }
   .cv-file { margin-top: 12px; }
   .cv-file .hash { white-space: nowrap; }
-  .willow {
-    font-size: 10px;
+  .crt-cat {
+    font-size: 8px;
     line-height: 1.15;
     white-space: pre;
     user-select: none;
@@ -78,7 +78,7 @@
 
   @media (max-width: $bp-mobile) {
     .cv-row { grid-template-columns: 1fr; }
-    .willow { justify-self: center; }
+    .crt-cat { justify-self: center; }
   }
 
   @media (max-width: $bp-mobile) {
