@@ -21,9 +21,11 @@
 
 .tagline {
   text-align: center;
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 400;
-  color: var(--mute);
+  line-height: 1.5;
+  color: var(--fg);
+  @media (max-width: $bp-mobile) { font-size: 15px; }
 }
 
 /* The sheet: rows of label | value, separated by the one rule. The writing
