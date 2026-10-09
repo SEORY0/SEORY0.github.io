@@ -14,7 +14,7 @@
 .post-content pre,
 .page-content pre {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   overflow-x: auto;
   padding: 14px;
@@ -39,7 +39,7 @@
   gap: 8px;
   padding: 4px 10px;
   border-bottom: 1px solid var(--line);
-  font-size: 11px;
+  font-size: 12px;
 
   .language-label { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 }
@@ -61,7 +61,7 @@
   text-align: right;
   border-right: 1px solid var(--line);
   user-select: none;
-  .line-number { display: block; font-size: 13px; line-height: 1.6; color: var(--mute); }
+  .line-number { display: block; font-size: 14px; line-height: 1.6; color: var(--mute); }
 }
 
 .code-wrapper { flex: 1; min-width: 0; overflow-x: auto; }

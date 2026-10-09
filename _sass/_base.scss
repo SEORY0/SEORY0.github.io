@@ -14,8 +14,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 13.5px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.7;
   word-break: keep-all;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -54,9 +54,9 @@ main.wrap { flex: 1; padding-bottom: 48px; }
 .box {
   display: inline-block;
   border: 1px solid var(--fg);
-  padding: 0 6px;
-  font-size: 11px;
-  line-height: 1.7;
+  padding: 0 7px;
+  font-size: 12px;
+  line-height: 1.75;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -65,5 +65,5 @@ a.box { color: var(--fg); text-decoration: none; }
 a.box:hover { background: var(--fg); color: var(--bg); }
 
 /* Page heading for list pages (writing, tags, search). */
-.page-h { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 32px 0 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.page-h { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 32px 0 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .page-h small { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--mute); margin-left: 10px; }
