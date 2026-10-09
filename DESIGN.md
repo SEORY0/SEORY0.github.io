@@ -8,7 +8,8 @@ kostyafarber.com (mono chrome), figlet ASCII art (the wordmark).
 ## 1. Atmosphere & identity
 Old-HTML plainness, kept pretty by strict alignment: one 760px column, 1px
 rules, boxed mono labels, no backgrounds, no shadows, no radius, no motion.
-The figlet wordmark is the only ornament. Every page is the same drawing:
+The two figlet pieces (wordmark, footer mark) are the only ornament. Every
+page is the same drawing:
 a rule under the top line, rows separated by rules, a rule above the foot.
 Nothing floats over anything. No shell, no input, no decorative text.
 
@@ -46,8 +47,9 @@ sizes from the viewport so 51 columns always fit.
   `.post-back-link` (a `.box`).
 - Code: `.code-block-container` built by `code-copy.js`; 1px frame, line
   numbers column, mono label header. Inline code is a 1px outline.
-- Footer: a rule on the column, `© year SEORY0` left, source · atom · sitemap
-  right.
+- Footer: a rule on the column, the figlet "slant" KERNEL PAN!C mark (pure
+  ASCII, renders everywhere), then `© year SEORY0` left and source · atom ·
+  sitemap right.
 
 ## 6. Motion & interaction
 None. Hover is a full inversion (`background: var(--fg); color: var(--bg)`)

@@ -35,11 +35,24 @@ html[lang="ko"] .lang-label-en { display: none; }
 .theme-dark .t-light { display: inline; }
 .theme-dark .t-dark { display: none; }
 
-/* ---- footer: the same rule, one line of text ---- */
+/* ---- footer: the same rule on the column, the KERNEL PAN!C mark, one line ---- */
 .foot {
   font-size: 13px;
   color: var(--mute);
 
-  /* The rule sits on the column, like the top line's. */
-  .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 32px; }
+  .wrap { border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 32px; }
+
+  .mark {
+    /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not
+       min(): Ruby Sass on GitHub Pages evaluates min() itself. */
+    font-size: clamp(5px, calc((100vw - 40px) / 42), 17px);
+    line-height: 1.15;
+    margin: 20px 0 18px;
+    color: var(--fg);
+    white-space: pre;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  p { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 }
