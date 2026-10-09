@@ -35,6 +35,20 @@ a {
 }
 a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
 
+/* Links that leave the site (new tab, mail) carry a small north-east arrow
+   on the right. inline-block keeps the underline off the arrow. Article
+   prose is left alone so a paragraph does not fill with arrows. */
+.topline a[target="_blank"]::after, .topline a[href^="mailto:"]::after,
+.sheet a[target="_blank"]::after,   .sheet a[href^="mailto:"]::after,
+.foot a[target="_blank"]::after,    .foot a[href^="mailto:"]::after,
+.not-found a[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 0.2em;
+  font-size: 0.85em;
+  text-decoration: none;
+}
+
 :focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 ::selection { background: var(--fg); color: var(--bg); }
 

@@ -38,6 +38,9 @@ sizes from the viewport so 51 columns always fit.
 ## 5. Components
 - Top line: `seory0`, nav (writing, github, mail, `[EN]` on home,
   `[dark]`/`[light]`), a rule beneath. Static, not sticky, no background.
+- External links (new tab, mailto) in the top line, sheet and footer end in
+  a small `↗` on the right, set as a CSS `::after` so the underline stops at
+  the word. Article prose carries no arrows.
 - `.box`: 1px bordered mono chip for dates, tags, the CV link, the back link.
   `.soft` for secondary chips (tags).
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
