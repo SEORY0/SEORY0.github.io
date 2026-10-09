@@ -6,7 +6,7 @@
   /* Block and box-drawing glyphs are not in the Plex Mono subset; these system
      monos have them at the right advance width. line-height 1 keeps █ rows
      touching. */
-  font-family: "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-family: "Berkeley Mono", "TX-02", "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
   display: block;
   text-align: center;
   line-height: 1;

@@ -1,0 +1,18 @@
+/* Berkeley Mono (US Graphics Company, commercial). The files are not in
+   the repository: drop the licensed woff2s next to this stylesheet as
+   BerkeleyMono-Regular.woff2 and BerkeleyMono-Bold.woff2. Until they exist
+   the stack in _sass/_variables.scss falls through to IBM Plex Mono. */
+@font-face {
+  font-family: 'Berkeley Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(BerkeleyMono-Regular.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Berkeley Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(BerkeleyMono-Bold.woff2) format('woff2');
+}

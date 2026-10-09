@@ -20,8 +20,10 @@ reads. Dark mode flips them under `.theme-dark` on `<html>`, set by the head
 FOUC guard and `theme-toggle.js`. No other colours exist.
 
 ## 3. Typography
-- `--mono` (IBM Plex Mono) is the site voice: chrome, labels, dates, the home
-  sheet, list pages. 15px / 1.7.
+- `--mono` is the site voice: chrome, labels, dates, the home sheet, list
+  pages. 15px / 1.7. The face is Berkeley Mono (US Graphics Company,
+  commercial, files kept out of the repo; see `assets/fonts/berkeley/`),
+  with IBM Plex Mono as the shipped fallback.
 - `--sans` (Pretendard subset) is for reading: article bodies at 17px / 1.8.
 - Hierarchy comes from weight and boxes, not size. Row labels and page
   headings are one style: 13px bold uppercase, 0.1em tracking. Article titles
