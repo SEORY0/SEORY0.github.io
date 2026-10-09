@@ -42,23 +42,33 @@
   dt { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 2px; }
   dd { max-width: 62ch; }
   dd b { font-weight: 700; }
-  .meta { color: var(--mute); font-size: 13px; margin-left: 6px; }
+  .meta { color: var(--mute); font-size: 13px; }
 
-  /* The one call to action: a larger chip in the same 1px frame. */
+  /* The one call to action: a figlet "CV" in the footer mark's slant face,
+     a step smaller, with the file line under it. No frame, no inversion —
+     cv-art.js gives it its motion. */
   .cv {
     display: inline-flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 2px 14px;
+    flex-direction: column;
+    gap: 8px;
     margin-top: 2px;
-    border: 1px solid var(--fg);
-    padding: 10px 18px;
     color: var(--fg);
     text-decoration: none;
-    b { font-size: 17px; font-weight: 700; white-space: nowrap; }
-    small { font-size: 13px; color: var(--mute); }
-    &:hover { background: var(--fg); color: var(--bg); }
-    &:hover small { color: inherit; }
+
+    .cv-art { font-size: 14px; line-height: 1.15; white-space: pre; user-select: none; }
+    .cv-meta { font-size: 13px; }
+    .cv-meta .meta { margin-left: 4px; }
+
+    /* The base a:hover inverts every link; the button keeps its ink and
+       answers with the decode instead. */
+    &:hover, &:focus-visible {
+      background: none;
+      color: var(--fg);
+      outline: none;
+      .cv-meta { text-decoration: underline; text-underline-offset: 3px; }
+    }
+
+    @media (max-width: $bp-mobile) { .cv-art { font-size: 12px; } }
   }
 
   @media (max-width: $bp-mobile) {

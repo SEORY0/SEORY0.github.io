@@ -26,7 +26,16 @@ layout: compress
     </div>
     <div class="row">
       <dt>CV</dt>
-      <dd><a class="cv" href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}"><b>cv.pdf ↓</b><small>2026-10 · 768 kB</small></a></dd>
+      <dd>
+        <a class="cv" href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}" aria-label="Download cv.pdf, 768 kB">
+<pre class="cv-art" aria-hidden="true" data-cv>   ______ _    __
+  / ____/| |  / /
+ / /     | | / /
+/ /___   | |/ /
+\____/   |___/   </pre>
+          <span class="cv-meta" aria-hidden="true">cv.pdf ↓ <span class="meta">2026-10 · 768 kB</span></span>
+        </a>
+      </dd>
     </div>
   </dl>
 
@@ -34,5 +43,6 @@ layout: compress
 
 {% include footer.html %}
 {% include scripts.html %}
+<script defer src="{{ '/assets/js/cv-art.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 </body>
 </html>

@@ -41,8 +41,12 @@ sizes from the viewport so 51 columns always fit.
   a small `↗` on the right, set as a CSS `::after` so the underline stops at
   the word. Article prose carries no arrows.
 - `.box`: 1px bordered mono chip for dates, tags, the back link. `.soft` for
-  secondary chips (tags). `.cv` is the same frame at button size (17px bold
-  name, 13px meta, 10px × 18px padding): the one call to action.
+  secondary chips (tags).
+- `.cv`: the one call to action — a figlet "CV" in the footer mark's slant
+  face at 14px (a step under the mark), with `cv.pdf ↓ · date · size` under
+  it. No frame, no inversion. `cv-art.js` decodes it from ASCII noise on
+  load and on hover/focus, and twitches four glyphs every 3.5 s; it does
+  nothing under `prefers-reduced-motion`.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
   uses it as a `<dl>` (About, CV); the writing index uses it as an
   `<ol>` (date chip | title, summary, tags). Same class, same rules.
@@ -55,8 +59,10 @@ sizes from the viewport so 51 columns always fit.
   sitemap right.
 
 ## 6. Motion & interaction
-None. Hover is a full inversion (`background: var(--fg); color: var(--bg)`)
-on links and buttons. Focus is a 2px outline in `--fg`. No transitions.
+Hover is a full inversion (`background: var(--fg); color: var(--bg)`) on
+links and buttons. Focus is a 2px outline in `--fg`. No transitions. The one
+exception is the home CV mark (`cv-art.js`): text-only motion, off under
+reduced motion.
 
 ## 7. Depth & surface
 Lines only: `1px solid var(--line)`, everywhere, for everything. No dotted
