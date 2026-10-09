@@ -1,7 +1,7 @@
 # Portfolio design system
 
 White page, black ink, one monospace, lines only. The home page is a figlet
-wordmark over a three-row sheet (About, CV, Links); everything else lives
+wordmark over a two-row sheet (About, CV); everything else lives
 under Writing. References: projectzero.google (structure, boxed dates),
 kostyafarber.com (mono chrome), figlet ASCII art (the wordmark).
 
@@ -43,7 +43,7 @@ sizes from the viewport so 51 columns always fit.
 - `.box`: 1px bordered mono chip for dates, tags, the CV link, the back link.
   `.soft` for secondary chips (tags).
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
-  uses it as a `<dl>` (About, CV, Links); the writing index uses it as an
+  uses it as a `<dl>` (About, CV); the writing index uses it as an
   `<ol>` (date chip | title, summary, tags). Same class, same rules.
 - Article: `.post-head`, `.post-toc` (native details), `.post-content`,
   `.post-back-link` (a `.box`).
