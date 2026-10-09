@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brutal option sheet</title>
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/portfolio-sans/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<style>
+/* ---------------------------------------------------------------------
+   Sheet chrome. Deliberately quiet so the three mocks carry the page.
+   One markup (the <template> at the bottom) is cloned three times and
+   each clone gets a skin: .A Swiss CV, .B Terminal, .C Poster.
+   --------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --mute: #6e6e6e;
+  --sans: "Portfolio Sans", "Pretendard Variable", Pretendard, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", "SF Mono", Consolas, "Portfolio Sans", monospace;
+}
+[data-theme="dark"] {
+  --bg: #0d0d0d;
+  --fg: #e8e8e8;
+  --mute: #8a8a8a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+h1, h2, h3, h4, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+
+.sheet-bar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 24px;
+  height: 40px; padding: 0 20px;
+  background: var(--bg); color: var(--fg);
+  border-bottom: 1px solid var(--fg);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.sheet-bar strong { font-weight: 700; }
+.sheet-bar nav { display: flex; gap: 16px; }
+.sheet-bar nav a { text-decoration: none; }
+.sheet-bar nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.sheet-bar button { margin-left: auto; padding: 4px 10px; border: 1px solid var(--fg); font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.sheet-bar button:hover { background: var(--fg); color: var(--bg); }
+
+.band {
+  background: var(--fg); color: var(--bg);
+  padding: 40px 20px 36px;
+  display: grid; grid-template-columns: 120px 1fr 1fr; gap: 24px 40px;
+  align-items: start;
+  scroll-margin-top: 40px;
+}
+.band .letter { font-family: var(--mono); font-size: 72px; font-weight: 700; line-height: 0.9; letter-spacing: -0.04em; }
+.band h2 { font-family: var(--sans); font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 10px; }
+.band p { font-size: 14px; line-height: 1.6; max-width: 52ch; opacity: 0.9; }
+.band dl { margin: 0; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; display: grid; grid-template-columns: max-content 1fr; gap: 0 16px; }
+.band dt { text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
+.band dd { margin: 0; }
+@media (max-width: 900px) {
+  .band { grid-template-columns: 1fr; }
+}
+
+.mount { border-bottom: 1px solid var(--fg); }
+
+/* ---------------------------------------------------------------------
+   Shared skeleton defaults. Each skin overrides what it needs.
+   --------------------------------------------------------------------- */
+.home { color: var(--fg); background: var(--bg); }
+.home a { text-decoration: none; }
+.home .intro p + p { margin-top: 1em; }
+.home .intro b { font-weight: 700; }
+.home .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 32px; row-gap: 2px; align-items: baseline; }
+.home .row h3 { grid-column: 1; }
+.home .row .desc { grid-column: 1; }
+.home .row .meta { grid-column: 2; grid-row: 1; justify-self: end; white-space: nowrap; }
+.home .row.stack { display: flex; flex-direction: column; gap: 4px; }
+.home .row.stack .meta { white-space: normal; }
+.home .proj { display: flex; flex-direction: column; gap: 8px; }
+.home .proj .head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; }
+.home .proj ul li { position: relative; padding-left: 16px; }
+.home .proj ul li::before { content: "•"; position: absolute; left: 2px; }
+.home .proj .links { display: flex; gap: 16px; flex-wrap: wrap; }
+.home .tag { display: inline-block; }
+.home .nav { display: flex; align-items: center; gap: 24px; }
+.home .nav .actions { margin-left: auto; display: flex; gap: 16px; align-items: center; }
+.home .jump { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.home .foot .mark { white-space: nowrap; overflow: hidden; }
+
+/* =====================================================================
+   A — SWISS CV
+   Two columns: section label in a narrow mono column on the left, the
+   rows on the right. Rules are full-contrast. Hover inverts the row.
+   ===================================================================== */
+.A .home { font-size: 15px; line-height: 1.6; }
+.A .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+.A .nav { height: 56px; border-bottom: 2px solid var(--fg); font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+.A .nav .logo { font-family: var(--sans); font-size: 20px; font-weight: 800; text-transform: none; letter-spacing: 0; }
+.A .nav a:hover, .A .nav button:hover { text-decoration: underline; text-underline-offset: 5px; }
+.A .nav button { padding: 0; letter-spacing: inherit; text-transform: inherit; font-size: inherit; }
+
+.A .hero { display: grid; grid-template-columns: 200px 1fr; column-gap: 40px; padding: 72px 0 56px; border-bottom: 2px solid var(--fg); }
+.A .hero h1 { grid-column: 1 / -1; font-size: clamp(3rem, 7.5vw, 6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; font-feature-settings: "zero" 1; }
+.A .hero .sub { grid-column: 1; margin-top: 20px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute); line-height: 1.7; }
+.A .hero .intro { grid-column: 2; margin-top: 20px; max-width: 60ch; }
+.A .hero .intro a { border-bottom: 1px solid var(--fg); }
+.A .hero .intro a:hover { background: var(--fg); color: var(--bg); }
+.A .hero .jump { grid-column: 2; margin-top: 28px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.A .hero .jump a { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.A .hero .jump a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+
+.A .sec { display: grid; grid-template-columns: 200px 1fr; column-gap: 40px; border-top: 2px solid var(--fg); padding: 20px 0 48px; }
+.A .sec h2 { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.6; padding-top: 2px; }
+.A .sec h2 small { display: block; font-weight: 400; color: var(--mute); }
+.A .sec > :not(h2) { grid-column: 2; }
+.A .rows { display: flex; flex-direction: column; }
+.A .row { padding: 12px 8px; margin: 0 -8px; border-bottom: 1px solid var(--fg); }
+.A .row:last-child { border-bottom: 0; }
+.A .row h3 { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.45; }
+.A .row .desc { font-size: 14px; color: var(--mute); line-height: 1.5; }
+.A .row .meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--mute); line-height: 1.7; font-variant-numeric: tabular-nums; }
+.A a.row:hover, .A .row.link:hover { background: var(--fg); color: var(--bg); }
+.A a.row:hover .desc, .A a.row:hover .meta, .A a.row:hover .tag { color: var(--bg); }
+.A .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); }
+.A .row.stack .meta { grid-column: auto; justify-self: start; }
+.A .proj { padding: 16px 0 4px 24px; border-left: 2px solid var(--fg); margin-top: 4px; }
+.A .proj h4 { font-size: 15px; font-weight: 700; line-height: 1.45; }
+.A .proj .when { font-family: var(--mono); font-size: 11px; color: var(--mute); letter-spacing: 0.04em; }
+.A .proj ul { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--mute); line-height: 1.55; }
+.A .proj .links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; }
+.A .proj .links a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+.A .more { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 20px; text-decoration: underline; text-underline-offset: 5px; display: inline-block; }
+
+.A .foot { border-top: 2px solid var(--fg); padding-top: 24px; margin-top: 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--mute); display: grid; grid-template-columns: 200px 1fr; column-gap: 40px; }
+.A .foot a { text-decoration: underline; text-underline-offset: 4px; }
+.A .foot .mark { grid-column: 1 / -1; margin-top: 56px; color: var(--fg); font-family: var(--sans); font-weight: 800; font-size: clamp(3rem, 11.6vw, 9.4rem); letter-spacing: -0.04em; line-height: 0.9; }
+@media (max-width: 760px) {
+  .A .hero, .A .sec, .A .foot { grid-template-columns: 1fr; }
+  .A .hero .sub, .A .hero .intro, .A .hero .jump { grid-column: 1; }
+  .A .sec h2 { margin-bottom: 8px; }
+  .A .row { grid-template-columns: 1fr; }
+  .A .row .meta { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+
+/* =====================================================================
+   B — TERMINAL
+   Everything in IBM Plex Mono (Korean falls back to Pretendard). Rows
+   are numbered with CSS counters, sections are framed boxes with the
+   label cut into the top rule. Hover inverts the row.
+   ===================================================================== */
+.B .home { font-family: var(--mono); font-size: 13.5px; line-height: 1.65; }
+.B .wrap { max-width: 92ch; margin: 0 auto; padding: 0 24px 96px; }
+.B .nav { height: 48px; border-bottom: 1px solid var(--fg); font-size: 12px; }
+.B .nav .logo { font-weight: 700; }
+.B .nav .logo::after { content: ""; display: inline-block; width: 0.6em; height: 1em; background: var(--fg); vertical-align: -0.15em; margin-left: 2px; animation: blink 1.06s step-end infinite; }
+@keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+.B .nav a, .B .nav button { padding: 0; font-size: 12px; }
+.B .nav a::before, .B .nav button::before { content: "["; }
+.B .nav a::after, .B .nav button::after { content: "]"; }
+.B .nav .logo::before { content: none; }
+.B .nav a:hover, .B .nav button:hover { background: var(--fg); color: var(--bg); }
+
+.B .hero { padding: 64px 0 48px; }
+.B .hero h1 { font-size: clamp(2.6rem, 6.5vw, 4.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.B .hero h1::after { content: ""; display: inline-block; width: 0.5em; height: 0.85em; background: var(--fg); vertical-align: -0.05em; margin-left: 0.12em; animation: blink 1.06s step-end infinite; }
+.B .hero .sub { margin-top: 16px; color: var(--mute); }
+.B .hero .sub::before { content: "// "; }
+.B .hero .intro { margin-top: 28px; max-width: 72ch; }
+.B .hero .intro p::before { content: "> "; color: var(--mute); }
+.B .hero .intro a { text-decoration: underline; text-underline-offset: 3px; }
+.B .hero .intro a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+.B .hero .jump { margin-top: 28px; gap: 8px 12px; font-size: 12px; }
+.B .hero .jump a::before { content: "["; } .B .hero .jump a::after { content: "]"; }
+.B .hero .jump a:hover { background: var(--fg); color: var(--bg); }
+
+.B .sec { position: relative; border: 1px solid var(--fg); padding: 20px 20px 12px; margin-top: 40px; }
+.B .sec h2 { position: absolute; top: -0.75em; left: 12px; padding: 0 8px; background: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.5; }
+.B .sec h2 small { font-weight: 400; color: var(--mute); margin-left: 8px; }
+.B .rows { counter-reset: r; display: flex; flex-direction: column; }
+.B .row { position: relative; padding: 10px 8px 10px 44px; margin: 0 -8px; border-bottom: 1px dashed var(--fg); }
+.B .row:last-child { border-bottom: 0; }
+.B .row::before { counter-increment: r; content: counter(r, decimal-leading-zero); position: absolute; left: 8px; top: 10px; color: var(--mute); }
+.B .row h3 { font-size: 13.5px; font-weight: 700; }
+.B .row .desc { color: var(--mute); }
+.B .row .meta { color: var(--mute); font-size: 12px; }
+.B a.row:hover, .B .row.link:hover { background: var(--fg); color: var(--bg); }
+.B a.row:hover::before, .B a.row:hover .desc, .B a.row:hover .meta, .B a.row:hover .tag { color: var(--bg); }
+.B .tag { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute); }
+.B .tag::before { content: "#"; }
+.B .row.stack .meta { grid-column: auto; justify-self: start; }
+.B .proj { margin: 8px 0 8px 44px; padding: 12px 0 0 16px; border-left: 1px solid var(--fg); }
+.B .proj h4 { font-size: 13.5px; font-weight: 700; }
+.B .proj .when { color: var(--mute); font-size: 12px; }
+.B .proj ul { display: flex; flex-direction: column; gap: 4px; color: var(--mute); }
+.B .proj ul li::before { content: "-"; }
+.B .proj .links a { text-decoration: underline; text-underline-offset: 3px; font-size: 12px; }
+.B .proj .links a:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+.B .more { display: inline-block; margin: 8px 0 0 44px; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.B .more::before { content: "$ "; }
+
+.B .foot { margin-top: 64px; border-top: 1px solid var(--fg); padding-top: 16px; font-size: 12px; color: var(--mute); }
+.B .foot a { text-decoration: underline; text-underline-offset: 3px; }
+.B .foot .mark { margin-top: 48px; color: var(--fg); font-weight: 700; font-size: clamp(1.8rem, 6.4vw, 5.2rem); letter-spacing: -0.06em; line-height: 1; border: 1px solid var(--fg); padding: 16px 20px; text-align: center; }
+
+/* =====================================================================
+   C — POSTER
+   One typeface, no mono. Hierarchy comes entirely from scale: the name
+   and section titles are enormous, body is small. Hover is a thick
+   underline rather than inversion.
+   ===================================================================== */
+.C .home { font-size: 15px; line-height: 1.6; }
+.C .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px 96px; }
+.C .nav { height: 60px; border-bottom: 1px solid var(--fg); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.C .nav .logo { font-size: 22px; font-weight: 800; text-transform: none; }
+.C .nav a:hover, .C .nav button:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.C .nav button { padding: 0; font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.02em; }
+
+.C .hero { padding: 56px 0 64px; border-bottom: 1px solid var(--fg); }
+.C .hero h1 { font-size: clamp(5rem, 19.6vw, 15.6rem); font-weight: 900; letter-spacing: -0.06em; line-height: 0.82; margin-left: -0.05em; font-feature-settings: "zero" 1; }
+.C .hero .sub { margin-top: 28px; font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
+.C .hero .intro { margin-top: 32px; max-width: 64ch; font-size: 17px; line-height: 1.55; }
+.C .hero .intro a { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.C .hero .intro a:hover { text-decoration-thickness: 4px; }
+.C .hero .jump { margin-top: 36px; gap: 8px 24px; font-size: 13px; font-weight: 700; text-transform: uppercase; }
+.C .hero .jump a { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.C .hero .jump a:hover { text-decoration-thickness: 4px; }
+
+.C .sec { padding: 40px 0 56px; border-top: 1px solid var(--fg); counter-increment: s; }
+.C .sec h2 { display: flex; align-items: baseline; gap: 20px; font-size: clamp(2.2rem, 6.4vw, 4.8rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.95; text-transform: uppercase; margin-bottom: 28px; }
+.C .sec h2::before { content: counter(s, decimal-leading-zero); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--mute); }
+.C .sec h2 small { font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--mute); }
+.C .rows { display: flex; flex-direction: column; }
+.C .row { padding: 14px 0; border-bottom: 1px solid var(--fg); }
+.C .row:last-child { border-bottom: 0; }
+.C .row h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; }
+.C .row .desc { font-size: 15px; color: var(--mute); }
+.C .row .meta { font-size: 14px; font-weight: 500; color: var(--mute); font-variant-numeric: tabular-nums; }
+.C a.row:hover h3, .C .row.link:hover h3 { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.C .tag { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mute); }
+.C .row.stack .meta { grid-column: auto; justify-self: start; }
+.C .proj { padding: 12px 0 0 32px; margin-top: 6px; border-left: 3px solid var(--fg); }
+.C .proj h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.4; }
+.C .proj .when { font-size: 14px; color: var(--mute); font-weight: 500; }
+.C .proj ul { display: flex; flex-direction: column; gap: 6px; color: var(--mute); }
+.C .proj .links a { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.C .proj .links a:hover { text-decoration-thickness: 4px; }
+.C .more { display: inline-block; margin-top: 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+
+.C .foot { border-top: 1px solid var(--fg); padding-top: 20px; font-size: 14px; color: var(--mute); }
+.C .foot a { text-decoration: underline; text-underline-offset: 3px; }
+.C .foot .mark { margin-top: 48px; color: var(--fg); font-weight: 900; font-size: clamp(3.4rem, 13.6vw, 11rem); letter-spacing: -0.06em; line-height: 0.85; margin-left: -0.04em; }
+@media (max-width: 760px) {
+  .C .row { grid-template-columns: 1fr; }
+  .C .row .meta { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+
+.home .row.link { cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="sheet-bar">
+  <strong>Brutal option sheet</strong>
+  <nav><a href="#a">A Swiss CV</a><a href="#b">B Terminal</a><a href="#c">C Poster</a></nav>
+  <button id="theme" type="button">Dark</button>
+</div>
+
+<section class="band" id="a">
+  <div class="letter">A</div>
+  <div>
+    <h2>Swiss CV</h2>
+    <p>라벨은 왼쪽 좁은 모노 열, 내용은 오른쪽. 괘선은 전부 풀 콘트라스트이고 섹션 시작선만 2px로 굵습니다. 가장 "이력서"답고, 정보 밀도가 높을수록 더 예뻐지는 구조입니다.</p>
+  </div>
+  <dl>
+    <dt>Type</dt><dd>Pretendard 15px 본문 · IBM Plex Mono 11px 메타</dd>
+    <dt>Scale</dt><dd>h1 7.5vw · h2 11px 대문자 · h3 15px</dd>
+    <dt>Rules</dt><dd>2px 섹션 · 1px 행 · 2px 좌측 들여쓰기</dd>
+    <dt>Hover</dt><dd>행 전체 반전 (배경 ↔ 글자)</dd>
+    <dt>Risk</dt><dd>좁은 화면에서 2열이 1열로 접힘</dd>
+  </dl>
+</section>
+<div class="mount A" id="mount-a"></div>
+
+<section class="band" id="b">
+  <div class="letter">B</div>
+  <div>
+    <h2>Terminal</h2>
+    <p>전부 모노스페이스. 행 번호는 CSS 카운터, 섹션은 라벨이 윗선에 박힌 박스. 가장 "보안 연구자"다운 결이고 CSS도 가장 짧게 끝납니다. 한글은 Pretendard로 자동 폴백됩니다.</p>
+  </div>
+  <dl>
+    <dt>Type</dt><dd>IBM Plex Mono 13.5px 단일 · 한글 Pretendard 폴백</dd>
+    <dt>Scale</dt><dd>h1 6.5vw · h2 11px 대문자 · 본문과 h3 동일</dd>
+    <dt>Rules</dt><dd>1px 박스 · 1px 점선 행 · 번호 열 44px</dd>
+    <dt>Hover</dt><dd>행 전체 반전 · 링크는 [ ] 괄호</dd>
+    <dt>Risk</dt><dd>한글 본문이 많아지면 모노·산세리프가 섞여 보임</dd>
+  </dl>
+</section>
+<div class="mount B" id="mount-b"></div>
+
+<section class="band" id="c">
+  <div class="letter">C</div>
+  <div>
+    <h2>Poster</h2>
+    <p>서체 하나, 모노 없음. 이름과 섹션 제목을 거대하게 키우고 본문은 작게 두어 크기 대비만으로 위계를 만듭니다. 가장 "그래픽"적이고 스크롤할 때 리듬이 생깁니다.</p>
+  </div>
+  <dl>
+    <dt>Type</dt><dd>Pretendard 단일 · 15px 본문 · 17px 소개</dd>
+    <dt>Scale</dt><dd>h1 19.6vw · h2 6.4vw 대문자 · h3 18px</dd>
+    <dt>Rules</dt><dd>1px 전체 · 3px 좌측 들여쓰기</dd>
+    <dt>Hover</dt><dd>제목 3px 밑줄 (반전 없음)</dd>
+    <dt>Risk</dt><dd>세로로 길어짐 · 긴 섹션명은 줄바꿈 필요</dd>
+  </dl>
+</section>
+<div class="mount C" id="mount-c"></div>
+
+<!-- One home page, three skins. -->
+<template id="home">
+<div class="home">
+<div class="wrap">
+  <header class="nav">
+    <a class="logo" href="#">&gt;_</a>
+    <a href="#">Writings</a>
+    <div class="actions">
+      <a href="#">GitHub</a>
+      <a href="#">Email</a>
+      <button type="button">EN</button>
+      <button type="button">Dark</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>SEORY0</h1>
+    <p class="sub">류석준 · Seokjun Ryu</p>
+    <div class="intro">
+      <p>Security researcher and CTF player from South Korea.</p>
+      <p>Undergraduate in Electronic Engineering at <b>Soongsil University</b>, working as a research intern at the <a href="#"><b>AI Safety Center</b></a>. Member of <a href="#"><b>WhiteHat School</b></a> 3rd cohort.</p>
+      <p>Focus: <b>Windows Kernel Exploitation</b>, <b>Reverse Engineering</b>, and <b>AI for Security</b>.</p>
+    </div>
+    <nav class="jump">
+      <a href="#">Experience</a><a href="#">Research</a><a href="#">Disclosures</a><a href="#">Projects</a><a href="#">Writing</a>
+    </nav>
+  </section>
+
+  <section class="sec">
+    <h2>Education <small>교육사항</small></h2>
+    <div class="rows">
+      <div class="row"><h3>Soongsil University</h3><p class="desc">IT Convergence, Electronic Engineering</p><span class="meta">2022 — Present</span></div>
+      <div class="row"><h3>WhiteHat School 3rd</h3><p class="desc">KITRI · Certificated</p><span class="meta">2025.03 — 09</span></div>
+      <div class="row"><h3>Hacking Camp 29th</h3><p class="desc">POC Security · Certificated</p><span class="meta">2024.08</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Experience <small>경력</small></h2>
+    <div class="rows">
+      <a class="row" href="#"><h3>AI Safety Center</h3><p class="desc">Undergraduate Research Intern · AI for Security</p><span class="meta">2026.01 — Present</span></a>
+    </div>
+    <article class="proj">
+      <div class="head"><h4>Development of Multi-Agent Vulnerability Research System</h4><span class="when">May – Aug. 2026</span></div>
+      <span class="tag">Mythos+ TF · TF Lead</span>
+      <ul>
+        <li>Led the task force end to end — operations, agent architecture design, and the evaluation framework.</li>
+        <li>Developed mneme, a multi-agent vulnerability research system that analyzes source code, identifies vulnerability causes, and validates reproduction results.</li>
+        <li>Achieved 91.0% pass@1 on CyberGym Level 1 (1,372 of 1,507 tasks), matching Microsoft MDASH's reported success rate at the July 2026 evaluation.</li>
+      </ul>
+      <div class="links"><a href="#">CyberGym benchmark</a><a href="#">mneme technical report</a><a href="#">Press coverage (Boannews)</a></div>
+    </article>
+  </section>
+
+  <section class="sec">
+    <h2>Publications <small>연구</small></h2>
+    <div class="rows">
+      <div class="row stack">
+        <h3>Analysis of Vulnerability Attack Pathways in AI/ML Frameworks Based on Public CVEs and a Lightweight LLM Prompting-Based Bug Hunting Methodology</h3>
+        <p class="desc"><b>Seokjun Ryu</b>, Sohee Park, Domin Ok, Daesun Choi</p>
+        <span class="meta">Korea Institute of Information Security &amp; Cryptology Summer Conference 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Awards <small>수상</small></h2>
+    <div class="rows">
+      <div class="row stack">
+        <span class="tag">Best Paper</span>
+        <h3>National Security Research Institute Director's Award</h3>
+        <span class="meta">Korea Institute of Information Security &amp; Cryptology Summer Conference 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Hacking Teams <small>해킹팀</small></h2>
+    <div class="rows">
+      <a class="row" href="#"><h3>ASC</h3><span class="meta">ssu-asc.com</span></a>
+      <a class="row" href="#"><h3>Fermion</h3><span class="meta">project-plasma.org</span></a>
+      <a class="row" href="#"><h3>Physical Lab</h3><span class="meta">phylab.space</span></a>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Disclosures <small>취약점 공개</small></h2>
+    <div class="rows">
+      <a class="row" href="#"><h3>CVE-2026-62203 — OpenClaw</h3><p class="desc">disclosed via GHSA</p></a>
+      <a class="row" href="#"><h3>CVE-2026-34755 — vLLM</h3><p class="desc">disclosed via Huntr</p></a>
+      <a class="row" href="#"><h3>CVE-2026-35626 — OpenClaw</h3><p class="desc">disclosed via GHSA</p></a>
+      <div class="row"><h3>GHSA-c2p8-****-**** — OpenClaw</h3><p class="desc">disclosed via GHSA · CVE pending</p></div>
+      <div class="row"><h3>GHSA-5968-****-**** — Flowise</h3><p class="desc">disclosed via GHSA · CVE pending</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>CTF</h2>
+    <div class="rows">
+      <a class="row" href="#"><h3>Hacktheon International University Student Cyber Security Competition</h3><span class="meta">Finalist — 나는야임영웅</span></a>
+      <div class="row"><h3>HyperSonic CTF</h3><span class="meta">2nd — ASC</span></div>
+      <div class="row"><h3>Codegate CTF Preliminary</h3><span class="meta">25th — 밥친구</span></div>
+      <div class="row"><h3>BITSCTF 2026</h3><span class="meta">4th — Fermion</span></div>
+      <div class="row"><h3>Tencent 0CTF</h3><span class="meta">12th — Fermion</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Speaker <small>발표</small></h2>
+    <div class="rows">
+      <a class="row stack" href="#">
+        <h3>AI for Security for AI - AI 에이전트로 AI 에이전트 해킹하기</h3>
+        <p class="desc"><b>Seokjun Ryu</b> &amp; Taeyoung Jeong</p>
+        <span class="meta">Hacking Camp 33rd · POC Security · 2026.08</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Projects <small>프로젝트</small></h2>
+    <div class="rows">
+      <a class="row stack" href="#">
+        <span class="tag">Featured</span>
+        <h3>WHS3-KernelPanic</h3>
+        <p class="desc">Windows Kernel/Application vulnerability analysis — Untrusted Pointer Dereference (CWE-822) on Windows 10/11. Stack: C++, Assembly.</p>
+      </a>
+      <div class="row"><h3>CVE Analyzer</h3><p class="desc">AI-powered CVE auto-classification/summarization framework (Python, Gemini API, Docker)</p></div>
+      <a class="row" href="#"><h3>Wargame Bandits</h3><p class="desc">ASC club wargame platform (2025 2nd, ASC)</p></a>
+      <a class="row" href="#"><h3>Apin</h3><p class="desc">RISC-V Assembly parsing in a nutshell</p></a>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Writing <small>글</small></h2>
+    <div class="rows">
+      <a class="row" href="#"><h3>DEFCON CTF Quals 2026 - rfc1149a Write-up</h3><span class="meta">2026-05-25</span></a>
+      <a class="row" href="#"><h3>Windows Kernel Streaming Driver LPE Analysis (CVE-2024-35250)</h3><span class="meta">2025-12-24</span></a>
+    </div>
+    <a class="more" href="#">All writing</a>
+  </section>
+
+  <footer class="foot">
+    <p><a href="#">Source on GitHub</a> · <a href="#">Atom feed</a> · <a href="#">Sitemap</a><br>© 2026 SEORY0 · 류석준 / Seokjun Ryu</p>
+    <div class="mark">KERNEL PAN!C</div>
+  </footer>
+</div>
+</div>
+</template>
+
+<script>
+(function () {
+  var tpl = document.getElementById('home');
+  ['a', 'b', 'c'].forEach(function (k) {
+    document.getElementById('mount-' + k).appendChild(tpl.content.cloneNode(true));
+  });
+  var root = document.documentElement;
+  var btn = document.getElementById('theme');
+  function apply(dark) {
+    if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+    btn.textContent = dark ? 'Light' : 'Dark';
+  }
+  btn.addEventListener('click', function () { apply(!root.hasAttribute('data-theme')); });
+  document.querySelectorAll('.home .nav button, .home .jump a, .home .nav a, .home a.row, .home .links a, .home .more, .home .intro a, .home .foot a')
+    .forEach(function (el) { el.addEventListener('click', function (e) { e.preventDefault(); }); });
+})();
+</script>
+</body>
+</html>

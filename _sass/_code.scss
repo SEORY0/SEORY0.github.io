@@ -1,0 +1,68 @@
+/* ========================================================================== */
+/* Code — inline code, and the block container that code-copy.js builds        */
+/* (.code-block-container > .code-header + .code-body). Lines only.            */
+/* ========================================================================== */
+
+.post-content code,
+.page-content code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  border: 1px solid var(--mute);
+  padding: 0 4px;
+}
+
+.post-content pre,
+.page-content pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  padding: 14px;
+  border: 1px solid var(--line);
+  margin: 0 0 1.4em;
+  background: var(--code-block-bg);
+  color: var(--code-text-color);
+  code { border: 0; padding: 0; font-size: inherit; }
+}
+
+.code-block-container {
+  margin: 1.4em 0;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+
+  pre { border: 0; margin: 0; }
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+
+  .language-label { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+}
+
+.code-copy-status { margin-left: auto; color: var(--mute); }
+
+.copy-btn {
+  display: flex; align-items: center; padding: 2px; color: var(--mute);
+  svg { width: 14px; height: 14px; }
+  &:hover { color: var(--fg); }
+  &.copied { color: var(--fg); }
+}
+
+.code-body { display: flex; }
+
+.line-numbers-wrapper {
+  flex-shrink: 0;
+  padding: 14px 8px;
+  text-align: right;
+  border-right: 1px solid var(--line);
+  user-select: none;
+  .line-number { display: block; font-size: 13px; line-height: 1.6; color: var(--mute); }
+}
+
+.code-wrapper { flex: 1; min-width: 0; overflow-x: auto; }
+.code-wrapper pre { padding: 14px; }

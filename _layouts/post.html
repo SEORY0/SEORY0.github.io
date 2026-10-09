@@ -1,7 +1,6 @@
 ---
 layout: compress
 ---
-
 <!DOCTYPE html>
 <html lang="ko">
 {% include head.html %}
@@ -10,68 +9,42 @@ layout: compress
 
 {% include top-nav.html %}
 
-<main class="site-container" id="main-content" tabindex="-1">
-
+<main class="wrap" id="main-content" tabindex="-1">
   <article class="post">
-    <header class="post-banner">
-      {% if page.categories.size > 0 %}
-      <p class="post-banner-eyebrow">{{ page.categories | join: ' / ' }}</p>
-      {% endif %}
-      <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
+    <header class="post-head">
+      <h1 class="post-title">{{ page.page_title | default: page.title }}</h1>
+      <div class="by">
+        <span class="box">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
+        <span>SEORY0</span>
+        {% for cat in page.categories %}<span class="box soft">{{ cat }}</span>{% endfor %}
+        {% for tag in page.tags %}<span class="box soft">{{ tag }}</span>{% endfor %}
+      </div>
     </header>
 
-    <div class="content-col">
-      <div class="main-content">
-        <div class="page-body">
+    <details class="post-toc" hidden>
+      <summary>목차</summary>
+      <nav aria-label="글 목차">
+        <ul class="post-toc-list"></ul>
+      </nav>
+    </details>
 
-          <div class="post-meta-inline">
-            <span class="post-meta-key">DATE</span>
-            <span class="post-meta-val">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
-            <span class="post-meta-sep">·</span>
-            <span class="post-meta-key">AUTHOR</span>
-            <span class="post-meta-val">SEORY0</span>
-            {% if page.categories.size > 0 %}
-            <span class="post-meta-sep">·</span>
-            <span class="post-meta-key">CATEGORY</span>
-            <span class="post-meta-val">{{ page.categories | join: ' / ' }}</span>
-            {% endif %}
-            {% if page.tags %}
-            <div class="post-meta-tags">
-              {% for tag in page.tags %}<span class="post-tag">{{ tag }}</span>{% endfor %}
-            </div>
-            {% endif %}
-          </div>
-
-          <details class="post-toc" hidden>
-            <summary>목차</summary>
-            <nav aria-label="글 목차">
-              <ul class="post-toc-list"></ul>
-            </nav>
-          </details>
-
-          <div class="post-content">
-            {{ content }}
-          </div>
-
-          <footer class="post-footer-meta">
-            <span class="post-footer-label">FILED UNDER</span>
-            {% for cat in page.categories %}<span class="post-tag">{{ cat }}</span>{% endfor %}
-            <span class="post-tag">Writings</span>
-          </footer>
-
-          <a class="post-back-link" href="{{ '/writing/' | relative_url }}">Writing 목록으로 돌아가기</a>
-
-        </div>
-      </div>
+    <div class="post-content">
+      {{ content }}
     </div>
-  </article>
 
+    <footer class="post-footer-meta">
+      <span class="post-footer-label">filed under</span>
+      {% for cat in page.categories %}<span class="box soft">{{ cat }}</span>{% endfor %}
+      <span class="box soft">writing</span>
+    </footer>
+
+    <a class="post-back-link" href="{{ '/writing/' | relative_url }}">← writing</a>
+  </article>
 </main>
 
 {% include footer.html %}
 <script src="{{ '/assets/js/code-copy.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/post-toc.js' | relative_url }}"></script>
 {% include scripts.html %}
-
 </body>
 </html>

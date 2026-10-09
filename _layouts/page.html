@@ -1,13 +1,7 @@
 ---
 layout: default
 ---
-
-<header class="post-banner">
-  <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
-</header>
-
-<div class="content-col">
-  <section class="post page-body">
-    {{ content }}
-  </section>
+<h1 class="page-h">{{ page.page_title | default: page.title }}</h1>
+<div class="page-content">
+{{ content }}
 </div>

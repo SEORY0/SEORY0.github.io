@@ -1,0 +1,59 @@
+/* ========================================================================== */
+/* Chrome — the "> seory0 ───── [rev]" line on top, the figlet mark below.      */
+/* Static, not sticky. No blur, no background.                                 */
+/* ========================================================================== */
+
+.topline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 48px;
+  font-size: 12px;
+  white-space: nowrap;
+
+  .prompt { font-weight: 700; color: var(--fg); text-decoration: none; }
+  nav { display: flex; gap: 14px; align-items: center; }
+  nav a, nav button { color: var(--fg); text-decoration: none; }
+  nav a:hover, nav button:hover, .prompt:hover { background: var(--fg); color: var(--bg); }
+  nav a[aria-current] { text-decoration: underline; text-underline-offset: 4px; }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 24px; }
+  .rev { color: var(--mute); }
+
+  @media (max-width: $bp-mobile) {
+    font-size: 11px; gap: 10px;
+    nav { gap: 10px; }
+    .rule { display: none; }
+    .rev { margin-left: auto; }
+  }
+}
+
+/* Language button: shows the current language; home only. */
+.lang-label-ko { display: none; }
+html[lang="ko"] .lang-label-ko { display: inline; }
+html[lang="ko"] .lang-label-en { display: none; }
+
+/* Theme button: names the action, not the state. */
+.t-light { display: none; }
+.theme-dark .t-light { display: inline; }
+.theme-dark .t-dark { display: none; }
+
+/* ---- footer ---- */
+.foot {
+  margin-top: 40px;
+  border-top: 1px solid var(--line);
+  padding: 14px 0 32px;
+  font-size: 12px;
+  color: var(--mute);
+
+  .mark {
+    /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not
+       min(): Ruby Sass on GitHub Pages evaluates min() itself. */
+    font-size: clamp(5px, calc((100vw - 40px) / 42), 17px);
+    line-height: 1.15;
+    margin: 20px 0 18px;
+    color: var(--fg);
+    white-space: pre;
+    overflow: hidden;
+    user-select: none;
+  }
+}

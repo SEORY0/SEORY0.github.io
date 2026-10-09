@@ -1,121 +1,67 @@
 # Portfolio design system
 
-## 1. Atmosphere & identity
-Preserve the existing monochrome CV layout: compact entries, fine rules, and a
-single Pretendard typeface. Readers should distinguish institutions, projects,
-personal responsibilities, and supporting evidence at a glance.
+White page, black ink, one monospace, lines only. The home page is a man page
+with a figlet wordmark and a single CV link; everything else lives under
+Writing. References: projectzero.google (structure, boxed dates, "read more"
+button), kostyafarber.com (man page About, mono chrome, build label), figlet
+ASCII art (wordmark and footer mark).
 
-## 2. Color
-Use the existing tokens in `_sass/_variables.scss`: `--bg`, `--text`,
-`--text-muted`, `--text-meta`, `--accent`, and `--border`. Their existing light
-and dark theme values remain the source of truth. No new palette is needed.
+## 1. Atmosphere & identity
+Old-HTML plainness, kept pretty by strict alignment: one 760px column, 1px
+rules, boxed mono labels, no backgrounds, no shadows, no radius, no motion.
+The two ASCII pieces are the only ornament. Nothing floats over anything.
+
+## 2. Colour
+Six tokens in `_sass/_variables.scss`: `--bg`, `--fg`, `--mute`, `--line`,
+`--link` (classic link blue), plus the two `--code-*` tokens `syntax.css`
+reads. Dark mode flips them under `.theme-dark` on `<html>`, set by the head
+FOUC guard and `theme-toggle.js`. No other colours exist.
 
 ## 3. Typography
-Use `--font-body`. Institution headings retain the existing 0.98rem/700 scale;
-project headings use the existing 1rem/700 scale and 1.5 line height. Body copy
-uses 0.88rem/1.55, metadata and links 0.8rem, and role tags 0.72rem/700.
-Keep English and Korean content paired through the existing `lang` spans.
+- `--mono` (IBM Plex Mono) is the site voice: chrome, labels, dates, the home
+  man page, list pages. 13.5px / 1.65.
+- `--sans` (Pretendard subset) is for reading: article bodies at 16px / 1.8,
+  and the home DESCRIPTION when `html[lang="ko"]`.
+- Hierarchy comes from weight and boxes, not size. Section headings are 12px
+  bold uppercase with 0.1em tracking; article titles are the one large size
+  (28px sans bold).
+- The figlet banners use system monos (Cascadia, Consolas, Menlo) because the
+  Plex Mono subset lacks block and box-drawing glyphs. The footer mark is
+  pure ASCII (figlet "slant") and renders identically everywhere.
 
 ## 4. Spacing & layout
-Reuse `--indent` (16px desktop, 20px mobile), the 700px content width, and the
-existing 750px/1024px breakpoints. Experience projects sit inside their parent
-institution, offset by `--indent` with a one-pixel connecting rule. Existing
-6px/8px list gaps and 16px entry padding continue the CV rhythm. Dates wrap
-below long project titles on mobile. The document owns vertical scrolling.
+`.wrap` is the only container: max-width 760px, 20px side padding. One
+breakpoint at 560px, where the top line drops its rule and the man page
+indent halves. Banners size from the viewport so 51 and 70 columns always fit.
 
 ## 5. Components
-- CV row: existing `.note` institution, description, and right-aligned period.
-- Experience group: semantic section labelled by its institution heading;
-  nested project list with a shared vertical rule, not separate employer rows.
-- Project entry: article with h4 title, optional project duration and sponsor,
-  role tag, and responsibility bullets. Both projects share this primitive.
-- Evidence links: existing `.role-link` behavior; project resources precede
-  press coverage, which occupies the final line.
-- States: text is static; links retain native navigation, existing hover
-  accent/underline, and visible keyboard focus. No loading or disabled states.
+- Top line: `> seory0` prompt, nav (writing, github, email, `[EN]` on home,
+  `[dark]`/`[light]`), a 1px rule that fills, and `[ build-rev ]`. Static,
+  not sticky, no background.
+- `.box`: 1px bordered mono chip for dates, tags, the CV link. `.soft` for
+  secondary chips (pending, tags).
+- Home: `.banner` (figlet), `.tagline` h1, `.man` with NAME / DESCRIPTION /
+  FILES / SEE ALSO. `.cv` is the only call to action.
+- Writing index: `.card` (title, `.by` chips, summary, `.more` button).
+- Article: `.post-head`, `.post-toc` (native details), `.post-content`,
+  `.post-footer-meta`, `.post-back-link`.
+- Code: `.code-block-container` built by `code-copy.js`; 1px frame, line
+  numbers column, mono label header. Inline code is a 1px outline.
+- Footer: figlet mark in a `<pre>`, one line of links.
 
 ## 6. Motion & interaction
-Reuse existing link color/underline transitions (0.15s ease). Add no animation.
-Keep existing language/theme controls and reduced-motion behavior.
+None. Hover is a full inversion (`background: var(--fg); color: var(--bg)`)
+on links and buttons. Focus is a 2px outline in `--fg`. No transitions.
 
 ## 7. Depth & surface
-Borders only for experience hierarchy. Use `1px solid var(--border)` without
-new cards, shadows, or background fills.
+Lines only: `1px solid var(--line)` for structure, `1px dotted var(--mute)`
+between list rows. No fills, no shadows, no radius, no blur.
 
-## 8. Accessibility constraints & accepted debt
-Project headings are below the institution heading. Links have descriptive
-bilingual labels. Preserve readable wrapping at 375px, dark/light contrast,
-keyboard focus, and the existing language visibility rules. Research-project
-dates must be explicitly distinguished from the author's employment dates.
-No new accessibility debt is accepted for this change.
-
-## Minimal navigation refinement
-- Keep the monochrome CV system; no new dependency, card grid, illustration, or animation.
-- Add only a wrapping, underlined section-link cluster after the introduction.
-  Do not add a selected-highlights summary. Use existing 0.88rem body
-  and 0.8rem metadata scales with 8/16/24/32px spacing.
-- Section labels become h2 elements retaining the small `.date` style and get stable IDs.
-  Anchor destinations use `scroll-margin-top: calc(var(--nav-height) + 24px)`.
-- Mobile CV rows use one column: title, description, then date/placement. Desktop
-  retains the date column. Keep links text-only without arrows, with hover and keyboard focus feedback.
-- Top-bar controls use a 44px touch target with compact gaps; icons keep their current size.
-  Ordinary navigation uses native links, not application menu roles.
-- Articles use one native details/summary table of contents above the body. Derive
-  h2/h3 links from rendered headings; hide the control when there are too few headings.
-  Preserve keyboard operation, heading IDs, and a visible Back to Writing link at the end.
-- Error recovery uses the shared plain surface and type, visible home/Writing links,
-  natural content height, no clipped frame or flashing interaction.
-- Keep the halftone backdrop fully opaque and reduce its brightness to 85% in both themes; keep solid text surfaces.
-- Preserve the original oversized Kernel Panic footer mark, 2px frame, rounded upper corners and generous padding.
-
-## Audit remediation
-- Preserve layout, original Kernel Panic footer, monochrome chrome and 85% background brightness at full opacity.
-- Retain Pretendard outlines and variable weights through a 651-character local web subset (renamed PortfolioSans for the Reserved Font Name), with the original complete Unicode subsets as fallback. Load IBM Plex Mono 400/700 only for posts.
-- Article image previews use responsive WebP sources, reserved intrinsic dimensions, an eager first image and lazy lower images. Preserve full-resolution originals.
-- Code palettes must meet 4.5:1 text contrast in both themes; decorative line numbers remain visible but are hidden from assistive technology.
-- Language controls expose the visible EN/KO label and current/action language. Theme controls expose pressed state. Code-copy success and failure have a visible polite status.
-- Skip-link hover, focus and visited states keep the inverse contrast pair.
-
-Code syntax palette (light / dark): comment `#537343` / `#8eaf7d`, keyword `#0000cc` / `#75b9ef`, function `#795e26` / `#dcdcaa`, string `#a31515` / `#ce9178`, number `#08774e` / `#b5cea8`, type `#1f7087` / `#4ec9b0`, name `#001080` / `#9cdcfe`, error `#ad2424` / `#ff8080`. Line numbers: `#626b75` / `#a0a0a0`.
-
-## Hover preview — home
-The single documented exception to §6 "Add no animation". It applies to the
-linked sections of the home page — EXPERIENCE, HACKING TEAMS, DISCLOSURES, CTF,
-SPEAKER, PROJECTS, WRITING — and nowhere else.
-
-- A row with `data-hover-image` shows that thumbnail following the pointer.
-  Rows without one keep the plain CV hover and dismiss the preview rather than
-  leaving the previous row's image under the pointer, so a row never needs an
-  image. The whole feature is an enhancement: no-JS, touch, and coarse pointers
-  get the existing row untouched.
-- A section opts in with `data-hover-image-group` on a `.note-group` wrapper.
-  EXPERIENCE marks its `<section class="experience">` directly instead — a
-  wrapper there would break the `.experience > .note` child combinator.
-- One preview element serves the whole page, and all thumbnails share one
-  stacked track, so moving between rows slides the stack rather than swapping
-  the `src` — the change reads as one surface travelling, and no row waits on a
-  fresh decode. Each section's images are fetched on the first hover into that
-  section, so a visitor pays only for what they explore.
-- No animation library. The pointer follow is an exponential ease on one
-  translate driven by rAF; the fade, scale, and stack slide are CSS
-  transitions, so `prefers-reduced-motion` switches the motion off in the
-  stylesheet. Under reduced motion the frame still tracks the pointer — that
-  movement is the user's own input, not autonomous animation — but stops
-  lagging, and the timed transitions are removed.
-- Thumbnails are 560×350 WebP in `assets/images/previews/`, rendered at
-  280×175 (2× for retina, 16:10). Sources are the repo's own artwork where it
-  exists, and otherwise a 1280×800 capture of the linked page. Keep the
-  full-size originals; the WebP is a derived preview. Posts opt in with
-  `preview:` in their front matter and CTF entries with `preview:` in
-  `_data/ctfs.yml` — deliberately never falling back to a post's `image:`,
-  which is a full-size OG asset measured in megabytes.
-- Surface: `1px solid var(--border)`, 10px radius, `var(--bg)` behind. This is
-  the one place §7's "no shadows" is relaxed — a cursor follower is a genuinely
-  floating layer, and a hairline alone does not separate a photo from the
-  halftone backdrop. Neutral and low-contrast, so it reads as depth, not a card.
-- Layering: `z-index: 900`, below the sticky top bar, so the preview passes
-  beneath the nav instead of covering it.
-- Accessibility: the preview is `aria-hidden` and carries `alt=""` — every row
-  already states its title and description as text, so nothing is lost to
-  keyboard or screen-reader users, who never see it. Accepted debt: the images
-  are reachable by pointer only.
+## 8. Accessibility & accepted debt
+- Banners are `aria-hidden`; the h1 and the man page carry the content.
+- Both languages ship in the DOM on the home page; `html[lang]` hides one.
+  The toggle persists to localStorage and is applied before paint.
+- Link blue meets AA on white (#1a0dab, 10.6:1) and on the dark surface
+  (#8ab4f8, 8.9:1). Mute grey is 5.7:1 light and 5.6:1 dark.
+- Accepted debt: the home banner depends on a system mono having block
+  glyphs; on a machine without one it degrades to a slightly gappy wordmark.

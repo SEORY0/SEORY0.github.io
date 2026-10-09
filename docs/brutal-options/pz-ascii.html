@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEORY0 — Project Zero × man page × ASCII</title>
+<link rel="stylesheet" href="../../assets/fonts/pretendard/font.css">
+<link rel="stylesheet" href="../../assets/fonts/portfolio-sans/font.css">
+<link rel="stylesheet" href="../../assets/fonts/mono/font.css">
+<style>
+/* ---------------------------------------------------------------------
+   SEORY0 시안 — projectzero.google 의 구조 + Kostya Farber 의 man page
+   + figlet ASCII 배너. 흰 바탕, 1px 선, 모노 하나. 토큰 6개.
+   --------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --mute: #666666;
+  --rule: #000000;
+  --link: #1a0dab;            /* Google link blue — Project Zero 와 옛날 HTML 둘 다 */
+  --mono: "IBM Plex Mono", "SF Mono", Consolas, "Portfolio Sans", "Pretendard Variable", monospace;
+  --sans: "Portfolio Sans", "Pretendard Variable", Pretendard, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d0d0d; --fg: #e8e8e8; --mute: #8a8a8a; --rule: #e8e8e8; --link: #8ab4f8; }
+}
+/* 한국어 모드에서는 본문만 Pretendard 로. 라벨·배너·날짜는 모노 유지. */
+html[lang="ko"] .prose { font-family: var(--sans); font-size: 15px; }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.65;
+  word-break: keep-all; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: var(--fg); background: var(--fg); color: var(--bg); text-decoration: none; }
+h1, h2, h3, h4, p, ul, dl, dd, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+pre { margin: 0; font-family: var(--mono); }
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ---- top line: "> list pages ───────" 를 내비로 ---- */
+.topline {
+  display: flex; align-items: center; gap: 14px; height: 48px; font-size: 12px;
+  white-space: nowrap; overflow: hidden;
+}
+.topline .prompt { font-weight: 700; }
+.topline nav { display: flex; gap: 14px; }
+.topline .rule { flex: 1; height: 1px; background: var(--rule); min-width: 24px; }
+.topline .kb { color: var(--mute); }
+.topline a { color: var(--fg); text-decoration: none; }
+.topline a:hover { background: var(--fg); color: var(--bg); }
+@media (max-width: 560px) {
+  .topline { font-size: 11px; gap: 10px; }
+  .topline nav { gap: 10px; }
+  .topline .rule { display: none; }
+  .topline .kb { margin-left: auto; }
+}
+
+/* ---- figlet banner ---- */
+.banner {
+  /* 블록·박스 문자(U+2580, U+2550)는 Plex Mono 서브셋에 없다. 글리프 폭이 맞는
+     시스템 모노를 먼저 둔다. line-height 1 이어야 █ 행 사이가 안 벌어진다. */
+  font-family: "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  display: block; text-align: center; line-height: 1; white-space: pre;
+  /* 51 cols × 0.6em must fit the column: (100vw − 40px) / 31 */
+  font-size: min(23px, calc((100vw - 40px) / 31)); margin: 36px 0 12px;
+  user-select: none;
+}
+/* 푸터는 순수 ASCII(slant) 70 cols × 0.6em: (100vw − 40px) / 42. Plex Mono 그대로. */
+.banner.foot { font-family: var(--mono); font-size: min(17px, calc((100vw - 40px) / 42)); line-height: 1.15; margin: 40px 0 18px; text-align: left; }
+.tagline { text-align: center; font-size: 12px; color: var(--mute); }
+.tagline b { color: var(--fg); font-weight: 700; }
+
+/* ---- man page (Kostya) ---- */
+.man { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 10px; }
+.man .head { display: flex; justify-content: space-between; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
+.man dl { margin-top: 18px; }
+.man dt { font-weight: 700; margin-top: 16px; }
+.man dd { margin: 4px 0 0 32px; max-width: 64ch; }
+.man dd + dd { margin-top: 8px; }
+.man .opt { display: grid; grid-template-columns: 16ch 1fr; column-gap: 12px; }
+.man .opt b { font-weight: 400; }
+.man .prose b { font-weight: 700; }
+@media (max-width: 560px) {
+  .man dd { margin-left: 16px; }
+  .man .opt { grid-template-columns: 1fr; }
+}
+
+/* ---- sections (Project Zero post list rhythm) ---- */
+.sec { margin-top: 44px; border-top: 1px solid var(--rule); padding-top: 14px; }
+.sec h2 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: flex; gap: 12px; align-items: baseline; }
+.sec h2 small { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--mute); }
+.list { margin-top: 10px; display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: 12ch 1fr; column-gap: 16px; padding: 9px 0; border-bottom: 1px dotted var(--mute); align-items: baseline; }
+.row:last-child { border-bottom: 0; }
+.row .date { font-size: 11px; white-space: nowrap; }
+.row .date span { display: inline-block; border: 1px solid var(--fg); padding: 0 5px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.row .date.soft span { border-color: var(--mute); color: var(--mute); }
+.row h3 { font-size: 13.5px; font-weight: 700; }
+.row h3 a { color: var(--fg); }
+.row .desc { color: var(--mute); }
+.row .desc b { color: var(--fg); font-weight: 400; }
+@media (max-width: 560px) {
+  .row { grid-template-columns: 1fr; row-gap: 2px; }
+}
+
+/* experience sub project: OPTIONS 들여쓰기 */
+.proj { margin: 6px 0 10px 12ch; padding: 10px 0 10px 16px; border-left: 1px solid var(--rule); }
+.proj h4 { font-size: 13.5px; font-weight: 700; }
+.proj .meta { font-size: 11px; color: var(--mute); margin-top: 2px; }
+.proj ul { margin-top: 8px; color: var(--mute); }
+.proj li { padding-left: 14px; position: relative; }
+.proj li::before { content: "-"; position: absolute; left: 0; }
+.proj .links { margin-top: 8px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+@media (max-width: 560px) { .proj { margin-left: 0; } }
+
+/* ascii diagram inside featured project */
+.diagram { margin: 10px 0 4px; font-size: 11.5px; line-height: 1.3; color: var(--fg); overflow-x: auto; }
+
+/* Project Zero "read more →" box */
+.more { display: inline-block; margin-top: 14px; border: 1px solid var(--fg); padding: 3px 10px; font-size: 12px; color: var(--fg); text-decoration: none; }
+.more:hover { background: var(--fg); color: var(--bg); }
+
+/* ---- writing (Project Zero post card) ---- */
+.post { padding: 14px 0; border-bottom: 1px dotted var(--mute); }
+.post:last-child { border-bottom: 0; }
+.post h3 { font-size: 17px; font-weight: 700; line-height: 1.3; }
+.post h3 a { color: var(--fg); }
+.post .by { margin-top: 6px; font-size: 11px; display: flex; gap: 10px; align-items: center; }
+.post .by span { border: 1px solid var(--fg); padding: 0 5px; line-height: 1.6; }
+.post p { margin-top: 8px; color: var(--mute); max-width: 68ch; }
+
+/* ---- footer ---- */
+.foot { margin-top: 56px; border-top: 1px solid var(--rule); padding-top: 14px; font-size: 12px; color: var(--mute); }
+.foot .links { display: flex; gap: 14px; flex-wrap: wrap; }
+.foot .copy { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="topline">
+      <span class="prompt">&gt; seory0</span>
+      <nav><a href="#">writing</a><a href="#">github</a><a href="#">email</a><a href="#">[EN]</a></nav>
+      <span class="rule" aria-hidden="true"></span>
+      <span class="kb" title="total page weight">[ 19 kB ]</span>
+    </div>
+
+    <pre class="banner" aria-hidden="true">███████╗███████╗ ██████╗ ██████╗ ██╗   ██╗ ██████╗
+██╔════╝██╔════╝██╔═══██╗██╔══██╗╚██╗ ██╔╝██╔═████╗
+███████╗█████╗  ██║   ██║██████╔╝ ╚████╔╝ ██║██╔██║
+╚════██║██╔══╝  ██║   ██║██╔══██╗  ╚██╔╝  ████╔╝██║
+███████║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝
+╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ </pre>
+    <h1 class="tagline"><b>SEORY0</b> · 류석준 · Seokjun Ryu · security researcher &amp; CTF player</h1>
+  </header>
+
+  <!-- ===== man page ===== -->
+  <section class="man" aria-label="About">
+    <div class="head"><span>SEORY0(1)</span><span>User Commands</span><span>SEORY0(1)</span></div>
+    <dl>
+      <dt>NAME</dt>
+      <dd>seory0 — security researcher, CTF player, undergraduate</dd>
+
+      <dt>SYNOPSIS</dt>
+      <dd>seory0 [--kernel] [--reversing] [--ai-sec] [<i>target</i>...]</dd>
+
+      <dt>DESCRIPTION</dt>
+      <dd class="prose">Seokjun Ryu, from South Korea. Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="#">AI Safety Center</a>, member of <a href="#">WhiteHat School</a> 3rd cohort.</dd>
+      <dd class="prose">Reads drivers from stdin. Accepts IOCTLs, mostly untrusted. Writes whatever crashes to a <a href="#">list on the internet</a>. Output is unbuffered.</dd>
+
+      <dt>OPTIONS</dt>
+      <dd class="opt"><b>--kernel</b><span>Windows kernel exploitation. Untrusted pointer dereference, pool, kernel streaming.</span></dd>
+      <dd class="opt"><b>--reversing</b><span>Reverse engineering. x86-64, RISC-V, drivers, firmware.</span></dd>
+      <dd class="opt"><b>--ai-sec</b><span>AI for security. Multi-agent vulnerability research, CVE triage, LLM bug hunting.</span></dd>
+
+      <dt>SEE ALSO</dt>
+      <dd><a href="#">github(1)</a>, <a href="#">writing(7)</a>, <a href="#">mail(1)</a>, <a href="#">ctftime(5)</a></dd>
+    </dl>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section class="sec">
+    <h2>Experience <small>경력</small></h2>
+    <div class="list">
+      <div class="row">
+        <div class="date"><span>2026.01 —</span></div>
+        <div><h3><a href="#">AI Safety Center</a></h3><p class="desc">Undergraduate Research Intern · AI for Security</p></div>
+      </div>
+    </div>
+    <article class="proj">
+      <h4>Development of Multi-Agent Vulnerability Research System</h4>
+      <p class="meta">May – Aug. 2026 · Mythos+ TF · TF Lead</p>
+      <ul>
+        <li>Led the task force end to end — operations, agent architecture design, and the evaluation framework.</li>
+        <li>Developed mneme, a multi-agent vulnerability research system that analyzes source code, identifies vulnerability causes, and validates reproduction results.</li>
+        <li>91.0% pass@1 on CyberGym Level 1 (1,372 / 1,507), matching Microsoft MDASH at the July 2026 evaluation. Baseline with the same model: 66.6%.</li>
+      </ul>
+      <div class="links"><a href="#">CyberGym benchmark</a><a href="#">mneme technical report</a><a href="#">Press (Boannews)</a></div>
+    </article>
+    <article class="proj">
+      <h4>Robust AI and Distributed Attack Detection for Edge AI Security</h4>
+      <p class="meta">Mar. 2026 – Present · IITP · Frontend &amp; Backend Developer</p>
+      <ul>
+        <li>Built the frontend and backend of an Edge AI Vulnerability Analysis System prototype: one dashboard for testing edge AI attack techniques.</li>
+        <li>Integrated adversarial-example, adversarial-patch and voice-attack workflows for image, object-detection and speech models.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ===== EDUCATION ===== -->
+  <section class="sec">
+    <h2>Education <small>교육사항</small></h2>
+    <div class="list">
+      <div class="row"><div class="date"><span>2022 —</span></div><div><h3>Soongsil University</h3><p class="desc">IT Convergence, Electronic Engineering</p></div></div>
+      <div class="row"><div class="date"><span>2025.03–09</span></div><div><h3>WhiteHat School 3rd</h3><p class="desc">KITRI · Certificated</p></div></div>
+      <div class="row"><div class="date"><span>2024.08</span></div><div><h3>Hacking Camp 29th</h3><p class="desc">POC Security · Certificated</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== RESEARCH + AWARD ===== -->
+  <section class="sec">
+    <h2>Publications &amp; Awards <small>연구 · 수상</small></h2>
+    <div class="list">
+      <div class="row">
+        <div class="date"><span>2026</span></div>
+        <div>
+          <h3>Analysis of Vulnerability Attack Pathways in AI/ML Frameworks Based on Public CVEs and a Lightweight LLM Prompting-Based Bug Hunting Methodology</h3>
+          <p class="desc"><b>Seokjun Ryu</b>, Sohee Park, Domin Ok, Daesun Choi · KIISC Summer Conference 2026</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="date"><span>BEST PAPER</span></div>
+        <div><h3>National Security Research Institute Director's Award</h3><p class="desc">KIISC Summer Conference 2026</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DISCLOSURES ===== -->
+  <section class="sec">
+    <h2>Disclosures <small>취약점 공개</small></h2>
+    <div class="list">
+      <div class="row"><div class="date"><span>CVE</span></div><div><h3><a href="#">CVE-2026-62203 — OpenClaw</a></h3><p class="desc">disclosed via GHSA</p></div></div>
+      <div class="row"><div class="date"><span>CVE</span></div><div><h3><a href="#">CVE-2026-34755 — vLLM</a></h3><p class="desc">disclosed via Huntr</p></div></div>
+      <div class="row"><div class="date"><span>CVE</span></div><div><h3><a href="#">CVE-2026-35626 — OpenClaw</a></h3><p class="desc">disclosed via GHSA</p></div></div>
+      <div class="row"><div class="date soft"><span>GHSA</span></div><div><h3>GHSA-c2p8-****-**** — OpenClaw</h3><p class="desc">CVE pending</p></div></div>
+      <div class="row"><div class="date soft"><span>GHSA</span></div><div><h3>GHSA-5968-****-**** — Flowise</h3><p class="desc">CVE pending</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== CTF + TEAMS ===== -->
+  <section class="sec">
+    <h2>CTF <small>해킹팀 ASC · Fermion · Physical Lab</small></h2>
+    <div class="list">
+      <div class="row"><div class="date"><span>FINALIST</span></div><div><h3><a href="#">Hacktheon International University Student Cyber Security Competition</a></h3><p class="desc">나는야임영웅</p></div></div>
+      <div class="row"><div class="date"><span>2nd</span></div><div><h3>HyperSonic CTF</h3><p class="desc">ASC</p></div></div>
+      <div class="row"><div class="date"><span>4th</span></div><div><h3>BITSCTF 2026</h3><p class="desc">Fermion</p></div></div>
+      <div class="row"><div class="date"><span>12th</span></div><div><h3>Tencent 0CTF</h3><p class="desc">Fermion</p></div></div>
+      <div class="row"><div class="date"><span>25th</span></div><div><h3>Codegate CTF Preliminary</h3><p class="desc">밥친구</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== SPEAKER ===== -->
+  <section class="sec">
+    <h2>Speaker <small>발표</small></h2>
+    <div class="list">
+      <div class="row"><div class="date"><span>2026.08</span></div><div><h3><a href="#">AI for Security for AI — AI 에이전트로 AI 에이전트 해킹하기</a></h3><p class="desc"><b>Seokjun Ryu</b> &amp; Taeyoung Jeong · Hacking Camp 33rd · POC Security</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section class="sec">
+    <h2>Projects <small>프로젝트</small></h2>
+    <div class="list">
+      <div class="row">
+        <div class="date"><span>FEATURED</span></div>
+        <div>
+          <h3><a href="#">WHS3-KernelPanic</a></h3>
+          <p class="desc">Windows kernel/application vulnerability analysis — Untrusted Pointer Dereference (CWE-822) on Windows 10/11. C++, Assembly.</p>
+<pre class="diagram" aria-hidden="true">  user mode                        kernel mode
+  +------------------+   IOCTL    +----------------------+
+  | input buffer     | ---------> | driver dispatch      |
+  |  ptr = 0x4141... |            |  *ptr   (no probe)   |
+  +------------------+            +----------+-----------+
+                                             |
+                                             v
+                                   CWE-822 : untrusted
+                                   pointer dereference</pre>
+        </div>
+      </div>
+      <div class="row"><div class="date"><span>2026</span></div><div><h3>CVE Analyzer</h3><p class="desc">AI-powered CVE auto-classification / summarization framework · Python, Gemini API, Docker</p></div></div>
+      <div class="row"><div class="date"><span>2025</span></div><div><h3><a href="#">Wargame Bandits</a></h3><p class="desc">ASC club wargame platform</p></div></div>
+      <div class="row"><div class="date"><span>2025</span></div><div><h3><a href="#">Apin</a></h3><p class="desc">RISC-V assembly parsing in a nutshell</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== WRITING (Project Zero post cards) ===== -->
+  <section class="sec">
+    <h2>Writing <small>글</small></h2>
+    <div class="list">
+      <article class="post">
+        <h3><a href="#">DEFCON CTF Quals 2026 — rfc1149a Write-up</a></h3>
+        <div class="by"><span>2026-MAY-25</span> Seokjun Ryu</div>
+        <p>How a pigeon-carried datagram turned into a reversing challenge, and the three dead ends before the flag.</p>
+        <a class="more" href="#">read more →</a>
+      </article>
+      <article class="post">
+        <h3><a href="#">Windows Kernel Streaming Driver LPE Analysis (CVE-2024-35250)</a></h3>
+        <div class="by"><span>2025-DEC-24</span> Seokjun Ryu</div>
+        <p>From IOCTL to IRP to a requestor-mode confusion in ks.sys: root cause, PoC buffer layout, and the exploitation strategy.</p>
+        <a class="more" href="#">read more →</a>
+      </article>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <pre class="banner foot" aria-hidden="true">    __ __ __________  _   __________       ____  ___    _   __________
+   / //_// ____/ __ \/ | / / ____/ /      / __ \/   |  / | / / / ____/
+  / ,<  / __/ / /_/ /  |/ / __/ / /      / /_/ / /| | /  |/ / / /     
+ / /| |/ /___/ _, _/ /|  / /___/ /___   / ____/ ___ |/ /|  /_/ /___   
+/_/ |_/_____/_/ |_/_/ |_/_____/_____/  /_/   /_/  |_/_/ |_(_)\____/   </pre>
+    <div class="links"><a href="#">Source on GitHub</a><a href="#">Atom feed</a><a href="#">Sitemap</a></div>
+    <p class="copy">© 2026 SEORY0 · 류석준 / Seokjun Ryu · generated with jekyll, no javascript on this page</p>
+  </footer>
+
+</div>
+</body>
+</html>

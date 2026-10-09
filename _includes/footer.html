@@ -1,23 +1,13 @@
-<footer class="site-footer">
-  <div class="site-footer-box">
-    <div class="site-footer-inner">
-      {% if include.show_lastmod %}
-      <p class="site-footer-lastmod">Last edited {{ site.time | date: "%Y-%m-%d" }}</p>
-      {% endif %}
-
-      <p class="site-footer-links">
-        <a href="https://github.com/SEORY0/SEORY0.github.io" target="_blank" rel="noopener">Source on GitHub</a>
-        <span class="sep">·</span>
-        <a href="{{ '/atom.xml' | relative_url }}">Atom feed</a>
-        <span class="sep">·</span>
-        <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a>
-      </p>
-
-      <p class="site-footer-copy">
-        &copy; {{ site.time | date: "%Y" }} SEORY0 &middot; 류석준 / Seokjun Ryu
-      </p>
-    </div>
-
-    <div class="site-footer-brand" aria-hidden="true">KERNEL PAN!C</div>
+<footer class="foot">
+  <div class="wrap">
+<pre class="mark" aria-hidden="true">    __ __ __________  _   __________       ____  ___    _   __________
+   / //_// ____/ __ \/ | / / ____/ /      / __ \/   |  / | / / / ____/
+  / ,<  / __/ / /_/ /  |/ / __/ / /      / /_/ / /| | /  |/ / / /
+ / /| |/ /___/ _, _/ /|  / /___/ /___   / ____/ ___ |/ /|  /_/ /___
+/_/ |_/_____/_/ |_/_/ |_/_____/_____/  /_/   /_/  |_/_/ |_(_)\____/   </pre>
+    <p>&copy; {{ site.time | date: "%Y" }} SEORY0 &middot; 류석준 / Seokjun Ryu &middot;
+      <a href="https://github.com/SEORY0/SEORY0.github.io" target="_blank" rel="noopener">Source on GitHub</a> &middot;
+      <a href="{{ '/atom.xml' | relative_url }}">Atom feed</a> &middot;
+      <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a>{% if include.show_lastmod %} &middot; last edited {{ site.time | date: "%Y-%m-%d" }}{% endif %}</p>
   </div>
 </footer>

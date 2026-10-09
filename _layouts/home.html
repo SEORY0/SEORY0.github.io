@@ -4,225 +4,56 @@ layout: compress
 <!DOCTYPE html>
 <html lang="en">
 {% include head.html %}
-<body class="page-home page-shader">
+<body class="page-home">
 <a href="#main-content" class="skip-to-content"><span lang="en">Skip to content</span><span lang="ko">본문 바로가기</span></a>
-
-<div class="shader-bg" aria-hidden="true" data-image="{{ '/assets/images/sky-halftone.jpg' | relative_url }}"></div>
 
 {% include top-nav.html %}
 
-<div class="site-container">
-  <main class="container" id="main-content" role="main">
+<main class="wrap" id="main-content">
 
-    <h1>SEORY0</h1>
-    <p class="hero-subtitle"><span class="hero-name-kr">류석준</span> <span class="sep">·</span> <span class="hero-name-en">Seokjun Ryu</span></p>
+<pre class="banner" aria-hidden="true">███████╗███████╗ ██████╗ ██████╗ ██╗   ██╗ ██████╗
+██╔════╝██╔════╝██╔═══██╗██╔══██╗╚██╗ ██╔╝██╔═████╗
+███████╗█████╗  ██║   ██║██████╔╝ ╚████╔╝ ██║██╔██║
+╚════██║██╔══╝  ██║   ██║██╔══██╗  ╚██╔╝  ████╔╝██║
+███████║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝
+╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ </pre>
+  <h1 class="tagline"><b>SEORY0</b> · 류석준 · Seokjun Ryu</h1>
 
-    <div class="info">
-      <p>
-        <span lang="en">Security researcher and CTF player from South Korea.</span>
-        <span lang="ko">안녕하세요. 오펜시브 보안을 공부하고 있는 CTF 플레이어 류석준입니다.</span>
-      </p>
-      <p>
-        <span lang="en">Undergraduate in Electronic Engineering at <b>Soongsil University</b>, working as a research intern at the <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener"><b>AI Safety Center</b></a>. Member of <a href="https://whsedu.kr/" target="_blank" rel="noopener"><b>WhiteHat School</b></a> 3rd cohort.</span>
-        <span lang="ko"><b>숭실대학교</b> 전자정보공학부에 재학 중이며, <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener"><b>AI안전성연구센터</b></a>에서 학부연구생으로 활동하고 있습니다. <a href="https://whsedu.kr/" target="_blank" rel="noopener"><b>화이트햇스쿨</b></a> 3기 수료생이기도 합니다.</span>
-      </p>
-      <p>
-        <span lang="en">Focus: <b>Windows Kernel Exploitation</b>, <b>Reverse Engineering</b>, and <b>AI for Security</b>.</span>
-        <span lang="ko">관심 분야: <b>Windows 커널 익스플로잇</b>, <b>리버싱</b>, <b>AI 보안</b>.</span>
-      </p>
-    </div>
+  <section class="man" aria-label="About">
+    <div class="head"><span>SEORY0(1)</span><span>User Commands</span><span>SEORY0(1)</span></div>
+    <dl>
+      <dt>NAME</dt>
+      <dd>
+        <span lang="en">seory0 — security researcher, CTF player</span>
+        <span lang="ko">seory0 — 보안 연구자, CTF 플레이어</span>
+      </dd>
 
-    {% include home-section-nav.html %}
+      <dt>DESCRIPTION</dt>
+      <dd class="prose">
+        <span lang="en">Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI Safety Center</a>. Windows kernel exploitation, reverse engineering, and AI for security.</span>
+        <span lang="ko"><b>숭실대학교</b> 전자정보공학부 재학, <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI안전성연구센터</a> 학부연구생. Windows 커널 익스플로잇, 리버싱, AI 보안.</span>
+      </dd>
 
-    <h2 class="date first-child" id="education"><span lang="en">EDUCATION</span><span lang="ko">교육사항</span></h2>
+      <dt>FILES</dt>
+      <dd>
+        <a class="cv" href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}">
+          <b>cv.pdf</b>
+          <small><span lang="en">curriculum vitae · 2026-10 · 768 kB</span><span lang="ko">이력서 · 2026-10 · 768 kB</span></small>
+        </a>
+      </dd>
 
-    <span class="note">
-      <h3><span lang="en">Soongsil University</span><span lang="ko">숭실대학교</span></h3><span class="description"><span lang="en">IT Convergence, Electronic Engineering</span><span lang="ko">전자정보공학부 IT융합전공</span></span>
-      <span class="period"><span lang="en">2022 — Present</span><span lang="ko">2022 — 현재</span></span>
-    </span>
-    <span class="note">
-      <h3><span lang="en">WhiteHat School 3rd</span><span lang="ko">화이트햇스쿨 3기</span></h3><span class="description"><span lang="en">KITRI · Certificated</span><span lang="ko">KITRI · 수료</span></span>
-      <span class="period">2025.03 — 09</span>
-    </span>
-    <span class="note">
-      <h3><span lang="en">Hacking Camp 29th</span><span lang="ko">해킹캠프 29기</span></h3><span class="description"><span lang="en">POC Security · Certificated</span><span lang="ko">POC Security · 수료</span></span>
-      <span class="period">2024.08</span>
-    </span>
+      <dt>SEE ALSO</dt>
+      <dd>
+        <a href="{{ '/writing/' | relative_url }}">writing(7)</a>,
+        <a href="https://github.com/SEORY0" target="_blank" rel="noopener">github(1)</a>,
+        <a href="mailto:{{ site.author.email }}">mail(1)</a>
+      </dd>
+    </dl>
+  </section>
 
-    {% include experience.html %}
-
-    <h2 class="date" id="research"><span lang="en">PUBLICATIONS</span><span lang="ko">연구</span></h2>
-
-    <span class="note publication">
-      <h3>
-        <span lang="en">Analysis of Vulnerability Attack Pathways in AI/ML Frameworks Based on Public CVEs and a Lightweight LLM Prompting-Based Bug Hunting Methodology</span>
-        <span lang="ko">공개 CVE 기반 AI/ML 프레임워크 취약점 공격 경로 분석 및 LLM 프롬프팅 기반 경량 버그헌팅 방법론</span>
-      </h3>
-      <span class="pub-authors">
-        <span lang="en"><strong>Seokjun Ryu</strong>, Sohee Park, Domin Ok, Daesun Choi</span>
-        <span lang="ko"><strong>류석준</strong>, 박소희, 옥도민, 최대선</span>
-      </span>
-      <span class="pub-venue">
-        <span lang="en">Korea Institute of Information Security &amp; Cryptology Summer Conference 2026</span>
-        <span lang="ko">한국정보보호학회 하계학술대회 2026</span>
-      </span>
-    </span>
-
-    <h2 class="date" id="awards"><span lang="en">AWARDS</span><span lang="ko">수상</span></h2>
-
-    <span class="note award">
-      <span class="award-tag">
-        <svg class="award-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-        <span lang="en">Best Paper</span><span lang="ko">우수 논문</span>
-      </span>
-      <h3><span lang="en">National Security Research Institute Director's Award</span><span lang="ko">국가보안기술연구소 소장상</span></h3>
-      <span class="award-venue">
-        <span lang="en">Korea Institute of Information Security &amp; Cryptology Summer Conference 2026</span>
-        <span lang="ko">한국정보보호학회 하계학술대회 2026</span>
-      </span>
-    </span>
-
-    <h2 class="date" id="teams"><span lang="en">HACKING TEAMS</span><span lang="ko">해킹팀</span></h2>
-
-    <div class="note-group" data-hover-image-group>
-    <a class="note" href="https://ssu-asc.com/" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/asc.webp' | relative_url }}">
-      <h3>ASC</h3><span class="period">ssu-asc.com</span>
-    </a>
-    <a class="note" href="https://project-plasma.org/" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/fermion.webp' | relative_url }}">
-      <h3>Fermion</h3><span class="period">project-plasma.org</span>
-    </a>
-    <a class="note" href="https://phylab.space/" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/physical-lab.webp' | relative_url }}">
-      <h3>Physical Lab</h3><span class="period">phylab.space</span>
-    </a>
-    </div>
-
-    <h2 class="date" id="disclosures"><span lang="en">DISCLOSURES</span><span lang="ko">취약점 공개</span></h2>
-
-    <div class="note-group" data-hover-image-group>
-    <a class="note" href="https://www.cve.org/CVERecord?id=CVE-2026-62203" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/cve-2026-62203.webp' | relative_url }}">
-      <h3>CVE-2026-62203 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
-    </a>
-    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-34755" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/cve-2026-34755.webp' | relative_url }}">
-      <h3>CVE-2026-34755 — vLLM</h3><span class="description"><span lang="en">disclosed via Huntr</span><span lang="ko">Huntr 제보</span></span>
-    </a>
-    <a class="note" href="https://nvd.nist.gov/vuln/detail/CVE-2026-35626" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/cve-2026-35626.webp' | relative_url }}">
-      <h3>CVE-2026-35626 — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA</span><span lang="ko">GHSA 공개</span></span>
-    </a>
-    {%- comment -%}
-      Advisory IDs not yet assigned — these stay as plain rows (no href) so they
-      do not render as links pointing nowhere. Once each GHSA ID is issued,
-      replace the placeholder and wrap the row back in:
-      <a class="note" href="https://github.com/<org>/<repo>/security/advisories/GHSA-..." target="_blank" rel="noopener">
-    {%- endcomment -%}
-    <span class="note">
-      <h3>GHSA-c2p8-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
-    </span>
-    <span class="note">
-      <h3>GHSA-rwm5-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
-    </span>
-    <span class="note">
-      <h3>GHSA-rj8f-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
-    </span>
-    <span class="note">
-      <h3>GHSA-7cp7-****-**** — OpenClaw</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
-    </span>
-    <span class="note">
-      <h3>GHSA-5968-****-**** — Flowise</h3><span class="description"><span lang="en">disclosed via GHSA · CVE pending</span><span lang="ko">GHSA 공개 · CVE 발급 대기</span></span>
-    </span>
-    </div>
-
-    <h2 class="date" id="ctf">CTF</h2>
-    <div class="note-group" data-hover-image-group>
-    {% for ev in site.data.ctfs %}
-    {% capture ctf_meta %}{{ ev.placement }}{% if ev.team %} — {{ ev.team }}{% endif %}{% endcapture %}
-    {% if ev.url %}
-    <a class="note" href="{{ ev.url }}" target="_blank" rel="noopener"{% if ev.preview %}
-       data-hover-image="{{ ev.preview | relative_url }}"{% endif %}>
-      <h3>{{ ev.event }}</h3><span class="period">{{ ctf_meta }}</span>
-    </a>
-    {% else %}
-    <span class="note">
-      <h3>{{ ev.event }}</h3><span class="period">{{ ctf_meta }}</span>
-    </span>
-    {% endif %}
-    {% endfor %}
-    </div>
-
-    <h2 class="date" id="speaker"><span lang="en">SPEAKER</span><span lang="ko">발표</span></h2>
-
-    <div class="note-group" data-hover-image-group>
-    <a class="note talk" href="https://hackingcamp.org/" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/hackingcamp.webp' | relative_url }}">
-      <h3>AI for Security for AI - AI 에이전트로 AI 에이전트 해킹하기</h3>
-      <span class="talk-speakers">
-        <span lang="en"><strong>Seokjun Ryu</strong> &amp; Taeyoung Jeong</span>
-        <span lang="ko"><strong>류석준</strong> &amp; 정태영</span>
-      </span>
-      <span class="talk-venue">
-        <span lang="en">Hacking Camp 33rd · POC Security · 2026.08</span>
-        <span lang="ko">제33회 해킹캠프 · POC Security · 2026.08</span>
-      </span>
-    </a>
-    </div>
-
-    <h2 class="date" id="projects"><span lang="en">PROJECTS</span><span lang="ko">프로젝트</span></h2>
-    <div class="note-group" data-hover-image-group>
-    <a class="note featured" href="https://github.com/SEORY0/WHS3-KernelPanic" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/kernelpanic.webp' | relative_url }}">
-      <span class="featured-tag"><span lang="en">Featured</span><span lang="ko">대표</span></span>
-      <h3>WHS3-KernelPanic</h3>
-      <span class="featured-byline">
-        <span lang="en">Windows Kernel/Application vulnerability analysis — Untrusted Pointer Dereference (CWE-822) on Windows 10/11. Stack: C++, Assembly.</span>
-        <span lang="ko">Windows 커널/애플리케이션 취약점 분석 — Untrusted Pointer Dereference (CWE-822). Windows 10/11. 스택: C++, Assembly.</span>
-      </span>
-    </a>
-    <span class="note" data-hover-image="{{ '/assets/images/previews/cve-analyzer.webp' | relative_url }}">
-      <h3>CVE Analyzer</h3><span class="description"><span lang="en">AI-powered CVE auto-classification/summarization framework (Python, Gemini API, Docker)</span><span lang="ko">AI 기반 CVE 자동 분류/요약 프레임워크 (Python, Gemini API, Docker)</span></span>
-    </span>
-    <a class="note" href="https://wargamebandits.vercel.app/" target="_blank" rel="noopener"
-       data-hover-image="{{ '/assets/images/previews/wargame-bandits.webp' | relative_url }}">
-      <h3>Wargame Bandits</h3><span class="description"><span lang="en">ASC club wargame platform (2025 2nd, ASC)</span><span lang="ko">ASC 동아리 워게임 플랫폼 (2025 2nd, ASC)</span></span>
-    </a>
-    <a class="note" href="{{ '/projects/Apin.html' | relative_url }}"
-       data-hover-image="{{ '/assets/images/previews/apin.webp' | relative_url }}">
-      <h3>Apin</h3><span class="description"><span lang="en">RISC-V Assembly parsing in a nutshell</span><span lang="ko">RISC-V 어셈블리 파싱 요약</span></span>
-    </a>
-    <a class="note" href="https://github.com/SEORY0/PCAP_programming" target="_blank" rel="noopener">
-      <h3>PCAP_programming</h3><span class="description"><span lang="en">Packet analysis with PCAP API (C)</span><span lang="ko">PCAP API로 패킷 분석 (C)</span></span>
-    </a>
-    </div>
-
-    {% if site.posts.size > 0 %}
-    <h2 class="date" id="writing"><span lang="en">WRITING</span><span lang="ko">글</span></h2>
-    <div class="note-group" data-hover-image-group>
-    {% for post in site.posts limit:5 %}
-    {%- comment -%}
-      Opt in per post with `preview:` in the front matter. Deliberately NOT
-      falling back to `image:` — that is a full-size OG asset (megabytes), not
-      a 560x350 thumbnail.
-    {%- endcomment -%}
-    <a class="note" href="{{ post.url | relative_url }}"{% if post.preview %}
-       data-hover-image="{{ post.preview | relative_url }}"{% endif %}>
-      <h3>{{ post.title }}</h3><span class="period">{{ post.date | date: "%Y-%m-%d" }}</span>
-    </a>
-    {% endfor %}
-    </div>
-    <p class="more"><a href="{{ '/writing/' | relative_url }}"><span lang="en">All writing</span><span lang="ko">전체 글 보기</span></a></p>
-    {% endif %}
-
-  </main>
-</div>
+</main>
 
 {% include footer.html %}
 {% include scripts.html %}
-<script type="module" src="{{ '/assets/js/home-shader.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
-<script defer src="{{ '/assets/js/hover-image.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
-
 </body>
 </html>

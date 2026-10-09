@@ -1,7 +1,6 @@
 ---
 layout: compress
 ---
-
 <!DOCTYPE html>
 <html lang="ko">
 {% include head.html %}
@@ -10,33 +9,18 @@ layout: compress
 
 {% include top-nav.html %}
 
-<div class="site-container" id="main-content">
-
-  <header class="post-banner">
-    {% if page.toolbar_left %}
-    <p class="post-banner-eyebrow">{{ page.toolbar_left }}</p>
-    {% endif %}
-    <h1 class="post-banner-title">{{ page.page_title | default: page.title }}</h1>
+<main class="wrap" id="main-content">
+  <header class="post-head">
+    <h1 class="post-title">{{ page.page_title | default: page.title }}</h1>
+    {% if page.toolbar_left %}<div class="by"><span class="box soft">{{ page.toolbar_left }}</span></div>{% endif %}
+    {% if page.subtitle %}<div id="siteSub">{{ page.subtitle }}</div>{% endif %}
   </header>
-
-  <div class="content-col">
-    <main class="main-content" role="main">
-      <div class="page-body">
-        {% if page.subtitle %}
-        <div id="siteSub">{{ page.subtitle }}</div>
-        {% endif %}
-
-        <div class="page-content">
-          {{ content }}
-        </div>
-      </div>
-    </main>
+  <div class="page-content">
+    {{ content }}
   </div>
-</div>
+</main>
 
 {% include footer.html show_lastmod=page.show_lastmod %}
-
 {% include scripts.html %}
-
 </body>
 </html>
