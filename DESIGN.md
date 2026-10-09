@@ -40,8 +40,9 @@ sizes from the viewport so 51 columns always fit.
 - External links (new tab, mailto) in the top line, sheet and footer end in
   a small `↗` on the right, set as a CSS `::after` so the underline stops at
   the word. Article prose carries no arrows.
-- `.box`: 1px bordered mono chip for dates, tags, the CV link, the back link.
-  `.soft` for secondary chips (tags).
+- `.box`: 1px bordered mono chip for dates, tags, the back link. `.soft` for
+  secondary chips (tags). `.cv` is the same frame at button size (17px bold
+  name, 13px meta, 10px × 18px padding): the one call to action.
 - `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
   uses it as a `<dl>` (About, CV); the writing index uses it as an
   `<ol>` (date chip | title, summary, tags). Same class, same rules.
