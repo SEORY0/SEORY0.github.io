@@ -22,62 +22,75 @@ layout: compress
   <dl class="sheet" aria-label="About">
     <div class="row">
       <dt>About</dt>
-      <dd>Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI Safety Center</a>. Windows kernel exploitation, reverse engineering, and AI for security.</dd>
+      <dd>Offensive security researcher and CTF player focused on AI Security, Windows Kernel Exploitation, and Reverse Engineering, with vulnerability discovery across AI/ML frameworks and AI agents and LLM-based multi-agent systems for automated vulnerability research.</dd>
     </div>
     <div class="row">
       <dt>CV</dt>
       <dd class="cv-row">
         <div class="cv-brief">
           <ul>
-            <li><span class="k">Team</span><span><span class="t"><a href="https://ssu-asc.com/" target="_blank" rel="noopener">ASC</a></span> <span class="t">· <a href="https://project-plasma.org/" target="_blank" rel="noopener">Fermion</a></span> <span class="t">· <a href="https://phylab.space/" target="_blank" rel="noopener">Physical Lab</a></span></span></li>
-            {% for ev in site.data.ctfs %}
-            <li><span class="k">{% if forloop.first %}CTF{% endif %}</span><span>{% if ev.url %}<a href="{{ ev.url }}" target="_blank" rel="noopener">{{ ev.short | default: ev.event }}</a>{% else %}{{ ev.short | default: ev.event }}{% endif %} <span class="meta">{{ ev.placement }}</span></span></li>
+            <li><span class="k">Team</span><span><span class="t"><a href="https://ssu-asc.com/" target="_blank" rel="noopener">ASC</a></span> <span class="t">· <a href="https://project-plasma.org/" target="_blank" rel="noopener">Fermion</a></span> <span class="t">· <a href="https://phylab.space/" target="_blank" rel="noopener">Physical LAB</a></span></span></li>
+            <li><span class="k">Edu</span><span>Soongsil University<span class="sub">School of Electronic Engineering</span></span></li>
+            <li><span class="k"></span><span>KITRI WhiteHat School<span class="sub">3rd cohort</span></span></li>
+            <li><span class="k">Work</span><span><a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI Safety Center</a><span class="sub">Research Intern · AI for Security</span></span></li>
+            {% assign home_ctfs = site.data.ctfs | where: 'home', true %}
+            {% for ev in home_ctfs %}
+            <li><span class="k">{% if forloop.first %}CTF{% endif %}</span><span>{{ ev.short | default: ev.event }}{% if ev.team %}<span class="sub">{% if ev.placement %}{{ ev.placement }} · {% endif %}Team {{ ev.team }}</span>{% elsif ev.placement %} <span class="meta">{{ ev.placement }}</span>{% endif %}</span></li>
             {% endfor %}
           </ul>
           <p class="cv-file">
             <a href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}" target="_blank" rel="noopener" aria-label="Open cv.pdf in a new tab, 786 kB, SHA-256 a9721e99d28443a5e1efc8f7bc3c1966b113ec99d7a7ac263f90bd5379d75552">cv.pdf</a>
-            <span class="meta">2026-10 · 786 kB · <span class="hash" title="SHA-256 a9721e99d28443a5e1efc8f7bc3c1966b113ec99d7a7ac263f90bd5379d75552">sha256 a9721e99d284</span></span>
+            <span class="meta">2026-10-10 · 786 kB</span>
           </p>
+          <p class="cv-hash meta">sha256 <span class="hash">a9721e99d28443a5e1efc8f7bc3c1966b113ec99d7a7ac263f90bd5379d75552</span></p>
         </div>
 {%- comment -%}
-  A cat in left profile sitting on a CRT turned to the left, drawn by hand
-  in ASCII. Server Mono has no caret, so keep ^ out of it.
+  Tonal ASCII of a left-facing cat on a CRT, synced from
+  assets/avatars/crt-cat.txt. Server Mono has no caret.
 {%- endcomment -%}
-<pre class="crt-cat" aria-hidden="true">           /\ /\
-           /\/' \
-          /      \
-        .'       |
- '--._ / @        \
-------(        _.'|
-  .--' \_          \
-        /           \
-       (             \
-        |             \
-        |  |           \
-        | |             \
-        | |      .--'''-.\
-        | |    .'        \)
-        | |   /           )
-    ____| |  |            /_______
-   /   (__|_(___________/  \     /|"-._
-  /____________________/  /_____/ |    "-._
-  |  _________________(  (____  | |        |
-  | |   .--------------)  )   | | |  ||||  |
-  | |  /              /  / \  | | |  ||||  |
-  | |  |  $ ./purr   (  (  |  | | |  ||||  |
-  | |  |  #_          \  '-.  | | |  ||||  |
-  | |  |               '-.__) | | |        |
-  | |  |                   |  | | |        |
-  | |  |                   |  | | |     _.-'
-  | |  \                   /  | | |_.-'  |
-  | |   '-----------------'   | | |      |
-  | |_________________________| | |      |
-  |                             | |      |
-  |  ::::::              [o] .  | /      |
-  |_____________________________|/       |
-         \_______________/              /
-    ______/_______________\______    _.'
-   (_____________________________)--'</pre>
+<pre class="crt-cat" aria-hidden="true">          |\\|:\
+           |\: :\\
+       \\/.*/: :|#.\
+        //++-:=||@*\\
+'-._   ||=(@)--*%%+\\
+    '-//-:/+++--+%#*#|
+__.---:._=__---++%#**\\
+ _.-''\__: .--.-##*###\\
+       \_ =-..-+*#*+%%#\-
+         /////-++-+#**%%+\\
+        /-.////===+*#%#%#*\\
+        / // //:=+++*%#%#*+\\
+        |//|///++++#\\%*#=##\\
+         |.|| /.=++\*\|#+**=*\\
+         |=|| //****#@#**_##_#\\
+          |+%|./-*_-%//+=--==+#\\
+          |.+%|-+_*#///:-**+\##\
+          |-+||:+-#%//|:-=+***%%|
+          |:||.-++%*:||-+*+*#%%%:\
+    ----//:+/.-=+//++=-=*##%%/*##\------
+///_____:-_+.--__=__________+/=*%%-_-//|\\
+|  -        -_-        - - -//*##%| ||-||\\\\
+|  :------------------------/-*%@|| ||-||----\\\\
+|  |+%_______-----------%%%//=|##|| ||-||-===--=|
+|  ||||  ..:-====++++***##//=*%@||| ||-||-|||||-|
+|  |||| .::--======+++****#.-+#*||| ||-||-|||||=|
+|  |||.::---==___=++_+****#+=+%%||| ||-||=|||||-|
+|  |||----==------++++*****|:+##%\| ||-||=|||||=|
+|  ||*===-=-=--------*******|#%%%@\ ||-||=|||||=|
+|  ||#++++++-_+_--+__*******#%@@@@@|||-||=|||||=|
+|  ||#*+++++++++************###%||. ||-|+======+|
+|  ||%*********************####%||| ||-|+==+++++|
+|  ||%#***************#########%||| ||-|+=++++///
+|  ||@######################%%%%||| ||-|*+++++|
+|  |-*_________%%%%%%%%%%%%%%%@@||| ||-|*+++++|
+|  .-------______________________ | ||=|*+++++|
+|                           /-\     ||=|*+++//|
+|                           |_-..   ||=|*////
+\________---------------------------|+=///
+       /-:************######%|------__-
+   ////.::-___________________===----=||
+  |--------------------------------./+/|
+  |_________________________-------|///</pre>
       </dd>
     </div>
   </dl>

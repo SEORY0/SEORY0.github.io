@@ -2,6 +2,8 @@
 /* Home — the figlet wordmark, one line of name, a sheet of two rows.          */
 /* ========================================================================== */
 
+.page-home main.wrap { padding-bottom: 32px; }
+
 .banner {
   /* Block and box-drawing glyphs are not in the Plex Mono subset; these system
      monos have them at the right advance width. line-height 1 keeps █ rows
@@ -29,14 +31,15 @@
 }
 
 /* The sheet: rows of label | value, separated by the one rule. The writing
-   index uses the same class (date | entry), so both pages read as one table. */
+   index uses the same class (date | entry) with a wider 120px column for its
+   date chips; the home's short labels take 72px. */
 .sheet {
   margin-top: 44px;
   border-top: 1px solid var(--line);
 
   .row {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 72px 1fr;
     gap: 0 20px;
     padding: 14px 0;
     border-bottom: 1px solid var(--line);
@@ -47,15 +50,15 @@
   .meta { color: var(--mute); font-size: 13px; }
 
   /* The CV row: teams and CTF results on the left, the file link under
-     them, and on the right a cat sitting on a CRT, drawn by hand in ASCII.
-     The hash is hard-coded: recompute it (sha256sum assets/pdfs/CV_rsj.pdf)
-     whenever the PDF changes. */
+     them, and on the right a cat sitting on a CRT in tonal ASCII.
+     The date, size and hash are hard-coded: recompute the hash (sha256sum
+     assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
   .cv-row {
     max-width: none;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 16px 24px;
-    align-items: end;
+    gap: 16px;
+    align-items: start;             /* the brief starts level with the CV label */
   }
   .cv-brief {
     min-width: 0;
@@ -65,15 +68,29 @@
     .k { color: var(--mute); font-variant-numeric: tabular-nums; }
     .t { white-space: nowrap; }
     .meta { margin-left: 2px; }
+    .sub { display: block; margin-bottom: 4px; color: var(--mute); font-size: 12px; }
   }
   .cv-file { margin-top: 12px; }
-  .cv-file .hash { white-space: nowrap; }
+  /* The full SHA-256, broken into two even halves of 32 hex digits that
+     line up under each other. */
+  .cv-brief .cv-hash { margin: 2px 0 0; }
+  .cv-hash .hash {
+    display: inline-block;
+    max-width: 32ch;
+    word-break: break-all;
+    vertical-align: top;
+  }
   .crt-cat {
     font-size: 8px;
-    line-height: 1.15;
+    line-height: 1.1;
+    font-family: "Server Mono", Consolas, monospace;
     white-space: pre;
     user-select: none;
     color: var(--fg);
+    /* Dark glyphs on white read thinner than light ones on black, so the
+       light theme draws the art in (synthetic) bold; the advance stays put. */
+    font-weight: 700;
+    .theme-dark & { font-weight: 400; }
   }
 
   @media (max-width: $bp-mobile) {

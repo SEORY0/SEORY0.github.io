@@ -30,12 +30,12 @@
 .theme-dark .t-light { display: inline; }
 .theme-dark .t-dark { display: none; }
 
-/* ---- footer: the same rule on the column, the KERNEL PAN!C mark, one line ---- */
+/* ---- footer: the KERNEL PAN!C mark and one line of links ---- */
 .foot {
   font-size: 13px;
   color: var(--mute);
 
-  .wrap { border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 32px; }
+  .wrap { padding-top: 14px; padding-bottom: 32px; }
 
   .mark {
     /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not

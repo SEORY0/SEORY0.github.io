@@ -2,17 +2,31 @@
 # Order: latest first (manually curated, not date-sorted).
 # Fields:
 #   event:     Competition name
-#   placement: Final ranking (e.g. "4th", "25th")
+#   placement: Optional final ranking (e.g. "4th", "25th")
 #   team:      Team name
 #   date:      Optional ISO-style date for display (YYYY-MM-DD)
-#   url:       Optional link (writeup, scoreboard, ranking page)
+#   url:       Optional link (writeup, scoreboard, ranking page); not linked on the home
 #   short:     Optional short name for the home page brief
+#   home:      Set true to include in the home page brief
 
-- event: Hacktheon International University Student Cyber Security Competition
-  short: Hacktheon 2026
+- event: Cyber Conflict Exercise 2026
+  short: CCE
+  placement: Finalist
+  team: 클로드짱의성능은망가져있다
+  home: true
+
+- event: Hacksium Busan 2026
+  short: 헥시움 부산
+  placement: Finalist
+  team: 나는야임영웅
+  home: true
+
+- event: Hacktheon International University Student Cyber Security Competition 2026
+  short: 헥테온
   placement: Finalist
   team: 나는야임영웅
   url: https://hacktheon.org/y2026/
+  home: true
 
 - event: HyperSonic CTF
   short: HyperSonic CTF

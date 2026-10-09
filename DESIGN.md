@@ -46,17 +46,22 @@ sizes from the viewport so 51 columns always fit.
   the word. Article prose carries no arrows.
 - `.box`: 1px bordered mono chip for dates, tags, the back link. `.soft` for
   secondary chips (tags).
-- CV row: `.cv-brief` on the left (Team, then one line per CTF result
-  from `_data/ctfs.yml` using its `short` name; then `cv.pdf` opening in a
-  new tab with date, size and a `sha256` prefix; the full hash is in the
-  title and the link's aria-label, recompute it when the PDF changes) and
-  `.crt-cat` on the right: a cat in left profile sitting on a CRT turned
-  to the left (screen, recessed bezel, vented bell, stand, cable), tail
-  hanging across the screen, drawn by hand in ASCII at 8px. Static, no
+- CV row, top-aligned with its label: `.cv-brief` on the left (Team, Edu
+  for Soongsil University and KITRI WhiteHat School with school and cohort
+  on a muted line, Work for the AI Safety Center with the role, then
+  one entry per CTF result in `_data/ctfs.yml` marked `home: true`: its
+  `short` name or else the full name with year, unlinked, then placement
+  and team on a muted line under it; then
+  `cv.pdf` opening in a new tab with its ISO date (2026-10-10) and size,
+  then the full `sha256` on its own line as two 32-digit halves, also in
+  the link's aria-label; recompute it when the PDF changes) and `.crt-cat` on the right: a tonal ASCII cat in left
+  profile sitting on a CRT, kept in `assets/avatars/crt-cat.txt` and copied
+  into the page by `docs/art/sync-home-ascii.py`, 8px. Static, no
   JavaScript. Server Mono has no `^`, so the art never uses it.
-- `.sheet`: rows of `label | value` (120px + 1fr) separated by rules. The home
-  uses it as a `<dl>` (About, CV); the writing index uses it as an
-  `<ol>` (date chip | title, summary, tags). Same class, same rules.
+- `.sheet`: rows of `label | value` separated by rules. The home uses it
+  as a `<dl>` (About, CV) with a 72px label column; the writing index uses
+  it as an `<ol>` (date chip | title, summary, tags) with 120px for the
+  chip. Same class, same rules.
 - Article: `.post-head`, `.post-toc` (native details), `.post-content`,
   `.post-back-link` (a `.box`).
 - Code: `.code-block-container` built by `code-copy.js`; 1px frame, line
