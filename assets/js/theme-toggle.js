@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function syncThemeButtons() {
         themeButtons.forEach(button => {
             button.setAttribute('aria-pressed', String(root.classList.contains('theme-dark')));
-            button.setAttribute('aria-label', root.lang === 'ko' ? '다크 모드' : 'Dark mode');
+            button.setAttribute('aria-label', 'Dark mode');
         });
     }
     document.addEventListener('languagechange', syncThemeButtons);

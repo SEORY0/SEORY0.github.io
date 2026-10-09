@@ -48,10 +48,3 @@
     .row { grid-template-columns: 1fr; gap: 6px; }
   }
 }
-
-/* Korean reads better in the sans; labels and the banner stay mono. */
-html[lang="ko"] .sheet dd { font-family: var(--sans); font-size: 16.5px; }
-
-/* i18n — the home page carries both languages; html[lang] picks one. */
-html[lang="en"] .page-home [lang="ko"] { display: none; }
-html[lang="ko"] .page-home [lang="en"] { display: none; }

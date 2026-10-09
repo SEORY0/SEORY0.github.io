@@ -22,8 +22,7 @@ FOUC guard and `theme-toggle.js`. No other colours exist.
 ## 3. Typography
 - `--mono` (IBM Plex Mono) is the site voice: chrome, labels, dates, the home
   sheet, list pages. 15px / 1.7.
-- `--sans` (Pretendard subset) is for reading: article bodies at 17px / 1.8,
-  and the home About row when `html[lang="ko"]`.
+- `--sans` (Pretendard subset) is for reading: article bodies at 17px / 1.8.
 - Hierarchy comes from weight and boxes, not size. Row labels and page
   headings are one style: 13px bold uppercase, 0.1em tracking. Article titles
   are the one large size (32px sans bold).
@@ -36,8 +35,8 @@ breakpoint at 560px, where sheet rows stack label over value. The banner
 sizes from the viewport so 51 columns always fit.
 
 ## 5. Components
-- Top line: `seory0`, nav (writing, github, mail, `[EN]` on home,
-  `[dark]`/`[light]`), a rule beneath. Static, not sticky, no background.
+- Top line: `seory0`, nav (writing, github, mail, `[dark]`/`[light]`), a
+  rule beneath. Static, not sticky, no background.
 - External links (new tab, mailto) in the top line, sheet and footer end in
   a small `↗` on the right, set as a CSS `::after` so the underline stops at
   the word. Article prose carries no arrows.
@@ -64,8 +63,8 @@ rules, no fills, no shadows, no radius, no blur.
 
 ## 8. Accessibility & accepted debt
 - The banner is `aria-hidden`; the h1 and the sheet carry the content.
-- Both languages ship in the DOM on the home page; `html[lang]` hides one.
-  The toggle persists to localStorage and is applied before paint.
+- The chrome, home and 404 are English only (`lang="en"`); articles keep
+  their own language on `<html lang>`.
 - Link blue meets AA on white (#1a0dab, 10.6:1) and on the dark surface
   (#8ab4f8, 8.9:1). Mute grey is 5.7:1 light and 5.6:1 dark.
 - Accepted debt: the home banner depends on a system mono having block

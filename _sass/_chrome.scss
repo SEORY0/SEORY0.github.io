@@ -25,11 +25,6 @@
   }
 }
 
-/* Language button: shows the current language; home only. */
-.lang-label-ko { display: none; }
-html[lang="ko"] .lang-label-ko { display: inline; }
-html[lang="ko"] .lang-label-en { display: none; }
-
 /* Theme button: names the action, not the state. */
 .t-light { display: none; }
 .theme-dark .t-light { display: inline; }
