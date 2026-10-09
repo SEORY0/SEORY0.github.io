@@ -1,15 +1,12 @@
-{%- assign rev = site.github.build_revision | default: 'dev' | slice: 0, 7 -%}
 <header class="wrap topline">
-  <a class="prompt" href="{{ '/' | relative_url }}">&gt; seory0</a>
+  <a class="name" href="{{ '/' | relative_url }}">seory0</a>
   <nav aria-label="Site">
     <a href="{{ '/writing/' | relative_url }}"{% if page.url contains '/writing' %} aria-current="page"{% elsif page.layout == 'post' %} aria-current="location"{% endif %}>writing</a>
     <a href="https://github.com/SEORY0" target="_blank" rel="noopener">github</a>
-    <a href="mailto:{{ site.author.email }}">email</a>
+    <a href="mailto:{{ site.author.email }}">mail</a>
     {% if page.layout == 'home' %}
     <button id="nav-lang-btn" type="button" aria-label="EN: English. Switch to Korean" title="한국어 / English">[<span class="lang-label-en">EN</span><span class="lang-label-ko">KO</span>]</button>
     {% endif %}
     <button id="nav-theme-btn" type="button" aria-label="Dark mode" aria-pressed="false">[<span class="t-dark">dark</span><span class="t-light">light</span>]</button>
   </nav>
-  <span class="rule" aria-hidden="true"></span>
-  <span class="rev" title="build revision">[ {{ rev }} ]</span>
 </header>

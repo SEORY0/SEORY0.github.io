@@ -1,29 +1,27 @@
 /* ========================================================================== */
-/* Chrome — the "> seory0 ───── [rev]" line on top, the figlet mark below.      */
-/* Static, not sticky. No blur, no background.                                 */
+/* Chrome — one rule above the page (the top line) and one below (the foot).  */
+/* Static, not sticky. No background, no blur.                                 */
 /* ========================================================================== */
 
 .topline {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 14px;
   height: 52px;
+  border-bottom: 1px solid var(--line);
   font-size: 13px;
   white-space: nowrap;
 
-  .prompt { font-weight: 700; color: var(--fg); text-decoration: none; }
+  .name { font-weight: 700; color: var(--fg); text-decoration: none; }
   nav { display: flex; gap: 14px; align-items: center; }
   nav a, nav button { color: var(--fg); text-decoration: none; }
-  nav a:hover, nav button:hover, .prompt:hover { background: var(--fg); color: var(--bg); }
+  nav a:hover, nav button:hover, .name:hover { background: var(--fg); color: var(--bg); }
   nav a[aria-current] { text-decoration: underline; text-underline-offset: 4px; }
-  .rule { flex: 1; height: 1px; background: var(--line); min-width: 24px; }
-  .rev { color: var(--mute); }
 
   @media (max-width: $bp-mobile) {
-    font-size: 12px; gap: 10px;
+    font-size: 12px;
     nav { gap: 10px; }
-    .rule { display: none; }
-    .rev { margin-left: auto; }
   }
 }
 
@@ -37,23 +35,11 @@ html[lang="ko"] .lang-label-en { display: none; }
 .theme-dark .t-light { display: inline; }
 .theme-dark .t-dark { display: none; }
 
-/* ---- footer ---- */
+/* ---- footer: the same rule, one line of text ---- */
 .foot {
-  margin-top: 40px;
-  border-top: 1px solid var(--line);
-  padding: 14px 0 32px;
   font-size: 13px;
   color: var(--mute);
 
-  .mark {
-    /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not
-       min(): Ruby Sass on GitHub Pages evaluates min() itself. */
-    font-size: clamp(5px, calc((100vw - 40px) / 42), 17px);
-    line-height: 1.15;
-    margin: 20px 0 18px;
-    color: var(--fg);
-    white-space: pre;
-    overflow: hidden;
-    user-select: none;
-  }
+  /* The rule sits on the column, like the top line's. */
+  .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 32px; }
 }

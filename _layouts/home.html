@@ -17,86 +17,32 @@ layout: compress
 ╚════██║██╔══╝  ██║   ██║██╔══██╗  ╚██╔╝  ████╔╝██║
 ███████║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝
 ╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ </pre>
-  <h1 class="tagline"><b>SEORY0</b> · 류석준 · Seokjun Ryu</h1>
+  <h1 class="tagline">류석준 · Seokjun Ryu
+    <span lang="en">— security researcher, CTF player</span>
+    <span lang="ko">— 보안 연구자, CTF 플레이어</span>
+  </h1>
 
-  {%- comment -%}
-    The home is a terminal. Its first output is the man page, which is also
-    what a visitor without JavaScript gets. term.js un-hides the input line,
-    wires the commands, and reads the data block below.
-  {%- endcomment -%}
-  <section class="term" id="term" aria-label="Terminal">
-    <div class="term-head">
-      <span>seory0@github:~</span>
-      <span class="hint" hidden data-term-hint><span lang="en">type <code>help</code> · ↑ history · tab</span><span lang="ko"><code>help</code> 입력 · ↑ 히스토리 · tab</span></span>
+  <dl class="sheet" aria-label="About">
+    <div class="row">
+      <dt><span lang="en">About</span><span lang="ko">소개</span></dt>
+      <dd>
+        <span lang="en">Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI Safety Center</a>. Windows kernel exploitation, reverse engineering, and AI for security.</span>
+        <span lang="ko"><b>숭실대학교</b> 전자정보공학부 재학, <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI안전성연구센터</a> 학부연구생. Windows 커널 익스플로잇, 리버싱, AI 보안.</span>
+      </dd>
     </div>
-
-    <div class="term-out" id="term-out" role="log" aria-live="polite">
-      <div class="term-cmd" hidden data-term-first>man seory0</div>
-      <section class="man" id="man" aria-label="About">
-        <div class="head"><span>SEORY0(1)</span><span>User Commands</span><span>SEORY0(1)</span></div>
-        <dl>
-          <dt>NAME</dt>
-          <dd>
-            <span lang="en">seory0 — security researcher, CTF player</span>
-            <span lang="ko">seory0 — 보안 연구자, CTF 플레이어</span>
-          </dd>
-
-          <dt>DESCRIPTION</dt>
-          <dd class="prose">
-            <span lang="en">Undergraduate in Electronic Engineering at <b>Soongsil University</b>, research intern at the <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI Safety Center</a>. Windows kernel exploitation, reverse engineering, and AI for security.</span>
-            <span lang="ko"><b>숭실대학교</b> 전자정보공학부 재학, <a href="https://aisc.ssu.ac.kr/" target="_blank" rel="noopener">AI안전성연구센터</a> 학부연구생. Windows 커널 익스플로잇, 리버싱, AI 보안.</span>
-          </dd>
-
-          <dt>FILES</dt>
-          <dd>
-            <a class="cv" href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}">
-              <b>cv.pdf</b>
-              <small><span lang="en">curriculum vitae · 2026-10 · 768 kB</span><span lang="ko">이력서 · 2026-10 · 768 kB</span></small>
-            </a>
-          </dd>
-
-          <dt>SEE ALSO</dt>
-          <dd>
-            <a href="{{ '/writing/' | relative_url }}">writing(7)</a>,
-            <a href="https://github.com/SEORY0" target="_blank" rel="noopener">github(1)</a>,
-            <a href="mailto:{{ site.author.email }}">mail(1)</a>
-          </dd>
-        </dl>
-      </section>
+    <div class="row">
+      <dt>CV</dt>
+      <dd><a class="box" href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}">cv.pdf ↓</a> <span class="meta">2026-10 · 768 kB</span></dd>
     </div>
-
-    <form class="term-in" id="term-form" hidden autocomplete="off">
-      <label for="term-input" aria-hidden="true">$</label>
-      <span class="mirror" aria-hidden="true"><span class="typed" id="term-typed"></span><span class="cursor"></span></span>
-      <input id="term-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Command">
-    </form>
-  </section>
+    <div class="row">
+      <dt><span lang="en">Links</span><span lang="ko">링크</span></dt>
+      <dd><a href="{{ '/writing/' | relative_url }}">writing</a> · <a href="https://github.com/SEORY0" target="_blank" rel="noopener">github</a> · <a href="mailto:{{ site.author.email }}">mail</a></dd>
+    </div>
+  </dl>
 
 </main>
 
-<script type="application/json" id="term-data">
-{
-  "home": "{{ '/' | relative_url }}",
-  "writing": "{{ '/writing/' | relative_url }}",
-  "cv": "{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}",
-  "github": "https://github.com/SEORY0",
-  "email": "{{ site.author.email }}",
-  "posts": [
-    {% for post in site.posts %}
-    {
-      "date": "{{ post.date | date: '%Y-%m-%d' }}",
-      "slug": "{{ post.url | split: '/' | last }}",
-      "title": {{ post.title | jsonify }},
-      "url": "{{ post.url | relative_url }}",
-      "tags": {{ post.tags | jsonify }}
-    }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ]
-}
-</script>
-
 {% include footer.html %}
 {% include scripts.html %}
-<script defer src="{{ '/assets/js/term.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 </body>
 </html>

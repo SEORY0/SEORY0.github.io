@@ -11,11 +11,11 @@
   }
   #search-status { margin-top: 10px; color: var(--mute); font-size: 13px; }
   #results-container { margin-top: 12px; }
-  #results-container li { padding: 8px 0; border-bottom: 1px dotted var(--mute); }
+  #results-container li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 }
 
 .posts ul li,
-.post-list li { padding: 8px 0; border-bottom: 1px dotted var(--mute); display: flex; gap: 14px; align-items: baseline; }
+.post-list li { padding: 8px 0; border-bottom: 1px solid var(--line); display: flex; gap: 14px; align-items: baseline; }
 .posts ul li time, .post-date { color: var(--mute); font-size: 12px; white-space: nowrap; }
 .tags-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
 .tags-list h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 32px 0 4px; }

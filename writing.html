@@ -3,19 +3,18 @@ layout: writing
 title: "Writing"
 page_title: "Writing"
 description: "Security research articles and CTF write-ups by SEORY0."
-subtitle: "글"
 ---
 
+<ol class="sheet posts">
 {% for post in site.posts %}
-<article class="card">
-  <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-  <div class="by">
-    <span class="box">{{ post.date | date: "%Y-%b-%d" | upcase }}</span>
-    <span>SEORY0</span>
-    {% for tag in post.tags %}<span class="box soft">{{ tag }}</span>{% endfor %}
-  </div>
-  {% assign blurb = post.summary | default: post.description %}
-  {% if blurb %}<p>{{ blurb }}</p>{% endif %}
-  <a class="more" href="{{ post.url | relative_url }}">read more →</a>
-</article>
+  <li class="row">
+    <span><span class="box">{{ post.date | date: "%Y-%m-%d" }}</span></span>
+    <div>
+      <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      {% assign blurb = post.summary | default: post.description %}
+      {% if blurb %}<p>{{ blurb }}</p>{% endif %}
+      {% if post.tags.size > 0 %}<div class="by">{% for tag in post.tags %}<span class="box soft">{{ tag }}</span>{% endfor %}</div>{% endif %}
+    </div>
+  </li>
 {% endfor %}
+</ol>

@@ -14,8 +14,7 @@ layout: compress
     <header class="post-head">
       <h1 class="post-title">{{ page.page_title | default: page.title }}</h1>
       <div class="by">
-        <span class="box">{{ page.date | date: "%Y-%b-%d" | upcase }}</span>
-        <span>SEORY0</span>
+        <span class="box">{{ page.date | date: "%Y-%m-%d" }}</span>
         {% for cat in page.categories %}<span class="box soft">{{ cat }}</span>{% endfor %}
         {% for tag in page.tags %}<span class="box soft">{{ tag }}</span>{% endfor %}
       </div>
@@ -32,13 +31,8 @@ layout: compress
       {{ content }}
     </div>
 
-    <footer class="post-footer-meta">
-      <span class="post-footer-label">filed under</span>
-      {% for cat in page.categories %}<span class="box soft">{{ cat }}</span>{% endfor %}
-      <span class="box soft">writing</span>
-    </footer>
 
-    <a class="post-back-link" href="{{ '/writing/' | relative_url }}">← writing</a>
+    <a class="box post-back-link" href="{{ '/writing/' | relative_url }}">← writing</a>
   </article>
 </main>
 

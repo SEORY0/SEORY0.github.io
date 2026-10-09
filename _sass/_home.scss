@@ -1,5 +1,5 @@
 /* ========================================================================== */
-/* Home — figlet wordmark, one line of name, a man page with a CV in FILES.    */
+/* Home — the figlet wordmark, one line of name, a sheet of three rows.        */
 /* ========================================================================== */
 
 .banner {
@@ -24,122 +24,33 @@
   font-size: 13px;
   font-weight: 400;
   color: var(--mute);
-  b { color: var(--fg); font-weight: 700; }
 }
 
-.man {
+/* The sheet: rows of label | value, separated by the one rule. The writing
+   index uses the same class (date | entry), so both pages read as one table. */
+.sheet {
   margin-top: 44px;
   border-top: 1px solid var(--line);
-  padding-top: 10px;
 
-  .head { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; }
-  dl { margin-top: 18px; }
-  dt { font-weight: 700; margin-top: 16px; }
-  dd { margin: 4px 0 0 32px; max-width: 64ch; }
-  .prose b { font-weight: 700; }
+  .row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  dt { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 2px; }
+  dd { max-width: 62ch; }
+  dd b { font-weight: 700; }
+  .meta { color: var(--mute); font-size: 13px; margin-left: 6px; }
 
-  @media (max-width: $bp-mobile) { dd { margin-left: 16px; } }
+  @media (max-width: $bp-mobile) {
+    .row { grid-template-columns: 1fr; gap: 6px; }
+  }
 }
 
 /* Korean reads better in the sans; labels and the banner stay mono. */
-html[lang="ko"] .man .prose { font-family: var(--sans); font-size: 16.5px; }
-
-/* The one call to action. */
-.cv {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 12px;
-  margin-top: 2px;
-  border: 1px solid var(--fg);
-  padding: 7px 14px;
-  color: var(--fg);
-  text-decoration: none;
-  b { font-weight: 700; white-space: nowrap; }
-  small { font-size: 12px; opacity: 0.7; }
-  &:hover { background: var(--fg); color: var(--bg); }
-}
-
-/* ---- the terminal box the man page lives in ---- */
-.term {
-  margin-top: 44px;
-  border: 1px solid var(--line);
-
-  .man { margin-top: 6px; border-top: 0; padding-top: 0; }
-}
-
-.term-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 6px 14px;
-  border-bottom: 1px solid var(--line);
-  font-size: 13px;
-  font-weight: 700;
-
-  .hint { font-weight: 400; color: var(--mute); white-space: nowrap; }
-  code { font: inherit; border: 1px solid var(--mute); padding: 0 4px; }
-
-  @media (max-width: $bp-mobile) { .hint { display: none; } }
-}
-
-.term-out {
-  padding: 10px 14px 2px;
-  overflow-wrap: anywhere;
-}
-
-/* An echoed command: "$ man seory0". */
-.term-cmd {
-  margin-top: 10px;
-  &::before { content: "$ "; font-weight: 700; }
-  &:first-child { margin-top: 0; }
-}
-
-.term-line {
-  white-space: pre-wrap;
-  &.mute { color: var(--mute); }
-  &.mark { line-height: 1.15; font-size: clamp(5px, calc((100vw - 68px) / 42), 15px); overflow: hidden; }
-  .man { margin-top: 4px; }
-}
-
-/* The input line: a real <input> laid invisibly over a mirrored line, so the
-   cursor can be a block. The input keeps focus, labels and the keyboard. */
-.term-in {
-  position: relative;
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
-  padding: 8px 14px 12px;
-  cursor: text;
-
-  label { font-weight: 700; }
-  .mirror { flex: 1; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 1.7em; }
-  .cursor {
-    display: inline-block;
-    width: 0.6em;
-    height: 1.05em;
-    vertical-align: -0.12em;
-    border: 1px solid var(--fg);
-  }
-  &.focus .cursor { background: var(--fg); animation: term-blink 1.06s step-end infinite; }
-  input {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    font: inherit;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: transparent;
-    caret-color: transparent;
-  }
-  input:focus { outline: none; }
-}
-
-@keyframes term-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .term-in.focus .cursor { animation: none; } }
+html[lang="ko"] .sheet dd { font-family: var(--sans); font-size: 16.5px; }
 
 /* i18n — the home page carries both languages; html[lang] picks one. */
 html[lang="en"] .page-home [lang="ko"] { display: none; }
