@@ -6,36 +6,45 @@
 #   team:      Team name
 #   date:      Optional ISO-style date for display (YYYY-MM-DD)
 #   url:       Optional link (writeup, scoreboard, ranking page)
+#   short:     Optional short name for the home page brief
 
 - event: Hacktheon International University Student Cyber Security Competition
+  short: Hacktheon 2026
   placement: Finalist
   team: 나는야임영웅
   url: https://hacktheon.org/y2026/
 
 - event: HyperSonic CTF
+  short: HyperSonic CTF
   placement: 2nd
   team: ASC
 
 - event: Codegate CTF Preliminary
+  short: Codegate Quals
   placement: 25th
   team: 밥친구
 
 - event: BITSCTF 2026
+  short: BITSCTF 2026
   placement: 4th
   team: Fermion
 
 - event: Tencent 0CTF
+  short: 0CTF
   placement: 12th
   team: Fermion
 
 - event: Cykor CTF
+  short: Cykor CTF
   placement: 8th
   team: Fermion
 
 - event: LakeCTF Quals '25–'26
+  short: LakeCTF Quals
   placement: 20th
   team: Fermion
 
 - event: HSpace Club League 25
+  short: HSpace Club League
   placement: 5th
   team: ASC

@@ -29,19 +29,45 @@ layout: compress
       <dd class="cv-row">
         <div class="cv-brief">
           <ul>
-            <li><span class="k">2022</span>Soongsil Univ., Electronic Eng</li>
-            <li><span class="k">2024</span>Hacking Camp 29th</li>
-            <li><span class="k">2025</span>WhiteHat School 3rd</li>
-            <li><span class="k">2026</span>AI Safety Center, intern</li>
-            <li><span class="k">CVE</span>3 (OpenClaw ×2, vLLM)</li>
-            <li><span class="k">Paper</span>KIISC 2026, best paper</li>
+            <li><span class="k">Team</span><span><span class="t"><a href="https://ssu-asc.com/" target="_blank" rel="noopener">ASC</a></span> <span class="t">· <a href="https://project-plasma.org/" target="_blank" rel="noopener">Fermion</a></span> <span class="t">· <a href="https://phylab.space/" target="_blank" rel="noopener">Physical Lab</a></span></span></li>
+            {% for ev in site.data.ctfs %}
+            <li><span class="k">{% if forloop.first %}CTF{% endif %}</span><span>{% if ev.url %}<a href="{{ ev.url }}" target="_blank" rel="noopener">{{ ev.short | default: ev.event }}</a>{% else %}{{ ev.short | default: ev.event }}{% endif %} <span class="meta">{{ ev.placement }}</span></span></li>
+            {% endfor %}
           </ul>
           <p class="cv-file">
             <a href="{{ '/assets/pdfs/CV_rsj.pdf' | relative_url }}" target="_blank" rel="noopener" aria-label="Open cv.pdf in a new tab, 786 kB, SHA-256 a9721e99d28443a5e1efc8f7bc3c1966b113ec99d7a7ac263f90bd5379d75552">cv.pdf</a>
             <span class="meta">2026-10 · 786 kB · <span class="hash" title="SHA-256 a9721e99d28443a5e1efc8f7bc3c1966b113ec99d7a7ac263f90bd5379d75552">sha256 a9721e99d284</span></span>
           </p>
         </div>
-<pre class="willow" aria-hidden="true" data-willow></pre>
+{%- comment -%}
+  A weeping willow, converted from "Trauerweide Skizze 2021" (Wikimedia
+  Commons, CC0) with docs/willow/willow_ascii.py: 44 columns, ten-step
+  ramp, gamma 0.7, cell aspect of Server Mono.
+{%- endcomment -%}
+<pre class="willow" aria-hidden="true">                           ...
+                       . .:--:.
+                 .:::-=-:-=+=...
+             .-: .:-==+++=+*+-:-:..
+             :===-===++**++++=-:.
+           .-+++++++++=+++*+===-:.:. .
+         :--+++****+++**+*#--==+-::::.
+        .-+**+********#**#+==+++=-==-:
+      :-=--++*######%%#**#****+++===-.
+     .-=+**++***#%%%#%%##%%%#*++-==--:
+     --+**######%%%%##%%%%%%###**+---:
+   .:-=+*###%%%%%%%%#*+*@**%****+++=:
+ ...=+*==#%%%%###%%%%#*+@%##+****+++-
+   -+=-=+%%%%%##%%#%%%%#@#*%*+*==+++-
+  :=*##%%%%%%##%%%%%%%%@@###*++=.:-=-
+ :-=+#%%%######%#%#*#%#%@%*=+=::.  .::
+ :-=*##%%#%%%%%%%%####*#@%==-: .:    .
+ .:+##%%%%%%%%%##%#####*@%-==:  .
+ .-*%%%%%%%%%#%##%##%#+*%@-:-.
+  :+=*%%%%%%%%%##%#+%#+#@@+..
+   . -%%%%%%%@%#%@*=%#=+%@*
+      *@@%##%#*###=-*-: *@#
+       =*=::-  .:.      =@%.
+                        -@@-</pre>
       </dd>
     </div>
   </dl>
@@ -50,6 +76,5 @@ layout: compress
 
 {% include footer.html %}
 {% include scripts.html %}
-<script defer src="{{ '/assets/js/willow.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 </body>
 </html>

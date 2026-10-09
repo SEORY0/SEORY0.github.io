@@ -46,34 +46,34 @@
   dd b { font-weight: 700; }
   .meta { color: var(--mute); font-size: 13px; }
 
-  /* The CV row: a brief on the left (year | line), the file link under it,
-     and the willow on the right. willow.js draws the tree into the <pre>
-     every frame; the hash is hard-coded — recompute it (sha256sum
+  /* The CV row: teams and CTF results on the left, the file link under
+     them, and the willow on the right — a photograph turned into text, see
+     docs/willow/. The hash is hard-coded: recompute it (sha256sum
      assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
   .cv-row {
     max-width: none;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 16px 32px;
+    gap: 16px 24px;
     align-items: end;
   }
   .cv-brief {
     min-width: 0;
-    li { display: grid; grid-template-columns: 6ch 1fr; gap: 0 8px; }
+    font-size: 13px;
+    li { display: grid; grid-template-columns: 5ch 1fr; gap: 0 8px; }
+    li + li { margin-top: 2px; }
     .k { color: var(--mute); font-variant-numeric: tabular-nums; }
+    .t { white-space: nowrap; }
+    .meta { margin-left: 2px; }
   }
   .cv-file { margin-top: 12px; }
   .cv-file .hash { white-space: nowrap; }
   .willow {
-    font-size: 12px;
+    font-size: 10px;
     line-height: 1.15;
     white-space: pre;
     user-select: none;
     color: var(--fg);
-    /* 36 cols × 16 rows, reserved so the row does not jump when the first
-       frame lands. */
-    min-width: 36ch;
-    min-height: calc(16 * 1.15em);
   }
 
   @media (max-width: $bp-mobile) {
