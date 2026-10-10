@@ -8,7 +8,7 @@
 
   {% assign page_title = page.title | default: site.title %}
   {% assign page_description = page.description | default: page.excerpt | default: site.description | strip_html | truncatewords: 50 %}
-  {% assign page_image = page.image | default: site.og_image %}
+  {% assign page_image = page.image.path | default: page.image | default: site.og_image %}
   {% assign page_url = page.url | absolute_url %}
 
   <title>
@@ -44,6 +44,11 @@
   {% endif %}
   {% if page_image %}
   <meta property="og:image" content="{{ page_image | absolute_url }}">
+  {% if page_image == site.og_image %}
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ site.og_image_alt | escape }}">
+  {% endif %}
   {% endif %}
 
   <!-- Twitter Card -->
@@ -56,6 +61,9 @@
   {% endif %}
   {% if page_image %}
   <meta name="twitter:image" content="{{ page_image | absolute_url }}">
+  {% if page_image == site.og_image %}
+  <meta name="twitter:image:alt" content="{{ site.og_image_alt | escape }}">
+  {% endif %}
   {% endif %}
 
   <link rel="canonical" href="{{ page_url }}">
