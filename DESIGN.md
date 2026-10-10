@@ -48,16 +48,20 @@ sizes from the viewport so 51 columns always fit.
   secondary chips (tags).
 - CV row, top-aligned with its label: `.cv-brief` on the left (Team, Edu
   for Soongsil University and KITRI WhiteHat School with school and cohort
-  on a muted line, Work for the AI Safety Center with the role, then
-  one entry per CTF result in `_data/ctfs.yml` marked `home: true`: its
-  `short` name or else the full name with year, unlinked, then placement
-  and team on a muted line under it; then
+  on a muted line, Work for the AI Safety Center with the role; no CTF
+  results on the home, they live in the PDF; then
   `cv.pdf` opening in a new tab with its ISO date (2026-10-10) and size,
   then the full `sha256` on its own line as two 32-digit halves, also in
-  the link's aria-label; recompute it when the PDF changes) and `.crt-cat` on the right: a tonal ASCII cat in left
-  profile sitting on a CRT, kept in `assets/avatars/crt-cat.txt` and copied
-  into the page by `docs/art/sync-home-ascii.py`, 8px. Static, no
-  JavaScript. Server Mono has no `^`, so the art never uses it.
+  the link's aria-label; recompute it when the PDF changes) and
+  `.home-art` on the right: tonal ASCII, 90 columns at 8px zoomed to 0.6.
+  Two drawings take turns on each load (an inline script flips
+  `data-art` between `cat` and `lucy` and remembers the last in
+  localStorage; without JavaScript the cat shows): the cat on a CRT from
+  a photograph (`docs/art/photo-to-ascii.py`) and Lucy from the
+  Edgerunners key visual (`docs/art/lucy-to-ascii.py`). Each comes in a
+  light- and a dark-theme version, copied into the page by
+  `docs/art/sync-home-ascii.py`. Server Mono has no `^`, so the art never
+  uses it.
 - `.sheet`: rows of `label | value` separated by rules. The home uses it
   as a `<dl>` (About, CV) with a 72px label column; the writing index uses
   it as an `<ol>` (date chip | title, summary, tags) with 120px for the
