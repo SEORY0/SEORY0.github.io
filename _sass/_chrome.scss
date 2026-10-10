@@ -38,9 +38,13 @@
   .wrap { padding-top: 14px; padding-bottom: 32px; }
 
   .mark {
-    /* 70 cols × 0.6em must fit the column: (100vw − 40px) / 42. clamp(), not
-       min(): Ruby Sass on GitHub Pages evaluates min() itself. */
-    font-size: clamp(5px, calc((100vw - 40px) / 42), 17px);
+    /* 70 cols × 0.625em (Server Mono's advance) = 43.75em must fit the
+       column: (100vw − 40px padding − up to 20px of scrollbar, which 100vw
+       includes) / 44, and at most 16px so the 720px column holds it. Sized
+       for 0.6em it ran wider than its box and overflow clipped the end of
+       the C. clamp(), not min(): Ruby Sass on GitHub Pages evaluates min()
+       itself. */
+    font-size: clamp(5px, calc((100vw - 60px) / 44), 16px);
     line-height: 1.15;
     margin: 20px 0 18px;
     color: var(--fg);

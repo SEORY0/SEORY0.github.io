@@ -49,8 +49,8 @@
   dd b { font-weight: 700; }
   .meta { color: var(--mute); font-size: 13px; }
 
-  /* The CV row: teams and CTF results on the left, the file link under
-     them, and on the right a cat sitting on a CRT in tonal ASCII.
+  /* The CV row: teams, education and work on the left, the file link under
+     them, and on the right the cat on the CRT or Lucy in tonal ASCII.
      The date, size and hash are hard-coded: recompute the hash (sha256sum
      assets/pdfs/CV_rsj.pdf) whenever the PDF changes. */
   .cv-row {
@@ -80,22 +80,37 @@
     word-break: break-all;
     vertical-align: top;
   }
-  .crt-cat {
-    font-size: 8px;
-    line-height: 1.1;
-    font-family: "Server Mono", Consolas, monospace;
-    white-space: pre;
+  /* The art: the cat on the CRT or Lucy, whichever the inline script picked
+     (data-art), each drawn twice, for dark glyphs on paper and for light
+     glyphs on black; the theme picks between those. */
+  .home-art {
     user-select: none;
     color: var(--fg);
-    /* Dark glyphs on white read thinner than light ones on black, so the
-       light theme draws the art in (synthetic) bold; the advance stays put. */
-    font-weight: 700;
-    .theme-dark & { font-weight: 400; }
+    pre {
+      display: none;
+      margin: 0;
+      font-family: "Server Mono", Consolas, monospace;
+      font-size: 8px;
+      line-height: 1.1;
+      white-space: pre;
+      /* 90 columns at 8px would be 450px wide; zoom lays them out and draws
+         them at 4.8px. Zoom rather than a 4.8px font, so a browser's minimum
+         font size cannot blow the drawing up. */
+      zoom: 0.6;
+    }
+    &[data-art="cat"] .art-cat-light,
+    &[data-art="lucy"] .art-lucy-light { display: block; }
+    .theme-dark & {
+      &[data-art="cat"] .art-cat-light,
+      &[data-art="lucy"] .art-lucy-light { display: none; }
+      &[data-art="cat"] .art-cat-dark,
+      &[data-art="lucy"] .art-lucy-dark { display: block; }
+    }
   }
 
   @media (max-width: $bp-mobile) {
     .cv-row { grid-template-columns: 1fr; }
-    .crt-cat { justify-self: center; }
+    .home-art { justify-self: center; }
   }
 
   @media (max-width: $bp-mobile) {
