@@ -13,8 +13,11 @@ author:
   email: seory0@outlook.kr
   url: "https://SEORY0.github.io"
 
-# Open Graph defaults
-og_image: "/assets/images/logo.png"
+# Open Graph defaults: the share card, 1200 x 630, made by docs/art/og-image.py
+# (also set as the default page image under defaults:, for jekyll-seo-tag)
+og_image: "/assets/images/og-crt-cat.png"
+og_image_alt: "SEORY0 in block letters beside an ASCII drawing of a cat on a CRT monitor"
+locale: ko_KR
 permalink: pretty
 
 baseurl: ""
@@ -61,6 +64,13 @@ defaults:
       path: ""
     values:
       layout: "default"
+      # the share card for every page that does not set its own; jekyll-seo-tag
+      # reads this (large card, size, alt) as well as _includes/head.html
+      image:
+        path: "/assets/images/og-crt-cat.png"
+        width: 1200
+        height: 630
+        alt: "SEORY0 in block letters beside an ASCII drawing of a cat on a CRT monitor"
   -
     scope:
       path: ""
