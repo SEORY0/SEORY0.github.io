@@ -23,6 +23,12 @@
     font-size: 12px;
     nav { gap: 10px; }
   }
+  /* 320px phones leave 280px: name + four links need about 294px at 12px. */
+  @media (max-width: 360px) {
+    font-size: 11px;
+    gap: 10px;
+    nav { gap: 8px; }
+  }
 }
 
 /* Theme button: names the action, not the state. */

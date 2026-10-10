@@ -5,18 +5,21 @@
 .page-home main.wrap { padding-bottom: 32px; }
 
 .banner {
-  /* Block and box-drawing glyphs are not in the Plex Mono subset; these system
-     monos have them at the right advance width. line-height 1 keeps █ rows
-     touching. */
-  font-family: "Berkeley Mono", "TX-02", "Cascadia Mono", Consolas, Menlo, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  /* Server Mono, the web font every visitor loads, has █ and the double box
+     lines at the full advance; system monos do not everywhere (Android's
+     falls back glyph by glyph to proportional ones and the rows come apart),
+     so they are only a last resort. line-height 1 keeps █ rows touching. */
+  font-family: "Berkeley Mono", "TX-02", "Server Mono", "Cascadia Mono", Consolas, Menlo, monospace;
   display: block;
   text-align: center;
   line-height: 1;
   white-space: pre;
-  /* 51 cols × 0.6em must fit the column: (100vw − 40px) / 31.
-     clamp() rather than min(): GitHub Pages compiles with Ruby Sass, whose
-     own min() rejects a calc() argument, while clamp() passes through. */
-  font-size: clamp(6px, calc((100vw - 40px) / 31), 23px);
+  /* 51 cols × 0.625em (Server Mono's advance) = 31.875em must fit the
+     column: (100vw − 40px padding − up to 20px of scrollbar) / 32, at most
+     22px for the 720px column. clamp() rather than min(): GitHub Pages
+     compiles with Ruby Sass, whose own min() rejects a calc() argument,
+     while clamp() passes through. */
+  font-size: clamp(6px, calc((100vw - 60px) / 32), 22px);
   margin: 48px 0 12px;
   user-select: none;
 }

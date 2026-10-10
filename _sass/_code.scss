@@ -9,6 +9,15 @@
   font-size: 0.86em;
   border: 1px solid var(--mute);
   padding: 0 4px;
+  /* Symbols, hostnames and flags have no break opportunity of their own;
+     on a phone one of them ran past the column and dragged the whole
+     article sideways. Break them only when a line would overflow
+     (break-word, not anywhere, so tables keep their width and scroll in
+     their own box instead of chopping paths), and give each line of a
+     broken one its own border. */
+  overflow-wrap: break-word;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .post-content pre,
@@ -22,7 +31,7 @@
   margin: 0 0 1.4em;
   background: var(--code-block-bg);
   color: var(--code-text-color);
-  code { border: 0; padding: 0; font-size: inherit; }
+  code { border: 0; padding: 0; font-size: inherit; overflow-wrap: normal; }
 }
 
 .code-block-container {
