@@ -39,8 +39,11 @@ breakpoint at 560px, where sheet rows stack label over value. The banner
 sizes from the viewport so 51 columns always fit.
 
 ## 5. Components
-- Top line: `seory0`, nav (writing, github, mail, `[dark]`/`[light]`), a
-  rule beneath. Static, not sticky, no background.
+- Top line: `seory0`, nav (writings, study, github, mail,
+  `[dark]`/`[light]`), a rule beneath. Static, not sticky, no background.
+  `study` goes to /study/, a separate repository (SEORY0/study) that shares
+  this design and the theme choice (one origin, one localStorage key).
+  Below 340px the github and mail links drop their `↗` so all five fit.
 - External links (new tab, mailto) in the top line, sheet and footer end in
   a small `↗` on the right, set as a CSS `::after` so the underline stops at
   the word. Article prose carries no arrows.

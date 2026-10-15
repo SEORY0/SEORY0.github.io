@@ -23,11 +23,18 @@
     font-size: 12px;
     nav { gap: 10px; }
   }
-  /* 320px phones leave 280px: name + four links need about 294px at 12px. */
-  @media (max-width: 360px) {
+  /* Five links need about 349px at 12px: phones narrower than 400px
+     (375px leaves 335px) step down to 11px. */
+  @media (max-width: 400px) {
     font-size: 11px;
     gap: 10px;
-    nav { gap: 8px; }
+    nav { gap: 7px; }
+  }
+  /* With study there are five links: below 340px they fit only without
+     the ↗ marks, which the github and mail links drop there. */
+  @media (max-width: 340px) {
+    nav { gap: 5px; }
+    a[target="_blank"]::after, a[href^="mailto:"]::after { display: none; }
   }
 }
 
