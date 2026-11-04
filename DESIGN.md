@@ -53,7 +53,7 @@ sizes from the viewport so 51 columns always fit.
   for Soongsil University and KITRI WhiteHat School with school and cohort
   on a muted line, Work for the AI Safety Center with the role; no CTF
   results on the home, they live in the PDF; then
-  `cv.pdf` opening in a new tab with its ISO date (2026-10-10) and size,
+  `cv.pdf` opening in a new tab with its ISO date (2026-11-04) and size,
   then the full `sha256` on its own line as two 32-digit halves, also in
   the link's aria-label; recompute it when the PDF changes) and
   `.home-art` on the right: tonal ASCII, 90 columns at 8px zoomed to 0.6.
